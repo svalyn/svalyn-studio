@@ -1,0 +1,15 @@
+= How to contribute
+
+== Code of conduct
+
+Please read the full text of the code of conduct in order to understand what actions will and will not be tolerated.
+
+== Open development
+
+All the work on this project happens directly on Github.
+All contributors should send pull requests which go through the same continuous integration and code review process.
+
+== Branch organization
+
+Every commit on the main branch must have all tests passing.
+Every commit on the main branch should come from a pull request properly rebased first with all the tests passing.

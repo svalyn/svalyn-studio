@@ -1,0 +1,8 @@
+= Svalyn Studio
+
+Svalyn is a simple side-project to test some code related to web technologies.
+This project has no precise goals, do not expect anything from it.
+
+== License
+
+The code of this project is available under the terms of the MIT license.

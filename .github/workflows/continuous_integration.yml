@@ -1,0 +1,46 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Continuous integration
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node SDK
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          cache: 'npm'
+          cache-dependency-path: frontend/svalyn-studio-app/package-lock.json
+
+      - name: Setup Java SDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'maven'
+
+      - name: Build the frontend
+        run: |
+          npm ci
+          npm run-script format:lint
+          npm run build
+        working-directory: frontend/svalyn-studio-app
+
+      - name: Copy frontend artifacts
+        run: |
+          mkdir -p backend/svalyn-studio-application/src/main/resources/static
+          cp -R frontend/svalyn-studio-app/dist/* backend/svalyn-studio-application/src/main/resources/static
+
+      - name: Build the backend
+        run: mvn -U -B -e clean verify -f backend/pom.xml
