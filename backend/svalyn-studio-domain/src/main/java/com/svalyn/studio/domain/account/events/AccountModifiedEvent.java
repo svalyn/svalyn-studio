@@ -16,8 +16,22 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.domain.account.events;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.account.Account;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+import java.time.Instant;
+import java.util.UUID;
+
+/**
+ * Event fired when an account is modified.
+ *
+ * @param id The identifier of the event
+ * @param createdOn The creation date of the event
+ * @param account The account created
+ *
+ * @author sbegaudeau
+ */
+public record AccountModifiedEvent(UUID id, Instant createdOn, Account account) implements IDomainEvent {
+}

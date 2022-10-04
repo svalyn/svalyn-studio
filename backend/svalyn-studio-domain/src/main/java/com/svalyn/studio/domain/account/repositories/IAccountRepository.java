@@ -16,8 +16,21 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.domain.account.repositories;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import com.svalyn.studio.domain.account.Account;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Repository used to persist and retrieve accounts.
+ *
+ * @author sbegaudeau
+ */
+@Repository
+public interface IAccountRepository extends PagingAndSortingRepository<Account, UUID> {
+    Optional<Account> findByEmail(String email);
+}

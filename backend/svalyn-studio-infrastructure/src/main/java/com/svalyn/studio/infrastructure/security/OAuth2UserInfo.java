@@ -16,8 +16,19 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.infrastructure.security;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+/**
+ * Abstraction of the user info retrieved by any oauth2 provider.
+ *
+ * @author sbegaudeau
+ */
+public interface OAuth2UserInfo {
+    String getId();
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+    String getName();
+
+    String getEmail();
+
+    String getImageUrl();
+}

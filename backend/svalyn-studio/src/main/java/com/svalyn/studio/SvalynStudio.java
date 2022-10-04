@@ -17,7 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+package com.svalyn.studio;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * The entry point of Svalyn Studio.
+ *
+ * @author sbegaudeau
+ */
+@SpringBootApplication
+public class SvalynStudio {
+    public static void main(String[] args) {
+        SpringApplication.run(SvalynStudio.class, args);
+    }
+}

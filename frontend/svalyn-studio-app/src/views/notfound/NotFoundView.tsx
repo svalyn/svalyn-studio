@@ -17,7 +17,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { UnauthenticatedNavbar } from '../../navbars/UnauthenticatedNavbar';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export const NotFoundView = () => {
+  return (
+    <div>
+      <UnauthenticatedNavbar />
+      <div>
+        <Container maxWidth="lg">
+          <Toolbar />
+          <Typography variant="h4" gutterBottom>
+            This page does not exist
+          </Typography>
+          <Typography variant="body1">
+            I Know What It's Like To Lose. To Feel So Desperately That You're Right, Yet To Fail Nonetheless. It’s
+            Frightening.
+          </Typography>
+        </Container>
+      </div>
+    </div>
+  );
+};

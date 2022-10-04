@@ -17,7 +17,36 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import { createTheme } from '@mui/material/styles';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+import SourceSansProRegular from '../fonts/SourceSansPro-Regular.ttf';
+
+export const theme = createTheme({
+  palette: {
+    mode: 'light',
+    background: {
+      default: '#f4f6f8',
+    },
+  },
+  typography: {
+    fontFamily: 'Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Source Sans Pro';
+          font-style: 'normal';
+          font-weight: 400;
+          font-display: swap;
+          src: url(${SourceSansProRegular})
+        }
+      `,
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: `box-shadow: none;`,
+      },
+    },
+  },
+});
