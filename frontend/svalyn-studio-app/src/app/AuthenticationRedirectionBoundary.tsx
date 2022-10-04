@@ -17,7 +17,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import { ApolloProvider } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { getApolloClient } from './ApolloClient';
+import {
+  AuthenticationRedirectionBoundaryProps,
+  AuthenticationRedirectionBoundaryState,
+} from './AuthenticationRedirectionBoundary.types';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export const AuthenticationRedirectionBoundary = ({ children }: AuthenticationRedirectionBoundaryProps) => {
+  const [state, setState] = useState<AuthenticationRedirectionBoundaryState>({ authenticationError: false });
+  const location = useLocation();
+
+  useEffect(() => {
+    setState((prevState) => ({ ...prevState, authenticationError: false }));
+  }, [location]);
+
+  const onAuthenticationError = () => setState((prevState) => ({ ...prevState, authenticationError: true }));
+
+  if (state.authenticationError) {
+    return <Navigate to="/login" />;
+  }
+
+  const apolloClient = getApolloClient(onAuthenticationError);
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
+};

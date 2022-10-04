@@ -16,8 +16,27 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.infrastructure.security;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+/**
+ * Used to provide the HTTP client to perform the oauth2 requests.
+ *
+ * @author sbegaudeau
+ */
+@Configuration
+public class OAuth2UserServiceConfiguration {
+
+    @Bean
+    public WebClient webClient(ClientRegistrationRepository clients, OAuth2AuthorizedClientRepository authz) {
+        var oauth2 = new ServletOAuth2AuthorizedClientExchangeFilterFunction(clients, authz);
+        return WebClient.builder().filter(oauth2).build();
+    }
+
+}

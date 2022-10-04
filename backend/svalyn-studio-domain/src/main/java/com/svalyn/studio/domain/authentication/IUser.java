@@ -16,8 +16,17 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.domain.authentication;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import java.util.UUID;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+/**
+ * Used to represent a user.
+ *
+ * @author sbegaudeau
+ */
+public interface IUser {
+    UUID getId();
+    String getName();
+    String getImageUrl();
+}

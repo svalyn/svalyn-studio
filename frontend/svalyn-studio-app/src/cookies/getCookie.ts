@@ -17,7 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export const getCookie = (name: string): string => {
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    return (
+      cookies
+        .map((cookie) => cookie.trim().split('='))
+        .filter((entry) => entry[0] && entry[0].trim() === name)
+        .map((entry) => decodeURIComponent(entry[1]))[0] ?? ''
+    );
+  }
+  return '';
+};

@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export interface ErrorSnackbarProps {
+  message: string | null;
+  onClose: () => void;
+}

@@ -17,7 +17,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+export interface NavbarProps {
+  children?: React.ReactNode;
+}
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export interface NavbarState {
+  viewer: Viewer | null;
+  anchorElement: HTMLElement | null;
+  redirectToLogin: boolean;
+  message: string | null;
+}
+
+export interface GetViewerData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  name: string;
+  imageUrl: string;
+}
+
+export interface GetViewerVariables {}

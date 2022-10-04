@@ -17,7 +17,20 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import AppBar from '@mui/material/AppBar';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import { Link as RouterLink } from 'react-router-dom';
+import { Svalyn } from '../icons/Svalyn';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export const UnauthenticatedNavbar = () => {
+  return (
+    <AppBar position="static">
+      <Toolbar variant="dense">
+        <IconButton component={RouterLink} to="/">
+          <Svalyn />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
+  );
+};

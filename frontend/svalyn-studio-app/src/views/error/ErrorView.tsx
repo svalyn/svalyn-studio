@@ -17,19 +17,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application;
+import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { UnauthenticatedNavbar } from '../../navbars/UnauthenticatedNavbar';
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-/**
- * The entry point of the Svalyn Studio application.
- *
- * @author sbegaudeau
- */
-@SpringBootApplication
-public class SvalynStudioApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(SvalynStudioApplication.class, args);
-    }
-}
+export const ErrorView = () => {
+  return (
+    <div>
+      <UnauthenticatedNavbar />
+      <div>
+        <Container maxWidth="lg">
+          <Toolbar />
+          <Typography variant="h4" gutterBottom>
+            An error has occured
+          </Typography>
+          <Typography variant="body1">
+            You could not live with your own failure, and where did that bring you? Back to me.
+          </Typography>
+        </Container>
+      </div>
+    </div>
+  );
+};

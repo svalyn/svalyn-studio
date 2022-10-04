@@ -16,8 +16,17 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.domain;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import java.time.Instant;
+import java.util.UUID;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+/**
+ * Interface to be implemented by all the events of the domain.
+ *
+ * @author sbegaudeau
+ */
+public interface IDomainEvent {
+    UUID id();
+    Instant createdOn();
+}

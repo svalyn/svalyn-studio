@@ -17,7 +17,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import { ErrorSnackbarProps } from './ErrorSnackbar.types';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export const ErrorSnackbar = ({ message, onClose }: ErrorSnackbarProps) => {
+  return (
+    <Snackbar
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      open={message !== null}
+      autoHideDuration={5000}
+      onClose={onClose}
+      message={message}
+      action={
+        <IconButton size="small" color="inherit" onClick={onClose}>
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      }
+    />
+  );
+};

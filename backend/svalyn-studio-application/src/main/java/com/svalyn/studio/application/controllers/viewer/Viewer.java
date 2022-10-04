@@ -16,8 +16,21 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.application.controllers.viewer;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import java.util.Objects;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+/**
+ * A viewer of the application.
+ *
+ * @param name The name of the viewer
+ * @param imageUrl The URL of the image representing the viewer
+ *
+ * @author sbegaudeau
+ */
+public record Viewer(String name, String imageUrl) {
+    public Viewer(String name, String imageUrl) {
+        this.name = Objects.requireNonNull(name);
+        this.imageUrl = Objects.requireNonNull(imageUrl);
+    }
+}

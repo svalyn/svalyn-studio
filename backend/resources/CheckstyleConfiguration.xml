@@ -162,10 +162,7 @@
             <property name="severity" value="error"/>
         </module>
         <module name="HiddenField">
-            <property name="severity" value="error"/>
-            <property name="ignoreConstructorParameter" value="true"/>
-            <property name="ignoreSetter" value="true"/>
-            <property name="ignoreAbstractMethods" value="true"/>
+            <property name="severity" value="ignore"/>
         </module>
         <module name="IllegalCatch">
             <property name="severity" value="error"/>
@@ -188,8 +185,7 @@
             <property name="severity" value="error"/>
         </module>
         <module name="MultipleStringLiterals">
-            <property name="severity" value="error"/>
-            <property name="allowedDuplicates" value="2"/>
+            <property name="severity" value="ignore"/>
         </module>
         <module name="MultipleVariableDeclarations">
             <property name="severity" value="error"/>

@@ -17,7 +17,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { UnauthenticatedNavbar } from '../../navbars/UnauthenticatedNavbar';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export const HelpView = () => {
+  return (
+    <div>
+      <UnauthenticatedNavbar />
+      <div>
+        <Container maxWidth="lg">
+          <Toolbar />
+          <Typography variant="h4" gutterBottom>
+            Help
+          </Typography>
+          <Typography variant="body1">Search our FAQ for answers to anything you might ask.</Typography>
+        </Container>
+      </div>
+    </div>
+  );
+};

@@ -16,8 +16,17 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.infrastructure.persistence;
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+/**
+ * Spring Data JDBC configuration.
+ *
+ * @author sbegaudeau
+ */
+@Configuration
+@EnableJdbcRepositories(basePackages = { "com.svalyn.studio.domain" })
+public class JDBCConfiguration {
+}

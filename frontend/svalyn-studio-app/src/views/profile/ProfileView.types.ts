@@ -17,7 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import ReactDOM from 'react-dom/client';
-import { App } from './app/App';
+export interface ProfileViewState {
+  viewer: Viewer | null;
+  message: string | null;
+}
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+export interface GetViewerData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  name: string;
+  imageUrl: string;
+}
+
+export interface GetViewerVariables {}
