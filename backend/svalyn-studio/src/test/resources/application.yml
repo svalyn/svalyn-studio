@@ -1,0 +1,25 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            scope: read:user, user:email
+            clientId: PLACEHOLDER_CLIENT_ID
+            clientSecret: PLACEHOLDER_CLIENT_SECRET
+  graphql:
+    path: /api/graphql
+    websocket:
+      path: /api/graphql
+    graphiql:
+      enabled: false
