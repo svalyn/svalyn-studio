@@ -27,31 +27,118 @@
             CREATE EXTENSION IF NOT EXISTS pgcrypto
         </sql>
 
-        <createTable tableName="Account">
+        <createTable tableName="account">
             <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
-                <constraints  nullable="false" primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="provider" type="TEXT">
-                <constraints  nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="provider_id" type="TEXT">
-                <constraints  nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="name" type="TEXT">
-                <constraints  nullable="false" checkConstraint="CHECK (char_length(name) > 0"/>
+                <constraints nullable="false" checkConstraint="CHECK (char_length(name) > 0"/>
             </column>
             <column name="email" type="TEXT">
-                <constraints  nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="image_url" type="TEXT">
-                <constraints  nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="created_on" type="TIMESTAMP">
-                <constraints  nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="last_modified_on" type="TIMESTAMP">
-                <constraints  nullable="false"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <createTable tableName="organization">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="identifier" type="TEXT">
+                <constraints nullable="false" unique="true" checkConstraint="CHECK (char_length(name) > 0"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false" checkConstraint="CHECK (char_length(name) > 0"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="organization" baseColumnNames="created_by" constraintName="fk_organization_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="organization" baseColumnNames="last_modified_by" constraintName="fk_organization_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="membership">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="organization_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="member_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="membership" columnNames="organization_id, member_id"/>
+        <addForeignKeyConstraint baseTableName="membership" baseColumnNames="organization_id" constraintName="fk_membership_organization_id" referencedTableName="organization" referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="membership" baseColumnNames="member_id" constraintName="fk_membership_account_id" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="membership" baseColumnNames="created_by" constraintName="fk_membership_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="membership" baseColumnNames="last_modified_by" constraintName="fk_membership_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="invitation">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="organization_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="member_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="invitation" columnNames="organization_id, member_id"/>
+        <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="organization_id" constraintName="fk_invitation_organization_id" referencedTableName="organization" referencedColumnNames="id" onDelete="CASCADE" />
+        <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="member_id" constraintName="fk_invitation_account_id" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="created_by" constraintName="fk_invitation_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="last_modified_by" constraintName="fk_invitation_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
     </changeSet>
 </databaseChangeLog>

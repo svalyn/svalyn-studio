@@ -37,7 +37,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-@Table(name = "Account")
+@Table(name = "account")
 public class Account extends AbstractAggregateRoot<Account> {
     @Id
     private UUID id;

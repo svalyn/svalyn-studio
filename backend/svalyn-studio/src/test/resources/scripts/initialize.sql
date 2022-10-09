@@ -1,0 +1,24 @@
+INSERT INTO account (id, provider, provider_id, name, email, image_url, created_on, last_modified_on) VALUES
+('7ba7bda7-13b9-422a-838b-e45a3597e952', 'github', '000001', 'John Doe', 'johndoe@example.org', 'https://www.example.org/image/avatar.png', '2022-09-17 21:37:52.616', '2022-09-17 21:37:52.616');
+
+INSERT INTO account (id, provider, provider_id, name, email, image_url, created_on, last_modified_on) VALUES
+('1116f75f-2ceb-43cf-b6a6-c11dabbc5977', 'github', '000002', 'Jane Doe', 'janedoe@example.org', 'https://www.example.org/image/avatar.png', '2022-09-25 14:25:52.616', '2022-09-25 14:25:52.616');
+
+INSERT INTO account (id, provider, provider_id, name, email, image_url, created_on, last_modified_on) VALUES
+('5e45aead-48f2-462b-a50e-1191ace697bd', 'github', '000003', 'Jules Doe', 'julesdoe@example.org', 'https://www.example.org/image/avatar.png', '2022-09-27 08:25:52.616', '2022-09-27 08:25:52.616');
+
+INSERT INTO account (id, provider, provider_id, name, email, image_url, created_on, last_modified_on) VALUES
+('a685c7d7-b4a4-4d58-8f76-ef05e6392fe4', 'github', '000004', 'James Doe', 'jamesdoe@example.org', 'https://www.example.org/image/avatar.png', '2022-09-28 17:29:52.616', '2022-09-28 17:29:52.616');
+
+
+INSERT INTO organization (id, identifier, name, created_by, created_on, last_modified_by, last_modified_on) VALUES
+('a9261e91-fb20-4d48-8731-d5297e441315', 'mockorganization', 'Mock Organization', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-09-17 22:38:19.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-09-17 22:38:19.331943');
+
+INSERT INTO membership (id, organization_id, member_id, "role", created_by, created_on, last_modified_by, last_modified_on) VALUES
+('a2bed581-9661-41bf-9217-2870a9dce67c', 'a9261e91-fb20-4d48-8731-d5297e441315', '7ba7bda7-13b9-422a-838b-e45a3597e952', 'ADMIN', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-01 22:19:26.324164', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-01 22:19:26.324164');
+
+INSERT INTO membership (id, organization_id, member_id, "role", created_by, created_on, last_modified_by, last_modified_on) VALUES
+('65e7f962-4e7e-4738-978e-ac58ab02d6a5', 'a9261e91-fb20-4d48-8731-d5297e441315', '1116f75f-2ceb-43cf-b6a6-c11dabbc5977', 'MEMBER', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 11:25:26.324164', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 11:25:26.324164');
+
+INSERT INTO invitation (id, organization_id, member_id, created_by, created_on, last_modified_by, last_modified_on) VALUES
+('c3d41db3-02f1-4cec-8d7f-48e8f5eafe2f', 'a9261e91-fb20-4d48-8731-d5297e441315', '5e45aead-48f2-462b-a50e-1191ace697bd', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 14:12:26.324164', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 14:12:26.324164')

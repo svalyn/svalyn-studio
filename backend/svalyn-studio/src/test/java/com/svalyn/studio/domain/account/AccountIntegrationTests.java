@@ -53,8 +53,8 @@ public class AccountIntegrationTests extends AbstractIntegrationTests {
     }
 
     @Test
-    @DisplayName("Given an account, when it is persisted, then its identifier is initialized")
-    public void givenAnAccount_whenPersisted_thenHasAnIdentifier() {
+    @DisplayName("Given an account, when it is persisted, then its id is initialized")
+    public void givenAnAccount_whenPersisted_thenHasAnId() {
         var account = Account.newAccount()
                 .provider("github")
                 .providerId("providerId")

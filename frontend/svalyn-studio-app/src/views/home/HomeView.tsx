@@ -17,17 +17,50 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import { Navbar } from '../../navbars/Navbar';
+import { gql, useQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { GetOrganizationsData, GetOrganizationsVariables, HomeViewState } from './HomeView.types';
+
+const getOrganizationsQuery = gql`
+  query getOrganizations {
+    viewer {
+      organizations {
+        edges {
+          node {
+            identifier
+          }
+        }
+      }
+    }
+  }
+`;
 
 export const HomeView = () => {
-  return (
-    <div>
-      <Navbar />
-      <Container maxWidth="lg">
-        <Typography>Home</Typography>
-      </Container>
-    </div>
-  );
+  const [state, setState] = useState<HomeViewState>({
+    organizations: null,
+  });
+
+  const { loading, data } = useQuery<GetOrganizationsData, GetOrganizationsVariables>(getOrganizationsQuery);
+  useEffect(() => {
+    if (!loading) {
+      if (data) {
+        const {
+          viewer: { organizations },
+        } = data;
+        setState((prevState) => ({ ...prevState, organizations: organizations.edges.map((edge) => edge.node) }));
+      }
+    }
+  }, [loading, data]);
+
+  if (state.organizations) {
+    if (state.organizations.length > 0) {
+      const organization = state.organizations[0];
+      return <Navigate to={`/orgs/${organization.identifier}`} />;
+    } else {
+      return <Navigate to="/new/organization" />;
+    }
+  }
+
+  return null;
 };
