@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
@@ -95,7 +95,6 @@
                 </dependencies>
                 <configuration>
                     <configLocation>../resources/CheckstyleConfiguration.xml</configLocation>
-                    <encoding>UTF-8</encoding>
                     <failsOnError>true</failsOnError>
                     <consoleOutput>true</consoleOutput>
                 </configuration>

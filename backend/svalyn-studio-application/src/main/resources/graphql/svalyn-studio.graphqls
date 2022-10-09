@@ -5,4 +5,176 @@ type Query {
 type Viewer {
   name: String!
   imageUrl: String!
+  invitations: ViewerInvitationsConnection!
+  organizations: ViewerOrganizationsConnection!
+  organization(identifier: ID!): Organization
+}
+
+type ViewerInvitationsConnection {
+  edges: [ViewerInvitationsEdge!]!
+}
+
+type ViewerInvitationsEdge {
+  node: Invitation!
+}
+
+type ViewerOrganizationsConnection {
+  edges: [ViewerOrganizationsEdge!]!
+}
+
+type ViewerOrganizationsEdge {
+  node: Organization!
+}
+
+type Organization {
+  identifier: ID!
+  description: String!
+  name: String!
+  invitations: OrganizationInvitationsConnection!
+  memberships: OrganizationMembershipsConnection!
+}
+
+type OrganizationInvitationsConnection {
+  edges: [OrganizationInvitationsEdge!]!
+}
+
+type OrganizationInvitationsEdge {
+  node: Invitation!
+}
+
+type Invitation {
+  id: ID!
+  organization: Organization!
+  member: Profile!
+}
+
+type OrganizationMembershipsConnection {
+  edges: [OrganizationMembershipsEdge!]!
+}
+
+type OrganizationMembershipsEdge {
+  node: Membership!
+}
+
+type Membership {
+  id: ID!
+  member: Profile!
+}
+
+type Profile {
+  name: String!
+  imageUrl: String!
+}
+
+type Mutation {
+  createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload!
+  renameOrganization(input: RenameOrganizationInput!): RenameOrganizationPayload!
+  inviteMember(input: InviteMemberInput!): InviteMemberPayload!
+  revokeInvitation(input: RevokeInvitationInput!): RevokeInvitationPayload!
+  acceptInvitation(input: AcceptInvitationInput!): AcceptInvitationPayload!
+  declineInvitation(input: DeclineInvitationInput!): DeclineInvitationPayload!
+  revokeMemberships(input: RevokeMembershipsInput!): RevokeMembershipsPayload!
+  leaveOrganization(input: LeaveOrganizationInput!): LeaveOrganizationPayload!
+  deleteOrganization(input: DeleteOrganizationInput!): DeleteOrganizationPayload!
+}
+
+type ErrorPayload {
+  message: String!
+}
+
+input CreateOrganizationInput {
+  identifier: ID!
+  name: String!
+}
+
+union CreateOrganizationPayload = ErrorPayload | CreateOrganizationSuccessPayload
+
+type CreateOrganizationSuccessPayload {
+  organization: Organization!
+}
+
+input RenameOrganizationInput {
+  organizationIdentifier: ID!
+  name: String!
+}
+
+union RenameOrganizationPayload = ErrorPayload | RenameOrganizationSuccessPayload
+
+type RenameOrganizationSuccessPayload {
+  id: ID!
+}
+
+input InviteMemberInput {
+  organizationIdentifier: ID!
+  email: String!
+}
+
+union InviteMemberPayload = ErrorPayload | InviteMemberSuccessPayload
+
+type InviteMemberSuccessPayload {
+  id: ID!
+}
+
+input RevokeInvitationInput {
+  organizationIdentifier: ID!
+  invitationId: ID!
+}
+
+union RevokeInvitationPayload = ErrorPayload | RevokeInvitationSuccessPayload
+
+type RevokeInvitationSuccessPayload {
+  id: ID!
+}
+
+input AcceptInvitationInput {
+  organizationIdentifier: ID!
+  invitationId: ID!
+}
+
+union AcceptInvitationPayload = ErrorPayload | AcceptInvitationSuccessPayload
+
+type AcceptInvitationSuccessPayload {
+  id: ID!
+}
+
+input DeclineInvitationInput {
+  organizationIdentifier: ID!
+  invitationId: ID!
+}
+
+union DeclineInvitationPayload = ErrorPayload | DeclineInvitationSuccessPayload
+
+type DeclineInvitationSuccessPayload {
+  id: ID!
+}
+
+input RevokeMembershipsInput {
+  organizationIdentifier: ID!
+  membershipIds: [ID!]!
+}
+
+union RevokeMembershipsPayload = ErrorPayload | RevokeMembershipsSuccessPayload
+
+type RevokeMembershipsSuccessPayload {
+  id: ID!
+}
+
+input LeaveOrganizationInput {
+  organizationIdentifier: ID!
+}
+
+union LeaveOrganizationPayload = ErrorPayload | LeaveOrganizationSuccessPayload
+
+type LeaveOrganizationSuccessPayload {
+  id: ID!
+}
+
+input DeleteOrganizationInput {
+  organizationIdentifier: ID!
+}
+
+union DeleteOrganizationPayload = ErrorPayload | DeleteOrganizationSuccessPayload
+
+type DeleteOrganizationSuccessPayload {
+  id: ID!
 }

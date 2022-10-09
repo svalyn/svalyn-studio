@@ -23,7 +23,7 @@ export const Svalyn = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox="0 0 400 400">
       <g>
-        <path d="M339.43,119.5 A161,161 0 1 0 339.43,280.5" fill="none" stroke="white" stroke-width="15" />
+        <path d="M339.43,119.5 A161,161 0 1 0 339.43,280.5" fill="none" stroke="white" strokeWidth="15" />
 
         <circle cx="339.43" cy="119.5" r="40" fill="white" />
         <circle cx="339.43" cy="119.5" r="35" fill="white" />
@@ -46,11 +46,11 @@ export const Svalyn = (props: SvgIconProps) => {
         <text
           x="50%"
           y="50%"
-          font-size="180"
+          fontSize="180"
           fill="white"
-          text-anchor="middle"
-          alignment-baseline="central"
-          font-family="Arial"
+          textAnchor="middle"
+          alignmentBaseline="central"
+          fontFamily="Arial"
         >
           S
         </text>

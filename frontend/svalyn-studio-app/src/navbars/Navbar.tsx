@@ -21,6 +21,7 @@ import { gql, useQuery } from '@apollo/client';
 import HelpIcon from '@mui/icons-material/Help';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -39,7 +40,6 @@ import { getCookie } from '../cookies/getCookie';
 import { Svalyn } from '../icons/Svalyn';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { GetViewerData, GetViewerVariables, NavbarProps, NavbarState } from './Navbar.types';
-
 const { VITE_BACKEND_URL } = import.meta.env;
 
 const getViewerQuery = gql`
@@ -143,6 +143,12 @@ export const Navbar = ({ children }: NavbarProps) => {
                       <PersonIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Profile</ListItemText>
+                  </MenuItem>
+                  <MenuItem component={RouterLink} to="/invitations" onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                      <MailOutlineIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Invitations</ListItemText>
                   </MenuItem>
                   <MenuItem component={RouterLink} to="/help" onClick={handleCloseUserMenu}>
                     <ListItemIcon>

@@ -23,9 +23,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ErrorView } from '../views/error/ErrorView';
 import { HelpView } from '../views/help/HelpView';
 import { HomeView } from '../views/home/HomeView';
+import { InvitationsView } from '../views/invitations/InvitationsView';
 import { LoginView } from '../views/login/LoginView';
+import { NewOrganizationView } from '../views/new-organization/NewOrganizationView';
 import { NotFoundView } from '../views/notfound/NotFoundView';
 import { OAuth2RedirectView } from '../views/oauth2redirect/OAuth2RedirectView';
+import { OrganizationView } from '../views/organization/OrganizationView';
 import { ProfileView } from '../views/profile/ProfileView';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
 import { theme } from './theme';
@@ -38,9 +41,14 @@ export const App = () => {
         <AuthenticationRedirectionBoundary>
           <Routes>
             <Route path="/" element={<HomeView />} />
+            <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
+            <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
+            <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
+            <Route path="/new/organization" element={<NewOrganizationView />} />
             <Route path="/login" element={<LoginView />} />
             <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
             <Route path="/profile" element={<ProfileView />} />
+            <Route path="/invitations" element={<InvitationsView />} />
             <Route path="/error" element={<ErrorView />} />
             <Route path="help" element={<HelpView />} />
             <Route path="*" element={<NotFoundView />} />

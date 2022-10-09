@@ -24,7 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 /**
- * Controller used to mainpulate the viewer.
+ * Controller used to manipulate the viewer.
  *
  * @author sbegaudeau
  */
