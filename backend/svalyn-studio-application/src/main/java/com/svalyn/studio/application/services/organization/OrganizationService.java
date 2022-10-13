@@ -33,7 +33,6 @@ import com.svalyn.studio.application.controllers.organization.dto.RenameOrganiza
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationCreationService;
@@ -115,8 +114,7 @@ public class OrganizationService implements IOrganizationService {
     public IPayload leaveOrganization(LeaveOrganizationInput input) {
         IPayload payload = null;
 
-        var userId = UserIdProvider.get().getId();
-        var result = this.organizationUpdateService.leaveOrganization(input.organizationIdentifier(), userId);
+        var result = this.organizationUpdateService.leaveOrganization(input.organizationIdentifier());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Void> success) {

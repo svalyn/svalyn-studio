@@ -42,6 +42,7 @@ export const OrganizationView = () => {
   const [state, setState] = useState<OrganizationViewState>({
     organization: null,
     message: null,
+    timestamp: Date.now(),
   });
 
   const [getOrganization, { loading, data, error }] = useLazyQuery<GetOrganizationData, GetOrganizationVariables>(
@@ -54,7 +55,7 @@ export const OrganizationView = () => {
           viewer: { organization },
         } = data;
         if (organization) {
-          setState((prevState) => ({ ...prevState, organization }));
+          setState((prevState) => ({ ...prevState, organization, timestamp: Date.now() }));
         }
       }
       if (error) {
@@ -81,7 +82,9 @@ export const OrganizationView = () => {
     <>
       <div>
         <Navbar>{state.organization ? <OrganizationPicker organization={state.organization} /> : null}</Navbar>
-        {state.organization ? <OrganizationViewTabPanel organization={state.organization} /> : null}
+        {state.organization ? (
+          <OrganizationViewTabPanel organization={state.organization} key={state.timestamp} />
+        ) : null}
       </div>
       <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
     </>

@@ -38,6 +38,7 @@ export const OrganizationMembers = ({ organizationIdentifier }: OrganizationMemb
     tab: 'Memberships',
     inviteMemberDialogOpen: false,
     leaveOrganizationDialogOpen: false,
+    timestamp: Date.now(),
   });
 
   const selectTab = (tab: OrganizationMemberTab) => setState((prevState) => ({ ...prevState, tab }));
@@ -46,7 +47,7 @@ export const OrganizationMembers = ({ organizationIdentifier }: OrganizationMemb
     setState((prevState) => ({ ...prevState, inviteMemberDialogOpen: true }));
   };
   const closeInviteMemberDialog = () => {
-    setState((prevState) => ({ ...prevState, inviteMemberDialogOpen: false }));
+    setState((prevState) => ({ ...prevState, inviteMemberDialogOpen: false, timestamp: Date.now() }));
   };
 
   const openLeaveOrganizationDialog: React.MouseEventHandler<HTMLButtonElement> = () => {
@@ -105,7 +106,9 @@ export const OrganizationMembers = ({ organizationIdentifier }: OrganizationMemb
             </Button>
           </Box>
           {state.tab === 'Memberships' ? <Memberships organizationIdentifier={organizationIdentifier} /> : null}
-          {state.tab === 'Invitations' ? <Invitations organizationIdentifier={organizationIdentifier} /> : null}
+          {state.tab === 'Invitations' ? (
+            <Invitations organizationIdentifier={organizationIdentifier} key={state.timestamp} />
+          ) : null}
         </Box>
       </Box>
       {state.inviteMemberDialogOpen ? (

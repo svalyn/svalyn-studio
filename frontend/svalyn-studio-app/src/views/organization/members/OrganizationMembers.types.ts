@@ -25,6 +25,7 @@ export interface OrganizationMembersState {
   tab: OrganizationMemberTab;
   inviteMemberDialogOpen: boolean;
   leaveOrganizationDialogOpen: boolean;
+  timestamp: number;
 }
 
 export type OrganizationMemberTab = 'Memberships' | 'Invitations';
