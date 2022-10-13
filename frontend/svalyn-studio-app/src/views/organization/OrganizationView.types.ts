@@ -20,6 +20,7 @@
 export interface OrganizationViewState {
   organization: Organization | null;
   message: string | null;
+  timestamp: number;
 }
 
 export interface Organization {

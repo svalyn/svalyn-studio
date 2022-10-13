@@ -22,7 +22,9 @@ package com.svalyn.studio.domain.organization.services;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
+import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.message.api.IMessageService;
+import com.svalyn.studio.domain.organization.MembershipRole;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationDeletionService;
 import org.springframework.stereotype.Service;
@@ -48,15 +50,27 @@ public class OrganizationDeletionService implements IOrganizationDeletionService
 
     @Override
     public IResult<Void> deleteOrganization(String identifier) {
+        IResult<Void> result = null;
+
         var optionalOrganization = this.organizationRepository.findByIdentifier(identifier);
         if (optionalOrganization.isPresent()) {
             var organization = optionalOrganization.get();
-            organization.dispose();
 
-            this.organizationRepository.delete(organization);
-
-            return new Success<>(null);
+            var userId = UserIdProvider.get().getId();
+            var optionalMembership = organization.getMemberships().stream()
+                    .filter(membership -> membership.getMemberId().getId().equals(userId))
+                    .filter(membership -> membership.getRole() == MembershipRole.ADMIN)
+                    .findFirst();
+            if (optionalMembership.isPresent()) {
+                organization.dispose();
+                this.organizationRepository.delete(organization);
+                result = new Success<>(null);
+            } else {
+                result = new Failure<>(this.messageService.unauthorized());
+            }
+        } else {
+            result = new Failure<>(this.messageService.doesNotExist("organization"));
         }
-        return new Failure<>(this.messageService.doesNotExist("organization"));
+        return result;
     }
 }

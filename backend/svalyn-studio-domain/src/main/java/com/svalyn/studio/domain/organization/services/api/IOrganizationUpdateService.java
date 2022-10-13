@@ -32,7 +32,7 @@ import java.util.UUID;
 public interface IOrganizationUpdateService {
     IResult<Void> renameOrganization(String identifier, String name);
 
-    IResult<Void> leaveOrganization(String identifier, UUID userId);
+    IResult<Void> leaveOrganization(String identifier);
 
     IResult<Void> revokeMemberships(String identifier, List<UUID> membershipIds);
 

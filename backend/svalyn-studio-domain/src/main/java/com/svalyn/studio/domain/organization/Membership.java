@@ -66,6 +66,10 @@ public class Membership {
         return this.memberId;
     }
 
+    public MembershipRole getRole() {
+        return role;
+    }
+
     public Instant getCreatedOn() {
         return createdOn;
     }
