@@ -1,0 +1,60 @@
+= Architecture
+
+== Technologies
+
+This project is based on very popular frameworks such as:
+
+- React
+- Material UI
+- Apollo GraphQL Client
+- GraphQL Java
+- Spring Boot
+- Spring MVC
+- Spring Security
+- Spring Data JDBC
+- PostgreSQL
+
+== Domain Driven Design
+
+=== Goal
+
+One of the goal of the project is to explore a domain driven design for the backend.
+The goal of such solution is to be able to structure a project in a way which can scale more easily than with a layered architecture (network layer, business layer, domain layer and persistence layer for example).
+
+The core part of the application will be located in the domain.
+This domain will be organized in various bounded contexts.
+Each bounded context will make its own decisions without impact for other contexts.
+In each context, we may have one or more aggregate roots which will give us the ability to manipulate the various entities.
+
+
+=== Compromises
+
+The goal is not to try to adhere as strictly as possible to every single domain driven design best practices since some of those are not relevant for the needs of the project.
+We will not embrace a pure hexagonal architecture either since the project does not need it.
+We will thus make some compromises in order to speed up the development process.
+As a result, instead of having a domain free from any external dependencies, our domain will rely on a couple of technical dependencies such as Spring Context, Spring Data or Spring Security.
+
+Spring Context will provide annotations such as `@Service` or `@Repository` which are explicitly inspired by domain driven design best practices.
+Spring Data will offer us annotations like `@Table`, `@Column` or even `@MappedCollection` which will help persist our domain.
+While some may want to make their domain independent from our persistence solution, this is not our case as we have no intention from switching to anything other than a good old PostgreSQL.
+Spring Security will also be used at least to have access to the currently authenticated user.
+
+We will also rely on the fact that our data are located in the same database in order to leverage foreign keys and cascade effects.
+
+
+=== Structure
+
+Each bounded contexts will be represented by a package under the package `com.svalyn.studio.domain`.
+The aggregate roots of each contexts will extend `AbstractAggregateRoot` in order to leverage the Spring Data domain support.
+References accross bounded contexts will be represented using instances of `AggregateReference`.
+Our support of events will be done thanks to Spring Data domain events.
+We will only modify one bounded context at a time.
+If a bounded contexts should react to a change performed in another bounded context, this will be done thanks to an event and an event listener.
+As such, our application will consider events as first class citizens.
+
+Here is the organization of the various modules of the project with their main goals:
+
+- svalyn-studio: Entry point of the server
+- svalyn-studio-application: External communication layer providing the various controllers
+- svalyn-studio-architecture: Configuration of the various technologies used (OAuth2, PostgreSQL, Liquibase, etc)
+- svalyn-studio-domain: Core domain of the application
