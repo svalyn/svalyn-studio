@@ -17,6 +17,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
@@ -25,6 +27,7 @@ import React, { useEffect, useState } from 'react';
 import { generatePath, matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { OrganizationDashboard } from './dashboard/OrganizationDashboard';
 import { OrganizationMembers } from './members/OrganizationMembers';
+import { NewProjectDialog } from './NewProjectDialog';
 import { OrganizationViewTabPanelProps, OrganizationViewTabPanelState } from './OrganizationViewTabPanel.types';
 import { OrganizationSettings } from './settings/OrganizationSettings';
 
@@ -49,6 +52,7 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
 
   const [state, setState] = useState<OrganizationViewTabPanelState>({
     activeTab: activeTab,
+    newProjectDialogOpen: false,
   });
 
   const navigate = useNavigate();
@@ -67,6 +71,9 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
 
   const handleTabChanged = (_: React.SyntheticEvent, newValue: number) =>
     setState((prevState) => ({ ...prevState, activeTab: newValue }));
+  const openNewProjectDialog: React.MouseEventHandler<HTMLButtonElement> = () =>
+    setState((prevState) => ({ ...prevState, newProjectDialogOpen: true }));
+  const closeNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: false }));
 
   return (
     <>
@@ -85,6 +92,15 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
             <Tab label="Members" {...a11yProps(1)} />
             <Tab label="Settings" {...a11yProps(2)} />
           </Tabs>
+          <Button
+            variant="outlined"
+            sx={{ marginLeft: 'auto' }}
+            size="small"
+            endIcon={<AddIcon />}
+            onClick={openNewProjectDialog}
+          >
+            New Project
+          </Button>
         </Toolbar>
         <div role="tabpanel" hidden={state.activeTab !== 0} id="tabpanel-0" aria-labelledby="tab-0">
           {state.activeTab === 0 && <OrganizationDashboard organizationIdentifier={organization.identifier} />}
@@ -96,6 +112,13 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
           {state.activeTab === 2 && <OrganizationSettings organizationIdentifier={organization.identifier} />}
         </div>
       </div>
+      {state.newProjectDialogOpen ? (
+        <NewProjectDialog
+          organizationIdentifier={organization.identifier}
+          open={state.newProjectDialogOpen}
+          onClose={closeNewProjectDialog}
+        />
+      ) : null}
     </>
   );
 };

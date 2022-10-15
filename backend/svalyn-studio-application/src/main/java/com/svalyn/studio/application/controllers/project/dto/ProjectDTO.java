@@ -16,24 +16,29 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
+
+package com.svalyn.studio.application.controllers.project.dto;
 
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
+ * The project DTO for the GraphQL layer.
  *
- * @param id The id
- * @param identifier The user defined identifier
+ * @param organizationId The id of the organization
+ * @param identifier The identifier
  * @param name The name
+ * @param description The description
+ * @param readMe The READ ME
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
+public record ProjectDTO(UUID organizationId, String identifier, String name, String description, String readMe) {
+    public ProjectDTO(UUID organizationId, String identifier, String name, String description, String readMe) {
+        this.organizationId = Objects.requireNonNull(organizationId);
         this.identifier = Objects.requireNonNull(identifier);
         this.name = Objects.requireNonNull(name);
+        this.description = Objects.requireNonNull(description);
+        this.readMe = Objects.requireNonNull(readMe);
     }
 }

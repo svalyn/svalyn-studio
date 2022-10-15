@@ -16,24 +16,23 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
 
-import java.util.Objects;
+package com.svalyn.studio.domain.project.events;
+
+import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.project.Project;
+
+import java.time.Instant;
 import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
+ * Event fired when a project is created.
  *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
+ * @param id The id of the event
+ * @param createdOn The creation date of the event
+ * @param project The project
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-    }
+public record ProjectCreatedEvent(UUID id, Instant createdOn, Project project) implements IDomainEvent {
 }

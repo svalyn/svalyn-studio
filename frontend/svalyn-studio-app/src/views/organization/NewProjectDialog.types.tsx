@@ -16,24 +16,51 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
 
-import java.util.Objects;
-import java.util.UUID;
+export interface NewProjectDialogProps {
+  organizationIdentifier: string;
+  open: boolean;
+  onClose: () => void;
+}
 
-/**
- * The organization DTO for the GraphQL layer.
- *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
- *
- * @author sbegaudeau
- */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-    }
+export interface NewProjectDialogState {
+  identifier: string;
+  name: string;
+  description: string;
+  isFormValid: boolean;
+  createdProject: Project | null;
+  message: string | null;
+}
+
+export interface CreateProjectData {
+  createProject: CreateProjectPayload;
+}
+
+export interface CreateProjectPayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends CreateProjectPayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface CreateProjectSuccessPayload extends CreateProjectPayload {
+  __typename: 'CreateProjectSuccessPayload';
+  project: Project;
+}
+
+export interface Project {
+  identifier: string;
+}
+
+export interface CreateProjectVariables {
+  input: CreateProjectInput;
+}
+
+export interface CreateProjectInput {
+  organizationIdentifier: string;
+  identifier: string;
+  name: string;
+  description: string;
 }

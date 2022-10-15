@@ -26,16 +26,30 @@ export interface OrganizationDashboardState {
   message: string | null;
 }
 
-export interface Organization {
-  name: string;
-}
-
 export interface GetOrganizationDashboardData {
   viewer: Viewer;
 }
 
 export interface Viewer {
   organization: Organization | null;
+}
+
+export interface Organization {
+  projects: OrganizationProjectsConnection;
+}
+
+export interface OrganizationProjectsConnection {
+  edges: OrganizationProjectsEdge[];
+}
+
+export interface OrganizationProjectsEdge {
+  node: Project;
+}
+
+export interface Project {
+  identifier: string;
+  name: string;
+  description: string;
 }
 
 export interface GetOrganizationDashboardVariables {

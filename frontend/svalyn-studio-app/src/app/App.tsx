@@ -30,6 +30,7 @@ import { NotFoundView } from '../views/notfound/NotFoundView';
 import { OAuth2RedirectView } from '../views/oauth2redirect/OAuth2RedirectView';
 import { OrganizationView } from '../views/organization/OrganizationView';
 import { ProfileView } from '../views/profile/ProfileView';
+import { ProjectView } from '../views/project/ProjectView';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
 import { theme } from './theme';
 
@@ -44,6 +45,8 @@ export const App = () => {
             <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
+            <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
+            <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
             <Route path="/new/organization" element={<NewOrganizationView />} />
             <Route path="/login" element={<LoginView />} />
             <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />

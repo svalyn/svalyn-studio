@@ -16,24 +16,23 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
+
+package com.svalyn.studio.application.controllers.project.dto;
+
+import com.svalyn.studio.application.controllers.dto.IPayload;
 
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
+ * Payload used to indicate that the README has been edited.
  *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
+ * @param id The id of the payload
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
+public record EditReadMeSuccessPayload(UUID id) implements IPayload {
+    public EditReadMeSuccessPayload(UUID id) {
         this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
     }
 }
