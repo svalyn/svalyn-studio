@@ -140,5 +140,41 @@
         <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="member_id" constraintName="fk_invitation_account_id" referencedTableName="account" referencedColumnNames="id" />
         <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="created_by" constraintName="fk_invitation_created_by" referencedTableName="account" referencedColumnNames="id" />
         <addForeignKeyConstraint baseTableName="invitation" baseColumnNames="last_modified_by" constraintName="fk_invitation_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="project">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="identifier" type="TEXT">
+                <constraints nullable="false" unique="true" checkConstraint="CHECK (char_length(name) > 0"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false" checkConstraint="CHECK (char_length(name) > 0"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+            <column name="read_me" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+            <column name="organization_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="project" baseColumnNames="organization_id" constraintName="fk_project_organization_id" referencedTableName="organization" referencedColumnNames="id" onDelete="CASCADE" />
+        <addForeignKeyConstraint baseTableName="project" baseColumnNames="created_by" constraintName="fk_project_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="project" baseColumnNames="last_modified_by" constraintName="fk_project_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
     </changeSet>
 </databaseChangeLog>

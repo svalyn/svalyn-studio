@@ -19,9 +19,13 @@
 
 import { gql, useLazyQuery } from '@apollo/client';
 import Box, { BoxProps } from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   GetOrganizationDashboardData,
@@ -34,7 +38,15 @@ const getOrganizationDashboardQuery = gql`
   query getOrganizationDashboard($identifier: ID!) {
     viewer {
       organization(identifier: $identifier) {
-        name
+        projects {
+          edges {
+            node {
+              identifier
+              name
+              description
+            }
+          }
+        }
       }
     }
   }
@@ -79,12 +91,42 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
+  const projects = state.organization?.projects.edges.map((edge) => edge.node) ?? [];
   return (
     <>
       <Main>
         <Typography variant="h6" gutterBottom>
           Dashboard
         </Typography>
+        <div>
+          {projects.map((project) => (
+            <Paper variant="outlined" key={project.identifier} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
+              <Box
+                sx={{
+                  paddingTop: (theme) => theme.spacing(2),
+                  paddingRight: (theme) => theme.spacing(3),
+                  paddingBottom: (theme) => theme.spacing(2),
+                  paddingLeft: (theme) => theme.spacing(3),
+                }}
+              >
+                <Link variant="h5" underline="hover" component={RouterLink} to={`/projects/${project.identifier}`}>
+                  {project.name}
+                </Link>
+              </Box>
+              <Divider />
+              <Box
+                sx={{
+                  paddingTop: (theme) => theme.spacing(2),
+                  paddingRight: (theme) => theme.spacing(3),
+                  paddingBottom: (theme) => theme.spacing(2),
+                  paddingLeft: (theme) => theme.spacing(3),
+                }}
+              >
+                <Typography>{project.description}</Typography>
+              </Box>
+            </Paper>
+          ))}
+        </div>
       </Main>
       <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
     </>

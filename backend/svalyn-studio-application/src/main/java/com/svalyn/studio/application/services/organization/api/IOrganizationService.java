@@ -28,6 +28,7 @@ import com.svalyn.studio.application.controllers.organization.dto.RenameOrganiza
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Used to manipulate organizations.
@@ -37,6 +38,8 @@ import java.util.Optional;
 public interface IOrganizationService {
 
     Page<OrganizationDTO> findAll();
+
+    Optional<OrganizationDTO> findById(UUID id);
 
     Optional<OrganizationDTO> findByIdentifier(String identifier);
 

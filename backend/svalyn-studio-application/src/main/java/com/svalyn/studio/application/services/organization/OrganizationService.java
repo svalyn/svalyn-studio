@@ -72,12 +72,17 @@ public class OrganizationService implements IOrganizationService {
 
     @Override
     public Page<OrganizationDTO> findAll() {
-        return this.organizationRepository.findAll(PageRequest.of(0, 20)).map(organizationEntity -> new OrganizationDTO(organizationEntity.getIdentifier(), organizationEntity.getName()));
+        return this.organizationRepository.findAll(PageRequest.of(0, 20)).map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName()));
+    }
+
+    @Override
+    public Optional<OrganizationDTO> findById(UUID id) {
+        return this.organizationRepository.findById(id).map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName()));
     }
 
     @Override
     public Optional<OrganizationDTO> findByIdentifier(String identifier) {
-        return this.organizationRepository.findByIdentifier(identifier).map(organizationEntity -> new OrganizationDTO(organizationEntity.getIdentifier(), organizationEntity.getName()));
+        return this.organizationRepository.findByIdentifier(identifier).map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName()));
     }
 
     @Override
@@ -89,7 +94,7 @@ public class OrganizationService implements IOrganizationService {
         if (result instanceof Failure<Organization> failure) {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Organization> success) {
-            payload = new CreateOrganizationSuccessPayload(new OrganizationDTO(success.data().getIdentifier(), success.data().getName()));
+            payload = new CreateOrganizationSuccessPayload(new OrganizationDTO(success.data().getId(), success.data().getIdentifier(), success.data().getName()));
         }
         return payload;
     }

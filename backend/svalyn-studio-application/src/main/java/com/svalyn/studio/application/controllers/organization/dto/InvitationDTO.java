@@ -28,15 +28,15 @@ import java.util.UUID;
  * The invitation DTO for the GraphQL layer.
  *
  * @param id The id
- * @param organizationIdentifier The identifier of the organization
+ * @param organizationId The id of the organization
  * @param member The member
  *
  * @author sbegaudeau
  */
-public record InvitationDTO(UUID id, String organizationIdentifier, Profile member) {
-    public InvitationDTO(UUID id, String organizationIdentifier, Profile member) {
+public record InvitationDTO(UUID id, UUID organizationId, Profile member) {
+    public InvitationDTO(UUID id, UUID organizationId, Profile member) {
         this.id = Objects.requireNonNull(id);
-        this.organizationIdentifier = Objects.requireNonNull(organizationIdentifier);
+        this.organizationId = Objects.requireNonNull(organizationId);
         this.member = Objects.requireNonNull(member);
     }
 }

@@ -16,24 +16,22 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
+
+package com.svalyn.studio.application.controllers.project.dto;
+
+import com.svalyn.studio.application.controllers.dto.IPayload;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
+ * Payload used to indicate that the project has been created.
  *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
+ * @param project The project
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
+public record CreateProjectSuccessPayload(ProjectDTO project) implements IPayload {
+    public CreateProjectSuccessPayload(ProjectDTO project) {
+        this.project = Objects.requireNonNull(project);
     }
 }

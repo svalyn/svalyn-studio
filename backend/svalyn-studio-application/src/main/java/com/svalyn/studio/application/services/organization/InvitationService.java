@@ -88,7 +88,7 @@ public class InvitationService implements IInvitationService {
             var invitations = organizations.stream()
                     .flatMap(organization -> organization.getInvitations().stream()
                             .filter(invitation -> invitation.getMemberId().getId().equals(userId))
-                            .map(invitation -> new InvitationDTO(invitation.getId(), organization.getIdentifier(), new Profile(account.getName(), account.getImageUrl()))))
+                            .map(invitation -> new InvitationDTO(invitation.getId(), organization.getId(), new Profile(account.getName(), account.getImageUrl()))))
                     .toList();
             return new PageImpl<>(invitations);
         }).orElse(new PageImpl<>(List.of()));
@@ -102,7 +102,7 @@ public class InvitationService implements IInvitationService {
         var sortedInvitations = invitations.stream()
                 .sorted(Comparator.comparing(Invitation::getCreatedOn))
                 .flatMap(invitation -> this.accountRepository.findById(invitation.getMemberId().getId())
-                        .map(account -> new InvitationDTO(invitation.getId(), organization.identifier(), new Profile(account.getName(), account.getImageUrl())))
+                        .map(account -> new InvitationDTO(invitation.getId(), organization.id(), new Profile(account.getName(), account.getImageUrl())))
                         .stream())
                 .toList();
         return new PageImpl<>(sortedInvitations);

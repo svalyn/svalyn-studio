@@ -16,24 +16,22 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
+
+package com.svalyn.studio.application.controllers.project.dto;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
+ * Input user to edit the README.
  *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
+ * @param projectIdentifier The identifier of the project
+ * @param content The new content
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
+public record EditReadMeInput(String projectIdentifier, String content) {
+    public EditReadMeInput(String projectIdentifier, String content) {
+        this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
+        this.content = Objects.requireNonNull(content);
     }
 }

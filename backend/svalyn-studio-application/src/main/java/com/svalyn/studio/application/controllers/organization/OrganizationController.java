@@ -26,6 +26,7 @@ import com.svalyn.studio.application.controllers.organization.dto.InvitationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.RenameOrganizationInput;
+import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
@@ -73,9 +74,13 @@ public class OrganizationController {
 
     @SchemaMapping(typeName = "Invitation")
     public OrganizationDTO organization(InvitationDTO invitation) {
-        return this.organizationService.findByIdentifier(invitation.organizationIdentifier()).orElse(null);
+        return this.organizationService.findById(invitation.organizationId()).orElse(null);
     }
 
+    @SchemaMapping(typeName = "Project")
+    public OrganizationDTO organization(ProjectDTO project) {
+        return this.organizationService.findById(project.organizationId()).orElse(null);
+    }
 
     @MutationMapping
     public IPayload createOrganization(@Argument CreateOrganizationInput input) {

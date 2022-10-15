@@ -8,6 +8,7 @@ type Viewer {
   invitations: ViewerInvitationsConnection!
   organizations: ViewerOrganizationsConnection!
   organization(identifier: ID!): Organization
+  project(identifier: ID!): Project
 }
 
 type ViewerInvitationsConnection {
@@ -32,6 +33,7 @@ type Organization {
   name: String!
   invitations: OrganizationInvitationsConnection!
   memberships: OrganizationMembershipsConnection!
+  projects: OrganizationProjectsConnection!
 }
 
 type OrganizationInvitationsConnection {
@@ -66,6 +68,22 @@ type Profile {
   imageUrl: String!
 }
 
+type OrganizationProjectsConnection {
+  edges: [OrganizationProjectsEdge!]!
+}
+
+type OrganizationProjectsEdge {
+  node: Project!
+}
+
+type Project {
+  identifier: ID!
+  name: String!
+  description: String!
+  readMe: String!
+  organization: Organization!
+}
+
 type Mutation {
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload!
   renameOrganization(input: RenameOrganizationInput!): RenameOrganizationPayload!
@@ -76,6 +94,8 @@ type Mutation {
   revokeMemberships(input: RevokeMembershipsInput!): RevokeMembershipsPayload!
   leaveOrganization(input: LeaveOrganizationInput!): LeaveOrganizationPayload!
   deleteOrganization(input: DeleteOrganizationInput!): DeleteOrganizationPayload!
+  createProject(input: CreateProjectInput!): CreateProjectPayload!
+  editReadMe(input: EditReadMeInput!): EditReadMePayload!
 }
 
 type ErrorPayload {
@@ -176,5 +196,29 @@ input DeleteOrganizationInput {
 union DeleteOrganizationPayload = ErrorPayload | DeleteOrganizationSuccessPayload
 
 type DeleteOrganizationSuccessPayload {
+  id: ID!
+}
+
+input CreateProjectInput {
+  organizationIdentifier: ID!
+  identifier: ID!
+  name: String!
+  description: String!
+}
+
+union CreateProjectPayload = ErrorPayload | CreateProjectSuccessPayload
+
+type CreateProjectSuccessPayload {
+  project: Project!
+}
+
+input EditReadMeInput {
+  projectIdentifier: ID!
+  content: String!
+}
+
+union EditReadMePayload = ErrorPayload | EditReadMeSuccessPayload
+
+type EditReadMeSuccessPayload {
   id: ID!
 }

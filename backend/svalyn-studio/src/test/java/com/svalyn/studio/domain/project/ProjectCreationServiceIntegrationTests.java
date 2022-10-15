@@ -17,15 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.organization;
+package com.svalyn.studio.domain.project;
 
 import com.svalyn.studio.AbstractIntegrationTests;
 import com.svalyn.studio.DomainEvents;
 import com.svalyn.studio.WithMockPrincipal;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.organization.events.OrganizationDeletedEvent;
-import com.svalyn.studio.domain.organization.services.api.IOrganizationDeletionService;
+import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
+import com.svalyn.studio.domain.project.services.api.IProjectCreationService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,17 +37,17 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integration tests of the organization domain.
+ * Integration tests of the project creation service.
  *
  * @author sbegaudeau
  */
 @SpringBootTest
 @Transactional
 @SuppressWarnings("checkstyle:MethodName")
-public class OrganizationDeletionServiceIntegrationTests extends AbstractIntegrationTests {
+public class ProjectCreationServiceIntegrationTests extends AbstractIntegrationTests {
 
     @Autowired
-    private IOrganizationDeletionService organizationDeletionService;
+    private IProjectCreationService projectCreationService;
 
     @Autowired
     private DomainEvents domainEvents;
@@ -59,30 +59,25 @@ public class OrganizationDeletionServiceIntegrationTests extends AbstractIntegra
 
     @Test
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
-    @DisplayName("Given an organization, when it's deleted by an admin, then a domain event is published")
+    @DisplayName("Given a project, when it is persisted, then its id is initialized")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void givenAnOrganization_whenDeletedByAdmin_thenAnEventIsPublished() {
-        var result = this.organizationDeletionService.deleteOrganization("mockorganization");
+    public void givenProject_whenPersisted_thenHasAnId() {
+        var result = this.projectCreationService.createProject("mockorganization", "svalyn", "Svalyn", "Project description");
         assertThat(result).isInstanceOf(Success.class);
-        assertThat(this.domainEvents.getDomainEvents().stream().filter(OrganizationDeletedEvent.class::isInstance).count()).isEqualTo(1);
-    }
 
-    @Test
-    @WithMockPrincipal(userId = WithMockPrincipal.UserId.JANE_DOE)
-    @DisplayName("Given an organization, when it's deleted by a member, then an error is returned")
-    @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void givenAnOrganization_whenDeletedByMember_thenAnErrorIsReturned() {
-        var result = this.organizationDeletionService.deleteOrganization("mockorganization");
-        assertThat(result).isInstanceOf(Failure.class);
-        assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
+        if (result instanceof Success<Project> success) {
+            assertThat(success.data().getId()).isNotNull();
+        }
+
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(ProjectCreatedEvent.class::isInstance).count()).isEqualTo(1);
     }
 
     @Test
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JAMES_DOE)
-    @DisplayName("Given an organization, when it's deleted by a non member, then an error is returned")
+    @DisplayName("Given a project, when it is persisted, then its id is initialized")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void givenAnOrganization_whenDeletedByNonMember_thenAnErrorIsReturned() {
-        var result = this.organizationDeletionService.deleteOrganization("mockorganization");
+    public void givenProject_whenPersistedByNonOrganization_thenAnErrorIsReturned() {
+        var result = this.projectCreationService.createProject("mockorganization", "svalyn", "Svalyn", "Project description");
         assertThat(result).isInstanceOf(Failure.class);
         assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
     }

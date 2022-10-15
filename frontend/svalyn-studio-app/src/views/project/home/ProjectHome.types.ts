@@ -16,24 +16,37 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
 
-import java.util.Objects;
-import java.util.UUID;
+export interface ProjectHomeProps {
+  projectIdentifier: string;
+}
 
-/**
- * The organization DTO for the GraphQL layer.
- *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
- *
- * @author sbegaudeau
- */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-    }
+export interface ProjectHomeState {
+  project: Project | null;
+  editReadMeDialogOpen: boolean;
+  message: string | null;
+}
+
+export interface GetProjectHomeData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  project: Project | null;
+}
+
+export interface Project {
+  name: string;
+  description: string;
+  readMe: string;
+  organization: Organization;
+}
+
+export interface Organization {
+  identifier: string;
+  name: string;
+}
+
+export interface GetProjectHomeVariables {
+  identifier: string;
 }

@@ -83,6 +83,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     public void givenAnOrganization_whenNameUpdatedByMember_thenAnErrorIsReturned() {
         var result = this.organizationUpdateService.renameOrganization("mockorganization", "Svalyn");
         assertThat(result).isInstanceOf(Failure.class);
+        assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
     }
 
     @Test
@@ -92,6 +93,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     public void givenAnOrganization_whenNameUpdatedByNonMember_thenAnEventIsPublished() {
         var result = this.organizationUpdateService.renameOrganization("mockorganization", "Svalyn");
         assertThat(result).isInstanceOf(Failure.class);
+        assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
     }
 
     @Test
@@ -101,6 +103,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     public void givenAnOrganization_whenTheOnlyAdminLeaves_thenAnErrorIsReturned() {
         var result = this.organizationUpdateService.leaveOrganization("mockorganization");
         assertThat(result).isInstanceOf(Failure.class);
+        assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
     }
 
     @Test
@@ -120,6 +123,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     public void givenAnOrganization_whenNonMemberLeaves_thenAnErrorIsReturned() {
         var result = this.organizationUpdateService.leaveOrganization("mockorganization");
         assertThat(result).isInstanceOf(Failure.class);
+        assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
     }
 
     @Test

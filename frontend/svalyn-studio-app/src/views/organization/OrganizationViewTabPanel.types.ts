@@ -28,4 +28,5 @@ export interface Organization {
 
 export interface OrganizationViewTabPanelState {
   activeTab: number;
+  newProjectDialogOpen: boolean;
 }

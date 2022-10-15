@@ -16,24 +16,29 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
 
-import java.util.Objects;
+package com.svalyn.studio.application.services.project.api;
+
+import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
+import com.svalyn.studio.application.controllers.project.dto.EditReadMeInput;
+import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
+import org.springframework.data.domain.Page;
+
+import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
- *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
+ * Used to manipulate projects.
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-    }
+public interface IProjectService {
+    Page<ProjectDTO> findAllByOrganizationId(UUID organizationId);
+
+    Optional<ProjectDTO> findByIdentifier(String identifier);
+
+    IPayload createProject(CreateProjectInput input);
+
+    IPayload editReadMe(EditReadMeInput input);
 }

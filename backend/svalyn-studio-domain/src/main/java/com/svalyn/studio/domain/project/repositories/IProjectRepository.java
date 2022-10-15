@@ -16,24 +16,22 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.organization.dto;
 
-import java.util.Objects;
+package com.svalyn.studio.domain.project.repositories;
+
+import com.svalyn.studio.domain.project.Project;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The organization DTO for the GraphQL layer.
- *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
+ * Repository used to persist and retrieve projects.
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name) {
-    public OrganizationDTO(UUID id, String identifier, String name) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-    }
+@Repository
+public interface IProjectRepository extends PagingAndSortingRepository<Project, UUID> {
+    Optional<Project> findByIdentifier(String identifier);
 }
