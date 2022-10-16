@@ -17,52 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
-  projectIdentifier: string;
-}
+package com.svalyn.studio.domain.project.events;
 
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-  deleteProjectDialogOpen: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.project.Project;
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
-}
+import java.time.Instant;
+import java.util.UUID;
 
-export interface UpdateProjectNamePayload {
-  __typename: string;
-}
-
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
-  __typename: 'ErrorPayload';
-  message: string;
+/**
+ * Event fired when a project is deleted.
+ *
+ * @param id The id of the event
+ * @param createdOn The creation date of the event
+ * @param project The project
+ *
+ * @author sbegaudeau
+ */
+public record ProjectDeletedEvent(UUID id, Instant createdOn, Project project) implements IDomainEvent {
 }

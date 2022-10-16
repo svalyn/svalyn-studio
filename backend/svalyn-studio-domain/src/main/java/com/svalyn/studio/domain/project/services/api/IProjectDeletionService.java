@@ -17,52 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
-  projectIdentifier: string;
-}
+package com.svalyn.studio.domain.project.services.api;
 
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-  deleteProjectDialogOpen: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.domain.IResult;
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
-}
-
-export interface UpdateProjectNamePayload {
-  __typename: string;
-}
-
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
-  __typename: 'ErrorPayload';
-  message: string;
+/**
+ * Used to delete projects.
+ *
+ * @author sbegaudeau
+ */
+public interface IProjectDeletionService {
+    IResult<Void> deleteProject(String projectIdentifier);
 }

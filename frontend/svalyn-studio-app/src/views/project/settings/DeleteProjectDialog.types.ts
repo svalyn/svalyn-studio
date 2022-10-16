@@ -17,52 +17,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
+export interface DeleteProjectDialogProps {
   projectIdentifier: string;
+  open: boolean;
+  onClose: () => void;
 }
 
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-  deleteProjectDialogOpen: boolean;
+export interface DeleteProjectDialogState {
   message: string | null;
 }
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
+export interface DeleteProjectData {
+  deleteProject: DeleteProjectPayload;
 }
 
-export interface UpdateProjectNamePayload {
+export interface DeleteProjectPayload {
   __typename: string;
 }
 
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
+export interface ErrorPayload extends DeleteProjectPayload {
   __typename: 'ErrorPayload';
   message: string;
+}
+
+export interface DeleteProjectVariables {
+  input: DeleteProjectInput;
+}
+
+export interface DeleteProjectInput {
+  projectIdentifier: string;
 }

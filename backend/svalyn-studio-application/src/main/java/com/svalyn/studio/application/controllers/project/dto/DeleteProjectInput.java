@@ -17,52 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
-  projectIdentifier: string;
-}
+package com.svalyn.studio.application.controllers.project.dto;
 
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-  deleteProjectDialogOpen: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.application.controllers.dto.IInput;
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
-}
+import java.util.Objects;
 
-export interface UpdateProjectNamePayload {
-  __typename: string;
-}
-
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
-  __typename: 'ErrorPayload';
-  message: string;
+/**
+ * Input used to delete a project.
+ *
+ * @param projectIdentifier The identifier of the project
+ *
+ * @author sbegaudeau
+ */
+public record DeleteProjectInput(String projectIdentifier) implements IInput {
+    public DeleteProjectInput(String projectIdentifier) {
+        this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
+    }
 }

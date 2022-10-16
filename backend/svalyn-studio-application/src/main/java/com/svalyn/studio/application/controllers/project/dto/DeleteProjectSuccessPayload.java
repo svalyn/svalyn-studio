@@ -17,37 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.services.project.api;
+package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
-import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
-import com.svalyn.studio.application.controllers.project.dto.DeleteProjectInput;
-import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
-import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
-import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
-import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
-import org.springframework.data.domain.Page;
 
-import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Used to manipulate projects.
+ * Payload used to indicate that the project has been deleted.
+ *
+ * @param id The id of the payload
  *
  * @author sbegaudeau
  */
-public interface IProjectService {
-    Page<ProjectDTO> findAllByOrganizationId(UUID organizationId);
-
-    Optional<ProjectDTO> findByIdentifier(String identifier);
-
-    IPayload createProject(CreateProjectInput input);
-
-    IPayload updateProjectName(UpdateProjectNameInput input);
-
-    IPayload updateProjectDescription(UpdateProjectDescriptionInput input);
-
-    IPayload updateProjectReadMe(UpdateProjectReadMeInput input);
-
-    IPayload deleteProject(DeleteProjectInput input);
+public record DeleteProjectSuccessPayload(UUID id) implements IPayload {
+    public DeleteProjectSuccessPayload(UUID id) {
+        this.id = Objects.requireNonNull(id);
+    }
 }

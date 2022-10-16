@@ -98,6 +98,7 @@ type Mutation {
   updateProjectName(input: UpdateProjectNameInput!): UpdateProjectNamePayload!
   updateProjectDescription(input: UpdateProjectDescriptionInput!): UpdateProjectDescriptionPayload!
   updateProjectReadMe(input: UpdateProjectReadMeInput!): UpdateProjectReadMePayload!
+  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload!
 }
 
 type ErrorPayload {
@@ -244,5 +245,15 @@ input UpdateProjectReadMeInput {
 union UpdateProjectReadMePayload = ErrorPayload | UpdateProjectReadMeSuccessPayload
 
 type UpdateProjectReadMeSuccessPayload {
+  id: ID!
+}
+
+input DeleteProjectInput {
+  projectIdentifier: ID!
+}
+
+union DeleteProjectPayload = ErrorPayload | DeleteProjectSuccessPayload
+
+type DeleteProjectSuccessPayload {
   id: ID!
 }

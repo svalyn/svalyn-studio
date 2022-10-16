@@ -23,6 +23,7 @@ import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
+import com.svalyn.studio.application.controllers.project.dto.DeleteProjectInput;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
@@ -90,5 +91,10 @@ public class ProjectController {
     @MutationMapping
     public IPayload updateProjectReadMe(@Argument UpdateProjectReadMeInput input) {
         return this.projectService.updateProjectReadMe(input);
+    }
+
+    @MutationMapping
+    public IPayload deleteProject(@Argument DeleteProjectInput input) {
+        return this.projectService.deleteProject(input);
     }
 }
