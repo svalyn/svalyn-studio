@@ -52,7 +52,73 @@ public class ProjectUpdateService implements IProjectUpdateService {
     }
 
     @Override
-    public IResult<Void> editReadMe(String projectIdentifier, String content) {
+    public IResult<Void> updateName(String projectIdentifier, String name) {
+        IResult<Void> result = null;
+
+        var optionalProject = this.projectRepository.findByIdentifier(projectIdentifier);
+        if (optionalProject.isPresent()) {
+            var project = optionalProject.get();
+
+            var optionalOrganization = this.organizationRepository.findById(project.getOrganization().getId());
+            if (optionalOrganization.isPresent()) {
+                var organization = optionalOrganization.get();
+                var userId = UserIdProvider.get().getId();
+                var isMember = organization.getMemberships().stream()
+                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
+
+                if (isMember) {
+                    project.updateName(name);
+                    this.projectRepository.save(project);
+
+                    result = new Success<>(null);
+                } else {
+                    result = new Failure<>(this.messageService.unauthorized());
+                }
+            } else {
+                result = new Failure<>(this.messageService.doesNotExist("organization"));
+            }
+        } else {
+            result = new Failure<>(this.messageService.doesNotExist("project"));
+        }
+
+        return result;
+    }
+
+    @Override
+    public IResult<Void> updateDescription(String projectIdentifier, String description) {
+        IResult<Void> result = null;
+
+        var optionalProject = this.projectRepository.findByIdentifier(projectIdentifier);
+        if (optionalProject.isPresent()) {
+            var project = optionalProject.get();
+
+            var optionalOrganization = this.organizationRepository.findById(project.getOrganization().getId());
+            if (optionalOrganization.isPresent()) {
+                var organization = optionalOrganization.get();
+                var userId = UserIdProvider.get().getId();
+                var isMember = organization.getMemberships().stream()
+                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
+
+                if (isMember) {
+                    project.updateDescription(description);
+                    this.projectRepository.save(project);
+
+                    result = new Success<>(null);
+                } else {
+                    result = new Failure<>(this.messageService.unauthorized());
+                }
+            } else {
+                result = new Failure<>(this.messageService.doesNotExist("organization"));
+            }
+        } else {
+            result = new Failure<>(this.messageService.doesNotExist("project"));
+        }
+
+        return result;
+    }
+
+    @Override
+    public IResult<Void> updateReadMe(String projectIdentifier, String content) {
         IResult<Void> result = null;
 
         var optionalProject = this.projectRepository.findByIdentifier(projectIdentifier);

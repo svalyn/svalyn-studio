@@ -86,7 +86,7 @@ type Project {
 
 type Mutation {
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload!
-  renameOrganization(input: RenameOrganizationInput!): RenameOrganizationPayload!
+  updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload!
   inviteMember(input: InviteMemberInput!): InviteMemberPayload!
   revokeInvitation(input: RevokeInvitationInput!): RevokeInvitationPayload!
   acceptInvitation(input: AcceptInvitationInput!): AcceptInvitationPayload!
@@ -95,7 +95,9 @@ type Mutation {
   leaveOrganization(input: LeaveOrganizationInput!): LeaveOrganizationPayload!
   deleteOrganization(input: DeleteOrganizationInput!): DeleteOrganizationPayload!
   createProject(input: CreateProjectInput!): CreateProjectPayload!
-  editReadMe(input: EditReadMeInput!): EditReadMePayload!
+  updateProjectName(input: UpdateProjectNameInput!): UpdateProjectNamePayload!
+  updateProjectDescription(input: UpdateProjectDescriptionInput!): UpdateProjectDescriptionPayload!
+  updateProjectReadMe(input: UpdateProjectReadMeInput!): UpdateProjectReadMePayload!
 }
 
 type ErrorPayload {
@@ -113,14 +115,14 @@ type CreateOrganizationSuccessPayload {
   organization: Organization!
 }
 
-input RenameOrganizationInput {
+input UpdateOrganizationNameInput {
   organizationIdentifier: ID!
   name: String!
 }
 
-union RenameOrganizationPayload = ErrorPayload | RenameOrganizationSuccessPayload
+union UpdateOrganizationNamePayload = ErrorPayload | UpdateOrganizationNameSuccessPayload
 
-type RenameOrganizationSuccessPayload {
+type UpdateOrganizationNameSuccessPayload {
   id: ID!
 }
 
@@ -212,13 +214,35 @@ type CreateProjectSuccessPayload {
   project: Project!
 }
 
-input EditReadMeInput {
+input UpdateProjectNameInput {
+  projectIdentifier: ID!
+  name: String!
+}
+
+union UpdateProjectNamePayload = ErrorPayload | UpdateProjectNameSuccessPayload
+
+type UpdateProjectNameSuccessPayload {
+  id: ID!
+}
+
+input UpdateProjectDescriptionInput {
+  projectIdentifier: ID!
+  description: String!
+}
+
+union UpdateProjectDescriptionPayload = ErrorPayload | UpdateProjectDescriptionSuccessPayload
+
+type UpdateProjectDescriptionSuccessPayload {
+  id: ID!
+}
+
+input UpdateProjectReadMeInput {
   projectIdentifier: ID!
   content: String!
 }
 
-union EditReadMePayload = ErrorPayload | EditReadMeSuccessPayload
+union UpdateProjectReadMePayload = ErrorPayload | UpdateProjectReadMeSuccessPayload
 
-type EditReadMeSuccessPayload {
+type UpdateProjectReadMeSuccessPayload {
   id: ID!
 }

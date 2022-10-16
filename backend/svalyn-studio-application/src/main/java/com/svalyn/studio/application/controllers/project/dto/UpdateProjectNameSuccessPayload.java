@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.organization.dto;
+package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
@@ -25,14 +25,14 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Payload used to indicate that the organization has been renamed.
+ * Payload used to indicate that the name has been edited.
  *
- * @param id The identifier
+ * @param id The id of the payload
  *
  * @author sbegaudeau
  */
-public record RenameOrganizationSuccessPayload(UUID id) implements IPayload {
-    public RenameOrganizationSuccessPayload(UUID id) {
+public record UpdateProjectNameSuccessPayload(UUID id) implements IPayload {
+    public UpdateProjectNameSuccessPayload(UUID id) {
         this.id = Objects.requireNonNull(id);
     }
 }

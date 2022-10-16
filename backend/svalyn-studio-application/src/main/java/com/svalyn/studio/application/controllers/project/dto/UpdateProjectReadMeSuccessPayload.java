@@ -31,8 +31,8 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record EditReadMeSuccessPayload(UUID id) implements IPayload {
-    public EditReadMeSuccessPayload(UUID id) {
+public record UpdateProjectReadMeSuccessPayload(UUID id) implements IPayload {
+    public UpdateProjectReadMeSuccessPayload(UUID id) {
         this.id = Objects.requireNonNull(id);
     }
 }

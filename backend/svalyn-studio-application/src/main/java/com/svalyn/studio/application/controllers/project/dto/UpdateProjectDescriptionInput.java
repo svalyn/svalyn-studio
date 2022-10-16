@@ -17,15 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.organization.dto;
+package com.svalyn.studio.application.controllers.project.dto;
+
+import java.util.Objects;
 
 /**
- * Input used to rename organizations.
+ * Input user to edit the description.
  *
- * @param organizationIdentifier The identifier of the organization
- * @param name The new name
+ * @param projectIdentifier The identifier of the project
+ * @param description The new description
  *
  * @author sbegaudeau
  */
-public record RenameOrganizationInput(String organizationIdentifier, String name) {
+public record UpdateProjectDescriptionInput(String projectIdentifier, String description) {
+    public UpdateProjectDescriptionInput(String projectIdentifier, String description) {
+        this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
+        this.description = Objects.requireNonNull(description);
+    }
 }

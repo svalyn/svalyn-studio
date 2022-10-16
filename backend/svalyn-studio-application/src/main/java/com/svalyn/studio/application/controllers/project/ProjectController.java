@@ -23,8 +23,10 @@ import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
-import com.svalyn.studio.application.controllers.project.dto.EditReadMeInput;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
 import com.svalyn.studio.application.services.project.api.IProjectService;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
@@ -76,7 +78,17 @@ public class ProjectController {
     }
 
     @MutationMapping
-    public IPayload editReadMe(@Argument EditReadMeInput input) {
-        return this.projectService.editReadMe(input);
+    public IPayload updateProjectName(@Argument UpdateProjectNameInput input) {
+        return this.projectService.updateProjectName(input);
+    }
+
+    @MutationMapping
+    public IPayload updateProjectDescription(@Argument UpdateProjectDescriptionInput input) {
+        return this.projectService.updateProjectDescription(input);
+    }
+
+    @MutationMapping
+    public IPayload updateProjectReadMe(@Argument UpdateProjectReadMeInput input) {
+        return this.projectService.updateProjectReadMe(input);
     }
 }

@@ -27,24 +27,24 @@ export interface OrganizationSettingsState {
   deleteOrganizationDialogOpen: boolean;
 }
 
-export interface RenameOrganizationData {
-  renameOrganization: RenameOrganizationPayload;
+export interface UpdateOrganizationNameData {
+  updateOrganizationName: UpdateOrganizationNamePayload;
 }
 
-export interface RenameOrganizationPayload {
+export interface UpdateOrganizationNamePayload {
   __typename: string;
 }
 
-export interface ErrorPayload extends RenameOrganizationPayload {
+export interface ErrorPayload extends UpdateOrganizationNamePayload {
   __typename: 'ErrorPayload';
   message: string;
 }
 
-export interface RenameOrganizationVariables {
-  input: RenameOrganizationInput;
+export interface UpdateOrganizationNameVariables {
+  input: UpdateOrganizationNameInput;
 }
 
-export interface RenameOrganizationInput {
+export interface UpdateOrganizationNameInput {
   organizationIdentifier: string;
   name: string;
 }

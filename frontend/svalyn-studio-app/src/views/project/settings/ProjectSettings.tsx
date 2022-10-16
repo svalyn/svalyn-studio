@@ -17,11 +17,134 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { gql, useMutation } from '@apollo/client';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { ProjectSettingsProps } from './ProjectSettings.types';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  ErrorPayload,
+  ProjectSettingsProps,
+  ProjectSettingsState,
+  UpdateProjectDescriptionData,
+  UpdateProjectDescriptionVariables,
+  UpdateProjectNameData,
+  UpdateProjectNameVariables,
+} from './ProjectSettings.types';
 
-export const ProjectSettings = ({}: ProjectSettingsProps) => {
+const updateProjectNameMutation = gql`
+  mutation updateProjectName($input: UpdateProjectNameInput!) {
+    updateProjectName(input: $input) {
+      ... on ErrorPayload {
+        message
+      }
+    }
+  }
+`;
+
+const updateProjectDescriptionMutation = gql`
+  mutation updateProjectDescription($input: UpdateProjectDescriptionInput!) {
+    updateProjectDescription(input: $input) {
+      ... on ErrorPayload {
+        message
+      }
+    }
+  }
+`;
+
+export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => {
+  const [state, setState] = useState<ProjectSettingsState>({
+    name: '',
+    description: '',
+  });
+
+  const handleNameChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setState((prevState) => ({ ...prevState, name: value }));
+  };
+
+  const handleDescriptionChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setState((prevState) => ({ ...prevState, description: value }));
+  };
+
+  const navigate = useNavigate();
+
+  const [
+    updateProjectName,
+    { loading: updateProjectNameLoading, data: updateProjectNameData, error: updateProjectNameError },
+  ] = useMutation<UpdateProjectNameData, UpdateProjectNameVariables>(updateProjectNameMutation);
+  useEffect(() => {
+    if (!updateProjectNameLoading) {
+      if (updateProjectNameData) {
+        const { updateProjectName } = updateProjectNameData;
+        if (updateProjectName.__typename === 'UpdateProjectNameSuccessPayload') {
+          navigate(`/projects/${projectIdentifier}`);
+        } else if (updateProjectName.__typename === 'ErrorPayload') {
+          const errorPayload = updateProjectName as ErrorPayload;
+          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
+        }
+      }
+      if (updateProjectNameError) {
+        setState((prevState) => ({ ...prevState, message: updateProjectNameError.message }));
+      }
+    }
+  }, [updateProjectNameLoading, updateProjectNameData, updateProjectNameError]);
+
+  const handleUpdateProjectName: React.MouseEventHandler<HTMLButtonElement> = () => {
+    const variables: UpdateProjectNameVariables = {
+      input: {
+        projectIdentifier,
+        name: state.name,
+      },
+    };
+    updateProjectName({ variables });
+  };
+
+  const [
+    updateProjectDescription,
+    {
+      loading: updateProjectDescriptionLoading,
+      data: updateProjectDescriptionData,
+      error: updateProjectDescriptionError,
+    },
+  ] = useMutation<UpdateProjectDescriptionData, UpdateProjectDescriptionVariables>(updateProjectDescriptionMutation);
+  useEffect(() => {
+    if (!updateProjectDescriptionLoading) {
+      if (updateProjectDescriptionData) {
+        const { updateProjectDescription } = updateProjectDescriptionData;
+        if (updateProjectDescription.__typename === 'UpdateProjectDescriptionSuccessPayload') {
+          navigate(`/projects/${projectIdentifier}`);
+        } else if (updateProjectDescription.__typename === 'ErrorPayload') {
+          const errorPayload = updateProjectDescription as ErrorPayload;
+          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
+        }
+      }
+      if (updateProjectDescriptionError) {
+        setState((prevState) => ({ ...prevState, message: updateProjectDescriptionError.message }));
+      }
+    }
+  }, [updateProjectDescriptionLoading, updateProjectDescriptionData, updateProjectDescriptionError]);
+
+  const handleUpdateProjectDescription: React.MouseEventHandler<HTMLButtonElement> = () => {
+    const variables: UpdateProjectDescriptionVariables = {
+      input: {
+        projectIdentifier,
+        description: state.description,
+      },
+    };
+    updateProjectDescription({ variables });
+  };
+
   return (
     <div>
       <Toolbar
@@ -34,6 +157,61 @@ export const ProjectSettings = ({}: ProjectSettingsProps) => {
           Settings
         </Typography>
       </Toolbar>
+      <Container maxWidth="lg">
+        <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>
+          <Typography variant="h5" gutterBottom>
+            General
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              gap: (theme) => theme.spacing(2),
+              marginTop: (theme) => theme.spacing(2),
+            }}
+          >
+            <TextField
+              label="Project name"
+              variant="outlined"
+              size="small"
+              value={state.name}
+              onChange={handleNameChange}
+              sx={{ flexGrow: '1' }}
+            />
+            <Button variant="outlined" sx={{ whiteSpace: 'nowrap' }} onClick={handleUpdateProjectName}>
+              Update Name
+            </Button>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              gap: (theme) => theme.spacing(2),
+              marginTop: (theme) => theme.spacing(2),
+            }}
+          >
+            <TextField
+              label="Project description"
+              variant="outlined"
+              size="small"
+              helperText={`Help others understand your project (${state.description.length}/260 characters)`}
+              multiline
+              minRows={5}
+              maxRows={5}
+              inputProps={{ maxLength: 260 }}
+              value={state.description}
+              onChange={handleDescriptionChange}
+              sx={{ flexGrow: '1' }}
+            />
+            <Button variant="outlined" onClick={handleUpdateProjectDescription}>
+              Update Description
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
     </div>
   );
 };

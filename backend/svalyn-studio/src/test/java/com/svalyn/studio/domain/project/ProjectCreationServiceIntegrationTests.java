@@ -74,7 +74,7 @@ public class ProjectCreationServiceIntegrationTests extends AbstractIntegrationT
 
     @Test
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JAMES_DOE)
-    @DisplayName("Given a project, when it is persisted, then its id is initialized")
+    @DisplayName("Given a project, when it is persisted by a non member, then an error is returned")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void givenProject_whenPersistedByNonOrganization_thenAnErrorIsReturned() {
         var result = this.projectCreationService.createProject("mockorganization", "svalyn", "Svalyn", "Project description");

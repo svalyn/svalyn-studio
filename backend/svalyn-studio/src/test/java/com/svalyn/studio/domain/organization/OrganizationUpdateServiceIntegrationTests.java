@@ -90,7 +90,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JAMES_DOE)
     @DisplayName("Given an organization, when its name is updated by a non member, then an error is returned")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void givenAnOrganization_whenNameUpdatedByNonMember_thenAnEventIsPublished() {
+    public void givenAnOrganization_whenNameUpdatedByNonMember_thenErrorIsReturned() {
         var result = this.organizationUpdateService.renameOrganization("mockorganization", "Svalyn");
         assertThat(result).isInstanceOf(Failure.class);
         assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
@@ -130,7 +130,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
     @DisplayName("Given an organization which does not exist, when the current user leaves, then an error is returned")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void givenAnOrganizationWhichDoesNotExist_whenCurrentUserLeaves_thenAnEventIsPublished() {
+    public void givenAnOrganizationWhichDoesNotExist_whenCurrentUserLeaves_thenAnErrorIsReturned() {
         var result = this.organizationUpdateService.leaveOrganization("svalyn");
         assertThat(result).isInstanceOf(Failure.class);
         assertThat(this.domainEvents.getDomainEvents()).hasSize(0);

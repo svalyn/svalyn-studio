@@ -23,9 +23,13 @@ import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectSuccessPayload;
-import com.svalyn.studio.application.controllers.project.dto.EditReadMeInput;
-import com.svalyn.studio.application.controllers.project.dto.EditReadMeSuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionSuccessPayload;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameSuccessPayload;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeSuccessPayload;
 import com.svalyn.studio.application.services.project.api.IProjectService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -90,14 +94,44 @@ public class ProjectService implements IProjectService {
 
     @Override
     @Transactional
-    public IPayload editReadMe(EditReadMeInput input) {
+    public IPayload updateProjectName(UpdateProjectNameInput input) {
         IPayload payload = null;
 
-        var result = this.projectUpdateService.editReadMe(input.projectIdentifier(), input.content());
+        var result = this.projectUpdateService.updateName(input.projectIdentifier(), input.name());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new EditReadMeSuccessPayload(UUID.randomUUID());
+            payload = new UpdateProjectNameSuccessPayload(UUID.randomUUID());
+        }
+
+        return payload;
+    }
+
+    @Override
+    @Transactional
+    public IPayload updateProjectDescription(UpdateProjectDescriptionInput input) {
+        IPayload payload = null;
+
+        var result = this.projectUpdateService.updateDescription(input.projectIdentifier(), input.description());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(failure.message());
+        } else if (result instanceof Success<Void> success) {
+            payload = new UpdateProjectDescriptionSuccessPayload(UUID.randomUUID());
+        }
+
+        return payload;
+    }
+
+    @Override
+    @Transactional
+    public IPayload updateProjectReadMe(UpdateProjectReadMeInput input) {
+        IPayload payload = null;
+
+        var result = this.projectUpdateService.updateReadMe(input.projectIdentifier(), input.content());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(failure.message());
+        } else if (result instanceof Success<Void> success) {
+            payload = new UpdateProjectReadMeSuccessPayload(UUID.randomUUID());
         }
 
         return payload;

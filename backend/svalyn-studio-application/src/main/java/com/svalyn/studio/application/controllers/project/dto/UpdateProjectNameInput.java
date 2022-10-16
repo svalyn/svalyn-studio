@@ -22,16 +22,16 @@ package com.svalyn.studio.application.controllers.project.dto;
 import java.util.Objects;
 
 /**
- * Input user to edit the README.
+ * Input user to edit the name.
  *
  * @param projectIdentifier The identifier of the project
- * @param content The new content
+ * @param name The new name
  *
  * @author sbegaudeau
  */
-public record EditReadMeInput(String projectIdentifier, String content) {
-    public EditReadMeInput(String projectIdentifier, String content) {
+public record UpdateProjectNameInput(String projectIdentifier, String name) {
+    public UpdateProjectNameInput(String projectIdentifier, String name) {
         this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
-        this.content = Objects.requireNonNull(content);
+        this.name = Objects.requireNonNull(name);
     }
 }
