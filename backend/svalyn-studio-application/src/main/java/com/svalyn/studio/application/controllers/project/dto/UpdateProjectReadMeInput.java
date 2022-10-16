@@ -17,50 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
-  projectIdentifier: string;
-}
+package com.svalyn.studio.application.controllers.project.dto;
 
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-}
+import java.util.Objects;
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
-}
-
-export interface UpdateProjectNamePayload {
-  __typename: string;
-}
-
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
-  __typename: 'ErrorPayload';
-  message: string;
+/**
+ * Input user to edit the README.
+ *
+ * @param projectIdentifier The identifier of the project
+ * @param content The new content
+ *
+ * @author sbegaudeau
+ */
+public record UpdateProjectReadMeInput(String projectIdentifier, String content) {
+    public UpdateProjectReadMeInput(String projectIdentifier, String content) {
+        this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
+        this.content = Objects.requireNonNull(content);
+    }
 }

@@ -95,8 +95,8 @@ export const ProjectView = () => {
   let panelElement = null;
   if (projectIdentifier && state.panel === 'Home') {
     panelElement = <ProjectHome projectIdentifier={projectIdentifier} />;
-  } else if (state.panel === 'Settings') {
-    panelElement = <ProjectSettings />;
+  } else if (projectIdentifier && state.panel === 'Settings') {
+    panelElement = <ProjectSettings projectIdentifier={projectIdentifier} />;
   }
 
   return (

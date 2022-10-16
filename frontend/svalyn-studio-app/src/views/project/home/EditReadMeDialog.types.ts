@@ -28,24 +28,24 @@ export interface EditReadMeDialogState {
   value: string;
 }
 
-export interface EditReadMeData {
-  editReadMe: EditReadMePayload;
+export interface UpdateProjectReadMeData {
+  updateProjectReadMe: UpdateProjectReadMePayload;
 }
 
-export interface EditReadMePayload {
+export interface UpdateProjectReadMePayload {
   __typename: string;
 }
 
-export interface ErrorPayload extends EditReadMePayload {
+export interface ErrorPayload extends UpdateProjectReadMePayload {
   __typename: 'ErrorPayload';
   message: string;
 }
 
-export interface EditReadMeVariables {
-  input: EditReadMeInput;
+export interface UpdateProjectReadMeVariables {
+  input: UpdateProjectReadMeInput;
 }
 
-export interface EditReadMeInput {
+export interface UpdateProjectReadMeInput {
   projectIdentifier: string;
   content: string;
 }

@@ -25,7 +25,7 @@ import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganiza
 import com.svalyn.studio.application.controllers.organization.dto.InvitationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
-import com.svalyn.studio.application.controllers.organization.dto.RenameOrganizationInput;
+import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameInput;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import graphql.relay.Connection;
@@ -88,8 +88,8 @@ public class OrganizationController {
     }
 
     @MutationMapping
-    public IPayload renameOrganization(@Argument RenameOrganizationInput input) {
-        return this.organizationService.renameOrganization(input);
+    public IPayload updateOrganizationName(@Argument UpdateOrganizationNameInput input) {
+        return this.organizationService.updateOrganizationName(input);
     }
 
     @MutationMapping

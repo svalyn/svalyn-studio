@@ -21,8 +21,10 @@ package com.svalyn.studio.application.services.project.api;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
-import com.svalyn.studio.application.controllers.project.dto.EditReadMeInput;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
+import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
@@ -40,5 +42,9 @@ public interface IProjectService {
 
     IPayload createProject(CreateProjectInput input);
 
-    IPayload editReadMe(EditReadMeInput input);
+    IPayload updateProjectName(UpdateProjectNameInput input);
+
+    IPayload updateProjectDescription(UpdateProjectDescriptionInput input);
+    
+    IPayload updateProjectReadMe(UpdateProjectReadMeInput input);
 }

@@ -21,4 +21,7 @@ INSERT INTO membership (id, organization_id, member_id, "role", created_by, crea
 ('65e7f962-4e7e-4738-978e-ac58ab02d6a5', 'a9261e91-fb20-4d48-8731-d5297e441315', '1116f75f-2ceb-43cf-b6a6-c11dabbc5977', 'MEMBER', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 11:25:26.324164', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 11:25:26.324164');
 
 INSERT INTO invitation (id, organization_id, member_id, created_by, created_on, last_modified_by, last_modified_on) VALUES
-('c3d41db3-02f1-4cec-8d7f-48e8f5eafe2f', 'a9261e91-fb20-4d48-8731-d5297e441315', '5e45aead-48f2-462b-a50e-1191ace697bd', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 14:12:26.324164', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 14:12:26.324164')
+('c3d41db3-02f1-4cec-8d7f-48e8f5eafe2f', 'a9261e91-fb20-4d48-8731-d5297e441315', '5e45aead-48f2-462b-a50e-1191ace697bd', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 14:12:26.324164', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-02 14:12:26.324164');
+
+INSERT INTO project (id, identifier, name, description, read_me, organization_id, created_by, created_on, last_modified_by, last_modified_on) VALUES
+('c0167908-8030-4679-a855-c057012ef27c', 'mockproject', 'Mock Project', 'Project description', 'README', 'a9261e91-fb20-4d48-8731-d5297e441315', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-06 23:22:18.863949', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-06 23:22:18.863949');

@@ -87,6 +87,16 @@ public class Project extends AbstractAggregateRoot<Project> {
         return readMe;
     }
 
+    public void updateName(String name) {
+        this.name = Objects.requireNonNull(name);
+        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+    }
+
+    public void updateDescription(String description) {
+        this.description = Objects.requireNonNull(description);
+        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+    }
+
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
         this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));

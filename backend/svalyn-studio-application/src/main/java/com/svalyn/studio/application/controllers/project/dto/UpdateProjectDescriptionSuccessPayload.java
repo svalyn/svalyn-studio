@@ -17,50 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
-  projectIdentifier: string;
-}
+package com.svalyn.studio.application.controllers.project.dto;
 
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-}
+import com.svalyn.studio.application.controllers.dto.IPayload;
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
-}
+import java.util.Objects;
+import java.util.UUID;
 
-export interface UpdateProjectNamePayload {
-  __typename: string;
-}
-
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
-  __typename: 'ErrorPayload';
-  message: string;
+/**
+ * Payload used to indicate that the description has been edited.
+ *
+ * @param id The id of the payload
+ *
+ * @author sbegaudeau
+ */
+public record UpdateProjectDescriptionSuccessPayload(UUID id) implements IPayload {
+    public UpdateProjectDescriptionSuccessPayload(UUID id) {
+        this.id = Objects.requireNonNull(id);
+    }
 }

@@ -32,13 +32,13 @@ import {
   ErrorPayload,
   OrganizationSettingsProps,
   OrganizationSettingsState,
-  RenameOrganizationData,
-  RenameOrganizationVariables,
+  UpdateOrganizationNameData,
+  UpdateOrganizationNameVariables,
 } from './OrganizationSettings.types';
 
-const renameOrganizationMutation = gql`
-  mutation renameOrganization($input: RenameOrganizationInput!) {
-    renameOrganization(input: $input) {
+const updateOrganizationNameMutation = gql`
+  mutation updateOrganizationName($input: UpdateOrganizationNameInput!) {
+    updateOrganizationName(input: $input) {
       ... on ErrorPayload {
         message
       }
@@ -63,34 +63,34 @@ export const OrganizationSettings = ({ organizationIdentifier }: OrganizationSet
   };
 
   const [
-    renameOrganization,
-    { loading: renameOrganizationLoading, data: renameOrganizationData, error: renameOrganizationError },
-  ] = useMutation<RenameOrganizationData, RenameOrganizationVariables>(renameOrganizationMutation);
+    updateOrganizationName,
+    { loading: updateOrganizationNameLoading, data: updateOrganizationNameData, error: updateOrganizationNameError },
+  ] = useMutation<UpdateOrganizationNameData, UpdateOrganizationNameVariables>(updateOrganizationNameMutation);
   useEffect(() => {
-    if (!renameOrganizationLoading) {
-      if (renameOrganizationData) {
-        if (renameOrganizationData.renameOrganization.__typename === 'RenameOrganizationSuccessPayload') {
+    if (!updateOrganizationNameLoading) {
+      if (updateOrganizationNameData) {
+        if (updateOrganizationNameData.updateOrganizationName.__typename === 'UpdateOrganizationNameSuccessPayload') {
           navigate(`/orgs/${organizationIdentifier}`);
-        } else if (renameOrganizationData.renameOrganization.__typename === 'ErrorPayload') {
-          const { message } = renameOrganizationData.renameOrganization as ErrorPayload;
+        } else if (updateOrganizationNameData.updateOrganizationName.__typename === 'ErrorPayload') {
+          const { message } = updateOrganizationNameData.updateOrganizationName as ErrorPayload;
           setState((prevState) => ({ ...prevState, message }));
         }
       }
-      if (renameOrganizationError) {
-        setState((prevState) => ({ ...prevState, message: renameOrganizationError.message }));
+      if (updateOrganizationNameError) {
+        setState((prevState) => ({ ...prevState, message: updateOrganizationNameError.message }));
       }
     }
-  }, [renameOrganizationLoading, renameOrganizationData, renameOrganizationError]);
+  }, [updateOrganizationNameLoading, updateOrganizationNameData, updateOrganizationNameError]);
 
   const handleRename: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: RenameOrganizationVariables = {
+    const variables: UpdateOrganizationNameVariables = {
       input: {
         organizationIdentifier,
         name: state.name,
       },
     };
 
-    renameOrganization({ variables });
+    updateOrganizationName({ variables });
   };
 
   const openDeleteOrganizationDialog: React.MouseEventHandler<HTMLButtonElement> = () => {

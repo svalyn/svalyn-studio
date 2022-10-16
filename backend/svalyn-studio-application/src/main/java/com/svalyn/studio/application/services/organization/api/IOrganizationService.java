@@ -24,7 +24,7 @@ import com.svalyn.studio.application.controllers.organization.dto.CreateOrganiza
 import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
-import com.svalyn.studio.application.controllers.organization.dto.RenameOrganizationInput;
+import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameInput;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
@@ -45,7 +45,7 @@ public interface IOrganizationService {
 
     IPayload createOrganization(CreateOrganizationInput input);
 
-    IPayload renameOrganization(RenameOrganizationInput input);
+    IPayload updateOrganizationName(UpdateOrganizationNameInput input);
 
     IPayload leaveOrganization(LeaveOrganizationInput input);
 

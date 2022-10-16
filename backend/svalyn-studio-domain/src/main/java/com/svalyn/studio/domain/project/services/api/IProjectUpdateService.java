@@ -27,5 +27,10 @@ import com.svalyn.studio.domain.IResult;
  * @author sbegaudeau
  */
 public interface IProjectUpdateService {
-    IResult<Void> editReadMe(String projectIdentifier, String content);
+
+    IResult<Void> updateName(String projectIdentifier, String name);
+
+    IResult<Void> updateDescription(String projectIdentifier, String description);
+
+    IResult<Void> updateReadMe(String projectIdentifier, String content);
 }

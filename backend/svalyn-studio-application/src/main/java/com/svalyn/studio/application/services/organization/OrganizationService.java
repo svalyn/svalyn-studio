@@ -28,8 +28,8 @@ import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganiza
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
-import com.svalyn.studio.application.controllers.organization.dto.RenameOrganizationInput;
-import com.svalyn.studio.application.controllers.organization.dto.RenameOrganizationSuccessPayload;
+import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameInput;
+import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameSuccessPayload;
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -101,14 +101,14 @@ public class OrganizationService implements IOrganizationService {
 
     @Override
     @Transactional
-    public IPayload renameOrganization(RenameOrganizationInput input) {
+    public IPayload updateOrganizationName(UpdateOrganizationNameInput input) {
         IPayload payload = null;
 
         var result = this.organizationUpdateService.renameOrganization(input.organizationIdentifier(), input.name());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new RenameOrganizationSuccessPayload(UUID.randomUUID());
+            payload = new UpdateOrganizationNameSuccessPayload(UUID.randomUUID());
         }
 
         return payload;

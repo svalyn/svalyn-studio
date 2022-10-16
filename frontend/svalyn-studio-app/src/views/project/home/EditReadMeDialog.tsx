@@ -27,16 +27,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from 'react';
 import {
-  EditReadMeData,
   EditReadMeDialogProps,
   EditReadMeDialogState,
-  EditReadMeVariables,
   ErrorPayload,
+  UpdateProjectReadMeData,
+  UpdateProjectReadMeVariables,
 } from './EditReadMeDialog.types';
 
-const editReadMeMutation = gql`
-  mutation editReadMe($input: EditReadMeInput!) {
-    editReadMe(input: $input) {
+const updateProjectReadMeMutation = gql`
+  mutation updateProjectReadMe($input: UpdateProjectReadMeInput!) {
+    updateProjectReadMe(input: $input) {
       ... on ErrorPayload {
         message
       }
@@ -54,15 +54,18 @@ export const EditReadMeDialog = ({ projectIdentifier, open, content, onClose }: 
     setState((prevState) => ({ ...prevState, value }));
   };
 
-  const [editReadMe, { loading, data, error }] = useMutation<EditReadMeData, EditReadMeVariables>(editReadMeMutation);
+  const [updateProjectReadMe, { loading, data, error }] = useMutation<
+    UpdateProjectReadMeData,
+    UpdateProjectReadMeVariables
+  >(updateProjectReadMeMutation);
   useEffect(() => {
     if (!loading) {
       if (data) {
-        const { editReadMe } = data;
-        if (editReadMe.__typename === 'EditReadMeSuccessPayload') {
+        const { updateProjectReadMe } = data;
+        if (updateProjectReadMe.__typename === 'UpdateProjectReadMeSuccessPayload') {
           onClose();
-        } else if (editReadMe.__typename === 'ErrorPayload') {
-          const errorPayload = editReadMe as ErrorPayload;
+        } else if (updateProjectReadMe.__typename === 'ErrorPayload') {
+          const errorPayload = updateProjectReadMe as ErrorPayload;
           setState((prevState) => ({ ...prevState, message: errorPayload.message, editReadMeDialogOpen: false }));
         }
       }
@@ -73,13 +76,13 @@ export const EditReadMeDialog = ({ projectIdentifier, open, content, onClose }: 
   }, [loading, data, error]);
 
   const handleUpdate: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: EditReadMeVariables = {
+    const variables: UpdateProjectReadMeVariables = {
       input: {
         projectIdentifier,
         content: state.value,
       },
     };
-    editReadMe({ variables });
+    updateProjectReadMe({ variables });
   };
 
   return (
