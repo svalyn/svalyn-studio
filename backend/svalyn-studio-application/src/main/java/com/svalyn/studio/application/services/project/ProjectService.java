@@ -23,6 +23,8 @@ import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectSuccessPayload;
+import com.svalyn.studio.application.controllers.project.dto.DeleteProjectInput;
+import com.svalyn.studio.application.controllers.project.dto.DeleteProjectSuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionSuccessPayload;
@@ -36,6 +38,7 @@ import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import com.svalyn.studio.domain.project.services.api.IProjectCreationService;
+import com.svalyn.studio.domain.project.services.api.IProjectDeletionService;
 import com.svalyn.studio.domain.project.services.api.IProjectUpdateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,10 +63,13 @@ public class ProjectService implements IProjectService {
 
     private final IProjectUpdateService projectUpdateService;
 
-    public ProjectService(IProjectRepository projectRepository, IProjectCreationService projectCreationService, IProjectUpdateService projectUpdateService) {
+    private final IProjectDeletionService projectDeletionService;
+
+    public ProjectService(IProjectRepository projectRepository, IProjectCreationService projectCreationService, IProjectUpdateService projectUpdateService, IProjectDeletionService projectDeletionService) {
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.projectCreationService = Objects.requireNonNull(projectCreationService);
         this.projectUpdateService = Objects.requireNonNull(projectUpdateService);
+        this.projectDeletionService = Objects.requireNonNull(projectDeletionService);
     }
 
     @Override
@@ -132,6 +138,21 @@ public class ProjectService implements IProjectService {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Void> success) {
             payload = new UpdateProjectReadMeSuccessPayload(UUID.randomUUID());
+        }
+
+        return payload;
+    }
+
+    @Override
+    @Transactional
+    public IPayload deleteProject(DeleteProjectInput input) {
+        IPayload payload = null;
+
+        var result = this.projectDeletionService.deleteProject(input.projectIdentifier());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(failure.message());
+        } else if (result instanceof Success<Void> success) {
+            payload = new DeleteProjectSuccessPayload(UUID.randomUUID());
         }
 
         return payload;

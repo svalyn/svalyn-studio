@@ -23,6 +23,7 @@ import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
+import com.svalyn.studio.domain.project.events.ProjectDeletedEvent;
 import com.svalyn.studio.domain.project.events.ProjectModifiedEvent;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -100,6 +101,10 @@ public class Project extends AbstractAggregateRoot<Project> {
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
         this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+    }
+
+    public void dispose() {
+        this.registerEvent(new ProjectDeletedEvent(UUID.randomUUID(), Instant.now(), this));
     }
 
     public static Builder newProject() {

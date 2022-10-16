@@ -27,6 +27,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
+import { DeleteProjectDialog } from './DeleteProjectDialog';
 import {
   ErrorPayload,
   ProjectSettingsProps,
@@ -61,6 +63,8 @@ export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => 
   const [state, setState] = useState<ProjectSettingsState>({
     name: '',
     description: '',
+    deleteProjectDialogOpen: false,
+    message: null,
   });
 
   const handleNameChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
@@ -145,73 +149,102 @@ export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => 
     updateProjectDescription({ variables });
   };
 
-  return (
-    <div>
-      <Toolbar
-        sx={{
-          backgroundColor: 'white',
-          borderBottom: '1px solid #dee2e7',
-        }}
-      >
-        <Typography variant="h4" sx={{ marginRight: '2rem' }}>
-          Settings
-        </Typography>
-      </Toolbar>
-      <Container maxWidth="lg">
-        <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>
-          <Typography variant="h5" gutterBottom>
-            General
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              gap: (theme) => theme.spacing(2),
-              marginTop: (theme) => theme.spacing(2),
-            }}
-          >
-            <TextField
-              label="Project name"
-              variant="outlined"
-              size="small"
-              value={state.name}
-              onChange={handleNameChange}
-              sx={{ flexGrow: '1' }}
-            />
-            <Button variant="outlined" sx={{ whiteSpace: 'nowrap' }} onClick={handleUpdateProjectName}>
-              Update Name
-            </Button>
-          </Box>
+  const openDeleteProjectDialog: React.MouseEventHandler<HTMLButtonElement> = () => {
+    setState((prevState) => ({ ...prevState, deleteProjectDialogOpen: true }));
+  };
+  const closeDeleteProjectDialog = () => {
+    setState((prevState) => ({ ...prevState, deleteProjectDialogOpen: false }));
+  };
 
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              gap: (theme) => theme.spacing(2),
-              marginTop: (theme) => theme.spacing(2),
-            }}
-          >
-            <TextField
-              label="Project description"
-              variant="outlined"
-              size="small"
-              helperText={`Help others understand your project (${state.description.length}/260 characters)`}
-              multiline
-              minRows={5}
-              maxRows={5}
-              inputProps={{ maxLength: 260 }}
-              value={state.description}
-              onChange={handleDescriptionChange}
-              sx={{ flexGrow: '1' }}
-            />
-            <Button variant="outlined" onClick={handleUpdateProjectDescription}>
-              Update Description
+  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
+
+  return (
+    <>
+      <div>
+        <Toolbar
+          sx={{
+            backgroundColor: 'white',
+            borderBottom: '1px solid #dee2e7',
+          }}
+        >
+          <Typography variant="h4" sx={{ marginRight: '2rem' }}>
+            Settings
+          </Typography>
+        </Toolbar>
+        <Container maxWidth="lg">
+          <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>
+            <Typography variant="h5" gutterBottom>
+              General
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                gap: (theme) => theme.spacing(2),
+                marginTop: (theme) => theme.spacing(2),
+              }}
+            >
+              <TextField
+                label="Project name"
+                variant="outlined"
+                size="small"
+                value={state.name}
+                onChange={handleNameChange}
+                sx={{ flexGrow: '1' }}
+              />
+              <Button variant="outlined" sx={{ whiteSpace: 'nowrap' }} onClick={handleUpdateProjectName}>
+                Update Name
+              </Button>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                gap: (theme) => theme.spacing(2),
+                marginTop: (theme) => theme.spacing(2),
+              }}
+            >
+              <TextField
+                label="Project description"
+                variant="outlined"
+                size="small"
+                helperText={`Help others understand your project (${state.description.length}/260 characters)`}
+                multiline
+                minRows={5}
+                maxRows={5}
+                inputProps={{ maxLength: 260 }}
+                value={state.description}
+                onChange={handleDescriptionChange}
+                sx={{ flexGrow: '1' }}
+              />
+              <Button variant="outlined" onClick={handleUpdateProjectDescription}>
+                Update Description
+              </Button>
+            </Box>
+          </Paper>
+
+          <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>
+            <Typography variant="h5" gutterBottom>
+              Delete this project
+            </Typography>
+            <Typography gutterBottom>Once you delete a project, there is no going back. Please be certain.</Typography>
+            <Button variant="outlined" onClick={openDeleteProjectDialog}>
+              Delete Project
             </Button>
-          </Box>
-        </Paper>
-      </Container>
-    </div>
+          </Paper>
+        </Container>
+      </div>
+      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      {state.deleteProjectDialogOpen ? (
+        <DeleteProjectDialog
+          open={state.deleteProjectDialogOpen}
+          onClose={closeDeleteProjectDialog}
+          projectIdentifier={projectIdentifier}
+        />
+      ) : null}
+    </>
   );
 };
