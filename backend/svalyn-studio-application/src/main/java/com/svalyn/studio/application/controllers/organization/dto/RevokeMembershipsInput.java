@@ -19,6 +19,8 @@
 
 package com.svalyn.studio.application.controllers.organization.dto;
 
+import com.svalyn.studio.application.controllers.dto.IInput;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -30,5 +32,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record RevokeMembershipsInput(String organizationIdentifier, List<UUID> membershipIds) {
+public record RevokeMembershipsInput(String organizationIdentifier, List<UUID> membershipIds) implements IInput {
 }

@@ -19,6 +19,8 @@
 
 package com.svalyn.studio.application.controllers.organization.dto;
 
+import com.svalyn.studio.application.controllers.dto.IInput;
+
 /**
  * Input used to invite a member.
  *
@@ -27,5 +29,5 @@ package com.svalyn.studio.application.controllers.organization.dto;
  *
  * @author sbegaudeau
  */
-public record InviteMemberInput(String organizationIdentifier, String email) {
+public record InviteMemberInput(String organizationIdentifier, String email) implements IInput {
 }

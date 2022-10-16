@@ -19,6 +19,8 @@
 
 package com.svalyn.studio.application.controllers.project.dto;
 
+import com.svalyn.studio.application.controllers.dto.IInput;
+
 import java.util.Objects;
 
 /**
@@ -29,7 +31,7 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record UpdateProjectReadMeInput(String projectIdentifier, String content) {
+public record UpdateProjectReadMeInput(String projectIdentifier, String content) implements IInput {
     public UpdateProjectReadMeInput(String projectIdentifier, String content) {
         this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
         this.content = Objects.requireNonNull(content);
