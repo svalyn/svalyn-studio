@@ -19,6 +19,8 @@
 
 package com.svalyn.studio.application.controllers.organization.dto;
 
+import com.svalyn.studio.application.controllers.dto.IInput;
+
 import java.util.UUID;
 
 /**
@@ -29,5 +31,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record DeclineInvitationInput(String organizationIdentifier, UUID invitationId) {
+public record DeclineInvitationInput(String organizationIdentifier, UUID invitationId) implements IInput {
 }
