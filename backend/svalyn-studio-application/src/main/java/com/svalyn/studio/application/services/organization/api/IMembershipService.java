@@ -24,7 +24,6 @@ import com.svalyn.studio.application.controllers.organization.dto.MembershipDTO;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.RevokeMembershipsInput;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
  * Used to manipulate memberships.
@@ -32,7 +31,7 @@ import org.springframework.data.domain.Pageable;
  * @author sbegaudeau
  */
 public interface IMembershipService {
-    Page<MembershipDTO> findAll(OrganizationDTO organization, Pageable pageable);
+    Page<MembershipDTO> findAll(OrganizationDTO organization, int page, int rowsPerPage);
 
     IPayload revokeMemberships(RevokeMembershipsInput input);
 }

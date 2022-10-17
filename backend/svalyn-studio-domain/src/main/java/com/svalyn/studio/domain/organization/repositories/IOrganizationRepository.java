@@ -46,4 +46,12 @@ public interface IOrganizationRepository extends PagingAndSortingRepository<Orga
     OFFSET :offset
     """)
     List<Organization> findAllWhereInvited(UUID userId, long offset, int limit);
+
+    @Query(value = """
+    SELECT count(*) FROM organization organization JOIN invitation invitation ON organization.id = invitation.organization_id
+    WHERE invitation.member_id = :userId
+    LIMIT :limit
+    OFFSET :offset
+    """)
+    long countAllWhereInvited(UUID userId, long offset, int limit);
 }

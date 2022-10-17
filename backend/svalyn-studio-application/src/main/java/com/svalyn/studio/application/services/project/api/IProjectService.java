@@ -37,7 +37,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 public interface IProjectService {
-    Page<ProjectDTO> findAllByOrganizationId(UUID organizationId);
+    Page<ProjectDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage);
 
     Optional<ProjectDTO> findByIdentifier(String identifier);
 

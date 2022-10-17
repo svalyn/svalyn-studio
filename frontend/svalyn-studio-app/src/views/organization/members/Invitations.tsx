@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useLazyQuery, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import ClearIcon from '@mui/icons-material/Clear';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -27,6 +27,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -44,10 +45,10 @@ import {
 } from './Invitations.types';
 
 const getOrganizationInvitationsQuery = gql`
-  query getOrganizationInvitations($identifier: ID!) {
+  query getOrganizationInvitations($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
     viewer {
       organization(identifier: $identifier) {
-        invitations {
+        invitations(page: $page, rowsPerPage: $rowsPerPage) {
           edges {
             node {
               id
@@ -56,6 +57,9 @@ const getOrganizationInvitationsQuery = gql`
                 imageUrl
               }
             }
+          }
+          pageInfo {
+            count
           }
         }
       }
@@ -76,13 +80,20 @@ const revokeInvitationMutation = gql`
 export const Invitations = ({ organizationIdentifier }: InvitationsProps) => {
   const [state, setState] = useState<InvitationsState>({
     organization: null,
+    page: 0,
+    rowsPerPage: 10,
     message: null,
   });
 
-  const [getOrganizationInvitations, { loading, data, error, refetch }] = useLazyQuery<
+  const variables: GetOrganizationInvitationsVariables = {
+    identifier: organizationIdentifier,
+    page: state.page,
+    rowsPerPage: state.rowsPerPage,
+  };
+  const { loading, data, error, refetch } = useQuery<
     GetOrganizationInvitationsData,
     GetOrganizationInvitationsVariables
-  >(getOrganizationInvitationsQuery);
+  >(getOrganizationInvitationsQuery, { variables });
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -99,13 +110,6 @@ export const Invitations = ({ organizationIdentifier }: InvitationsProps) => {
     }
   }, [loading, data, error]);
 
-  useEffect(() => {
-    if (organizationIdentifier) {
-      const variables: GetOrganizationInvitationsVariables = { identifier: organizationIdentifier };
-      getOrganizationInvitations({ variables });
-    }
-  }, [organizationIdentifier]);
-
   const [
     revokeInvitation,
     { loading: revokeInvitationLoading, data: revokeInvitationData, error: revokeInvitationError },
@@ -114,7 +118,6 @@ export const Invitations = ({ organizationIdentifier }: InvitationsProps) => {
     if (!revokeInvitationLoading) {
       if (revokeInvitationData) {
         if (revokeInvitationData.revokeInvitation.__typename === 'RevokeInvitationSuccessPayload') {
-          const variables: GetOrganizationInvitationsVariables = { identifier: organizationIdentifier };
           refetch(variables);
         } else if (revokeInvitationData.revokeInvitation.__typename === 'ErrorPayload') {
           const { message } = revokeInvitationData.revokeInvitation as ErrorPayload;
@@ -138,40 +141,54 @@ export const Invitations = ({ organizationIdentifier }: InvitationsProps) => {
     revokeInvitation({ variables });
   };
 
+  const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) => {
+    setState((prevState) => ({ ...prevState, page }));
+  };
+
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const hasInvitations = !!data?.viewer && (data?.viewer?.organization?.invitations.edges ?? []).length > 0;
   const invitations = state.organization?.invitations.edges.map((edge) => edge.node) ?? [];
   return (
     <>
-      {hasInvitations ? (
-        <TableContainer component={Paper} variant="outlined">
-          <Table>
-            <TableBody>
-              {invitations.map((invitation) => {
-                return (
-                  <TableRow key={invitation.id}>
-                    <TableCell width="5%">
-                      <Avatar alt={invitation.member.name} src={invitation.member.imageUrl} />
-                    </TableCell>
-                    <TableCell width="90%">{invitation.member.name}</TableCell>
-                    <TableCell width="5%">
-                      <Tooltip title="Revoke invitation">
-                        <Button
-                          variant="outlined"
-                          sx={{ padding: '5px', minWidth: '15px' }}
-                          onClick={() => handleRevokeInvitation(invitation)}
-                        >
-                          <ClearIcon />
-                        </Button>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      {state.organization && hasInvitations ? (
+        <div>
+          <TableContainer component={Paper} variant="outlined">
+            <Table>
+              <TableBody>
+                {invitations.map((invitation) => {
+                  return (
+                    <TableRow key={invitation.id}>
+                      <TableCell width="5%">
+                        <Avatar alt={invitation.member.name} src={invitation.member.imageUrl} />
+                      </TableCell>
+                      <TableCell width="90%">{invitation.member.name}</TableCell>
+                      <TableCell width="5%">
+                        <Tooltip title="Revoke invitation">
+                          <Button
+                            variant="outlined"
+                            sx={{ padding: '5px', minWidth: '15px' }}
+                            onClick={() => handleRevokeInvitation(invitation)}
+                          >
+                            <ClearIcon />
+                          </Button>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            component="div"
+            count={state.organization.invitations.pageInfo.count}
+            page={state.page}
+            onPageChange={handlePageChange}
+            rowsPerPage={state.rowsPerPage}
+            rowsPerPageOptions={[state.rowsPerPage]}
+          />
+        </div>
       ) : (
         <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
           <Typography variant="h6" align="center">

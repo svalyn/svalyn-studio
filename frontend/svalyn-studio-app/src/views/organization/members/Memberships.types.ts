@@ -24,6 +24,8 @@ export interface MembershipsProps {
 export interface MembershipsState {
   organization: Organization | null;
   selectedMembershipIds: string[];
+  page: number;
+  rowsPerPage: number;
   message: string | null;
 }
 
@@ -33,6 +35,11 @@ export interface Organization {
 
 export interface OrganizationMembershipsConnection {
   edges: OrganizationMembershipsEdge[];
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  count: number;
 }
 
 export interface OrganizationMembershipsEdge {
@@ -59,6 +66,8 @@ export interface Viewer {
 
 export interface GetOrganizationMembershipsVariables {
   identifier: string;
+  page: number;
+  rowsPerPage: number;
 }
 
 export interface RevokeMembershipsData {

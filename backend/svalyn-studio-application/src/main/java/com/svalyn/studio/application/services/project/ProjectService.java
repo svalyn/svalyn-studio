@@ -42,6 +42,7 @@ import com.svalyn.studio.domain.project.services.api.IProjectDeletionService;
 import com.svalyn.studio.domain.project.services.api.IProjectUpdateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,8 +74,9 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public Page<ProjectDTO> findAllByOrganizationId(UUID organizationId) {
-        return this.projectRepository.findAll(PageRequest.of(0, 20)).map(project -> new ProjectDTO(project.getOrganization().getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
+    public Page<ProjectDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage) {
+        return this.projectRepository.findAll(PageRequest.of(page, rowsPerPage, Sort.by(Sort.Direction.DESC, "createdOn")))
+                .map(project -> new ProjectDTO(project.getOrganization().getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
     }
 
     @Override

@@ -27,7 +27,6 @@ import com.svalyn.studio.application.controllers.organization.dto.InviteMemberIn
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.RevokeInvitationInput;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
  * Used to manipulate invitations.
@@ -36,9 +35,9 @@ import org.springframework.data.domain.Pageable;
  */
 public interface IInvitationService {
 
-    Page<InvitationDTO> findAll(Pageable pageable);
+    Page<InvitationDTO> findAll(int page, int rowsPerPage);
 
-    Page<InvitationDTO> findAll(OrganizationDTO organization, Pageable pageable);
+    Page<InvitationDTO> findAll(OrganizationDTO organization, int page, int rowsPerPage);
 
     IPayload inviteMember(InviteMemberInput input);
 

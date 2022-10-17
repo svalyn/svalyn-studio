@@ -23,6 +23,8 @@ export interface OrganizationDashboardProps {
 
 export interface OrganizationDashboardState {
   organization: Organization | null;
+  page: number;
+  rowsPerPage: number;
   message: string | null;
 }
 
@@ -40,6 +42,7 @@ export interface Organization {
 
 export interface OrganizationProjectsConnection {
   edges: OrganizationProjectsEdge[];
+  pageInfo: PageInfo;
 }
 
 export interface OrganizationProjectsEdge {
@@ -52,6 +55,12 @@ export interface Project {
   description: string;
 }
 
+export interface PageInfo {
+  count: number;
+}
+
 export interface GetOrganizationDashboardVariables {
   identifier: string;
+  page: number;
+  rowsPerPage: number;
 }

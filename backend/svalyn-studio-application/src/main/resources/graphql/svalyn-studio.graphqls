@@ -2,10 +2,14 @@ type Query {
   viewer: Viewer
 }
 
+type PageInfo {
+  count: Int!
+}
+
 type Viewer {
   name: String!
   imageUrl: String!
-  invitations: ViewerInvitationsConnection!
+  invitations(page: Int!, rowsPerPage: Int!): ViewerInvitationsConnection!
   organizations: ViewerOrganizationsConnection!
   organization(identifier: ID!): Organization
   project(identifier: ID!): Project
@@ -13,6 +17,7 @@ type Viewer {
 
 type ViewerInvitationsConnection {
   edges: [ViewerInvitationsEdge!]!
+  pageInfo: PageInfo!
 }
 
 type ViewerInvitationsEdge {
@@ -31,13 +36,14 @@ type Organization {
   identifier: ID!
   description: String!
   name: String!
-  invitations: OrganizationInvitationsConnection!
-  memberships: OrganizationMembershipsConnection!
-  projects: OrganizationProjectsConnection!
+  invitations(page: Int!, rowsPerPage: Int!): OrganizationInvitationsConnection!
+  memberships(page: Int!, rowsPerPage: Int!): OrganizationMembershipsConnection!
+  projects(page: Int!, rowsPerPage: Int!): OrganizationProjectsConnection!
 }
 
 type OrganizationInvitationsConnection {
   edges: [OrganizationInvitationsEdge!]!
+  pageInfo: PageInfo!
 }
 
 type OrganizationInvitationsEdge {
@@ -52,6 +58,7 @@ type Invitation {
 
 type OrganizationMembershipsConnection {
   edges: [OrganizationMembershipsEdge!]!
+  pageInfo: PageInfo!
 }
 
 type OrganizationMembershipsEdge {
@@ -70,6 +77,7 @@ type Profile {
 
 type OrganizationProjectsConnection {
   edges: [OrganizationProjectsEdge!]!
+  pageInfo: PageInfo!
 }
 
 type OrganizationProjectsEdge {

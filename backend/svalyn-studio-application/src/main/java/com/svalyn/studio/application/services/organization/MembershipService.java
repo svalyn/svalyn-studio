@@ -36,7 +36,7 @@ import com.svalyn.studio.domain.organization.repositories.IOrganizationRepositor
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +67,7 @@ public class MembershipService implements IMembershipService {
     }
     @Override
     @Transactional(readOnly = true)
-    public Page<MembershipDTO> findAll(OrganizationDTO organization, Pageable pageable) {
+    public Page<MembershipDTO> findAll(OrganizationDTO organization, int page, int rowsPerPage) {
         var optionalOrganization = this.organizationRepository.findByIdentifier(organization.identifier());
         var memberships = optionalOrganization.map(Organization::getMemberships).orElse(Set.of());
         var sortedMemberships = memberships.stream()
@@ -76,7 +76,11 @@ public class MembershipService implements IMembershipService {
                         .map(account -> new MembershipDTO(membership.getId(), new Profile(account.getName(), account.getImageUrl())))
                         .stream())
                 .toList();
-        return new PageImpl<>(sortedMemberships);
+
+        var fromIndex = Math.min(page * rowsPerPage, sortedMemberships.size());
+        var toIndex = Math.min(fromIndex + rowsPerPage, sortedMemberships.size());
+        var subList = sortedMemberships.subList(fromIndex, toIndex);
+        return new PageImpl<>(subList, PageRequest.of(page, rowsPerPage), sortedMemberships.size());
     }
 
     @Override

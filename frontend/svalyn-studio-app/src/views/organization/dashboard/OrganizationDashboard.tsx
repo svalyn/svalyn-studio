@@ -17,12 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import Box, { BoxProps } from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
+import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -35,16 +36,19 @@ import {
 } from './OrganizationDashboard.types';
 
 const getOrganizationDashboardQuery = gql`
-  query getOrganizationDashboard($identifier: ID!) {
+  query getOrganizationDashboard($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
     viewer {
       organization(identifier: $identifier) {
-        projects {
+        projects(page: $page, rowsPerPage: $rowsPerPage) {
           edges {
             node {
               identifier
               name
               description
             }
+          }
+          pageInfo {
+            count
           }
         }
       }
@@ -59,13 +63,20 @@ const Main = styled(Box)<BoxProps>(({ theme }) => ({
 export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDashboardProps) => {
   const [state, setState] = useState<OrganizationDashboardState>({
     organization: null,
+    page: 0,
+    rowsPerPage: 10,
     message: null,
   });
 
-  const [getOrganizationDashboard, { loading, data, error }] = useLazyQuery<
-    GetOrganizationDashboardData,
-    GetOrganizationDashboardVariables
-  >(getOrganizationDashboardQuery);
+  const variables: GetOrganizationDashboardVariables = {
+    identifier: organizationIdentifier,
+    page: state.page,
+    rowsPerPage: state.rowsPerPage,
+  };
+  const { loading, data, error } = useQuery<GetOrganizationDashboardData, GetOrganizationDashboardVariables>(
+    getOrganizationDashboardQuery,
+    { variables }
+  );
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -82,12 +93,9 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
     }
   }, [loading, data, error]);
 
-  useEffect(() => {
-    if (organizationIdentifier) {
-      const variables: GetOrganizationDashboardVariables = { identifier: organizationIdentifier };
-      getOrganizationDashboard({ variables });
-    }
-  }, [organizationIdentifier]);
+  const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) => {
+    setState((prevState) => ({ ...prevState, page }));
+  };
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
@@ -126,6 +134,16 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
               </Box>
             </Paper>
           ))}
+          {state.organization ? (
+            <TablePagination
+              component="div"
+              count={state.organization.projects.pageInfo.count}
+              page={state.page}
+              onPageChange={handlePageChange}
+              rowsPerPage={state.rowsPerPage}
+              rowsPerPageOptions={[state.rowsPerPage]}
+            />
+          ) : null}
         </div>
       </Main>
       <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />

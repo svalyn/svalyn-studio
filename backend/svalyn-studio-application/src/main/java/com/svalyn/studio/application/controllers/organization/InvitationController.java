@@ -34,7 +34,6 @@ import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultEdge;
 import graphql.relay.Edge;
 import graphql.relay.Relay;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -56,28 +55,28 @@ public class InvitationController {
     }
 
     @SchemaMapping(typeName = "Viewer")
-    public Connection<InvitationDTO> invitations() {
-        var page = this.invitationService.findAll(PageRequest.of(0, 20));
-        var edges = page.stream().map(invitation -> {
+    public Connection<InvitationDTO> invitations(@Argument int page, @Argument int rowsPerPage) {
+        var pageData = this.invitationService.findAll(page, rowsPerPage);
+        var edges = pageData.stream().map(invitation -> {
             var value = new Relay().toGlobalId("Invitation", invitation.id().toString());
             var cursor = new DefaultConnectionCursor(value);
             Edge<InvitationDTO> edge = new DefaultEdge<>(invitation, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, page.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
     @SchemaMapping(typeName = "Organization")
-    public Connection<InvitationDTO> invitations(OrganizationDTO organization) {
-        var page = this.invitationService.findAll(organization, PageRequest.of(0, 20));
-        var edges = page.stream().map(invitation -> {
+    public Connection<InvitationDTO> invitations(OrganizationDTO organization, @Argument int page, @Argument int rowsPerPage) {
+        var pageData = this.invitationService.findAll(organization, page, rowsPerPage);
+        var edges = pageData.stream().map(invitation -> {
             var value = new Relay().toGlobalId("Invitation", invitation.id().toString());
             var cursor = new DefaultConnectionCursor(value);
             Edge<InvitationDTO> edge = new DefaultEdge<>(invitation, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, page.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
