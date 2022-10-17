@@ -23,6 +23,8 @@ export interface InvitationsProps {
 
 export interface InvitationsState {
   organization: Organization | null;
+  page: number;
+  rowsPerPage: number;
   message: string | null;
 }
 
@@ -32,6 +34,11 @@ export interface Organization {
 
 export interface OrganizationInvitationsConnection {
   edges: OrganizationInvitationsEdge[];
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  count: number;
 }
 
 export interface OrganizationInvitationsEdge {
@@ -58,6 +65,8 @@ export interface Viewer {
 
 export interface GetOrganizationInvitationsVariables {
   identifier: string;
+  page: number;
+  rowsPerPage: number;
 }
 
 export interface RevokeInvitationData {

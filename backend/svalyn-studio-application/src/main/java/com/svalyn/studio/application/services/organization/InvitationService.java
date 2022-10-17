@@ -44,7 +44,7 @@ import com.svalyn.studio.domain.organization.repositories.IOrganizationRepositor
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,23 +80,24 @@ public class InvitationService implements IInvitationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<InvitationDTO> findAll(Pageable pageable) {
+    public Page<InvitationDTO> findAll(int page, int rowsPerPage) {
         var userId = UserIdProvider.get().getId();
         var optionalAccount = this.accountRepository.findById(userId);
         return optionalAccount.map(account -> {
-            var organizations = this.organizationRepository.findAllWhereInvited(userId, pageable.getOffset(), pageable.getPageSize());
+            var organizations = this.organizationRepository.findAllWhereInvited(userId, page, rowsPerPage);
+            var organizationsCount = this.organizationRepository.countAllWhereInvited(userId, page, rowsPerPage);
             var invitations = organizations.stream()
                     .flatMap(organization -> organization.getInvitations().stream()
                             .filter(invitation -> invitation.getMemberId().getId().equals(userId))
                             .map(invitation -> new InvitationDTO(invitation.getId(), organization.getId(), new Profile(account.getName(), account.getImageUrl()))))
                     .toList();
-            return new PageImpl<>(invitations);
+            return new PageImpl<>(invitations, PageRequest.of(page, rowsPerPage), organizationsCount);
         }).orElse(new PageImpl<>(List.of()));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<InvitationDTO> findAll(OrganizationDTO organization, Pageable pageable) {
+    public Page<InvitationDTO> findAll(OrganizationDTO organization, int page, int rowsPerPage) {
         var optionalOrganization = this.organizationRepository.findByIdentifier(organization.identifier());
         var invitations = optionalOrganization.map(Organization::getInvitations).orElse(Set.of());
         var sortedInvitations = invitations.stream()
@@ -105,7 +106,11 @@ public class InvitationService implements IInvitationService {
                         .map(account -> new InvitationDTO(invitation.getId(), organization.id(), new Profile(account.getName(), account.getImageUrl())))
                         .stream())
                 .toList();
-        return new PageImpl<>(sortedInvitations);
+
+        var fromIndex = Math.min(page * rowsPerPage, sortedInvitations.size());
+        var toIndex = Math.min(fromIndex + rowsPerPage, sortedInvitations.size());
+        var subList = sortedInvitations.subList(fromIndex, toIndex);
+        return new PageImpl<>(subList, PageRequest.of(page, rowsPerPage), sortedInvitations.size());
     }
 
     @Override

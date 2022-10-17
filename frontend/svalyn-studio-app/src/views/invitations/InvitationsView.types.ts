@@ -19,6 +19,8 @@
 
 export interface InvitationsViewState {
   viewer: Viewer | null;
+  page: number;
+  rowsPerPage: number;
   message: string | null;
 }
 
@@ -32,6 +34,11 @@ export interface Viewer {
 
 export interface ViewerInvitationsConnection {
   edges: ViewerInvitationsEdge[];
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  count: number;
 }
 
 export interface ViewerInvitationsEdge {
@@ -48,7 +55,10 @@ export interface Organization {
   name: string;
 }
 
-export interface GetInvitationsVariables {}
+export interface GetInvitationsVariables {
+  page: number;
+  rowsPerPage: number;
+}
 
 export interface AcceptInvitationData {
   acceptInvitation: AcceptInvitationPayload;

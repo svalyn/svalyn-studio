@@ -61,15 +61,15 @@ public class ProjectController {
     }
 
     @SchemaMapping(typeName = "Organization")
-    public Connection<ProjectDTO> projects(OrganizationDTO organization) {
-        var page = this.projectService.findAllByOrganizationId(organization.id());
-        var edges = page.stream().map(project -> {
+    public Connection<ProjectDTO> projects(OrganizationDTO organization, @Argument int page, @Argument int rowsPerPage) {
+        var pageData = this.projectService.findAllByOrganizationId(organization.id(), page, rowsPerPage);
+        var edges = pageData.stream().map(project -> {
             var value = new Relay().toGlobalId("Project", project.identifier());
             var cursor = new DefaultConnectionCursor(value);
             Edge<ProjectDTO> edge = new DefaultEdge<>(project, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, page.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

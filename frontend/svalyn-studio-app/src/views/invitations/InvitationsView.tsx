@@ -27,6 +27,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
+import TablePagination from '@mui/material/TablePagination';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -46,9 +47,9 @@ import {
 } from './InvitationsView.types';
 
 const getInvitationsQuery = gql`
-  query getInvitations {
+  query getInvitations($page: Int!, $rowsPerPage: Int!) {
     viewer {
-      invitations {
+      invitations(page: $page, rowsPerPage: $rowsPerPage) {
         edges {
           node {
             id
@@ -57,6 +58,9 @@ const getInvitationsQuery = gql`
               name
             }
           }
+        }
+        pageInfo {
+          count
         }
       }
     }
@@ -86,10 +90,15 @@ const declineInvitationMutation = gql`
 export const InvitationsView = () => {
   const [state, setState] = useState<InvitationsViewState>({
     viewer: null,
+    page: 0,
+    rowsPerPage: 20,
     message: null,
   });
 
-  const { loading, data, error, refetch } = useQuery<GetInvitationsData, GetInvitationsVariables>(getInvitationsQuery);
+  const variables: GetInvitationsVariables = { page: state.page, rowsPerPage: state.rowsPerPage };
+  const { loading, data, error, refetch } = useQuery<GetInvitationsData, GetInvitationsVariables>(getInvitationsQuery, {
+    variables,
+  });
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -108,7 +117,6 @@ export const InvitationsView = () => {
     if (!acceptInvitationLoading) {
       if (acceptInvitationData) {
         if (acceptInvitationData.acceptInvitation.__typename === 'AcceptInvitationSuccessPayload') {
-          const variables: GetInvitationsVariables = {};
           refetch(variables);
         } else if (acceptInvitationData.acceptInvitation.__typename === 'ErrorPayload') {
           const { message } = acceptInvitationData.acceptInvitation as ErrorPayload;
@@ -140,7 +148,6 @@ export const InvitationsView = () => {
     if (!declineInvitationLoading) {
       if (declineInvitationData) {
         if (declineInvitationData.declineInvitation.__typename === 'DeclineInvitationSuccessPayload') {
-          const variables: GetInvitationsVariables = {};
           refetch(variables);
         } else if (declineInvitationData.declineInvitation.__typename === 'ErrorPayload') {
           const { message } = declineInvitationData.declineInvitation as ErrorPayload;
@@ -164,6 +171,10 @@ export const InvitationsView = () => {
     declineInvitation({ variables });
   };
 
+  const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) => {
+    setState((prevState) => ({ ...prevState, page }));
+  };
+
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const hasInvitations = !!data?.viewer && (data?.viewer?.invitations.edges ?? []).length > 0;
@@ -177,7 +188,7 @@ export const InvitationsView = () => {
           <Typography variant="h4" gutterBottom>
             Invitations
           </Typography>
-          {hasInvitations ? (
+          {state.viewer && hasInvitations ? (
             <Paper>
               <List>
                 {invitations.map((invitation) => {
@@ -206,6 +217,14 @@ export const InvitationsView = () => {
                   );
                 })}
               </List>
+              <TablePagination
+                component="div"
+                count={state.viewer.invitations.pageInfo.count}
+                page={state.page}
+                onPageChange={handlePageChange}
+                rowsPerPage={state.rowsPerPage}
+                rowsPerPageOptions={[state.rowsPerPage]}
+              />
             </Paper>
           ) : (
             <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>

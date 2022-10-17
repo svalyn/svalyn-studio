@@ -26,6 +26,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
@@ -44,10 +45,10 @@ import { MembershipsTableHead } from './MembershipsTableHead';
 import { MembershipsTableToolbar } from './MembershipsTableToolbar';
 
 const getOrganizationMembershipsQuery = gql`
-  query getOrganizationMemberships($identifier: ID!) {
+  query getOrganizationMemberships($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
     viewer {
       organization(identifier: $identifier) {
-        memberships {
+        memberships(page: $page, rowsPerPage: $rowsPerPage) {
           edges {
             node {
               id
@@ -56,6 +57,9 @@ const getOrganizationMembershipsQuery = gql`
                 imageUrl
               }
             }
+          }
+          pageInfo {
+            count
           }
         }
       }
@@ -77,10 +81,16 @@ export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
   const [state, setState] = useState<MembershipsState>({
     organization: null,
     selectedMembershipIds: [],
+    page: 0,
+    rowsPerPage: 10,
     message: null,
   });
 
-  const variables: GetOrganizationMembershipsVariables = { identifier: organizationIdentifier };
+  const variables: GetOrganizationMembershipsVariables = {
+    identifier: organizationIdentifier,
+    page: state.page,
+    rowsPerPage: state.rowsPerPage,
+  };
   const { loading, data, error, refetch } = useQuery<
     GetOrganizationMembershipsData,
     GetOrganizationMembershipsVariables
@@ -101,13 +111,6 @@ export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
     }
   }, [loading, data, error]);
 
-  useEffect(() => {
-    if (organizationIdentifier) {
-      const variables: GetOrganizationMembershipsVariables = { identifier: organizationIdentifier };
-      refetch(variables);
-    }
-  }, [organizationIdentifier]);
-
   const [
     revokeMemberships,
     { loading: revokeMembershipsLoading, data: revokeMembershipsData, error: revokeMembershipsError },
@@ -117,7 +120,6 @@ export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
       if (revokeMembershipsData) {
         const { revokeMemberships } = revokeMembershipsData;
         if (revokeMemberships.__typename === 'RevokeMembershipsSuccessPayload') {
-          const variables: GetOrganizationMembershipsVariables = { identifier: organizationIdentifier };
           refetch(variables);
         } else if (revokeMemberships.__typename === 'ErrorPayload') {
           const errorPayload = revokeMemberships as ErrorPayload;
@@ -177,13 +179,17 @@ export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
     });
   };
 
+  const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) => {
+    setState((prevState) => ({ ...prevState, page }));
+  };
+
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const hasMemberships = !!data?.viewer && (data?.viewer?.organization?.memberships.edges ?? []).length > 0;
   const memberships = state.organization?.memberships.edges.map((edge) => edge.node) ?? [];
   return (
     <>
-      {hasMemberships ? (
+      {state.organization && hasMemberships ? (
         <>
           <MembershipsTableToolbar
             onRevoke={handleRevoke}
@@ -221,6 +227,14 @@ export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
               </TableBody>
             </Table>
           </TableContainer>
+          <TablePagination
+            component="div"
+            count={state.organization.memberships.pageInfo.count}
+            page={state.page}
+            onPageChange={handlePageChange}
+            rowsPerPage={state.rowsPerPage}
+            rowsPerPageOptions={[state.rowsPerPage]}
+          />
         </>
       ) : (
         <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>

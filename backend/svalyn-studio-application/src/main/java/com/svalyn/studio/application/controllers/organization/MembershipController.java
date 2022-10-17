@@ -31,7 +31,6 @@ import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultEdge;
 import graphql.relay.Edge;
 import graphql.relay.Relay;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -54,15 +53,15 @@ public class MembershipController {
     }
 
     @SchemaMapping(typeName = "Organization")
-    public Connection<MembershipDTO> memberships(OrganizationDTO organization) {
-        var page = this.membershipService.findAll(organization, PageRequest.of(0, 20));
-        var edges = page.stream().map(membership -> {
+    public Connection<MembershipDTO> memberships(OrganizationDTO organization, @Argument int page, @Argument int rowsPerPage) {
+        var pageData = this.membershipService.findAll(organization, page, rowsPerPage);
+        var edges = pageData.stream().map(membership -> {
             var value = new Relay().toGlobalId("Membership", membership.id().toString());
             var cursor = new DefaultConnectionCursor(value);
             Edge<MembershipDTO> edge = new DefaultEdge<>(membership, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, page.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
