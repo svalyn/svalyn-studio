@@ -25,3 +25,12 @@ INSERT INTO invitation (id, organization_id, member_id, created_by, created_on, 
 
 INSERT INTO project (id, identifier, name, description, read_me, organization_id, created_by, created_on, last_modified_by, last_modified_on) VALUES
 ('c0167908-8030-4679-a855-c057012ef27c', 'mockproject', 'Mock Project', 'Project description', 'README', 'a9261e91-fb20-4d48-8731-d5297e441315', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-06 23:22:18.863949', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-06 23:22:18.863949');
+
+INSERT INTO resource (id, name, content, created_by, created_on, last_modified_by, last_modified_on) VALUES
+('7f67d4a4-c74e-4dee-94ae-29ac7ebc3d43', 'test.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-17 21:18:19.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-17 21:18:19.331943');
+
+INSERT INTO change_proposal (id, name, read_me, status, project_id, created_by, created_on, last_modified_by, last_modified_on) VALUES
+('60dd31a6-7e0c-47e9-af9f-b290e383822d', 'Initial contribution', 'README', 'OPEN', 'c0167908-8030-4679-a855-c057012ef27c', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 23:34:21.212', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 23:34:21.212');
+
+INSERT INTO change_proposal_resource (id, resource_id, change_proposal_id) VALUES
+('894e6af5-3ad6-4d81-955a-261f2448a403', '7f67d4a4-c74e-4dee-94ae-29ac7ebc3d43', '60dd31a6-7e0c-47e9-af9f-b290e383822d');

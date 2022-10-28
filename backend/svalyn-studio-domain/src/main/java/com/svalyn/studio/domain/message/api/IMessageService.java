@@ -28,6 +28,7 @@ public interface IMessageService {
     String cannotBeBlank(String fieldName);
     String alreadyExists(String type);
     String doesNotExist(String type);
+    String cannotBeEmpty(String type);
     String unauthorized();
     String tooLong(String fieldName);
 
@@ -50,6 +51,11 @@ public interface IMessageService {
 
         @Override
         public String doesNotExist(String type) {
+            return "";
+        }
+
+        @Override
+        public String cannotBeEmpty(String type) {
             return "";
         }
 

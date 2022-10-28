@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.application.controllers.project;
 
+import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalDTO;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
@@ -58,6 +59,11 @@ public class ProjectController {
     @SchemaMapping(typeName = "Viewer")
     public ProjectDTO project(@Argument String identifier) {
         return this.projectService.findByIdentifier(identifier).orElse(null);
+    }
+
+    @SchemaMapping(typeName = "ChangeProposal")
+    public ProjectDTO project(ChangeProposalDTO changeProposal) {
+        return this.projectService.findById(changeProposal.projectId()).orElse(null);
     }
 
     @SchemaMapping(typeName = "Organization")

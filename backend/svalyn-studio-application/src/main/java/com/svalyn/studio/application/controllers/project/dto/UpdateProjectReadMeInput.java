@@ -24,7 +24,7 @@ import com.svalyn.studio.application.controllers.dto.IInput;
 import java.util.Objects;
 
 /**
- * Input user to edit the README.
+ * Input used to edit the README.
  *
  * @param projectIdentifier The identifier of the project
  * @param content The new content
