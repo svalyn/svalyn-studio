@@ -17,6 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import DifferenceIcon from '@mui/icons-material/Difference';
 import HomeIcon from '@mui/icons-material/Home';
 import SettingsIcon from '@mui/icons-material/Settings';
 import List from '@mui/material/List';
@@ -45,6 +46,17 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
               <HomeIcon />
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem>
+        <ListItem selected={selectedPanel === 'ChangeProposals'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            component={RouterLink}
+            to={`/projects/${projectIdentifier}/changeproposals`}
+            sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
+              <DifferenceIcon />
             </ListItemIcon>
           </ListItemButton>
         </ListItem>

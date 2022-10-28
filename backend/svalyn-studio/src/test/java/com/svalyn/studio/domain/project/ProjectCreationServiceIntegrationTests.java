@@ -76,7 +76,7 @@ public class ProjectCreationServiceIntegrationTests extends AbstractIntegrationT
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JAMES_DOE)
     @DisplayName("Given a project, when it is persisted by a non member, then an error is returned")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void givenProject_whenPersistedByNonOrganization_thenAnErrorIsReturned() {
+    public void givenProject_whenPersistedByNonMember_thenAnErrorIsReturned() {
         var result = this.projectCreationService.createProject("mockorganization", "svalyn", "Svalyn", "Project description");
         assertThat(result).isInstanceOf(Failure.class);
         assertThat(this.domainEvents.getDomainEvents()).hasSize(0);

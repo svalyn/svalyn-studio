@@ -13,6 +13,7 @@ type Viewer {
   organizations: ViewerOrganizationsConnection!
   organization(identifier: ID!): Organization
   project(identifier: ID!): Project
+  changeProposal(id: ID!): ChangeProposal
 }
 
 type ViewerInvitationsConnection {
@@ -95,7 +96,46 @@ type Project {
   name: String!
   description: String!
   readMe: String!
+  changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
   organization: Organization!
+}
+
+type ProjectChangeProposalsConnection {
+  edges: [ProjectChangeProposalsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProjectChangeProposalsEdge {
+  node: ChangeProposal!
+}
+
+type ChangeProposal {
+  id: ID!
+  name: String!
+  readMe: String!
+  status: ChangeProposalStatus!
+  project: Project!
+  resources: ChangeProposalResourcesConnection!
+}
+
+enum ChangeProposalStatus {
+  OPEN
+  INTEGRATED
+  CLOSED
+}
+
+type ChangeProposalResourcesConnection {
+  edges: [ChangeProposalResourcesEdge!]!
+}
+
+type ChangeProposalResourcesEdge {
+  node: ChangeProposalResource!
+}
+
+type ChangeProposalResource {
+  id: ID!
+  name: String!
+  content: String!
 }
 
 type Mutation {
@@ -113,6 +153,10 @@ type Mutation {
   updateProjectDescription(input: UpdateProjectDescriptionInput!): UpdateProjectDescriptionPayload!
   updateProjectReadMe(input: UpdateProjectReadMeInput!): UpdateProjectReadMePayload!
   deleteProject(input: DeleteProjectInput!): DeleteProjectPayload!
+  createChangeProposal(input: CreateChangeProposalInput!): CreateChangeProposalPayload!
+  updateChangeProposalReadMe(input: UpdateChangeProposalReadMeInput!): UpdateChangeProposalReadMePayload!
+  updateChangeProposalStatus(input: UpdateChangeProposalStatusInput!): UpdateChangeProposalStatusPayload!
+  deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload!
 }
 
 type ErrorPayload {
@@ -269,5 +313,49 @@ input DeleteProjectInput {
 union DeleteProjectPayload = ErrorPayload | DeleteProjectSuccessPayload
 
 type DeleteProjectSuccessPayload {
+  id: ID!
+}
+
+input CreateChangeProposalInput {
+  projectIdentifier: ID!
+  name: String!
+  resourceIds: [ID!]!
+}
+
+union CreateChangeProposalPayload = ErrorPayload | CreateChangeProposalSuccessPayload
+
+type CreateChangeProposalSuccessPayload {
+  changeProposal: ChangeProposal!
+}
+
+input UpdateChangeProposalReadMeInput {
+  changeProposalId: ID!
+  content: String!
+}
+
+union UpdateChangeProposalReadMePayload = ErrorPayload | UpdateChangeProposalReadMeSuccessPayload
+
+type UpdateChangeProposalReadMeSuccessPayload {
+  id: ID!
+}
+
+input UpdateChangeProposalStatusInput {
+  changeProposalId: ID!
+  status: ChangeProposalStatus!
+}
+
+union UpdateChangeProposalStatusPayload = ErrorPayload | UpdateChangeProposalStatusSuccessPayload
+
+type UpdateChangeProposalStatusSuccessPayload {
+  changeProposal: ChangeProposal!
+}
+
+input DeleteChangeProposalsInput {
+  changeProposalIds: [ID!]!
+}
+
+union DeleteChangeProposalsPayload = ErrorPayload | DeleteChangeProposalsSuccessPayload
+
+type DeleteChangeProposalsSuccessPayload {
   id: ID!
 }

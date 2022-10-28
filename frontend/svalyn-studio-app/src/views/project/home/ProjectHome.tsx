@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import DownloadIcon from '@mui/icons-material/Download';
 import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
@@ -30,9 +30,17 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link as RouterLink } from 'react-router-dom';
+import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
-import { EditReadMeDialog } from './EditReadMeDialog';
-import { GetProjectHomeData, GetProjectHomeVariables, ProjectHomeProps, ProjectHomeState } from './ProjectHome.types';
+import {
+  ErrorPayload,
+  GetProjectHomeData,
+  GetProjectHomeVariables,
+  ProjectHomeProps,
+  ProjectHomeState,
+  UpdateProjectReadMeData,
+  UpdateProjectReadMeVariables,
+} from './ProjectHome.types';
 
 const getProjectHomeQuery = gql`
   query getProjectHome($identifier: ID!) {
@@ -45,6 +53,16 @@ const getProjectHomeQuery = gql`
           identifier
           name
         }
+      }
+    }
+  }
+`;
+
+const updateProjectReadMeMutation = gql`
+  mutation updateProjectReadMe($input: UpdateProjectReadMeInput!) {
+    updateProjectReadMe(input: $input) {
+      ... on ErrorPayload {
+        message
       }
     }
   }
@@ -84,7 +102,42 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
   }, [loading, data, error]);
 
   const openReadMeDialog = () => setState((prevState) => ({ ...prevState, editReadMeDialogOpen: true }));
-  const closeReadMeDialog = () => refetch(variables);
+  const closeReadMeDialog = () => setState((prevState) => ({ ...prevState, editReadMeDialogOpen: false }));
+
+  const [
+    updateProjectReadMe,
+    { loading: updateProjectReadMeLoading, data: updateProjectReadMeData, error: updateProjectReadMeError },
+  ] = useMutation<UpdateProjectReadMeData, UpdateProjectReadMeVariables>(updateProjectReadMeMutation);
+  useEffect(() => {
+    if (!updateProjectReadMeLoading) {
+      if (updateProjectReadMeData) {
+        const { updateProjectReadMe } = updateProjectReadMeData;
+        if (updateProjectReadMe.__typename === 'UpdateProjectReadMeSuccessPayload') {
+          refetch(variables);
+        } else if (updateProjectReadMe.__typename === 'ErrorPayload') {
+          const errorPayload = updateProjectReadMe as ErrorPayload;
+          setState((prevState) => ({ ...prevState, message: errorPayload.message, editReadMeDialogOpen: false }));
+        }
+      }
+      if (updateProjectReadMeError) {
+        setState((prevState) => ({
+          ...prevState,
+          message: updateProjectReadMeError.message,
+          editReadMeDialogOpen: false,
+        }));
+      }
+    }
+  }, [updateProjectReadMeLoading, updateProjectReadMeData, updateProjectReadMeError]);
+
+  const handleReadMeUpdate = (value: string) => {
+    const variables: UpdateProjectReadMeVariables = {
+      input: {
+        projectIdentifier,
+        content: value,
+      },
+    };
+    updateProjectReadMe({ variables });
+  };
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
@@ -143,10 +196,10 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
                   </Box>
                 </Paper>
                 <EditReadMeDialog
-                  projectIdentifier={projectIdentifier}
                   content={readMe}
                   open={state.editReadMeDialogOpen}
-                  onClose={closeReadMeDialog}
+                  onCancel={closeReadMeDialog}
+                  onUpdate={handleReadMeUpdate}
                 />
               </>
             </Grid>

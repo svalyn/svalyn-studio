@@ -17,35 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface EditReadMeDialogProps {
-  projectIdentifier: string;
-  open: boolean;
-  content: string;
-  onClose: () => void;
-}
+package com.svalyn.studio.domain.resource.services.api;
 
-export interface EditReadMeDialogState {
-  value: string;
-}
+import com.svalyn.studio.domain.IResult;
+import com.svalyn.studio.domain.resource.Resource;
 
-export interface UpdateProjectReadMeData {
-  updateProjectReadMe: UpdateProjectReadMePayload;
-}
+import java.util.List;
+import java.util.Map;
 
-export interface UpdateProjectReadMePayload {
-  __typename: string;
-}
-
-export interface ErrorPayload extends UpdateProjectReadMePayload {
-  __typename: 'ErrorPayload';
-  message: string;
-}
-
-export interface UpdateProjectReadMeVariables {
-  input: UpdateProjectReadMeInput;
-}
-
-export interface UpdateProjectReadMeInput {
-  projectIdentifier: string;
-  content: string;
+/**
+ * Used to create resources.
+ *
+ * @author sbegaudeau
+ */
+public interface IResourceCreationService {
+    IResult<List<Resource>> createResources(Map<String, byte[]> resourceDescriptions);
 }

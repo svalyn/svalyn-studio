@@ -55,6 +55,11 @@ public class MessageService implements IMessageService {
     }
 
     @Override
+    public String cannotBeEmpty(String type) {
+        return this.messageSourceAccessor.getMessage("Error.cannotBeEmpty", new Object[] { type });
+    }
+
+    @Override
     public String unauthorized() {
         return this.messageSourceAccessor.getMessage("Error.unauthorized");
     }

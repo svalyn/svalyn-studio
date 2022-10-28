@@ -26,6 +26,7 @@ import java.util.UUID;
  * The project DTO for the GraphQL layer.
  *
  * @param organizationId The id of the organization
+ * @param id The id of the project
  * @param identifier The identifier
  * @param name The name
  * @param description The description
@@ -33,9 +34,10 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ProjectDTO(UUID organizationId, String identifier, String name, String description, String readMe) {
-    public ProjectDTO(UUID organizationId, String identifier, String name, String description, String readMe) {
+public record ProjectDTO(UUID organizationId, UUID id, String identifier, String name, String description, String readMe) {
+    public ProjectDTO(UUID organizationId, UUID id, String identifier, String name, String description, String readMe) {
         this.organizationId = Objects.requireNonNull(organizationId);
+        this.id = Objects.requireNonNull(id);
         this.identifier = Objects.requireNonNull(identifier);
         this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);

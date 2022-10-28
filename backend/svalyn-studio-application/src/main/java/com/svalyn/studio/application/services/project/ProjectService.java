@@ -76,13 +76,19 @@ public class ProjectService implements IProjectService {
     @Override
     public Page<ProjectDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage) {
         return this.projectRepository.findAll(PageRequest.of(page, rowsPerPage, Sort.by(Sort.Direction.DESC, "createdOn")))
-                .map(project -> new ProjectDTO(project.getOrganization().getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
+                .map(project -> new ProjectDTO(project.getOrganization().getId(), project.getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<ProjectDTO> findById(UUID projectId) {
+        return this.projectRepository.findById(projectId).map(project -> new ProjectDTO(project.getOrganization().getId(), project.getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<ProjectDTO> findByIdentifier(String identifier) {
-        return this.projectRepository.findByIdentifier(identifier).map(project -> new ProjectDTO(project.getOrganization().getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
+        return this.projectRepository.findByIdentifier(identifier).map(project -> new ProjectDTO(project.getOrganization().getId(), project.getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
     }
 
     @Override
@@ -94,7 +100,7 @@ public class ProjectService implements IProjectService {
         if (result instanceof Failure<Project> failure) {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Project> success) {
-            payload = new CreateProjectSuccessPayload(new ProjectDTO(success.data().getOrganization().getId(), success.data().getIdentifier(), success.data().getName(), success.data().getDescription(), success.data().getReadMe()));
+            payload = new CreateProjectSuccessPayload(new ProjectDTO(success.data().getOrganization().getId(), success.data().getId(), success.data().getIdentifier(), success.data().getName(), success.data().getDescription(), success.data().getReadMe()));
         }
 
         return payload;

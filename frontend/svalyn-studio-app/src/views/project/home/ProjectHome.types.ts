@@ -53,3 +53,25 @@ export interface Organization {
 export interface GetProjectHomeVariables {
   identifier: string;
 }
+
+export interface UpdateProjectReadMeData {
+  updateProjectReadMe: UpdateProjectReadMePayload;
+}
+
+export interface UpdateProjectReadMePayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends UpdateProjectReadMePayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface UpdateProjectReadMeVariables {
+  input: UpdateProjectReadMeInput;
+}
+
+export interface UpdateProjectReadMeInput {
+  projectIdentifier: string;
+  content: string;
+}

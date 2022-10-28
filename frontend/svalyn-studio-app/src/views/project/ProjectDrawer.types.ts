@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export type ProjectViewPanel = 'Home' | 'Settings';
+export type ProjectViewPanel = 'Home' | 'ChangeProposals' | 'Settings';
 
 export interface ProjectDrawerProps {
   projectIdentifier: string;

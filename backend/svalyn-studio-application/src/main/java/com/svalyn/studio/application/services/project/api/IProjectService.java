@@ -39,6 +39,8 @@ import java.util.UUID;
 public interface IProjectService {
     Page<ProjectDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage);
 
+    Optional<ProjectDTO> findById(UUID projectId);
+
     Optional<ProjectDTO> findByIdentifier(String identifier);
 
     IPayload createProject(CreateProjectInput input);

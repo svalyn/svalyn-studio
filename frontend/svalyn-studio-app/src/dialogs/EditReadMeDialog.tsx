@@ -17,7 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation } from '@apollo/client';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -25,26 +24,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { useEffect, useState } from 'react';
-import {
-  EditReadMeDialogProps,
-  EditReadMeDialogState,
-  ErrorPayload,
-  UpdateProjectReadMeData,
-  UpdateProjectReadMeVariables,
-} from './EditReadMeDialog.types';
+import { useState } from 'react';
+import { EditReadMeDialogProps, EditReadMeDialogState } from './EditReadMeDialog.types';
 
-const updateProjectReadMeMutation = gql`
-  mutation updateProjectReadMe($input: UpdateProjectReadMeInput!) {
-    updateProjectReadMe(input: $input) {
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
-
-export const EditReadMeDialog = ({ projectIdentifier, open, content, onClose }: EditReadMeDialogProps) => {
+export const EditReadMeDialog = ({ open, content, onCancel, onUpdate }: EditReadMeDialogProps) => {
   const [state, setState] = useState<EditReadMeDialogState>({ value: content });
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
@@ -54,39 +37,8 @@ export const EditReadMeDialog = ({ projectIdentifier, open, content, onClose }: 
     setState((prevState) => ({ ...prevState, value }));
   };
 
-  const [updateProjectReadMe, { loading, data, error }] = useMutation<
-    UpdateProjectReadMeData,
-    UpdateProjectReadMeVariables
-  >(updateProjectReadMeMutation);
-  useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const { updateProjectReadMe } = data;
-        if (updateProjectReadMe.__typename === 'UpdateProjectReadMeSuccessPayload') {
-          onClose();
-        } else if (updateProjectReadMe.__typename === 'ErrorPayload') {
-          const errorPayload = updateProjectReadMe as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message, editReadMeDialogOpen: false }));
-        }
-      }
-      if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message, editReadMeDialogOpen: false }));
-      }
-    }
-  }, [loading, data, error]);
-
-  const handleUpdate: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: UpdateProjectReadMeVariables = {
-      input: {
-        projectIdentifier,
-        content: state.value,
-      },
-    };
-    updateProjectReadMe({ variables });
-  };
-
   return (
-    <Dialog open={open} scroll="paper" onClose={onClose} keepMounted={false} maxWidth="md" fullWidth>
+    <Dialog open={open} scroll="paper" onClose={onCancel} keepMounted={false} maxWidth="md" fullWidth>
       <DialogTitle>README</DialogTitle>
       <DialogContent dividers>
         <DialogContentText>
@@ -103,8 +55,8 @@ export const EditReadMeDialog = ({ projectIdentifier, open, content, onClose }: 
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleUpdate}>Update</Button>
+        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={() => onUpdate(state.value)}>Update</Button>
       </DialogActions>
     </Dialog>
   );

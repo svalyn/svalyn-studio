@@ -20,11 +20,13 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ChangeProposalView } from '../views/changeproposal/ChangeProposalView';
 import { ErrorView } from '../views/error/ErrorView';
 import { HelpView } from '../views/help/HelpView';
 import { HomeView } from '../views/home/HomeView';
 import { InvitationsView } from '../views/invitations/InvitationsView';
 import { LoginView } from '../views/login/LoginView';
+import { NewChangeProposalView } from '../views/new-changeproposal/NewChangeProposalView';
 import { NewOrganizationView } from '../views/new-organization/NewOrganizationView';
 import { NotFoundView } from '../views/notfound/NotFoundView';
 import { OAuth2RedirectView } from '../views/oauth2redirect/OAuth2RedirectView';
@@ -42,12 +44,16 @@ export const App = () => {
         <AuthenticationRedirectionBoundary>
           <Routes>
             <Route path="/" element={<HomeView />} />
+            <Route path="/new/organization" element={<NewOrganizationView />} />
             <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
             <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
+            <Route path="/projects/:projectIdentifier/changeproposals" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
-            <Route path="/new/organization" element={<NewOrganizationView />} />
+            <Route path="/projects/:projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
+            <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />
+            <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
             <Route path="/login" element={<LoginView />} />
             <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
             <Route path="/profile" element={<ProfileView />} />
