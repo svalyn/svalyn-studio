@@ -37,7 +37,14 @@ export interface Project {
   identifier: string;
   name: string;
   description: string;
+  organization: Organization;
 }
+
+export interface Organization {
+  role: MembershipRole;
+}
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface GetProjectVariables {
   identifier: string;

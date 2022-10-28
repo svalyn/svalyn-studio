@@ -20,4 +20,7 @@
 export interface MembershipsTableToolbarProps {
   selectedMembershipsCount: number;
   onRevoke: () => void;
+  role: MembershipRole;
 }
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';

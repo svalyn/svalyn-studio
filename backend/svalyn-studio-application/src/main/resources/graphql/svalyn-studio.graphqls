@@ -34,11 +34,17 @@ type ViewerOrganizationsEdge {
 
 type Organization {
   identifier: ID!
-  description: String!
   name: String!
+  role: MembershipRole!
   invitations(page: Int!, rowsPerPage: Int!): OrganizationInvitationsConnection!
   memberships(page: Int!, rowsPerPage: Int!): OrganizationMembershipsConnection!
   projects(page: Int!, rowsPerPage: Int!): OrganizationProjectsConnection!
+}
+
+enum MembershipRole {
+  ADMIN
+  MEMBER
+  NONE
 }
 
 type OrganizationInvitationsConnection {

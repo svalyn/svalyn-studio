@@ -33,6 +33,7 @@ const getOrganizationQuery = gql`
       organization(identifier: $identifier) {
         identifier
         name
+        role
       }
     }
   }

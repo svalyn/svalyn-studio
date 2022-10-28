@@ -19,7 +19,10 @@
 
 export interface ProjectSettingsProps {
   projectIdentifier: string;
+  role: MembershipRole;
 }
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface ProjectSettingsState {
   name: string;

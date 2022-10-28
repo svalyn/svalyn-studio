@@ -59,7 +59,7 @@ const updateProjectDescriptionMutation = gql`
   }
 `;
 
-export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => {
+export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProps) => {
   const [state, setState] = useState<ProjectSettingsState>({
     name: '',
     description: '',
@@ -192,8 +192,14 @@ export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => 
                 value={state.name}
                 onChange={handleNameChange}
                 sx={{ flexGrow: '1' }}
+                disabled={role === 'NONE'}
               />
-              <Button variant="outlined" sx={{ whiteSpace: 'nowrap' }} onClick={handleUpdateProjectName}>
+              <Button
+                variant="outlined"
+                sx={{ whiteSpace: 'nowrap' }}
+                onClick={handleUpdateProjectName}
+                disabled={role === 'NONE'}
+              >
                 Update Name
               </Button>
             </Box>
@@ -219,8 +225,9 @@ export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => 
                 value={state.description}
                 onChange={handleDescriptionChange}
                 sx={{ flexGrow: '1' }}
+                disabled={role === 'NONE'}
               />
-              <Button variant="outlined" onClick={handleUpdateProjectDescription}>
+              <Button variant="outlined" onClick={handleUpdateProjectDescription} disabled={role === 'NONE'}>
                 Update Description
               </Button>
             </Box>
@@ -231,7 +238,7 @@ export const ProjectSettings = ({ projectIdentifier }: ProjectSettingsProps) => 
               Delete this project
             </Typography>
             <Typography gutterBottom>Once you delete a project, there is no going back. Please be certain.</Typography>
-            <Button variant="outlined" onClick={openDeleteProjectDialog}>
+            <Button variant="outlined" onClick={openDeleteProjectDialog} disabled={role === 'NONE'}>
               Delete Project
             </Button>
           </Paper>

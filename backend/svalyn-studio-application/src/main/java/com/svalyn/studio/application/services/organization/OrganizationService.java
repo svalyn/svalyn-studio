@@ -33,10 +33,12 @@ import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganiza
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
+import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationCreationService;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationDeletionService;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,26 +65,35 @@ public class OrganizationService implements IOrganizationService {
 
     private final IOrganizationDeletionService organizationDeletionService;
 
-    public OrganizationService(IOrganizationRepository organizationRepository, IOrganizationCreationService organizationCreationService, IOrganizationUpdateService organizationUpdateService, IOrganizationDeletionService organizationDeletionService) {
+    private final IOrganizationPermissionService organizationPermissionService;
+
+    public OrganizationService(IOrganizationRepository organizationRepository, IOrganizationCreationService organizationCreationService, IOrganizationUpdateService organizationUpdateService, IOrganizationDeletionService organizationDeletionService, IOrganizationPermissionService organizationPermissionService) {
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.organizationCreationService = Objects.requireNonNull(organizationCreationService);
         this.organizationUpdateService = Objects.requireNonNull(organizationUpdateService);
         this.organizationDeletionService = Objects.requireNonNull(organizationDeletionService);
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
     }
 
     @Override
     public Page<OrganizationDTO> findAll() {
-        return this.organizationRepository.findAll(PageRequest.of(0, 20)).map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName()));
+        var userId = UserIdProvider.get().getId();
+        return this.organizationRepository.findAll(PageRequest.of(0, 20))
+                .map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName(), this.organizationPermissionService.role(userId, organization)));
     }
 
     @Override
     public Optional<OrganizationDTO> findById(UUID id) {
-        return this.organizationRepository.findById(id).map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName()));
+        var userId = UserIdProvider.get().getId();
+        return this.organizationRepository.findById(id)
+                .map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName(), this.organizationPermissionService.role(userId, organization)));
     }
 
     @Override
     public Optional<OrganizationDTO> findByIdentifier(String identifier) {
-        return this.organizationRepository.findByIdentifier(identifier).map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName()));
+        var userId = UserIdProvider.get().getId();
+        return this.organizationRepository.findByIdentifier(identifier)
+                .map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName(), this.organizationPermissionService.role(userId, organization)));
     }
 
     @Override
@@ -94,7 +105,8 @@ public class OrganizationService implements IOrganizationService {
         if (result instanceof Failure<Organization> failure) {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Organization> success) {
-            payload = new CreateOrganizationSuccessPayload(new OrganizationDTO(success.data().getId(), success.data().getIdentifier(), success.data().getName()));
+            var userId = UserIdProvider.get().getId();
+            payload = new CreateOrganizationSuccessPayload(new OrganizationDTO(success.data().getId(), success.data().getIdentifier(), success.data().getName(), this.organizationPermissionService.role(userId, success.data())));
         }
         return payload;
     }

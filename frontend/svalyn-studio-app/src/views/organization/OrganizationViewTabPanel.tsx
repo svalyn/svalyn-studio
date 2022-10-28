@@ -98,6 +98,7 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
             size="small"
             endIcon={<AddIcon />}
             onClick={openNewProjectDialog}
+            disabled={organization.role === 'NONE'}
           >
             New Project
           </Button>
@@ -106,10 +107,14 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
           {state.activeTab === 0 && <OrganizationDashboard organizationIdentifier={organization.identifier} />}
         </div>
         <div role="tabpanel" hidden={state.activeTab !== 1} id="tabpanel-1" aria-labelledby="tab-1">
-          {state.activeTab === 1 && <OrganizationMembers organizationIdentifier={organization.identifier} />}
+          {state.activeTab === 1 && (
+            <OrganizationMembers organizationIdentifier={organization.identifier} role={organization.role} />
+          )}
         </div>
         <div role="tabpanel" hidden={state.activeTab !== 2} id="tabpanel-2" aria-labelledby="tab-2">
-          {state.activeTab === 2 && <OrganizationSettings organizationIdentifier={organization.identifier} />}
+          {state.activeTab === 2 && (
+            <OrganizationSettings organizationIdentifier={organization.identifier} role={organization.role} />
+          )}
         </div>
       </div>
       {state.newProjectDialogOpen ? (

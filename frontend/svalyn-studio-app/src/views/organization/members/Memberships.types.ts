@@ -19,7 +19,10 @@
 
 export interface MembershipsProps {
   organizationIdentifier: string;
+  role: MembershipRole;
 }
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface MembershipsState {
   organization: Organization | null;

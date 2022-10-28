@@ -17,18 +17,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface OrganizationMembersProps {
-  organizationIdentifier: string;
-  role: MembershipRole;
+package com.svalyn.studio.domain.organization.services;
+
+import com.svalyn.studio.domain.organization.Membership;
+import com.svalyn.studio.domain.organization.MembershipRole;
+import com.svalyn.studio.domain.organization.Organization;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+/**
+ * Used to compute the permission of a user on the organization.
+ *
+ * @author sbegaudeau
+ */
+@Service
+public class OrganizationPermissionService implements IOrganizationPermissionService {
+    @Override
+    public MembershipRole role(UUID userId, Organization organization) {
+        return organization.getMemberships().stream()
+                .filter(membership -> membership.getMemberId().getId().equals(userId))
+                .findFirst()
+                .map(Membership::getRole)
+                .orElse(MembershipRole.NONE);
+    }
 }
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface OrganizationMembersState {
-  tab: OrganizationMemberTab;
-  inviteMemberDialogOpen: boolean;
-  leaveOrganizationDialogOpen: boolean;
-  timestamp: number;
-}
-
-export type OrganizationMemberTab = 'Memberships' | 'Invitations';

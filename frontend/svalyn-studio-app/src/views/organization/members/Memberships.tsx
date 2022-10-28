@@ -77,7 +77,7 @@ const revokeMembershipsMutation = gql`
   }
 `;
 
-export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
+export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) => {
   const [state, setState] = useState<MembershipsState>({
     organization: null,
     selectedMembershipIds: [],
@@ -194,6 +194,7 @@ export const Memberships = ({ organizationIdentifier }: MembershipsProps) => {
           <MembershipsTableToolbar
             onRevoke={handleRevoke}
             selectedMembershipsCount={state.selectedMembershipIds.length}
+            role={role}
           />
           <TableContainer component={Paper} variant="outlined">
             <Table>

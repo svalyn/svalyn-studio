@@ -19,7 +19,10 @@
 
 export interface ProjectHomeProps {
   projectIdentifier: string;
+  role: MembershipRole;
 }
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface ProjectHomeState {
   project: Project | null;

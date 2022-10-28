@@ -37,6 +37,9 @@ const getProjectQuery = gql`
         identifier
         name
         description
+        organization {
+          role
+        }
       }
     }
   }
@@ -93,10 +96,12 @@ export const ProjectView = () => {
   }
 
   let panelElement = null;
-  if (projectIdentifier && state.panel === 'Home') {
-    panelElement = <ProjectHome projectIdentifier={projectIdentifier} />;
-  } else if (projectIdentifier && state.panel === 'Settings') {
-    panelElement = <ProjectSettings projectIdentifier={projectIdentifier} />;
+  if (state.project && state.panel === 'Home') {
+    panelElement = <ProjectHome projectIdentifier={state.project.identifier} role={state.project.organization.role} />;
+  } else if (state.project && state.panel === 'Settings') {
+    panelElement = (
+      <ProjectSettings projectIdentifier={state.project.identifier} role={state.project.organization.role} />
+    );
   }
 
   return (
