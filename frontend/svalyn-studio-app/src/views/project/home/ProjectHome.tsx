@@ -56,7 +56,7 @@ const trimLines = (content: string): string =>
     .map((line) => line.trim())
     .join('\n');
 
-export const ProjectHome = ({ projectIdentifier }: ProjectHomeProps) => {
+export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
   const [state, setState] = useState<ProjectHomeState>({
     project: null,
     editReadMeDialogOpen: false,
@@ -129,7 +129,7 @@ export const ProjectHome = ({ projectIdentifier }: ProjectHomeProps) => {
                   >
                     <Typography variant="subtitle1">README.md</Typography>
                     <div>
-                      <IconButton sx={{ marginRight: '4px' }} onClick={openReadMeDialog}>
+                      <IconButton sx={{ marginRight: '4px' }} onClick={openReadMeDialog} disabled={role === 'NONE'}>
                         <EditIcon fontSize="small" />
                       </IconButton>
                       <IconButton component="a" download="README.md" href={URL.createObjectURL(new Blob([readMe]))}>

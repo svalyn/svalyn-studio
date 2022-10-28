@@ -24,7 +24,10 @@ export interface OrganizationViewTabPanelProps {
 export interface Organization {
   identifier: string;
   name: string;
+  role: MembershipRole;
 }
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface OrganizationViewTabPanelState {
   activeTab: number;

@@ -46,7 +46,7 @@ const updateOrganizationNameMutation = gql`
   }
 `;
 
-export const OrganizationSettings = ({ organizationIdentifier }: OrganizationSettingsProps) => {
+export const OrganizationSettings = ({ organizationIdentifier, role }: OrganizationSettingsProps) => {
   const [state, setState] = useState<OrganizationSettingsState>({
     name: '',
     message: null,
@@ -124,8 +124,9 @@ export const OrganizationSettings = ({ organizationIdentifier }: OrganizationSet
               fullWidth
               value={state.name}
               onChange={handleNameChange}
+              disabled={role !== 'ADMIN'}
             />
-            <Button variant="outlined" onClick={handleRename}>
+            <Button variant="outlined" onClick={handleRename} disabled={role !== 'ADMIN'}>
               Rename
             </Button>
           </Box>
@@ -137,7 +138,7 @@ export const OrganizationSettings = ({ organizationIdentifier }: OrganizationSet
           <Typography gutterBottom>
             Once you delete an organization, there is no going back. Please be certain.
           </Typography>
-          <Button variant="outlined" onClick={openDeleteOrganizationDialog}>
+          <Button variant="outlined" onClick={openDeleteOrganizationDialog} disabled={role !== 'ADMIN'}>
             Delete organization
           </Button>
         </Paper>

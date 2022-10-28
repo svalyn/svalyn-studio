@@ -25,5 +25,6 @@ package com.svalyn.studio.domain.organization;
  */
 public enum MembershipRole {
     ADMIN,
-    MEMBER
+    MEMBER,
+    NONE,
 }

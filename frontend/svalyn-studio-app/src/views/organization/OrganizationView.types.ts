@@ -26,7 +26,10 @@ export interface OrganizationViewState {
 export interface Organization {
   identifier: string;
   name: string;
+  role: MembershipRole;
 }
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface GetOrganizationData {
   viewer: Viewer;

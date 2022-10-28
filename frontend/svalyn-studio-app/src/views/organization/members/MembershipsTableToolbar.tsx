@@ -25,14 +25,19 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { MembershipsTableToolbarProps } from './MembershipsTableToolbar.types';
 
-export const MembershipsTableToolbar = ({ selectedMembershipsCount, onRevoke }: MembershipsTableToolbarProps) => {
+export const MembershipsTableToolbar = ({ selectedMembershipsCount, onRevoke, role }: MembershipsTableToolbarProps) => {
   return (
     <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Typography variant="h5">Members</Typography>
       {selectedMembershipsCount > 0 ? (
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
           <Tooltip title="Revoke membership">
-            <Button variant="outlined" sx={{ padding: '5px', minWidth: '15px' }} onClick={onRevoke}>
+            <Button
+              variant="outlined"
+              sx={{ padding: '5px', minWidth: '15px' }}
+              onClick={onRevoke}
+              disabled={role !== 'ADMIN'}
+            >
               <ClearIcon />
             </Button>
           </Tooltip>

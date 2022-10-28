@@ -17,18 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface OrganizationMembersProps {
-  organizationIdentifier: string;
-  role: MembershipRole;
+package com.svalyn.studio.domain.organization.services.api;
+
+import com.svalyn.studio.domain.organization.MembershipRole;
+import com.svalyn.studio.domain.organization.Organization;
+
+import java.util.UUID;
+
+/**
+ * Used to compute the permission of a user on the organization.
+ *
+ * @author sbegaudeau
+ */
+public interface IOrganizationPermissionService {
+    MembershipRole role(UUID userId, Organization organization);
 }
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface OrganizationMembersState {
-  tab: OrganizationMemberTab;
-  inviteMemberDialogOpen: boolean;
-  leaveOrganizationDialogOpen: boolean;
-  timestamp: number;
-}
-
-export type OrganizationMemberTab = 'Memberships' | 'Invitations';

@@ -77,7 +77,7 @@ const revokeInvitationMutation = gql`
   }
 `;
 
-export const Invitations = ({ organizationIdentifier }: InvitationsProps) => {
+export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) => {
   const [state, setState] = useState<InvitationsState>({
     organization: null,
     page: 0,
@@ -169,6 +169,7 @@ export const Invitations = ({ organizationIdentifier }: InvitationsProps) => {
                             variant="outlined"
                             sx={{ padding: '5px', minWidth: '15px' }}
                             onClick={() => handleRevokeInvitation(invitation)}
+                            disabled={role !== 'ADMIN'}
                           >
                             <ClearIcon />
                           </Button>

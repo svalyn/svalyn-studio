@@ -33,7 +33,7 @@ import { LeaveOrganizationDialog } from './LeaveOrganizationDialog';
 import { Memberships } from './Memberships';
 import { OrganizationMembersProps, OrganizationMembersState, OrganizationMemberTab } from './OrganizationMembers.types';
 
-export const OrganizationMembers = ({ organizationIdentifier }: OrganizationMembersProps) => {
+export const OrganizationMembers = ({ organizationIdentifier, role }: OrganizationMembersProps) => {
   const [state, setState] = useState<OrganizationMembersState>({
     tab: 'Memberships',
     inviteMemberDialogOpen: false,
@@ -98,16 +98,18 @@ export const OrganizationMembers = ({ organizationIdentifier }: OrganizationMemb
               paddingBottom: (theme) => theme.spacing(2),
             }}
           >
-            <Button variant="outlined" onClick={openInviteMemberDialog}>
+            <Button variant="outlined" onClick={openInviteMemberDialog} disabled={role !== 'ADMIN'}>
               Invite member
             </Button>
-            <Button variant="outlined" onClick={openLeaveOrganizationDialog}>
+            <Button variant="outlined" onClick={openLeaveOrganizationDialog} disabled={role !== 'ADMIN'}>
               Leave organization
             </Button>
           </Box>
-          {state.tab === 'Memberships' ? <Memberships organizationIdentifier={organizationIdentifier} /> : null}
+          {state.tab === 'Memberships' ? (
+            <Memberships organizationIdentifier={organizationIdentifier} role={role} />
+          ) : null}
           {state.tab === 'Invitations' ? (
-            <Invitations organizationIdentifier={organizationIdentifier} key={state.timestamp} />
+            <Invitations organizationIdentifier={organizationIdentifier} role={role} key={state.timestamp} />
           ) : null}
         </Box>
       </Box>
