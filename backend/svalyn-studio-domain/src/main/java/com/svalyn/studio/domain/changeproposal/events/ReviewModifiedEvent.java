@@ -17,23 +17,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.changeproposal.services.api;
+package com.svalyn.studio.domain.changeproposal.events;
 
-import com.svalyn.studio.domain.IResult;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-import com.svalyn.studio.domain.changeproposal.ReviewStatus;
+import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.changeproposal.ChangeProposal;
+import com.svalyn.studio.domain.changeproposal.Review;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Used to manipulate change proposals.
+ * Event fired when a review is modified.
+ *
+ * @param id The id of the event
+ * @param createdOn The creation date of the event
+ * @param changeProposal The change proposal
+ * @param review The review
  *
  * @author sbegaudeau
  */
-public interface IChangeProposalUpdateService {
-    IResult<Void> updateReadMe(UUID changeProposalId, String content);
-
-    IResult<Void> updateStatus(UUID changeProposalId, ChangeProposalStatus status);
-
-    IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status);
+public record ReviewModifiedEvent(UUID id, Instant createdOn, ChangeProposal changeProposal, Review review) implements IDomainEvent {
 }

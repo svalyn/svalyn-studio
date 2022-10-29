@@ -23,6 +23,8 @@ import com.svalyn.studio.application.controllers.changeproposal.dto.ChangePropos
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalResourceDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsInput;
+import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewInput;
+import com.svalyn.studio.application.controllers.changeproposal.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
 import com.svalyn.studio.application.controllers.dto.IPayload;
@@ -93,6 +95,19 @@ public class ChangeProposalController {
         return new DefaultConnection<>(edges, pageInfo);
     }
 
+    @SchemaMapping(typeName = "ChangeProposal")
+    public Connection<ReviewDTO> reviews(ChangeProposalDTO changeProposal) {
+        var pageData = this.changeProposalService.findReviews(changeProposal.id());
+        var edges = pageData.stream().map(reviewDTO -> {
+            var value = new Relay().toGlobalId("Review", reviewDTO.id().toString());
+            var cursor = new DefaultConnectionCursor(value);
+            Edge<ReviewDTO> edge = new DefaultEdge<>(reviewDTO, cursor);
+            return edge;
+        }).toList();
+        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.size());
+        return new DefaultConnection<>(edges, pageInfo);
+    }
+
     @MutationMapping
     public IPayload updateChangeProposalReadMe(@Argument UpdateChangeProposalReadMeInput input) {
         return this.changeProposalService.updateChangeProposalReadMe(input);
@@ -103,6 +118,10 @@ public class ChangeProposalController {
         return this.changeProposalService.updateChangeProposalStatus(input);
     }
 
+    @MutationMapping
+    public IPayload performReview(@Argument PerformReviewInput input) {
+        return this.changeProposalService.performReview(input);
+    }
 
     @MutationMapping
     public IPayload deleteChangeProposals(@Argument DeleteChangeProposalsInput input) {

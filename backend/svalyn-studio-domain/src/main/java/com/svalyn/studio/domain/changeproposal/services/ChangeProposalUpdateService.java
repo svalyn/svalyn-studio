@@ -24,6 +24,7 @@ import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
+import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalUpdateService;
 import com.svalyn.studio.domain.message.api.IMessageService;
@@ -116,6 +117,42 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
 
                 if (isMember && changeProposal.getStatus() != status) {
                     changeProposal.updateStatus(status);
+                    this.changeProposalRepository.save(changeProposal);
+
+                    result = new Success<>(null);
+                } else {
+                    result = new Failure<>(this.messageService.unauthorized());
+                }
+            } else {
+                result = new Failure<>(this.messageService.doesNotExist("organization"));
+            }
+        } else {
+            result = new Failure<>(this.messageService.doesNotExist("change proposal"));
+        }
+
+        return result;
+    }
+
+    @Override
+    public IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status) {
+        IResult<Void> result = null;
+
+        var optionalChangeProposal = this.changeProposalRepository.findById(changeProposalId);
+        if (optionalChangeProposal.isPresent()) {
+            var changeProposal = optionalChangeProposal.get();
+
+            var optionalOrganization = this.projectRepository.findById(changeProposal.getProject().getId())
+                    .map(Project::getOrganization)
+                    .map(AggregateReference::getId)
+                    .flatMap(this.organizationRepository::findById);
+            if (optionalOrganization.isPresent()) {
+                var organization = optionalOrganization.get();
+                var userId = UserIdProvider.get().getId();
+                var isMember = organization.getMemberships().stream()
+                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
+
+                if (isMember) {
+                    changeProposal.performReview(message, status);
                     this.changeProposalRepository.save(changeProposal);
 
                     result = new Success<>(null);

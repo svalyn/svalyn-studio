@@ -48,6 +48,15 @@ const getChangeProposalQuery = gql`
         id
         readMe
         status
+        reviews {
+          edges {
+            node {
+              id
+              message
+              status
+            }
+          }
+        }
       }
     }
   }
@@ -190,7 +199,7 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
                   onUpdate={handleReadMeUpdate}
                 />
               </>
-              <ChangeProposalStatus changeProposalId={changeProposalId} onStatusUpdated={handleStatusUpdated} />
+              <ChangeProposalStatus changeProposal={state.changeProposal} onStatusUpdated={handleStatusUpdated} />
             </Box>
           </Container>
         </Box>

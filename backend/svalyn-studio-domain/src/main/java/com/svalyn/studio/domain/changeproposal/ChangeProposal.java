@@ -25,6 +25,8 @@ import com.svalyn.studio.domain.changeproposal.events.ChangeProposalCreatedEvent
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalIntegratedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ReviewModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.project.Project;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -61,6 +63,9 @@ public class ChangeProposal extends AbstractAggregateRoot<ChangeProposal> {
     @MappedCollection(idColumn = "change_proposal_id")
     private Set<ChangeProposalResource> changeProposalResources = new LinkedHashSet<>();
 
+    @MappedCollection(idColumn = "change_proposal_id")
+    private Set<Review> reviews = new LinkedHashSet<>();
+
     private AggregateReference<Account, UUID> createdBy;
 
     private Instant createdOn;
@@ -93,6 +98,10 @@ public class ChangeProposal extends AbstractAggregateRoot<ChangeProposal> {
         return changeProposalResources;
     }
 
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
         this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), Instant.now(), this));
@@ -104,6 +113,26 @@ public class ChangeProposal extends AbstractAggregateRoot<ChangeProposal> {
 
         if (this.status == ChangeProposalStatus.INTEGRATED) {
             this.registerEvent(new ChangeProposalIntegratedEvent(UUID.randomUUID(), Instant.now(), this));
+        }
+    }
+
+    public void performReview(String message, ReviewStatus status) {
+        var userId = UserIdProvider.get().getId();
+        var optionalExistingReview = this.reviews.stream()
+                .filter(review -> review.getCreatedBy().getId().equals(userId))
+                .findFirst();
+        if (optionalExistingReview.isPresent()) {
+            var existingReview = optionalExistingReview.get();
+            existingReview.update(message, status);
+
+            this.registerEvent(new ReviewModifiedEvent(UUID.randomUUID(), Instant.now(), this, existingReview));
+        } else {
+            var review = Review.newReview()
+                    .message(message)
+                    .status(status)
+                    .build();
+            this.reviews.add(review);
+            this.registerEvent(new ReviewPerformedEvent(UUID.randomUUID(), Instant.now(), this, review));
         }
     }
 
@@ -155,6 +184,7 @@ public class ChangeProposal extends AbstractAggregateRoot<ChangeProposal> {
             changeProposal.readMe = Objects.requireNonNull(readMe);
             changeProposal.project = Objects.requireNonNull(project);
             changeProposal.changeProposalResources = Objects.requireNonNull(changeProposalResources);
+            changeProposal.reviews = new LinkedHashSet<>();
             changeProposal.status = ChangeProposalStatus.OPEN;
 
             var now = Instant.now();

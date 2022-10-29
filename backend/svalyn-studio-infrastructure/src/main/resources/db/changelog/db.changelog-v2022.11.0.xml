@@ -251,5 +251,35 @@
         <addForeignKeyConstraint baseTableName="change_proposal_resource" baseColumnNames="resource_id" constraintName="fk_change_proposal_resource_resource_id" referencedTableName="resource" referencedColumnNames="id" onDelete="CASCADE" />
         <addForeignKeyConstraint baseTableName="change_proposal_resource" baseColumnNames="change_proposal_id" constraintName="fk_change_proposal_resource_change_proposal_id" referencedTableName="change_proposal" referencedColumnNames="id" onDelete="CASCADE" />
 
+        <createTable tableName="review">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="change_proposal_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="review" baseColumnNames="change_proposal_id" constraintName="fk_review_change_proposal_id" referencedTableName="change_proposal" referencedColumnNames="id" onDelete="CASCADE" />
+        <addForeignKeyConstraint baseTableName="review" baseColumnNames="created_by" constraintName="fk_review_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="review" baseColumnNames="last_modified_by" constraintName="fk_review_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
     </changeSet>
 </databaseChangeLog>

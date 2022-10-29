@@ -17,60 +17,44 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ChangeProposalStatusProps {
-  changeProposal: ChangeProposal;
-  onStatusUpdated: () => void;
+export interface ReviewDialogProps {
+  changeProposalId: string;
+  open: boolean;
+  onClose: () => void;
+  onReviewed: () => void;
 }
 
-export interface ChangeProposal {
-  id: string;
-  readMe: string;
-  status: ChangeProposalStatus;
-  reviews: ChangeProposalReviewsConnection;
-}
-
-export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
-
-export interface ChangeProposalReviewsConnection {
-  edges: ChangeProposalReviewsEdge[];
-}
-
-export interface ChangeProposalReviewsEdge {
-  node: Review;
-}
-
-export interface Review {
-  id: string;
-  message: string;
+export interface ReviewDialogState {
+  content: string;
   status: ReviewStatus;
+  message: string | null;
 }
 
 export type ReviewStatus = 'APPROVED' | 'REQUESTED_CHANGES';
 
-export interface ChangeProposalStatusState {
-  selectedOptionIndex: number;
-  reviewDialogOpen: boolean;
-  actionButtonOpen: boolean;
+export interface PerformReviewData {
+  performReview: PerformReviewPayload;
 }
 
-export interface UpdateChangeProposalStatusData {
-  updateChangeProposalStatus: UpdateChangeProposalStatusPayload;
-}
-
-export interface UpdateChangeProposalStatusPayload {
+export interface PerformReviewPayload {
   __typename: string;
 }
 
-export interface ErrorPayload extends UpdateChangeProposalStatusPayload {
+export interface PerformReviewSuccessPayload extends PerformReviewPayload {
+  __typename: 'PerformReviewSuccessPayload';
+}
+
+export interface ErrorPayload extends PerformReviewPayload {
   __typename: 'ErrorPayload';
   message: string;
 }
 
-export interface UpdateChangeProposalStatusVariables {
-  input: UpdateChangeProposalStatusInput;
+export interface PerformReviewVariables {
+  input: PerformReviewInput;
 }
 
-export interface UpdateChangeProposalStatusInput {
+export interface PerformReviewInput {
   changeProposalId: string;
-  status: ChangeProposalStatus;
+  message: string;
+  status: ReviewStatus;
 }

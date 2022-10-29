@@ -25,6 +25,9 @@ import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChange
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsSuccessPayload;
+import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewInput;
+import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewSuccessPayload;
+import com.svalyn.studio.application.controllers.changeproposal.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
@@ -80,11 +83,13 @@ public class ChangeProposalService implements IChangeProposalService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ChangeProposalDTO> findById(UUID id) {
         return this.changeProposalRepository.findById(id).map(changeProposal -> new ChangeProposalDTO(changeProposal.getProject().getId(), changeProposal.getId(), changeProposal.getName(), changeProposal.getReadMe(), changeProposal.getStatus()));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ChangeProposalDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage) {
         var changesProposals = this.changeProposalRepository.findAllByProjectId(projectId, page, rowsPerPage)
                 .stream()
@@ -110,7 +115,7 @@ public class ChangeProposalService implements IChangeProposalService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<Resource> findChangeProposalResource(UUID changeProposalId, UUID resourceId) {
         return this.changeProposalRepository.findById(changeProposalId)
                 .flatMap(changeProposal -> changeProposal.getChangeProposalResources().stream()
@@ -121,7 +126,7 @@ public class ChangeProposalService implements IChangeProposalService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChangeProposalResourceDTO> findChangeProposalResources(UUID changeProposalId) {
         var optionalChangeProposal = this.changeProposalRepository.findById(changeProposalId);
         if (optionalChangeProposal.isPresent()) {
@@ -133,6 +138,17 @@ public class ChangeProposalService implements IChangeProposalService {
                     .toList();
         }
         return List.of();
+    }
+
+    @Override
+    public List<ReviewDTO> findReviews(UUID changeProposalId) {
+        return this.changeProposalRepository.findById(changeProposalId)
+                .map(ChangeProposal::getReviews)
+                .map(reviews -> reviews.stream()
+                        .map(review -> new ReviewDTO(review.getId(), review.getMessage(), review.getStatus()))
+                        .toList())
+                .orElse(List.of());
+
     }
 
     @Override
@@ -159,6 +175,20 @@ public class ChangeProposalService implements IChangeProposalService {
             payload = new ErrorPayload(failure.message());
         } else if (result instanceof Success<Void> success) {
             payload = new UpdateChangeProposalStatusSuccessPayload(UUID.randomUUID());
+        }
+        return payload;
+    }
+
+    @Override
+    @Transactional
+    public IPayload performReview(PerformReviewInput input) {
+        IPayload payload = null;
+
+        var result = this.changeProposalUpdateService.performReview(input.changeProposalId(), input.message(), input.status());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(failure.message());
+        } else if (result instanceof Success<Void> success) {
+            payload = new PerformReviewSuccessPayload(UUID.randomUUID());
         }
         return payload;
     }

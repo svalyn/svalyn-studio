@@ -116,6 +116,7 @@ type ChangeProposal {
   status: ChangeProposalStatus!
   project: Project!
   resources: ChangeProposalResourcesConnection!
+  reviews: ChangeProposalReviewsConnection!
 }
 
 enum ChangeProposalStatus {
@@ -138,6 +139,25 @@ type ChangeProposalResource {
   content: String!
 }
 
+type ChangeProposalReviewsConnection {
+  edges: [ChangeProposalReviewsEdge!]!
+}
+
+type ChangeProposalReviewsEdge {
+  node: Review!
+}
+
+type Review {
+  id: ID!
+  message: String!
+  status: ReviewStatus!
+}
+
+enum ReviewStatus {
+  APPROVED
+  REQUESTED_CHANGES
+}
+
 type Mutation {
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload!
   updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload!
@@ -157,6 +177,7 @@ type Mutation {
   updateChangeProposalReadMe(input: UpdateChangeProposalReadMeInput!): UpdateChangeProposalReadMePayload!
   updateChangeProposalStatus(input: UpdateChangeProposalStatusInput!): UpdateChangeProposalStatusPayload!
   deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload!
+  performReview(input: PerformReviewInput!): PerformReviewPayload!
 }
 
 type ErrorPayload {
@@ -357,5 +378,17 @@ input DeleteChangeProposalsInput {
 union DeleteChangeProposalsPayload = ErrorPayload | DeleteChangeProposalsSuccessPayload
 
 type DeleteChangeProposalsSuccessPayload {
+  id: ID!
+}
+
+input PerformReviewInput {
+  changeProposalId: ID!
+  message: String!
+  status: ReviewStatus!
+}
+
+union PerformReviewPayload = ErrorPayload | PerformReviewSuccessPayload
+
+type PerformReviewSuccessPayload {
   id: ID!
 }

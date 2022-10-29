@@ -26,6 +26,7 @@ import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalIntegratedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalUpdateService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -89,5 +90,15 @@ public class ChangeProposalUpdateServiceIntegrationTests extends AbstractIntegra
         assertThat(result).isInstanceOf(Success.class);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(ChangeProposalModifiedEvent.class::isInstance).count()).isEqualTo(1);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(ChangeProposalIntegratedEvent.class::isInstance).count()).isEqualTo(1);
+    }
+
+    @Test
+    @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
+    @DisplayName("Given a change proposal, when it's reviewed', then an event is published")
+    @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void givenChangeProposal_whenReviewed_thenAnEventIsPublished() {
+        var result = this.changeProposalUpdateService.performReview(UUID.fromString("60dd31a6-7e0c-47e9-af9f-b290e383822d"), "It looks good", ReviewStatus.APPROVED);
+        assertThat(result).isInstanceOf(Success.class);
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(ReviewPerformedEvent.class::isInstance).count()).isEqualTo(1);
     }
 }
