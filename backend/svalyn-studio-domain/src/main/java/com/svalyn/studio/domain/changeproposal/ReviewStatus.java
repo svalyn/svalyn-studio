@@ -17,23 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.changeproposal.services.api;
-
-import com.svalyn.studio.domain.IResult;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-import com.svalyn.studio.domain.changeproposal.ReviewStatus;
-
-import java.util.UUID;
+package com.svalyn.studio.domain.changeproposal;
 
 /**
- * Used to manipulate change proposals.
+ * The status of a review.
  *
  * @author sbegaudeau
  */
-public interface IChangeProposalUpdateService {
-    IResult<Void> updateReadMe(UUID changeProposalId, String content);
-
-    IResult<Void> updateStatus(UUID changeProposalId, ChangeProposalStatus status);
-
-    IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status);
+public enum ReviewStatus {
+    APPROVED, REQUESTED_CHANGES
 }

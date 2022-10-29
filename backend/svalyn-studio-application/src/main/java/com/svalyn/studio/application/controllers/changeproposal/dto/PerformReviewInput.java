@@ -17,23 +17,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.changeproposal.services.api;
+package com.svalyn.studio.application.controllers.changeproposal.dto;
 
-import com.svalyn.studio.domain.IResult;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
+import com.svalyn.studio.application.controllers.dto.IInput;
 import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Used to manipulate change proposals.
+ * Input used to edit the README.
+ *
+ * @param changeProposalId The id of the change proposal
+ * @param message The message
+ * @param status The status
  *
  * @author sbegaudeau
  */
-public interface IChangeProposalUpdateService {
-    IResult<Void> updateReadMe(UUID changeProposalId, String content);
-
-    IResult<Void> updateStatus(UUID changeProposalId, ChangeProposalStatus status);
-
-    IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status);
+public record PerformReviewInput(UUID changeProposalId, String message, ReviewStatus status) implements IInput {
+    public PerformReviewInput(UUID changeProposalId, String message, ReviewStatus status) {
+        this.changeProposalId = Objects.requireNonNull(changeProposalId);
+        this.message = Objects.requireNonNull(message);
+        this.status = Objects.requireNonNull(status);
+    }
 }

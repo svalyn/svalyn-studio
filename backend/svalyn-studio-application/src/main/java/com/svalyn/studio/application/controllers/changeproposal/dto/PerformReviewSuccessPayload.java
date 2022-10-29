@@ -17,23 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.changeproposal.services.api;
+package com.svalyn.studio.application.controllers.changeproposal.dto;
 
-import com.svalyn.studio.domain.IResult;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-import com.svalyn.studio.domain.changeproposal.ReviewStatus;
+import com.svalyn.studio.application.controllers.dto.IPayload;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Used to manipulate change proposals.
+ * Payload used to indicate that the review has been performed.
+ *
+ * @param id The id of the payload
  *
  * @author sbegaudeau
  */
-public interface IChangeProposalUpdateService {
-    IResult<Void> updateReadMe(UUID changeProposalId, String content);
-
-    IResult<Void> updateStatus(UUID changeProposalId, ChangeProposalStatus status);
-
-    IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status);
+public record PerformReviewSuccessPayload(UUID id) implements IPayload {
+    public PerformReviewSuccessPayload(UUID id) {
+        this.id = Objects.requireNonNull(id);
+    }
 }

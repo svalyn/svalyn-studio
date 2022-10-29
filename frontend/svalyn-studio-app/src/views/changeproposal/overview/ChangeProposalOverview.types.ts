@@ -42,9 +42,26 @@ export interface ChangeProposal {
   id: string;
   readMe: string;
   status: ChangeProposalStatus;
+  reviews: ChangeProposalReviewsConnection;
 }
 
 export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
+
+export interface ChangeProposalReviewsConnection {
+  edges: ChangeProposalReviewsEdge[];
+}
+
+export interface ChangeProposalReviewsEdge {
+  node: Review;
+}
+
+export interface Review {
+  id: string;
+  message: string;
+  status: ReviewStatus;
+}
+
+export type ReviewStatus = 'APPROVED' | 'REQUESTED_CHANGES';
 
 export interface GetChangeProposalVariables {
   id: string;
