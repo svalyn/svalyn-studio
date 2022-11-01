@@ -22,6 +22,7 @@ package com.svalyn.studio.domain.resource;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.resource.events.ResourceCreatedEvent;
+import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -63,6 +64,10 @@ public class Resource extends AbstractAggregateRoot<Resource> {
 
     public byte[] getContent() {
         return content;
+    }
+
+    public void dispose() {
+        this.registerEvent(new ResourceDeletedEvent(UUID.randomUUID(), Instant.now(), this));
     }
 
     public static Builder newResource() {
