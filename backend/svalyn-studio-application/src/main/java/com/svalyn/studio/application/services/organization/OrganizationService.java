@@ -76,6 +76,7 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<OrganizationDTO> findAll() {
         var userId = UserIdProvider.get().getId();
         return this.organizationRepository.findAll(PageRequest.of(0, 20))
@@ -83,6 +84,7 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findById(UUID id) {
         var userId = UserIdProvider.get().getId();
         return this.organizationRepository.findById(id)
@@ -90,6 +92,7 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findByIdentifier(String identifier) {
         var userId = UserIdProvider.get().getId();
         return this.organizationRepository.findByIdentifier(identifier)

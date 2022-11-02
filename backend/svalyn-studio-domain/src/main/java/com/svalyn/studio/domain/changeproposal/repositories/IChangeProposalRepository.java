@@ -46,8 +46,6 @@ public interface IChangeProposalRepository extends PagingAndSortingRepository<Ch
     @Query("""
     SELECT count(*) FROM change_proposal changeProposal
     WHERE changeProposal.project_id = :projectId
-    LIMIT :limit
-    OFFSET :offset
     """)
-    long countAllByProjectId(UUID projectId, long offset, int limit);
+    long countAllByProjectId(UUID projectId);
 }
