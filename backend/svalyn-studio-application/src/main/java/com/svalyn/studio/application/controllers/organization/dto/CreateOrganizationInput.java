@@ -20,6 +20,8 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Input used to create a new organization.
  *
@@ -28,5 +30,5 @@ import com.svalyn.studio.application.controllers.dto.IInput;
  *
  * @author sbegaudeau
  */
-public record CreateOrganizationInput(String identifier, String name) implements IInput {
+public record CreateOrganizationInput(@NotNull String identifier, @NotNull String name) implements IInput {
 }

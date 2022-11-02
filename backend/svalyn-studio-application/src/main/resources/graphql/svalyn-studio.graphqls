@@ -1,3 +1,5 @@
+directive @validated on FIELD_DEFINITION
+
 type Query {
   viewer: Viewer
 }
@@ -159,25 +161,25 @@ enum ReviewStatus {
 }
 
 type Mutation {
-  createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload!
-  updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload!
-  inviteMember(input: InviteMemberInput!): InviteMemberPayload!
-  revokeInvitation(input: RevokeInvitationInput!): RevokeInvitationPayload!
-  acceptInvitation(input: AcceptInvitationInput!): AcceptInvitationPayload!
-  declineInvitation(input: DeclineInvitationInput!): DeclineInvitationPayload!
-  revokeMemberships(input: RevokeMembershipsInput!): RevokeMembershipsPayload!
-  leaveOrganization(input: LeaveOrganizationInput!): LeaveOrganizationPayload!
-  deleteOrganization(input: DeleteOrganizationInput!): DeleteOrganizationPayload!
-  createProject(input: CreateProjectInput!): CreateProjectPayload!
-  updateProjectName(input: UpdateProjectNameInput!): UpdateProjectNamePayload!
-  updateProjectDescription(input: UpdateProjectDescriptionInput!): UpdateProjectDescriptionPayload!
-  updateProjectReadMe(input: UpdateProjectReadMeInput!): UpdateProjectReadMePayload!
-  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload!
-  createChangeProposal(input: CreateChangeProposalInput!): CreateChangeProposalPayload!
-  updateChangeProposalReadMe(input: UpdateChangeProposalReadMeInput!): UpdateChangeProposalReadMePayload!
-  updateChangeProposalStatus(input: UpdateChangeProposalStatusInput!): UpdateChangeProposalStatusPayload!
-  deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload!
-  performReview(input: PerformReviewInput!): PerformReviewPayload!
+  createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @validated
+  updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload! @validated
+  inviteMember(input: InviteMemberInput!): InviteMemberPayload! @validated
+  revokeInvitation(input: RevokeInvitationInput!): RevokeInvitationPayload! @validated
+  acceptInvitation(input: AcceptInvitationInput!): AcceptInvitationPayload! @validated
+  declineInvitation(input: DeclineInvitationInput!): DeclineInvitationPayload! @validated
+  revokeMemberships(input: RevokeMembershipsInput!): RevokeMembershipsPayload! @validated
+  leaveOrganization(input: LeaveOrganizationInput!): LeaveOrganizationPayload! @validated
+  deleteOrganization(input: DeleteOrganizationInput!): DeleteOrganizationPayload! @validated
+  createProject(input: CreateProjectInput!): CreateProjectPayload! @validated
+  updateProjectName(input: UpdateProjectNameInput!): UpdateProjectNamePayload! @validated
+  updateProjectDescription(input: UpdateProjectDescriptionInput!): UpdateProjectDescriptionPayload! @validated
+  updateProjectReadMe(input: UpdateProjectReadMeInput!): UpdateProjectReadMePayload! @validated
+  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload! @validated
+  createChangeProposal(input: CreateChangeProposalInput!): CreateChangeProposalPayload! @validated
+  updateChangeProposalReadMe(input: UpdateChangeProposalReadMeInput!): UpdateChangeProposalReadMePayload! @validated
+  updateChangeProposalStatus(input: UpdateChangeProposalStatusInput!): UpdateChangeProposalStatusPayload! @validated
+  deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload! @validated
+  performReview(input: PerformReviewInput!): PerformReviewPayload! @validated
 }
 
 type ErrorPayload {

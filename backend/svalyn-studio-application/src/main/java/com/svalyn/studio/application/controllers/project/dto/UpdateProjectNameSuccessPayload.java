@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -31,8 +31,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record UpdateProjectNameSuccessPayload(UUID id) implements IPayload {
-    public UpdateProjectNameSuccessPayload(UUID id) {
-        this.id = Objects.requireNonNull(id);
-    }
+public record UpdateProjectNameSuccessPayload(@NotNull UUID id) implements IPayload {
 }

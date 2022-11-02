@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.domain.changeproposal;
 
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalCreatedEvent;
@@ -29,7 +30,6 @@ import com.svalyn.studio.domain.changeproposal.events.ReviewModifiedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.project.Project;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -47,7 +47,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("change_proposal")
-public class ChangeProposal extends AbstractAggregateRoot<ChangeProposal> {
+public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangeProposal> {
     @Id
     private UUID id;
 

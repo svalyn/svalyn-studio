@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.project.dto;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -34,13 +34,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ProjectDTO(UUID organizationId, UUID id, String identifier, String name, String description, String readMe) {
-    public ProjectDTO(UUID organizationId, UUID id, String identifier, String name, String description, String readMe) {
-        this.organizationId = Objects.requireNonNull(organizationId);
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-        this.description = Objects.requireNonNull(description);
-        this.readMe = Objects.requireNonNull(readMe);
-    }
+public record ProjectDTO(@NotNull UUID organizationId, @NotNull UUID id, @NotNull String identifier, @NotNull String name, @NotNull String description, @NotNull String readMe) {
 }

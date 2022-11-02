@@ -21,6 +21,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -31,5 +32,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record AcceptInvitationInput(String organizationIdentifier, UUID invitationId) implements IInput {
+public record AcceptInvitationInput(@NotNull String organizationIdentifier, @NotNull UUID invitationId) implements IInput {
 }

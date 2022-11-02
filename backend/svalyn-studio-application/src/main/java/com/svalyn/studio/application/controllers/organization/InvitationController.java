@@ -39,6 +39,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 /**
@@ -81,22 +82,22 @@ public class InvitationController {
     }
 
     @MutationMapping
-    public IPayload inviteMember(@Argument InviteMemberInput input) {
+    public IPayload inviteMember(@Argument @Valid InviteMemberInput input) {
         return this.invitationService.inviteMember(input);
     }
 
     @MutationMapping
-    public IPayload revokeInvitation(@Argument RevokeInvitationInput input) {
+    public IPayload revokeInvitation(@Argument @Valid RevokeInvitationInput input) {
         return this.invitationService.revokeInvitation(input);
     }
 
     @MutationMapping
-    public IPayload acceptInvitation(@Argument AcceptInvitationInput input) {
+    public IPayload acceptInvitation(@Argument @Valid AcceptInvitationInput input) {
         return this.invitationService.acceptInvitation(input);
     }
 
     @MutationMapping
-    public IPayload declineInvitation(@Argument DeclineInvitationInput input) {
+    public IPayload declineInvitation(@Argument @Valid DeclineInvitationInput input) {
         return this.invitationService.declineInvitation(input);
     }
 }

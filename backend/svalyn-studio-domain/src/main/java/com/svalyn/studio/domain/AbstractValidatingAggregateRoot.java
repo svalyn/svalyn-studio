@@ -17,20 +17,37 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.resource.dto;
+package com.svalyn.studio.domain;
 
-import com.svalyn.studio.application.controllers.dto.IPayload;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.UUID;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import java.util.stream.Collectors;
 
 /**
- * Payload used to indicate that the resources have been created.
+ * Used to validate all the domain events sent to the abstract aggregate root.
  *
- * @param resourceIds The id of the resources created
+ * @param <A> The type of the aggregate root
  *
  * @author sbegaudeau
  */
-public record CreateResourcesSuccessPayload(@NotNull List<@NotNull UUID> resourceIds) implements IPayload {
+public class AbstractValidatingAggregateRoot<A extends AbstractValidatingAggregateRoot<A>> extends AbstractAggregateRoot<A> {
+
+    @Override
+    protected <T> T registerEvent(T event) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        var validator = factory.getValidator();
+        var violations = validator.validate(event);
+        if (!violations.isEmpty()) {
+            var message = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(", "));
+            throw new ConstraintViolationException(message, violations);
+        }
+
+        return super.registerEvent(event);
+    }
 }

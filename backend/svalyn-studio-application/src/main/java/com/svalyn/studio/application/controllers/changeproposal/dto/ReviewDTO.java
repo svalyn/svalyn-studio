@@ -21,6 +21,7 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 
 import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -32,5 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ReviewDTO(UUID id, String message, ReviewStatus status) {
+public record ReviewDTO(@NotNull UUID id, @NotNull String message, @NotNull ReviewStatus status) {
 }

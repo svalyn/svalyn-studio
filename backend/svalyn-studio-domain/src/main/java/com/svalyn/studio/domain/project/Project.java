@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.domain.project;
 
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
@@ -26,7 +27,6 @@ import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
 import com.svalyn.studio.domain.project.events.ProjectDeletedEvent;
 import com.svalyn.studio.domain.project.events.ProjectModifiedEvent;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -41,7 +41,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("project")
-public class Project extends AbstractAggregateRoot<Project> {
+public class Project extends AbstractValidatingAggregateRoot<Project> {
     @Id
     private UUID id;
 

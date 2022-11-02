@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.application.controllers.changeproposal.dto;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -30,5 +31,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ChangeProposalResourceDTO(UUID id, String name, String content) {
+public record ChangeProposalResourceDTO(@NotNull UUID id, @NotNull String name, @NotNull String content) {
 }

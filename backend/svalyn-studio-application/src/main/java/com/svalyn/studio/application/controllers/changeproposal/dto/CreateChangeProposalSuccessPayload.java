@@ -21,6 +21,8 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Payload used to indicate that the change proposals have been created.
  *
@@ -28,5 +30,5 @@ import com.svalyn.studio.application.controllers.dto.IPayload;
  *
  * @author sbegaudeau
  */
-public record CreateChangeProposalSuccessPayload(ChangeProposalDTO changeProposal) implements IPayload {
+public record CreateChangeProposalSuccessPayload(@NotNull ChangeProposalDTO changeProposal) implements IPayload {
 }

@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.Profile;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -32,9 +32,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record MembershipDTO(UUID id, Profile member) {
-    public MembershipDTO(UUID id, Profile member) {
-        this.id = Objects.requireNonNull(id);
-        this.member = Objects.requireNonNull(member);
-    }
+public record MembershipDTO(@NotNull UUID id, @NotNull Profile member) {
 }

@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * Input used to create a project.
@@ -33,11 +33,5 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record CreateProjectInput(String organizationIdentifier, String identifier, String name, String description) implements IInput {
-    public CreateProjectInput(String organizationIdentifier, String identifier, String name, String description) {
-        this.organizationIdentifier = Objects.requireNonNull(organizationIdentifier);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-        this.description = Objects.requireNonNull(description);
-    }
+public record CreateProjectInput(@NotNull String organizationIdentifier, @NotNull String identifier, @NotNull String name, @NotNull String description) implements IInput {
 }

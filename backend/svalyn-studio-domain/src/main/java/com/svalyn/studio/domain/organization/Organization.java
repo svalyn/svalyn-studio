@@ -18,6 +18,7 @@
  */
 package com.svalyn.studio.domain.organization;
 
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.events.InvitationAcceptedEvent;
@@ -34,7 +35,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * @author sbegaudeau
  */
 @Table("organization")
-public class Organization extends AbstractAggregateRoot<Organization> {
+public class Organization extends AbstractValidatingAggregateRoot<Organization> {
 
     @Id
     private UUID id;

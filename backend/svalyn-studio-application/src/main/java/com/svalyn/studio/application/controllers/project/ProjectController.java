@@ -41,6 +41,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 /**
@@ -80,27 +81,27 @@ public class ProjectController {
     }
 
     @MutationMapping
-    public IPayload createProject(@Argument CreateProjectInput input) {
+    public IPayload createProject(@Argument @Valid CreateProjectInput input) {
         return this.projectService.createProject(input);
     }
 
     @MutationMapping
-    public IPayload updateProjectName(@Argument UpdateProjectNameInput input) {
+    public IPayload updateProjectName(@Argument @Valid UpdateProjectNameInput input) {
         return this.projectService.updateProjectName(input);
     }
 
     @MutationMapping
-    public IPayload updateProjectDescription(@Argument UpdateProjectDescriptionInput input) {
+    public IPayload updateProjectDescription(@Argument @Valid UpdateProjectDescriptionInput input) {
         return this.projectService.updateProjectDescription(input);
     }
 
     @MutationMapping
-    public IPayload updateProjectReadMe(@Argument UpdateProjectReadMeInput input) {
+    public IPayload updateProjectReadMe(@Argument @Valid UpdateProjectReadMeInput input) {
         return this.projectService.updateProjectReadMe(input);
     }
 
     @MutationMapping
-    public IPayload deleteProject(@Argument DeleteProjectInput input) {
+    public IPayload deleteProject(@Argument @Valid DeleteProjectInput input) {
         return this.projectService.deleteProject(input);
     }
 }

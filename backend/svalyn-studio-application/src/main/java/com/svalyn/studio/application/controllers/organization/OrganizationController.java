@@ -39,6 +39,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 /**
@@ -83,22 +84,22 @@ public class OrganizationController {
     }
 
     @MutationMapping
-    public IPayload createOrganization(@Argument CreateOrganizationInput input) {
+    public IPayload createOrganization(@Argument @Valid CreateOrganizationInput input) {
         return this.organizationService.createOrganization(input);
     }
 
     @MutationMapping
-    public IPayload updateOrganizationName(@Argument UpdateOrganizationNameInput input) {
+    public IPayload updateOrganizationName(@Argument @Valid UpdateOrganizationNameInput input) {
         return this.organizationService.updateOrganizationName(input);
     }
 
     @MutationMapping
-    public IPayload leaveOrganization(@Argument LeaveOrganizationInput input) {
+    public IPayload leaveOrganization(@Argument @Valid LeaveOrganizationInput input) {
         return this.organizationService.leaveOrganization(input);
     }
 
     @MutationMapping
-    public IPayload deleteOrganization(@Argument DeleteOrganizationInput input) {
+    public IPayload deleteOrganization(@Argument @Valid DeleteOrganizationInput input) {
         return this.organizationService.deleteOrganization(input);
     }
 }
