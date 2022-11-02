@@ -40,10 +40,6 @@ export interface PerformReviewPayload {
   __typename: string;
 }
 
-export interface PerformReviewSuccessPayload extends PerformReviewPayload {
-  __typename: 'PerformReviewSuccessPayload';
-}
-
 export interface ErrorPayload extends PerformReviewPayload {
   __typename: 'ErrorPayload';
   message: string;

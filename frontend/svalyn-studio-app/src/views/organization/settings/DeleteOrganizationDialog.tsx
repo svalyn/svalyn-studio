@@ -60,7 +60,7 @@ export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose
   useEffect(() => {
     if (!deleteOrganizationLoading) {
       if (deleteOrganizationData) {
-        if (deleteOrganizationData.deleteOrganization.__typename === 'DeleteOrganizationSuccessPayload') {
+        if (deleteOrganizationData.deleteOrganization.__typename === 'SuccessPayload') {
           navigate('/');
         } else if (deleteOrganizationData.deleteOrganization.__typename === 'ErrorPayload') {
           const { message } = deleteOrganizationData.deleteOrganization as ErrorPayload;

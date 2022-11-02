@@ -120,7 +120,7 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
     if (!revokeMembershipsLoading) {
       if (revokeMembershipsData) {
         const { revokeMemberships } = revokeMembershipsData;
-        if (revokeMemberships.__typename === 'RevokeMembershipsSuccessPayload') {
+        if (revokeMemberships.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (revokeMemberships.__typename === 'ErrorPayload') {
           const errorPayload = revokeMemberships as ErrorPayload;

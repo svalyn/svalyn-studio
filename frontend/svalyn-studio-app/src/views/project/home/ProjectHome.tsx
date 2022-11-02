@@ -113,7 +113,7 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
     if (!updateProjectReadMeLoading) {
       if (updateProjectReadMeData) {
         const { updateProjectReadMe } = updateProjectReadMeData;
-        if (updateProjectReadMe.__typename === 'UpdateProjectReadMeSuccessPayload') {
+        if (updateProjectReadMe.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (updateProjectReadMe.__typename === 'ErrorPayload') {
           const errorPayload = updateProjectReadMe as ErrorPayload;

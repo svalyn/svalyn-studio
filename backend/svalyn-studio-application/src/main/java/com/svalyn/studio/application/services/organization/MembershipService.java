@@ -22,10 +22,10 @@ package com.svalyn.studio.application.services.organization;
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.MembershipDTO;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.RevokeMembershipsInput;
-import com.svalyn.studio.application.controllers.organization.dto.RevokeMembershipsSuccessPayload;
 import com.svalyn.studio.application.services.organization.api.IMembershipService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -91,7 +91,7 @@ public class MembershipService implements IMembershipService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new RevokeMembershipsSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;

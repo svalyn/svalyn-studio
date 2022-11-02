@@ -65,7 +65,7 @@ export const InviteMemberDialog = ({ organizationIdentifier, open, onClose }: In
   useEffect(() => {
     if (!loading) {
       if (data) {
-        if (data.inviteMember.__typename === 'InviteMemberSuccessPayload') {
+        if (data.inviteMember.__typename === 'SuccessPayload') {
           onClose();
         } else if (data.inviteMember.__typename === 'ErrorPayload') {
           const { message } = data.inviteMember as ErrorPayload;

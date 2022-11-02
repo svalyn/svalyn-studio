@@ -22,16 +22,13 @@ package com.svalyn.studio.application.services.organization;
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.AcceptInvitationInput;
-import com.svalyn.studio.application.controllers.organization.dto.AcceptInvitationSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.DeclineInvitationInput;
-import com.svalyn.studio.application.controllers.organization.dto.DeclineInvitationSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.InvitationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.InviteMemberInput;
-import com.svalyn.studio.application.controllers.organization.dto.InviteMemberSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.RevokeInvitationInput;
-import com.svalyn.studio.application.controllers.organization.dto.RevokeInvitationSuccessPayload;
 import com.svalyn.studio.application.services.organization.api.IInvitationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -122,7 +119,7 @@ public class InvitationService implements IInvitationService {
             var account = optionalAccount.get();
             var result = this.organizationUpdateService.inviteMember(input.organizationIdentifier(), account.getId());
             if (result instanceof Success<Void> success) {
-                payload = new InviteMemberSuccessPayload(input.id());
+                payload = new SuccessPayload(input.id());
             } else if (result instanceof Failure<Void> failure) {
                 payload = new ErrorPayload(input.id(), failure.message());
             }
@@ -141,7 +138,7 @@ public class InvitationService implements IInvitationService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new RevokeInvitationSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -156,7 +153,7 @@ public class InvitationService implements IInvitationService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new AcceptInvitationSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -171,7 +168,7 @@ public class InvitationService implements IInvitationService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeclineInvitationSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;

@@ -183,7 +183,12 @@ type Mutation {
 }
 
 type ErrorPayload {
+  id: ID!
   message: String!
+}
+
+type SuccessPayload {
+  id: ID!
 }
 
 input CreateOrganizationInput {
@@ -204,11 +209,7 @@ input UpdateOrganizationNameInput {
   name: String!
 }
 
-union UpdateOrganizationNamePayload = ErrorPayload | UpdateOrganizationNameSuccessPayload
-
-type UpdateOrganizationNameSuccessPayload {
-  id: ID!
-}
+union UpdateOrganizationNamePayload = ErrorPayload | SuccessPayload
 
 input InviteMemberInput {
   id: ID!
@@ -216,11 +217,7 @@ input InviteMemberInput {
   email: String!
 }
 
-union InviteMemberPayload = ErrorPayload | InviteMemberSuccessPayload
-
-type InviteMemberSuccessPayload {
-  id: ID!
-}
+union InviteMemberPayload = ErrorPayload | SuccessPayload
 
 input RevokeInvitationInput {
   id: ID!
@@ -228,11 +225,7 @@ input RevokeInvitationInput {
   invitationId: ID!
 }
 
-union RevokeInvitationPayload = ErrorPayload | RevokeInvitationSuccessPayload
-
-type RevokeInvitationSuccessPayload {
-  id: ID!
-}
+union RevokeInvitationPayload = ErrorPayload | SuccessPayload
 
 input AcceptInvitationInput {
   id: ID!
@@ -240,11 +233,7 @@ input AcceptInvitationInput {
   invitationId: ID!
 }
 
-union AcceptInvitationPayload = ErrorPayload | AcceptInvitationSuccessPayload
-
-type AcceptInvitationSuccessPayload {
-  id: ID!
-}
+union AcceptInvitationPayload = ErrorPayload | SuccessPayload
 
 input DeclineInvitationInput {
   id: ID!
@@ -252,11 +241,7 @@ input DeclineInvitationInput {
   invitationId: ID!
 }
 
-union DeclineInvitationPayload = ErrorPayload | DeclineInvitationSuccessPayload
-
-type DeclineInvitationSuccessPayload {
-  id: ID!
-}
+union DeclineInvitationPayload = ErrorPayload | SuccessPayload
 
 input RevokeMembershipsInput {
   id: ID!
@@ -264,33 +249,21 @@ input RevokeMembershipsInput {
   membershipIds: [ID!]!
 }
 
-union RevokeMembershipsPayload = ErrorPayload | RevokeMembershipsSuccessPayload
-
-type RevokeMembershipsSuccessPayload {
-  id: ID!
-}
+union RevokeMembershipsPayload = ErrorPayload | SuccessPayload
 
 input LeaveOrganizationInput {
   id: ID!
   organizationIdentifier: ID!
 }
 
-union LeaveOrganizationPayload = ErrorPayload | LeaveOrganizationSuccessPayload
-
-type LeaveOrganizationSuccessPayload {
-  id: ID!
-}
+union LeaveOrganizationPayload = ErrorPayload | SuccessPayload
 
 input DeleteOrganizationInput {
   id: ID!
   organizationIdentifier: ID!
 }
 
-union DeleteOrganizationPayload = ErrorPayload | DeleteOrganizationSuccessPayload
-
-type DeleteOrganizationSuccessPayload {
-  id: ID!
-}
+union DeleteOrganizationPayload = ErrorPayload | SuccessPayload
 
 input CreateProjectInput {
   id: ID!
@@ -312,11 +285,7 @@ input UpdateProjectNameInput {
   name: String!
 }
 
-union UpdateProjectNamePayload = ErrorPayload | UpdateProjectNameSuccessPayload
-
-type UpdateProjectNameSuccessPayload {
-  id: ID!
-}
+union UpdateProjectNamePayload = ErrorPayload | SuccessPayload
 
 input UpdateProjectDescriptionInput {
   id: ID!
@@ -324,11 +293,7 @@ input UpdateProjectDescriptionInput {
   description: String!
 }
 
-union UpdateProjectDescriptionPayload = ErrorPayload | UpdateProjectDescriptionSuccessPayload
-
-type UpdateProjectDescriptionSuccessPayload {
-  id: ID!
-}
+union UpdateProjectDescriptionPayload = ErrorPayload | SuccessPayload
 
 input UpdateProjectReadMeInput {
   id: ID!
@@ -336,22 +301,14 @@ input UpdateProjectReadMeInput {
   content: String!
 }
 
-union UpdateProjectReadMePayload = ErrorPayload | UpdateProjectReadMeSuccessPayload
-
-type UpdateProjectReadMeSuccessPayload {
-  id: ID!
-}
+union UpdateProjectReadMePayload = ErrorPayload | SuccessPayload
 
 input DeleteProjectInput {
   id: ID!
   projectIdentifier: ID!
 }
 
-union DeleteProjectPayload = ErrorPayload | DeleteProjectSuccessPayload
-
-type DeleteProjectSuccessPayload {
-  id: ID!
-}
+union DeleteProjectPayload = ErrorPayload | SuccessPayload
 
 input CreateChangeProposalInput {
   id: ID!
@@ -372,11 +329,7 @@ input UpdateChangeProposalReadMeInput {
   content: String!
 }
 
-union UpdateChangeProposalReadMePayload = ErrorPayload | UpdateChangeProposalReadMeSuccessPayload
-
-type UpdateChangeProposalReadMeSuccessPayload {
-  id: ID!
-}
+union UpdateChangeProposalReadMePayload = ErrorPayload | SuccessPayload
 
 input UpdateChangeProposalStatusInput {
   id: ID!
@@ -384,22 +337,14 @@ input UpdateChangeProposalStatusInput {
   status: ChangeProposalStatus!
 }
 
-union UpdateChangeProposalStatusPayload = ErrorPayload | UpdateChangeProposalStatusSuccessPayload
-
-type UpdateChangeProposalStatusSuccessPayload {
-  changeProposal: ChangeProposal!
-}
+union UpdateChangeProposalStatusPayload = ErrorPayload | SuccessPayload
 
 input DeleteChangeProposalsInput {
   id: ID!
   changeProposalIds: [ID!]!
 }
 
-union DeleteChangeProposalsPayload = ErrorPayload | DeleteChangeProposalsSuccessPayload
-
-type DeleteChangeProposalsSuccessPayload {
-  id: ID!
-}
+union DeleteChangeProposalsPayload = ErrorPayload | SuccessPayload
 
 input PerformReviewInput {
   id: ID!
@@ -408,8 +353,4 @@ input PerformReviewInput {
   status: ReviewStatus!
 }
 
-union PerformReviewPayload = ErrorPayload | PerformReviewSuccessPayload
-
-type PerformReviewSuccessPayload {
-  id: ID!
-}
+union PerformReviewPayload = ErrorPayload | SuccessPayload

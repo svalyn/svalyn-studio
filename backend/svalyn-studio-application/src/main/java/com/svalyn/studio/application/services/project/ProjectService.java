@@ -21,17 +21,14 @@ package com.svalyn.studio.application.services.project;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectSuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.DeleteProjectInput;
-import com.svalyn.studio.application.controllers.project.dto.DeleteProjectSuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
-import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionSuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
-import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameSuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
-import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeSuccessPayload;
 import com.svalyn.studio.application.services.project.api.IProjectService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -119,7 +116,7 @@ public class ProjectService implements IProjectService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateProjectNameSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -134,7 +131,7 @@ public class ProjectService implements IProjectService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateProjectDescriptionSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -149,7 +146,7 @@ public class ProjectService implements IProjectService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateProjectReadMeSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -164,7 +161,7 @@ public class ProjectService implements IProjectService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeleteProjectSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;

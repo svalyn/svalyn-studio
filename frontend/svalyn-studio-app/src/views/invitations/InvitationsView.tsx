@@ -117,7 +117,7 @@ export const InvitationsView = () => {
   useEffect(() => {
     if (!acceptInvitationLoading) {
       if (acceptInvitationData) {
-        if (acceptInvitationData.acceptInvitation.__typename === 'AcceptInvitationSuccessPayload') {
+        if (acceptInvitationData.acceptInvitation.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (acceptInvitationData.acceptInvitation.__typename === 'ErrorPayload') {
           const { message } = acceptInvitationData.acceptInvitation as ErrorPayload;
@@ -149,7 +149,7 @@ export const InvitationsView = () => {
   useEffect(() => {
     if (!declineInvitationLoading) {
       if (declineInvitationData) {
-        if (declineInvitationData.declineInvitation.__typename === 'DeclineInvitationSuccessPayload') {
+        if (declineInvitationData.declineInvitation.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (declineInvitationData.declineInvitation.__typename === 'ErrorPayload') {
           const { message } = declineInvitationData.declineInvitation as ErrorPayload;

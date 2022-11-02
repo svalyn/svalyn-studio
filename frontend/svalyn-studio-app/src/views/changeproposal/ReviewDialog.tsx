@@ -66,7 +66,7 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
     if (!loading) {
       if (data) {
         const { performReview } = data;
-        if (performReview.__typename === 'PerformReviewSuccessPayload') {
+        if (performReview.__typename === 'SuccessPayload') {
           onReviewed();
         } else if (performReview.__typename === 'ErrorPayload') {
           const errorPayload = performReview as ErrorPayload;

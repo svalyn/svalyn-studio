@@ -58,7 +58,7 @@ export const DeleteProjectDialog = ({ projectIdentifier, open, onClose }: Delete
   useEffect(() => {
     if (!deleteProjectLoading) {
       if (deleteProjectData) {
-        if (deleteProjectData.deleteProject.__typename === 'DeleteProjectSuccessPayload') {
+        if (deleteProjectData.deleteProject.__typename === 'SuccessPayload') {
           navigate('/');
         } else if (deleteProjectData.deleteProject.__typename === 'ErrorPayload') {
           const { message } = deleteProjectData.deleteProject as ErrorPayload;

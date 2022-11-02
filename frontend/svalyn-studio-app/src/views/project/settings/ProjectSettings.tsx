@@ -92,7 +92,7 @@ export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProp
     if (!updateProjectNameLoading) {
       if (updateProjectNameData) {
         const { updateProjectName } = updateProjectNameData;
-        if (updateProjectName.__typename === 'UpdateProjectNameSuccessPayload') {
+        if (updateProjectName.__typename === 'SuccessPayload') {
           navigate(`/projects/${projectIdentifier}`);
         } else if (updateProjectName.__typename === 'ErrorPayload') {
           const errorPayload = updateProjectName as ErrorPayload;
@@ -128,7 +128,7 @@ export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProp
     if (!updateProjectDescriptionLoading) {
       if (updateProjectDescriptionData) {
         const { updateProjectDescription } = updateProjectDescriptionData;
-        if (updateProjectDescription.__typename === 'UpdateProjectDescriptionSuccessPayload') {
+        if (updateProjectDescription.__typename === 'SuccessPayload') {
           navigate(`/projects/${projectIdentifier}`);
         } else if (updateProjectDescription.__typename === 'ErrorPayload') {
           const errorPayload = updateProjectDescription as ErrorPayload;
