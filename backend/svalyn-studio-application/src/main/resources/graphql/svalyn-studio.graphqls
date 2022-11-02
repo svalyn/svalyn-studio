@@ -187,6 +187,7 @@ type ErrorPayload {
 }
 
 input CreateOrganizationInput {
+  id: ID!
   identifier: ID!
   name: String!
 }
@@ -198,6 +199,7 @@ type CreateOrganizationSuccessPayload {
 }
 
 input UpdateOrganizationNameInput {
+  id: ID!
   organizationIdentifier: ID!
   name: String!
 }
@@ -209,6 +211,7 @@ type UpdateOrganizationNameSuccessPayload {
 }
 
 input InviteMemberInput {
+  id: ID!
   organizationIdentifier: ID!
   email: String!
 }
@@ -220,6 +223,7 @@ type InviteMemberSuccessPayload {
 }
 
 input RevokeInvitationInput {
+  id: ID!
   organizationIdentifier: ID!
   invitationId: ID!
 }
@@ -231,6 +235,7 @@ type RevokeInvitationSuccessPayload {
 }
 
 input AcceptInvitationInput {
+  id: ID!
   organizationIdentifier: ID!
   invitationId: ID!
 }
@@ -242,6 +247,7 @@ type AcceptInvitationSuccessPayload {
 }
 
 input DeclineInvitationInput {
+  id: ID!
   organizationIdentifier: ID!
   invitationId: ID!
 }
@@ -253,6 +259,7 @@ type DeclineInvitationSuccessPayload {
 }
 
 input RevokeMembershipsInput {
+  id: ID!
   organizationIdentifier: ID!
   membershipIds: [ID!]!
 }
@@ -264,6 +271,7 @@ type RevokeMembershipsSuccessPayload {
 }
 
 input LeaveOrganizationInput {
+  id: ID!
   organizationIdentifier: ID!
 }
 
@@ -274,6 +282,7 @@ type LeaveOrganizationSuccessPayload {
 }
 
 input DeleteOrganizationInput {
+  id: ID!
   organizationIdentifier: ID!
 }
 
@@ -284,6 +293,7 @@ type DeleteOrganizationSuccessPayload {
 }
 
 input CreateProjectInput {
+  id: ID!
   organizationIdentifier: ID!
   identifier: ID!
   name: String!
@@ -297,6 +307,7 @@ type CreateProjectSuccessPayload {
 }
 
 input UpdateProjectNameInput {
+  id: ID!
   projectIdentifier: ID!
   name: String!
 }
@@ -308,6 +319,7 @@ type UpdateProjectNameSuccessPayload {
 }
 
 input UpdateProjectDescriptionInput {
+  id: ID!
   projectIdentifier: ID!
   description: String!
 }
@@ -319,6 +331,7 @@ type UpdateProjectDescriptionSuccessPayload {
 }
 
 input UpdateProjectReadMeInput {
+  id: ID!
   projectIdentifier: ID!
   content: String!
 }
@@ -330,6 +343,7 @@ type UpdateProjectReadMeSuccessPayload {
 }
 
 input DeleteProjectInput {
+  id: ID!
   projectIdentifier: ID!
 }
 
@@ -340,6 +354,7 @@ type DeleteProjectSuccessPayload {
 }
 
 input CreateChangeProposalInput {
+  id: ID!
   projectIdentifier: ID!
   name: String!
   resourceIds: [ID!]!
@@ -352,6 +367,7 @@ type CreateChangeProposalSuccessPayload {
 }
 
 input UpdateChangeProposalReadMeInput {
+  id: ID!
   changeProposalId: ID!
   content: String!
 }
@@ -363,6 +379,7 @@ type UpdateChangeProposalReadMeSuccessPayload {
 }
 
 input UpdateChangeProposalStatusInput {
+  id: ID!
   changeProposalId: ID!
   status: ChangeProposalStatus!
 }
@@ -374,6 +391,7 @@ type UpdateChangeProposalStatusSuccessPayload {
 }
 
 input DeleteChangeProposalsInput {
+  id: ID!
   changeProposalIds: [ID!]!
 }
 
@@ -384,6 +402,7 @@ type DeleteChangeProposalsSuccessPayload {
 }
 
 input PerformReviewInput {
+  id: ID!
   changeProposalId: ID!
   message: String!
   status: ReviewStatus!

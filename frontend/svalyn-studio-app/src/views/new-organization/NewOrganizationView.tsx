@@ -29,6 +29,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, Navigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
@@ -119,6 +120,7 @@ export const NewOrganizationView = () => {
 
   const handleCreateOrganization: React.MouseEventHandler<HTMLButtonElement> = () => {
     const input: CreateOrganizationInput = {
+      id: uuid(),
       identifier: state.organizationId,
       name: state.name,
     };

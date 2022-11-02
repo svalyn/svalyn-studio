@@ -72,6 +72,7 @@ export interface UpdateProjectReadMeVariables {
 }
 
 export interface UpdateProjectReadMeInput {
+  id: string;
   projectIdentifier: string;
   content: string;
 }

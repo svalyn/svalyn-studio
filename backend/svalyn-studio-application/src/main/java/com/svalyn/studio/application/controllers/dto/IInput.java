@@ -18,10 +18,13 @@
  */
 package com.svalyn.studio.application.controllers.dto;
 
+import java.util.UUID;
+
 /**
  * Interface implemented by all the input DTOs.
  *
  * @author sbegaudeau
  */
 public interface IInput {
+    UUID id();
 }

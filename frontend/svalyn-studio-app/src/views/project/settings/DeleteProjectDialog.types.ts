@@ -45,5 +45,6 @@ export interface DeleteProjectVariables {
 }
 
 export interface DeleteProjectInput {
+  id: string;
   projectIdentifier: string;
 }

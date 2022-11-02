@@ -18,10 +18,13 @@
  */
 package com.svalyn.studio.application.controllers.dto;
 
+import java.util.UUID;
+
 /**
  * Interface implemented by all the payload DTOs.
  *
  * @author sbegaudeau
  */
 public interface IPayload {
+    UUID id();
 }

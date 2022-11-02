@@ -28,10 +28,11 @@ import java.util.UUID;
 /**
  * Input used to edit the status.
  *
+ * @param id The correlation identifier
  * @param changeProposalId The id of the change proposal
  * @param status The new status
  *
  * @author sbegaudeau
  */
-public record UpdateChangeProposalStatusInput(@NotNull UUID changeProposalId, @NotNull ChangeProposalStatus status) implements IInput {
+public record UpdateChangeProposalStatusInput(@NotNull UUID id, @NotNull UUID changeProposalId, @NotNull ChangeProposalStatus status) implements IInput {
 }

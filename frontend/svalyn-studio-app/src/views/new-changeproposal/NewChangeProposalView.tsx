@@ -35,6 +35,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Link as RouterLink, Navigate, useParams } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { getCookie } from '../../cookies/getCookie';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
@@ -148,6 +149,7 @@ export const NewChangeProposalView = () => {
 
           const variables: CreateChangeProposalVariables = {
             input: {
+              id: uuid(),
               projectIdentifier,
               name: state.name,
               resourceIds,

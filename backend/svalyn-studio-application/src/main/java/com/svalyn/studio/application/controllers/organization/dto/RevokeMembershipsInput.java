@@ -28,10 +28,11 @@ import java.util.UUID;
 /**
  * Input used to revoke memberships.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  * @param membershipIds The id of the memberships
  *
  * @author sbegaudeau
  */
-public record RevokeMembershipsInput(@NotNull String organizationIdentifier, @NotNull List<@NotNull UUID> membershipIds) implements IInput {
+public record RevokeMembershipsInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull List<@NotNull UUID> membershipIds) implements IInput {
 }

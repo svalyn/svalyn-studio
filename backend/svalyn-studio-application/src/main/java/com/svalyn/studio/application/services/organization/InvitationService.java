@@ -52,7 +52,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Used to manipulate invitations.
@@ -123,12 +122,12 @@ public class InvitationService implements IInvitationService {
             var account = optionalAccount.get();
             var result = this.organizationUpdateService.inviteMember(input.organizationIdentifier(), account.getId());
             if (result instanceof Success<Void> success) {
-                payload = new InviteMemberSuccessPayload(UUID.randomUUID());
+                payload = new InviteMemberSuccessPayload(input.id());
             } else if (result instanceof Failure<Void> failure) {
-                payload = new ErrorPayload(failure.message());
+                payload = new ErrorPayload(input.id(), failure.message());
             }
         } else {
-            payload = new ErrorPayload(this.messageService.doesNotExist("account"));
+            payload = new ErrorPayload(input.id(), this.messageService.doesNotExist("account"));
         }
         return payload;
     }
@@ -140,9 +139,9 @@ public class InvitationService implements IInvitationService {
 
         var result = this.organizationUpdateService.revokeInvitation(input.organizationIdentifier(), input.invitationId());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new RevokeInvitationSuccessPayload(UUID.randomUUID());
+            payload = new RevokeInvitationSuccessPayload(input.id());
         }
 
         return payload;
@@ -155,9 +154,9 @@ public class InvitationService implements IInvitationService {
 
         var result = this.organizationUpdateService.acceptInvitation(input.organizationIdentifier(), input.invitationId());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new AcceptInvitationSuccessPayload(UUID.randomUUID());
+            payload = new AcceptInvitationSuccessPayload(input.id());
         }
 
         return payload;
@@ -170,9 +169,9 @@ public class InvitationService implements IInvitationService {
 
         var result = this.organizationUpdateService.declineInvitation(input.organizationIdentifier(), input.invitationId());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeclineInvitationSuccessPayload(UUID.randomUUID());
+            payload = new DeclineInvitationSuccessPayload(input.id());
         }
 
         return payload;

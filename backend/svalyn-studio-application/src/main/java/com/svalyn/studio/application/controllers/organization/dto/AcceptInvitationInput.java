@@ -27,10 +27,11 @@ import java.util.UUID;
 /**
  * Input used to accept an invitation.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  * @param invitationId The id of the invitation
  *
  * @author sbegaudeau
  */
-public record AcceptInvitationInput(@NotNull String organizationIdentifier, @NotNull UUID invitationId) implements IInput {
+public record AcceptInvitationInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull UUID invitationId) implements IInput {
 }

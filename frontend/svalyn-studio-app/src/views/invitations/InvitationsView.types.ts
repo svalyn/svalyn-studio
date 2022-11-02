@@ -73,6 +73,7 @@ export interface AcceptInvitationVariables {
 }
 
 export interface AcceptInvitationInput {
+  id: string;
   organizationIdentifier: string;
   invitationId: string;
 }
@@ -90,6 +91,7 @@ export interface DeclineInvitationVariables {
 }
 
 export interface DeclineInvitationInput {
+  id: string;
   organizationIdentifier: string;
   invitationId: string;
 }

@@ -26,6 +26,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   DeleteProjectData,
@@ -73,6 +74,7 @@ export const DeleteProjectDialog = ({ projectIdentifier, open, onClose }: Delete
   const handleDeleteProject: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: DeleteProjectVariables = {
       input: {
+        id: uuid(),
         projectIdentifier,
       },
     };

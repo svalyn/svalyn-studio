@@ -106,9 +106,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
         var result = this.changeProposalCreationService.createChangeProposal(input.projectIdentifier(), input.name(), input.resourceIds());
         if (result instanceof Failure<ChangeProposal> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<ChangeProposal> success) {
-            payload = new CreateChangeProposalSuccessPayload(new ChangeProposalDTO(success.data().getProject().getId(), success.data().getId(), success.data().getName(), success.data().getReadMe(), success.data().getStatus()));
+            payload = new CreateChangeProposalSuccessPayload(input.id(), new ChangeProposalDTO(success.data().getProject().getId(), success.data().getId(), success.data().getName(), success.data().getReadMe(), success.data().getStatus()));
         }
 
         return payload;
@@ -158,9 +158,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
         var result = this.changeProposalUpdateService.updateReadMe(input.changeProposalId(), input.content());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateChangeProposalReadMeSuccessPayload(UUID.randomUUID());
+            payload = new UpdateChangeProposalReadMeSuccessPayload(input.id());
         }
         return payload;
     }
@@ -172,9 +172,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
         var result = this.changeProposalUpdateService.updateStatus(input.changeProposalId(), input.status());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateChangeProposalStatusSuccessPayload(UUID.randomUUID());
+            payload = new UpdateChangeProposalStatusSuccessPayload(input.id());
         }
         return payload;
     }
@@ -186,9 +186,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
         var result = this.changeProposalUpdateService.performReview(input.changeProposalId(), input.message(), input.status());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new PerformReviewSuccessPayload(UUID.randomUUID());
+            payload = new PerformReviewSuccessPayload(input.id());
         }
         return payload;
     }
@@ -200,9 +200,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
         var result = this.changeProposalDeletionService.deleteChangeProposals(input.changeProposalIds());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeleteChangeProposalsSuccessPayload(UUID.randomUUID());
+            payload = new DeleteChangeProposalsSuccessPayload(input.id());
         }
 
         return payload;

@@ -43,7 +43,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Used to manipulate memberships.
@@ -90,9 +89,9 @@ public class MembershipService implements IMembershipService {
 
         var result = this.organizationUpdateService.revokeMemberships(input.organizationIdentifier(), input.membershipIds());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new RevokeMembershipsSuccessPayload(UUID.randomUUID());
+            payload = new RevokeMembershipsSuccessPayload(input.id());
         }
 
         return payload;

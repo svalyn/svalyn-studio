@@ -22,13 +22,15 @@ package com.svalyn.studio.application.controllers.project.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to delete a project.
  *
+ * @param id The correlation identifier
  * @param projectIdentifier The identifier of the project
  *
  * @author sbegaudeau
  */
-public record DeleteProjectInput(@NotNull String projectIdentifier) implements IInput {
+public record DeleteProjectInput(@NotNull UUID id, @NotNull String projectIdentifier) implements IInput {
 }

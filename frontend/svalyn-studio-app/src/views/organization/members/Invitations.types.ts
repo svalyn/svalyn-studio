@@ -90,6 +90,7 @@ export interface RevokeInvitationVariables {
 }
 
 export interface RevokeInvitationInput {
+  id: string;
   organizationIdentifier: string;
   invitationId: string;
 }

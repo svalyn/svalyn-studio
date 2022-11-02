@@ -71,6 +71,7 @@ export interface UpdateChangeProposalStatusVariables {
 }
 
 export interface UpdateChangeProposalStatusInput {
+  id: string;
   changeProposalId: string;
   status: ChangeProposalStatus;
 }

@@ -32,6 +32,7 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
@@ -133,6 +134,7 @@ export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) 
   const handleRevokeInvitation = (invitation: Invitation) => {
     const variables: RevokeInvitationVariables = {
       input: {
+        id: uuid(),
         organizationIdentifier,
         invitationId: invitation.id,
       },

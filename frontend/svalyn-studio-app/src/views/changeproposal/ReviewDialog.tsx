@@ -31,6 +31,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
@@ -94,6 +95,7 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
   const onSubmitReview: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: PerformReviewVariables = {
       input: {
+        id: uuid(),
         changeProposalId,
         message: state.content,
         status: state.status,

@@ -28,11 +28,12 @@ import java.util.UUID;
 /**
  * Input used to create a change proposal.
  *
+ * @param id The correlation identifier
  * @param projectIdentifier The identifier of the project
  * @param name The name
  * @param resourceIds The id of the resources
  *
  * @author sbegaudeau
  */
-public record CreateChangeProposalInput(@NotNull String projectIdentifier, @NotNull String name, @NotNull List<@NotNull UUID> resourceIds) implements IInput {
+public record CreateChangeProposalInput(@NotNull UUID id, @NotNull String projectIdentifier, @NotNull String name, @NotNull List<@NotNull UUID> resourceIds) implements IInput {
 }

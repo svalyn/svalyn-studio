@@ -22,14 +22,16 @@ package com.svalyn.studio.application.controllers.project.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input user to edit the description.
  *
+ * @param id The correlation identifier
  * @param projectIdentifier The identifier of the project
  * @param description The new description
  *
  * @author sbegaudeau
  */
-public record UpdateProjectDescriptionInput(@NotNull String projectIdentifier, @NotNull String description) implements IInput {
+public record UpdateProjectDescriptionInput(@NotNull UUID id, @NotNull String projectIdentifier, @NotNull String description) implements IInput {
 }

@@ -103,10 +103,10 @@ public class OrganizationService implements IOrganizationService {
 
         var result = this.organizationCreationService.createOrganization(input.identifier(), input.name());
         if (result instanceof Failure<Organization> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Organization> success) {
             var userId = UserIdProvider.get().getId();
-            payload = new CreateOrganizationSuccessPayload(new OrganizationDTO(success.data().getId(), success.data().getIdentifier(), success.data().getName(), this.organizationPermissionService.role(userId, success.data())));
+            payload = new CreateOrganizationSuccessPayload(input.id(), new OrganizationDTO(success.data().getId(), success.data().getIdentifier(), success.data().getName(), this.organizationPermissionService.role(userId, success.data())));
         }
         return payload;
     }
@@ -118,9 +118,9 @@ public class OrganizationService implements IOrganizationService {
 
         var result = this.organizationUpdateService.renameOrganization(input.organizationIdentifier(), input.name());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateOrganizationNameSuccessPayload(UUID.randomUUID());
+            payload = new UpdateOrganizationNameSuccessPayload(input.id());
         }
 
         return payload;
@@ -133,9 +133,9 @@ public class OrganizationService implements IOrganizationService {
 
         var result = this.organizationUpdateService.leaveOrganization(input.organizationIdentifier());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new LeaveOrganizationSuccessPayload(UUID.randomUUID());
+            payload = new LeaveOrganizationSuccessPayload(input.id());
         }
 
         return payload;
@@ -148,9 +148,9 @@ public class OrganizationService implements IOrganizationService {
 
         var result = this.organizationDeletionService.deleteOrganization(input.organizationIdentifier());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeleteOrganizationSuccessPayload(UUID.randomUUID());
+            payload = new DeleteOrganizationSuccessPayload(input.id());
         }
 
         return payload;

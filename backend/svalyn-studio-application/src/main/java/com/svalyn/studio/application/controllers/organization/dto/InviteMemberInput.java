@@ -22,14 +22,16 @@ package com.svalyn.studio.application.controllers.organization.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to invite a member.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  * @param email The email
  *
  * @author sbegaudeau
  */
-public record InviteMemberInput(@NotNull String organizationIdentifier, @NotNull String email) implements IInput {
+public record InviteMemberInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull String email) implements IInput {
 }

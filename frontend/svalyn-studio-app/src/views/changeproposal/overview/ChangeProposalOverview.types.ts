@@ -85,6 +85,7 @@ export interface UpdateChangeProposalReadMeVariables {
 }
 
 export interface UpdateChangeProposalReadMeInput {
+  id: string;
   changeProposalId: string;
   content: string;
 }

@@ -32,6 +32,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
@@ -132,6 +133,7 @@ export const InvitationsView = () => {
   const handleAcceptInvitation = (invitation: Invitation) => {
     const variables: AcceptInvitationVariables = {
       input: {
+        id: uuid(),
         organizationIdentifier: invitation.organization.identifier,
         invitationId: invitation.id,
       },
@@ -163,6 +165,7 @@ export const InvitationsView = () => {
   const handleDeclineInvitation = (invitation: Invitation) => {
     const variables: DeclineInvitationVariables = {
       input: {
+        id: uuid(),
         organizationIdentifier: invitation.organization.identifier,
         invitationId: invitation.id,
       },

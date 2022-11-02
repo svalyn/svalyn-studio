@@ -28,11 +28,12 @@ import java.util.UUID;
 /**
  * Input used to edit the README.
  *
+ * @param id The correlation identifier
  * @param changeProposalId The id of the change proposal
  * @param message The message
  * @param status The status
  *
  * @author sbegaudeau
  */
-public record PerformReviewInput(@NotNull UUID changeProposalId, @NotNull String message, @NotNull ReviewStatus status) implements IInput {
+public record PerformReviewInput(@NotNull UUID id, @NotNull UUID changeProposalId, @NotNull String message, @NotNull ReviewStatus status) implements IInput {
 }

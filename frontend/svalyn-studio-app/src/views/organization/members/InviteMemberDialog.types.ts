@@ -46,6 +46,7 @@ export interface InviteMemberVariables {
 }
 
 export interface InviteMemberInput {
+  id: string;
   organizationIdentifier: string;
   email: string;
 }

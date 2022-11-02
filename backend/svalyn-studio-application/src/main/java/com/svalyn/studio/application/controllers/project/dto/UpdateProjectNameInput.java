@@ -22,14 +22,16 @@ package com.svalyn.studio.application.controllers.project.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input user to edit the name.
  *
+ * @param id The correlation identifier
  * @param projectIdentifier The identifier of the project
  * @param name The new name
  *
  * @author sbegaudeau
  */
-public record UpdateProjectNameInput(@NotNull String projectIdentifier, @NotNull String name) implements IInput {
+public record UpdateProjectNameInput(@NotNull UUID id, @NotNull String projectIdentifier, @NotNull String name) implements IInput {
 }

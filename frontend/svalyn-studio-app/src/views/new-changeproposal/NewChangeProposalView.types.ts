@@ -54,6 +54,7 @@ export interface CreateChangeProposalVariables {
 }
 
 export interface CreateChangeProposalInput {
+  id: string;
   projectIdentifier: string;
   name: string;
   resourceIds: string[];

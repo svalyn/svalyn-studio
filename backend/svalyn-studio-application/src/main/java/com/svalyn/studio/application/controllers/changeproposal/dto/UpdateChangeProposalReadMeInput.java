@@ -27,10 +27,11 @@ import java.util.UUID;
 /**
  * Input used to edit the README.
  *
+ * @param id The correlation identifier
  * @param changeProposalId The id of the change proposal
  * @param content The new content
  *
  * @author sbegaudeau
  */
-public record UpdateChangeProposalReadMeInput(@NotNull UUID changeProposalId, @NotNull String content) implements IInput {
+public record UpdateChangeProposalReadMeInput(@NotNull UUID id, @NotNull UUID changeProposalId, @NotNull String content) implements IInput {
 }

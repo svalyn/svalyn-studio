@@ -21,13 +21,15 @@ package com.svalyn.studio.application.controllers.organization.dto;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Payload used to indicate that the organization has been created.
  *
+ * @param id The correlation identifier
  * @param organization The organization created
  *
  * @author sbegaudeau
  */
-public record CreateOrganizationSuccessPayload(@NotNull OrganizationDTO organization) implements IPayload {
+public record CreateOrganizationSuccessPayload(@NotNull UUID id, @NotNull OrganizationDTO organization) implements IPayload {
 }

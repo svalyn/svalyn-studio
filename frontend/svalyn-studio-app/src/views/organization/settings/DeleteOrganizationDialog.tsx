@@ -26,6 +26,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   DeleteOrganizationData,
@@ -75,6 +76,7 @@ export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose
   const handleDeleteOrganization: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: DeleteOrganizationVariables = {
       input: {
+        id: uuid(),
         organizationIdentifier,
       },
     };
