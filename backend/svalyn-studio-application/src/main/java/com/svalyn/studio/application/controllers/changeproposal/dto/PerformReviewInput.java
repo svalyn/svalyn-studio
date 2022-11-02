@@ -22,7 +22,7 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -34,10 +34,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record PerformReviewInput(UUID changeProposalId, String message, ReviewStatus status) implements IInput {
-    public PerformReviewInput(UUID changeProposalId, String message, ReviewStatus status) {
-        this.changeProposalId = Objects.requireNonNull(changeProposalId);
-        this.message = Objects.requireNonNull(message);
-        this.status = Objects.requireNonNull(status);
-    }
+public record PerformReviewInput(@NotNull UUID changeProposalId, @NotNull String message, @NotNull ReviewStatus status) implements IInput {
 }

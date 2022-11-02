@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -32,9 +32,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record UpdateChangeProposalReadMeInput(UUID changeProposalId, String content) implements IInput {
-    public UpdateChangeProposalReadMeInput(UUID changeProposalId, String content) {
-        this.changeProposalId = Objects.requireNonNull(changeProposalId);
-        this.content = Objects.requireNonNull(content);
-    }
+public record UpdateChangeProposalReadMeInput(@NotNull UUID changeProposalId, @NotNull String content) implements IInput {
 }

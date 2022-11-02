@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * Payload used to indicate that the project has been created.
@@ -30,8 +30,5 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record CreateProjectSuccessPayload(ProjectDTO project) implements IPayload {
-    public CreateProjectSuccessPayload(ProjectDTO project) {
-        this.project = Objects.requireNonNull(project);
-    }
+public record CreateProjectSuccessPayload(@NotNull ProjectDTO project) implements IPayload {
 }

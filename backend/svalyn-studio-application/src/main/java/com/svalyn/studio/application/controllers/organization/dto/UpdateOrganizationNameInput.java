@@ -21,6 +21,8 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Input used to rename organizations.
  *
@@ -29,5 +31,5 @@ import com.svalyn.studio.application.controllers.dto.IInput;
  *
  * @author sbegaudeau
  */
-public record UpdateOrganizationNameInput(String organizationIdentifier, String name) implements IInput {
+public record UpdateOrganizationNameInput(@NotNull String organizationIdentifier, @NotNull String name) implements IInput {
 }

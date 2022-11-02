@@ -18,7 +18,7 @@
  */
 package com.svalyn.studio.application.controllers.dto;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * The payload used to indicate that an error has occurred.
@@ -27,8 +27,5 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record ErrorPayload(String message) implements IPayload {
-    public ErrorPayload(String message) {
-        this.message = Objects.requireNonNull(message);
-    }
+public record ErrorPayload(@NotNull String message) implements IPayload {
 }

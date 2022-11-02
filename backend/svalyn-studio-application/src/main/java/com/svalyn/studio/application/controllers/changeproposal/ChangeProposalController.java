@@ -42,6 +42,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -78,7 +79,7 @@ public class ChangeProposalController {
     }
 
     @MutationMapping
-    public IPayload createChangeProposal(@Argument CreateChangeProposalInput input) {
+    public IPayload createChangeProposal(@Argument @Valid CreateChangeProposalInput input) {
         return this.changeProposalService.createChangeProposal(input);
     }
 
@@ -109,22 +110,22 @@ public class ChangeProposalController {
     }
 
     @MutationMapping
-    public IPayload updateChangeProposalReadMe(@Argument UpdateChangeProposalReadMeInput input) {
+    public IPayload updateChangeProposalReadMe(@Argument @Valid UpdateChangeProposalReadMeInput input) {
         return this.changeProposalService.updateChangeProposalReadMe(input);
     }
 
     @MutationMapping
-    public IPayload updateChangeProposalStatus(@Argument UpdateChangeProposalStatusInput input) {
+    public IPayload updateChangeProposalStatus(@Argument @Valid UpdateChangeProposalStatusInput input) {
         return this.changeProposalService.updateChangeProposalStatus(input);
     }
 
     @MutationMapping
-    public IPayload performReview(@Argument PerformReviewInput input) {
+    public IPayload performReview(@Argument @Valid PerformReviewInput input) {
         return this.changeProposalService.performReview(input);
     }
 
     @MutationMapping
-    public IPayload deleteChangeProposals(@Argument DeleteChangeProposalsInput input) {
+    public IPayload deleteChangeProposals(@Argument @Valid DeleteChangeProposalsInput input) {
         return this.changeProposalService.deleteChangeProposals(input);
     }
 }

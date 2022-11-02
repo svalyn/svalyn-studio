@@ -19,12 +19,12 @@
 
 package com.svalyn.studio.domain.resource;
 
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.resource.events.ResourceCreatedEvent;
 import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -38,7 +38,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("resource")
-public class Resource extends AbstractAggregateRoot<Resource> {
+public class Resource extends AbstractValidatingAggregateRoot<Resource> {
     @Id
     private UUID id;
 

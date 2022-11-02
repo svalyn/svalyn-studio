@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -31,9 +31,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record RevokeMembershipsSuccessPayload(UUID id) implements IPayload {
-
-    public RevokeMembershipsSuccessPayload(UUID id) {
-        this.id = Objects.requireNonNull(id);
-    }
+public record RevokeMembershipsSuccessPayload(@NotNull UUID id) implements IPayload {
 }

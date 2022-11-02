@@ -19,10 +19,10 @@
 
 package com.svalyn.studio.domain.account;
 
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.events.AccountCreatedEvent;
 import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -38,7 +38,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table(name = "account")
-public class Account extends AbstractAggregateRoot<Account> {
+public class Account extends AbstractValidatingAggregateRoot<Account> {
     @Id
     private UUID id;
 

@@ -17,20 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.resource.dto;
+package com.svalyn.studio.infrastructure.graphql;
 
-import com.svalyn.studio.application.controllers.dto.IPayload;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.UUID;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 /**
- * Payload used to indicate that the resources have been created.
- *
- * @param resourceIds The id of the resources created
+ * Configuration of the GraphQL layer.
  *
  * @author sbegaudeau
  */
-public record CreateResourcesSuccessPayload(@NotNull List<@NotNull UUID> resourceIds) implements IPayload {
+@Configuration
+public class GraphQLConfiguration {
+    @Bean
+    public RuntimeWiringConfigurer runtimeWiringConfigurer(ValidatedDirectiveWiring validatedDirectiveWiring) {
+        return wiringBuilder -> wiringBuilder.directive("validated", validatedDirectiveWiring);
+    }
 }

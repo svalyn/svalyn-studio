@@ -21,6 +21,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -30,5 +31,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record DeleteOrganizationSuccessPayload(UUID id) implements IPayload {
+public record DeleteOrganizationSuccessPayload(@NotNull UUID id) implements IPayload {
 }

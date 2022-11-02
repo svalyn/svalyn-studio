@@ -20,7 +20,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.domain.organization.MembershipRole;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -33,11 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record OrganizationDTO(UUID id, String identifier, String name, MembershipRole role) {
-    public OrganizationDTO(UUID id, String identifier, String name, MembershipRole role) {
-        this.id = Objects.requireNonNull(id);
-        this.identifier = Objects.requireNonNull(identifier);
-        this.name = Objects.requireNonNull(name);
-        this.role = Objects.requireNonNull(role);
-    }
+public record OrganizationDTO(@NotNull UUID id, @NotNull String identifier, @NotNull String name, @NotNull MembershipRole role) {
 }

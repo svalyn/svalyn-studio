@@ -36,6 +36,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 /**
@@ -66,7 +67,7 @@ public class MembershipController {
     }
 
     @MutationMapping
-    public IPayload revokeMemberships(@Argument RevokeMembershipsInput input) {
+    public IPayload revokeMemberships(@Argument @Valid RevokeMembershipsInput input) {
         return this.membershipService.revokeMemberships(input);
     }
 }

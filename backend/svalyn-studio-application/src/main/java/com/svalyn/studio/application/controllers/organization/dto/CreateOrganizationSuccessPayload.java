@@ -20,7 +20,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * Payload used to indicate that the organization has been created.
@@ -29,8 +29,5 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record CreateOrganizationSuccessPayload(OrganizationDTO organization) implements IPayload {
-    public CreateOrganizationSuccessPayload(OrganizationDTO organization) {
-        this.organization = Objects.requireNonNull(organization);
-    }
+public record CreateOrganizationSuccessPayload(@NotNull OrganizationDTO organization) implements IPayload {
 }

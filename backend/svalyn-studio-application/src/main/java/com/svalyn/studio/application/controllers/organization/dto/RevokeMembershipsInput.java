@@ -21,6 +21,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,5 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record RevokeMembershipsInput(String organizationIdentifier, List<UUID> membershipIds) implements IInput {
+public record RevokeMembershipsInput(@NotNull String organizationIdentifier, @NotNull List<@NotNull UUID> membershipIds) implements IInput {
 }

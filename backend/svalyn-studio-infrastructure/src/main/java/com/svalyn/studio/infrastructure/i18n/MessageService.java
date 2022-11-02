@@ -65,6 +65,11 @@ public class MessageService implements IMessageService {
     }
 
     @Override
+    public String invalid() {
+        return this.messageSourceAccessor.getMessage("Error.invalid");
+    }
+
+    @Override
     public String tooLong(String fieldName) {
         return this.messageSourceAccessor.getMessage("Error.tooLong", new Object[] { fieldName });
     }

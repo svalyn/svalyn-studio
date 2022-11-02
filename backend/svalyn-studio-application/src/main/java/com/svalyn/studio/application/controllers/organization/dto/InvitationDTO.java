@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.Profile;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -33,10 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record InvitationDTO(UUID id, UUID organizationId, Profile member) {
-    public InvitationDTO(UUID id, UUID organizationId, Profile member) {
-        this.id = Objects.requireNonNull(id);
-        this.organizationId = Objects.requireNonNull(organizationId);
-        this.member = Objects.requireNonNull(member);
-    }
+public record InvitationDTO(@NotNull UUID id, @NotNull UUID organizationId, @NotNull Profile member) {
 }

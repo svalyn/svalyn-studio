@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * Input used to delete a project.
@@ -30,8 +30,5 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record DeleteProjectInput(String projectIdentifier) implements IInput {
-    public DeleteProjectInput(String projectIdentifier) {
-        this.projectIdentifier = Objects.requireNonNull(projectIdentifier);
-    }
+public record DeleteProjectInput(@NotNull String projectIdentifier) implements IInput {
 }

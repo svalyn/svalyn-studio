@@ -21,6 +21,8 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Input used to invite a member.
  *
@@ -29,5 +31,5 @@ import com.svalyn.studio.application.controllers.dto.IInput;
  *
  * @author sbegaudeau
  */
-public record InviteMemberInput(String organizationIdentifier, String email) implements IInput {
+public record InviteMemberInput(@NotNull String organizationIdentifier, @NotNull String email) implements IInput {
 }

@@ -21,6 +21,7 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,5 +34,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record CreateChangeProposalInput(String projectIdentifier, String name, List<UUID> resourceIds) implements IInput {
+public record CreateChangeProposalInput(@NotNull String projectIdentifier, @NotNull String name, @NotNull List<@NotNull UUID> resourceIds) implements IInput {
 }

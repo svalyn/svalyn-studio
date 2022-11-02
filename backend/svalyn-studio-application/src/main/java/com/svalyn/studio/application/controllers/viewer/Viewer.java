@@ -18,7 +18,7 @@
  */
 package com.svalyn.studio.application.controllers.viewer;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * A viewer of the application.
@@ -28,9 +28,5 @@ import java.util.Objects;
  *
  * @author sbegaudeau
  */
-public record Viewer(String name, String imageUrl) {
-    public Viewer(String name, String imageUrl) {
-        this.name = Objects.requireNonNull(name);
-        this.imageUrl = Objects.requireNonNull(imageUrl);
-    }
+public record Viewer(@NotNull String name, @NotNull String imageUrl) {
 }

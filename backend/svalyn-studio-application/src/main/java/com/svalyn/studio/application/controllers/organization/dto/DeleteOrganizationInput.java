@@ -21,6 +21,8 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Input used to delete an organization.
  *
@@ -28,5 +30,5 @@ import com.svalyn.studio.application.controllers.dto.IInput;
  *
  * @author sbegaudeau
  */
-public record DeleteOrganizationInput(String organizationIdentifier) implements IInput {
+public record DeleteOrganizationInput(@NotNull String organizationIdentifier) implements IInput {
 }
