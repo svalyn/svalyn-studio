@@ -45,5 +45,6 @@ export interface DeleteOrganizationVariables {
 }
 
 export interface DeleteOrganizationInput {
+  id: string;
   organizationIdentifier: string;
 }

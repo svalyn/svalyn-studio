@@ -45,5 +45,6 @@ export interface LeaveOrganizationVariables {
 }
 
 export interface LeaveOrganizationInput {
+  id: string;
   organizationIdentifier: string;
 }

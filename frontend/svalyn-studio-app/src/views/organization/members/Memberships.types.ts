@@ -91,6 +91,7 @@ export interface RevokeMembershipsVariables {
 }
 
 export interface RevokeMembershipsInput {
+  id: string;
   organizationIdentifier: string;
   membershipIds: string[];
 }

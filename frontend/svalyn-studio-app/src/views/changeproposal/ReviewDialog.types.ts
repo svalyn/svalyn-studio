@@ -54,6 +54,7 @@ export interface PerformReviewVariables {
 }
 
 export interface PerformReviewInput {
+  id: string;
   changeProposalId: string;
   message: string;
   status: ReviewStatus;

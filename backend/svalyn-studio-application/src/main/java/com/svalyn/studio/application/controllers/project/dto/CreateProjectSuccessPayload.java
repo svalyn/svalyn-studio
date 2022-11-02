@@ -22,13 +22,15 @@ package com.svalyn.studio.application.controllers.project.dto;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Payload used to indicate that the project has been created.
  *
+ * @param id The correlation identifier
  * @param project The project
  *
  * @author sbegaudeau
  */
-public record CreateProjectSuccessPayload(@NotNull ProjectDTO project) implements IPayload {
+public record CreateProjectSuccessPayload(@NotNull UUID id, @NotNull ProjectDTO project) implements IPayload {
 }

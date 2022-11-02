@@ -30,6 +30,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
@@ -135,6 +136,7 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
   const handleRevoke = () => {
     const variables: RevokeMembershipsVariables = {
       input: {
+        id: uuid(),
         organizationIdentifier,
         membershipIds: state.selectedMembershipIds,
       },

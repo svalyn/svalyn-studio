@@ -22,14 +22,16 @@ package com.svalyn.studio.application.controllers.organization.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to rename organizations.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  * @param name The new name
  *
  * @author sbegaudeau
  */
-public record UpdateOrganizationNameInput(@NotNull String organizationIdentifier, @NotNull String name) implements IInput {
+public record UpdateOrganizationNameInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull String name) implements IInput {
 }

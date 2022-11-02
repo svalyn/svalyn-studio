@@ -86,5 +86,6 @@ export interface DeleteChangeProposalsVariables {
 }
 
 export interface DeleteChangeProposalsInput {
+  id: string;
   changeProposalIds: string[];
 }

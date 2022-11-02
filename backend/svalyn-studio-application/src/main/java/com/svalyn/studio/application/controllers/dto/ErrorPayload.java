@@ -19,13 +19,15 @@
 package com.svalyn.studio.application.controllers.dto;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * The payload used to indicate that an error has occurred.
  *
+ * @param id The correlation identifier
  * @param message The message
  *
  * @author sbegaudeau
  */
-public record ErrorPayload(@NotNull String message) implements IPayload {
+public record ErrorPayload(@NotNull UUID id, @NotNull String message) implements IPayload {
 }

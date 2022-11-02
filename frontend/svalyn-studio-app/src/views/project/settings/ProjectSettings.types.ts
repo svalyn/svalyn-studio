@@ -44,6 +44,7 @@ export interface UpdateProjectNameVariables {
 }
 
 export interface UpdateProjectNameInput {
+  id: string;
   projectIdentifier: string;
   name: string;
 }
@@ -61,6 +62,7 @@ export interface UpdateProjectDescriptionVariables {
 }
 
 export interface UpdateProjectDescriptionInput {
+  id: string;
   projectIdentifier: string;
   description: string;
 }

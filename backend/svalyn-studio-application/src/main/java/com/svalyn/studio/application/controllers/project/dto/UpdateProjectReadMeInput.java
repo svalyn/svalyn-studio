@@ -22,14 +22,16 @@ package com.svalyn.studio.application.controllers.project.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to edit the README.
  *
+ * @param id The correlation identifier
  * @param projectIdentifier The identifier of the project
  * @param content The new content
  *
  * @author sbegaudeau
  */
-public record UpdateProjectReadMeInput(@NotNull String projectIdentifier, @NotNull String content) implements IInput {
+public record UpdateProjectReadMeInput(@NotNull UUID id, @NotNull String projectIdentifier, @NotNull String content) implements IInput {
 }

@@ -30,6 +30,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link as RouterLink } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
@@ -132,6 +133,7 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
   const handleReadMeUpdate = (value: string) => {
     const variables: UpdateProjectReadMeVariables = {
       input: {
+        id: uuid(),
         projectIdentifier,
         content: value,
       },

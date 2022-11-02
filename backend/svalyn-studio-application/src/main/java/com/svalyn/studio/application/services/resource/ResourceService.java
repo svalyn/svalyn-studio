@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Used to manipulate resources.
@@ -70,10 +71,10 @@ public class ResourceService implements IResourceService {
         IPayload payload = null;
         var result = this.resourceCreationService.createResources(resourceDescriptions);
         if (result instanceof Failure<List<Resource>> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(UUID.randomUUID(), failure.message());
         } else if (result instanceof Success<List<Resource>> success) {
             var resourceIds = success.data().stream().map(Resource::getId).toList();
-            payload = new CreateResourcesSuccessPayload(resourceIds);
+            payload = new CreateResourcesSuccessPayload(UUID.randomUUID(), resourceIds);
         }
 
         return payload;

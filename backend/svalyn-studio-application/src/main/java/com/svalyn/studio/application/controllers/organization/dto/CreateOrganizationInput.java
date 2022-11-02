@@ -21,14 +21,16 @@ package com.svalyn.studio.application.controllers.organization.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to create a new organization.
  *
+ * @param id The correlation identifier
  * @param identifier The identifier
  * @param name The name
  *
  * @author sbegaudeau
  */
-public record CreateOrganizationInput(@NotNull String identifier, @NotNull String name) implements IInput {
+public record CreateOrganizationInput(@NotNull UUID id, @NotNull String identifier, @NotNull String name) implements IInput {
 }

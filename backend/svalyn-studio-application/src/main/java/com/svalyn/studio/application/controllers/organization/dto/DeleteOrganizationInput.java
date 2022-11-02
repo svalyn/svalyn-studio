@@ -22,13 +22,15 @@ package com.svalyn.studio.application.controllers.organization.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to delete an organization.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  *
  * @author sbegaudeau
  */
-public record DeleteOrganizationInput(@NotNull String organizationIdentifier) implements IInput {
+public record DeleteOrganizationInput(@NotNull UUID id, @NotNull String organizationIdentifier) implements IInput {
 }

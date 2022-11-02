@@ -59,6 +59,7 @@ export interface CreateProjectVariables {
 }
 
 export interface CreateProjectInput {
+  id: string;
   organizationIdentifier: string;
   identifier: string;
   name: string;

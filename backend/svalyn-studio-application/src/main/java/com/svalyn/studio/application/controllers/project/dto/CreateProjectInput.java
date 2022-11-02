@@ -22,10 +22,12 @@ package com.svalyn.studio.application.controllers.project.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Input used to create a project.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  * @param identifier The identifier
  * @param name The name
@@ -33,5 +35,5 @@ import javax.validation.constraints.NotNull;
  *
  * @author sbegaudeau
  */
-public record CreateProjectInput(@NotNull String organizationIdentifier, @NotNull String identifier, @NotNull String name, @NotNull String description) implements IInput {
+public record CreateProjectInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull String identifier, @NotNull String name, @NotNull String description) implements IInput {
 }

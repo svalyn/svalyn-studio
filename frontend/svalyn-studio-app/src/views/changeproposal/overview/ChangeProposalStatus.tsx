@@ -37,6 +37,7 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Typography from '@mui/material/Typography';
 import { useEffect, useRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { ReviewDialog } from '../ReviewDialog';
 import {
   ChangeProposalStatusProps,
@@ -100,6 +101,7 @@ export const ChangeProposalStatus = ({ changeProposal, onStatusUpdated }: Change
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: UpdateChangeProposalStatusVariables = {
       input: {
+        id: uuid(),
         changeProposalId: changeProposal.id,
         status: state.selectedOptionIndex === 0 ? 'INTEGRATED' : 'CLOSED',
       },

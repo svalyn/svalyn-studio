@@ -27,10 +27,11 @@ import java.util.UUID;
 /**
  * Input used to decline an invitation.
  *
+ * @param id The correlation identifier
  * @param organizationIdentifier The identifier of the organization
  * @param invitationId The id of the invitation
  *
  * @author sbegaudeau
  */
-public record DeclineInvitationInput(@NotNull String organizationIdentifier, @NotNull UUID invitationId) implements IInput {
+public record DeclineInvitationInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull UUID invitationId) implements IInput {
 }

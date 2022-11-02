@@ -52,6 +52,7 @@ export interface CreateOrganizationVariables {
 }
 
 export interface CreateOrganizationInput {
+  id: string;
   identifier: string;
   name: string;
 }

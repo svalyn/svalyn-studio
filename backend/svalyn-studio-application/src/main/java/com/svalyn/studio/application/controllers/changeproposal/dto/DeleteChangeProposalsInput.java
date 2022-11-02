@@ -28,9 +28,10 @@ import java.util.UUID;
 /**
  * The input used to delete change proposals.
  *
+ * @param id The correlation identifier
  * @param changeProposalIds The id of the change proposal to delete
  *
  * @author sbegaudeau
  */
-public record DeleteChangeProposalsInput(@NotNull List<@NotNull UUID> changeProposalIds) implements IInput {
+public record DeleteChangeProposalsInput(@NotNull UUID id, @NotNull List<@NotNull UUID> changeProposalIds) implements IInput {
 }

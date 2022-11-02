@@ -22,13 +22,15 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 /**
  * Payload used to indicate that the change proposals have been created.
  *
+ * @param id The correlation identifier
  * @param changeProposal The change proposal created
  *
  * @author sbegaudeau
  */
-public record CreateChangeProposalSuccessPayload(@NotNull ChangeProposalDTO changeProposal) implements IPayload {
+public record CreateChangeProposalSuccessPayload(@NotNull UUID id, @NotNull ChangeProposalDTO changeProposal) implements IPayload {
 }

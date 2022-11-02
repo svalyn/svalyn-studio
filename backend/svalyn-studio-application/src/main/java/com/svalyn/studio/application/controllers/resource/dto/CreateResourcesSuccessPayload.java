@@ -28,9 +28,10 @@ import java.util.UUID;
 /**
  * Payload used to indicate that the resources have been created.
  *
+ * @param id The correlation identifier
  * @param resourceIds The id of the resources created
  *
  * @author sbegaudeau
  */
-public record CreateResourcesSuccessPayload(@NotNull List<@NotNull UUID> resourceIds) implements IPayload {
+public record CreateResourcesSuccessPayload(@NotNull UUID id, @NotNull List<@NotNull UUID> resourceIds) implements IPayload {
 }

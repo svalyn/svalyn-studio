@@ -48,6 +48,7 @@ export interface UpdateOrganizationNameVariables {
 }
 
 export interface UpdateOrganizationNameInput {
+  id: string;
   organizationIdentifier: string;
   name: string;
 }

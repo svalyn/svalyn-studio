@@ -98,9 +98,9 @@ public class ProjectService implements IProjectService {
 
         var result = this.projectCreationService.createProject(input.organizationIdentifier(), input.identifier(), input.name(), input.description());
         if (result instanceof Failure<Project> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Project> success) {
-            payload = new CreateProjectSuccessPayload(new ProjectDTO(success.data().getOrganization().getId(), success.data().getId(), success.data().getIdentifier(), success.data().getName(), success.data().getDescription(), success.data().getReadMe()));
+            payload = new CreateProjectSuccessPayload(input.id(), new ProjectDTO(success.data().getOrganization().getId(), success.data().getId(), success.data().getIdentifier(), success.data().getName(), success.data().getDescription(), success.data().getReadMe()));
         }
 
         return payload;
@@ -113,9 +113,9 @@ public class ProjectService implements IProjectService {
 
         var result = this.projectUpdateService.updateName(input.projectIdentifier(), input.name());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateProjectNameSuccessPayload(UUID.randomUUID());
+            payload = new UpdateProjectNameSuccessPayload(input.id());
         }
 
         return payload;
@@ -128,9 +128,9 @@ public class ProjectService implements IProjectService {
 
         var result = this.projectUpdateService.updateDescription(input.projectIdentifier(), input.description());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateProjectDescriptionSuccessPayload(UUID.randomUUID());
+            payload = new UpdateProjectDescriptionSuccessPayload(input.id());
         }
 
         return payload;
@@ -143,9 +143,9 @@ public class ProjectService implements IProjectService {
 
         var result = this.projectUpdateService.updateReadMe(input.projectIdentifier(), input.content());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateProjectReadMeSuccessPayload(UUID.randomUUID());
+            payload = new UpdateProjectReadMeSuccessPayload(input.id());
         }
 
         return payload;
@@ -158,9 +158,9 @@ public class ProjectService implements IProjectService {
 
         var result = this.projectDeletionService.deleteProject(input.projectIdentifier());
         if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(failure.message());
+            payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeleteProjectSuccessPayload(UUID.randomUUID());
+            payload = new DeleteProjectSuccessPayload(input.id());
         }
 
         return payload;
