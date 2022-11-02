@@ -126,7 +126,7 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
     if (!updateChangeProposalReadMeLoading) {
       if (updateChangeProposalReadMeData) {
         const { updateChangeProposalReadMe } = updateChangeProposalReadMeData;
-        if (updateChangeProposalReadMe.__typename === 'UpdateChangeProposalReadMeSuccessPayload') {
+        if (updateChangeProposalReadMe.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (updateChangeProposalReadMe.__typename === 'ErrorPayload') {
           const errorPayload = updateChangeProposalReadMe as ErrorPayload;

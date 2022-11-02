@@ -21,15 +21,13 @@ package com.svalyn.studio.application.services.organization;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganizationInput;
-import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganizationSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
-import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationSuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameInput;
-import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameSuccessPayload;
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -123,7 +121,7 @@ public class OrganizationService implements IOrganizationService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateOrganizationNameSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -138,7 +136,7 @@ public class OrganizationService implements IOrganizationService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new LeaveOrganizationSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;
@@ -153,7 +151,7 @@ public class OrganizationService implements IOrganizationService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeleteOrganizationSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;

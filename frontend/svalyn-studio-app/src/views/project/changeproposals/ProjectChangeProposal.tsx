@@ -121,7 +121,7 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
     if (!deleteChangeProposalsLoading) {
       if (deleteChangeProposalsData) {
         const { deleteChangeProposals } = deleteChangeProposalsData;
-        if (deleteChangeProposals.__typename === 'DeleteChangeProposalsSuccessPayload') {
+        if (deleteChangeProposals.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (deleteChangeProposals.__typename === 'ErrorPayload') {
           const errorPayload = deleteChangeProposals as ErrorPayload;

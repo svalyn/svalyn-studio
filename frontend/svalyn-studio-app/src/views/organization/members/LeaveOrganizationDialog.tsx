@@ -60,7 +60,7 @@ export const LeaveOrganizationDialog = ({ organizationIdentifier, open, onClose 
   useEffect(() => {
     if (!leaveOrganizationLoading) {
       if (leaveOrganizationData) {
-        if (leaveOrganizationData.leaveOrganization.__typename === 'LeaveOrganizationSuccessPayload') {
+        if (leaveOrganizationData.leaveOrganization.__typename === 'SuccessPayload') {
           navigate('/');
         } else if (leaveOrganizationData.leaveOrganization.__typename === 'ErrorPayload') {
           const { message } = leaveOrganizationData.leaveOrganization as ErrorPayload;

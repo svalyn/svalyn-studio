@@ -70,7 +70,7 @@ export const OrganizationSettings = ({ organizationIdentifier, role }: Organizat
   useEffect(() => {
     if (!updateOrganizationNameLoading) {
       if (updateOrganizationNameData) {
-        if (updateOrganizationNameData.updateOrganizationName.__typename === 'UpdateOrganizationNameSuccessPayload') {
+        if (updateOrganizationNameData.updateOrganizationName.__typename === 'SuccessPayload') {
           navigate(`/orgs/${organizationIdentifier}`);
         } else if (updateOrganizationNameData.updateOrganizationName.__typename === 'ErrorPayload') {
           const { message } = updateOrganizationNameData.updateOrganizationName as ErrorPayload;

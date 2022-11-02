@@ -24,16 +24,13 @@ import com.svalyn.studio.application.controllers.changeproposal.dto.ChangePropos
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsInput;
-import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewInput;
-import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeInput;
-import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
-import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusSuccessPayload;
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.services.changeproposal.api.IChangeProposalService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -161,7 +158,7 @@ public class ChangeProposalService implements IChangeProposalService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateChangeProposalReadMeSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
         return payload;
     }
@@ -175,7 +172,7 @@ public class ChangeProposalService implements IChangeProposalService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new UpdateChangeProposalStatusSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
         return payload;
     }
@@ -189,7 +186,7 @@ public class ChangeProposalService implements IChangeProposalService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new PerformReviewSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
         return payload;
     }
@@ -203,7 +200,7 @@ public class ChangeProposalService implements IChangeProposalService {
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {
-            payload = new DeleteChangeProposalsSuccessPayload(input.id());
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;

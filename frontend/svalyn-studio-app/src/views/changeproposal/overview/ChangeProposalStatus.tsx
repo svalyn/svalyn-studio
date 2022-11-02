@@ -81,7 +81,7 @@ export const ChangeProposalStatus = ({ changeProposal, onStatusUpdated }: Change
     if (!updateChangeProposalStatusLoading) {
       if (updateChangeProposalStatusData) {
         const { updateChangeProposalStatus } = updateChangeProposalStatusData;
-        if (updateChangeProposalStatus.__typename === 'UpdateChangeProposalStatusSuccessPayload') {
+        if (updateChangeProposalStatus.__typename === 'SuccessPayload') {
           onStatusUpdated();
         } else if (updateChangeProposalStatus.__typename === 'ErrorPayload') {
           const errorPayload = updateChangeProposalStatus as ErrorPayload;

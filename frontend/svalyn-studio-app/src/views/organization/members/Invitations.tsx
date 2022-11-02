@@ -118,7 +118,7 @@ export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) 
   useEffect(() => {
     if (!revokeInvitationLoading) {
       if (revokeInvitationData) {
-        if (revokeInvitationData.revokeInvitation.__typename === 'RevokeInvitationSuccessPayload') {
+        if (revokeInvitationData.revokeInvitation.__typename === 'SuccessPayload') {
           refetch(variables);
         } else if (revokeInvitationData.revokeInvitation.__typename === 'ErrorPayload') {
           const { message } = revokeInvitationData.revokeInvitation as ErrorPayload;
