@@ -95,7 +95,7 @@ public class ChangeProposalService implements IChangeProposalService {
                 .stream()
                 .map(changeProposal -> new ChangeProposalDTO(changeProposal.getProject().getId(), changeProposal.getId(), changeProposal.getName(), changeProposal.getReadMe(), changeProposal.getStatus()))
                 .toList();
-        var count = this.changeProposalRepository.countAllByProjectId(projectId, page, rowsPerPage);
+        var count = this.changeProposalRepository.countAllByProjectId(projectId);
         return new PageImpl<>(changesProposals, PageRequest.of(page, rowsPerPage), count);
     }
 
@@ -141,6 +141,7 @@ public class ChangeProposalService implements IChangeProposalService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ReviewDTO> findReviews(UUID changeProposalId) {
         return this.changeProposalRepository.findById(changeProposalId)
                 .map(ChangeProposal::getReviews)

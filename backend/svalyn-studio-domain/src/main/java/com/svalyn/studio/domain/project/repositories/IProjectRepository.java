@@ -20,9 +20,11 @@
 package com.svalyn.studio.domain.project.repositories;
 
 import com.svalyn.studio.domain.project.Project;
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,5 +35,21 @@ import java.util.UUID;
  */
 @Repository
 public interface IProjectRepository extends PagingAndSortingRepository<Project, UUID> {
+
     Optional<Project> findByIdentifier(String identifier);
+
+    @Query("""
+    SELECT * FROM project project
+    WHERE project.organization_id = :organizationId
+    ORDER BY project.created_on DESC
+    LIMIT :limit
+    OFFSET :offset
+    """)
+    List<Project> findAllByOrganizationId(UUID organizationId, long offset, int limit);
+
+    @Query("""
+    SELECT count(*) FROM project project
+    WHERE project.organization_id = :organizationId
+    """)
+    long countAllByOrganizationId(UUID organizationId);
 }
