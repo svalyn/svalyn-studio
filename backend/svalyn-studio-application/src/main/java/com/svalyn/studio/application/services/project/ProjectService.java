@@ -21,6 +21,7 @@ package com.svalyn.studio.application.services.project;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.dto.Profile;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectSuccessPayload;
@@ -32,6 +33,7 @@ import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMe
 import com.svalyn.studio.application.services.project.api.IProjectService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
+import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import com.svalyn.studio.domain.project.services.api.IProjectCreationService;
@@ -55,6 +57,8 @@ import java.util.UUID;
 @Service
 public class ProjectService implements IProjectService {
 
+    private final IAccountRepository accountRepository;
+
     private final IProjectRepository projectRepository;
 
     private final IProjectCreationService projectCreationService;
@@ -63,18 +67,43 @@ public class ProjectService implements IProjectService {
 
     private final IProjectDeletionService projectDeletionService;
 
-    public ProjectService(IProjectRepository projectRepository, IProjectCreationService projectCreationService, IProjectUpdateService projectUpdateService, IProjectDeletionService projectDeletionService) {
+    public ProjectService(IAccountRepository accountRepository, IProjectRepository projectRepository, IProjectCreationService projectCreationService, IProjectUpdateService projectUpdateService, IProjectDeletionService projectDeletionService) {
+        this.accountRepository = Objects.requireNonNull(accountRepository);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.projectCreationService = Objects.requireNonNull(projectCreationService);
         this.projectUpdateService = Objects.requireNonNull(projectUpdateService);
         this.projectDeletionService = Objects.requireNonNull(projectDeletionService);
     }
 
+    private Optional<ProjectDTO> toDTO(Project project) {
+        var optionalCreatedByProfile = this.accountRepository.findById(project.getCreatedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalLastModifiedByProfile = this.accountRepository.findById(project.getLastModifiedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+
+        return optionalCreatedByProfile.flatMap(createdBy ->
+                optionalLastModifiedByProfile.map(lastModifiedBy ->
+                        new ProjectDTO(
+                                project.getOrganization().getId(),
+                                project.getId(),
+                                project.getIdentifier(),
+                                project.getName(),
+                                project.getDescription(),
+                                project.getReadMe(),
+                                project.getCreatedOn(),
+                                createdBy,
+                                project.getLastModifiedOn(),
+                                lastModifiedBy
+                        )
+                )
+        );
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<ProjectDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage) {
         var projects = this.projectRepository.findAllByOrganizationId(organizationId, page, rowsPerPage).stream()
-                .map(project -> new ProjectDTO(project.getOrganization().getId(), project.getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()))
+                .flatMap(project -> this.toDTO(project).stream())
                 .toList();
         var count = this.projectRepository.countAllByOrganizationId(organizationId);
         return new PageImpl<>(projects, PageRequest.of(page, rowsPerPage), count);
@@ -83,13 +112,13 @@ public class ProjectService implements IProjectService {
     @Override
     @Transactional(readOnly = true)
     public Optional<ProjectDTO> findById(UUID projectId) {
-        return this.projectRepository.findById(projectId).map(project -> new ProjectDTO(project.getOrganization().getId(), project.getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
+        return this.projectRepository.findById(projectId).flatMap(this::toDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<ProjectDTO> findByIdentifier(String identifier) {
-        return this.projectRepository.findByIdentifier(identifier).map(project -> new ProjectDTO(project.getOrganization().getId(), project.getId(), project.getIdentifier(), project.getName(), project.getDescription(), project.getReadMe()));
+        return this.projectRepository.findByIdentifier(identifier).flatMap(this::toDTO);
     }
 
     @Override
@@ -101,7 +130,7 @@ public class ProjectService implements IProjectService {
         if (result instanceof Failure<Project> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Project> success) {
-            payload = new CreateProjectSuccessPayload(input.id(), new ProjectDTO(success.data().getOrganization().getId(), success.data().getId(), success.data().getIdentifier(), success.data().getName(), success.data().getDescription(), success.data().getReadMe()));
+            payload = new CreateProjectSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
         }
 
         return payload;

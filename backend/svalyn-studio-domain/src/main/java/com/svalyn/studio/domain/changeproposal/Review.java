@@ -67,6 +67,18 @@ public class Review {
         return createdBy;
     }
 
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public AggregateReference<Account, UUID> getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public Instant getLastModifiedOn() {
+        return lastModifiedOn;
+    }
+
     public void update(String message, ReviewStatus status) {
         this.message = Objects.requireNonNull(message);
         this.status = Objects.requireNonNull(status);

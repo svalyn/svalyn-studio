@@ -30,11 +30,14 @@ import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChange
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.dto.Profile;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.services.changeproposal.api.IChangeProposalService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
+import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.changeproposal.ChangeProposal;
+import com.svalyn.studio.domain.changeproposal.Review;
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalCreationService;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalDeletionService;
@@ -61,6 +64,8 @@ import java.util.UUID;
 @Service
 public class ChangeProposalService implements IChangeProposalService {
 
+    private final IAccountRepository accountRepository;
+
     private final IChangeProposalRepository changeProposalRepository;
 
     private final IChangeProposalCreationService changeProposalCreationService;
@@ -71,7 +76,8 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private final IResourceRepository resourceRepository;
 
-    public ChangeProposalService(IChangeProposalRepository changeProposalRepository, IChangeProposalCreationService changeProposalCreationService, IChangeProposalUpdateService changeProposalUpdateService, IChangeProposalDeletionService changeProposalDeletionService, IResourceRepository resourceRepository) {
+    public ChangeProposalService(IAccountRepository accountRepository, IChangeProposalRepository changeProposalRepository, IChangeProposalCreationService changeProposalCreationService, IChangeProposalUpdateService changeProposalUpdateService, IChangeProposalDeletionService changeProposalDeletionService, IResourceRepository resourceRepository) {
+        this.accountRepository = Objects.requireNonNull(accountRepository);
         this.changeProposalRepository = Objects.requireNonNull(changeProposalRepository);
         this.changeProposalCreationService = Objects.requireNonNull(changeProposalCreationService);
         this.changeProposalUpdateService = Objects.requireNonNull(changeProposalUpdateService);
@@ -79,10 +85,33 @@ public class ChangeProposalService implements IChangeProposalService {
         this.resourceRepository = Objects.requireNonNull(resourceRepository);
     }
 
+    private Optional<ChangeProposalDTO> toDTO(ChangeProposal changeProposal) {
+        var optionalCreatedByProfile = this.accountRepository.findById(changeProposal.getCreatedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalLastModifiedByProfile = this.accountRepository.findById(changeProposal.getLastModifiedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+
+        return optionalCreatedByProfile.flatMap(createdBy ->
+                optionalLastModifiedByProfile.map(lastModifiedBy ->
+                        new ChangeProposalDTO(
+                                changeProposal.getProject().getId(),
+                                changeProposal.getId(),
+                                changeProposal.getName(),
+                                changeProposal.getReadMe(),
+                                changeProposal.getStatus(),
+                                changeProposal.getCreatedOn(),
+                                createdBy,
+                                changeProposal.getLastModifiedOn(),
+                                lastModifiedBy
+                        )
+                )
+        );
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Optional<ChangeProposalDTO> findById(UUID id) {
-        return this.changeProposalRepository.findById(id).map(changeProposal -> new ChangeProposalDTO(changeProposal.getProject().getId(), changeProposal.getId(), changeProposal.getName(), changeProposal.getReadMe(), changeProposal.getStatus()));
+        return this.changeProposalRepository.findById(id).flatMap(this::toDTO);
     }
 
     @Override
@@ -90,7 +119,7 @@ public class ChangeProposalService implements IChangeProposalService {
     public Page<ChangeProposalDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage) {
         var changesProposals = this.changeProposalRepository.findAllByProjectId(projectId, page, rowsPerPage)
                 .stream()
-                .map(changeProposal -> new ChangeProposalDTO(changeProposal.getProject().getId(), changeProposal.getId(), changeProposal.getName(), changeProposal.getReadMe(), changeProposal.getStatus()))
+                .flatMap(changeProposal -> this.toDTO(changeProposal).stream())
                 .toList();
         var count = this.changeProposalRepository.countAllByProjectId(projectId);
         return new PageImpl<>(changesProposals, PageRequest.of(page, rowsPerPage), count);
@@ -105,7 +134,7 @@ public class ChangeProposalService implements IChangeProposalService {
         if (result instanceof Failure<ChangeProposal> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<ChangeProposal> success) {
-            payload = new CreateChangeProposalSuccessPayload(input.id(), new ChangeProposalDTO(success.data().getProject().getId(), success.data().getId(), success.data().getName(), success.data().getReadMe(), success.data().getStatus()));
+            payload = new CreateChangeProposalSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
         }
 
         return payload;
@@ -137,13 +166,26 @@ public class ChangeProposalService implements IChangeProposalService {
         return List.of();
     }
 
+    private Optional<ReviewDTO> toDTO(Review review) {
+        var optionalCreatedByProfile = this.accountRepository.findById(review.getCreatedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalLastModifiedByProfile = this.accountRepository.findById(review.getLastModifiedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+
+        return optionalCreatedByProfile.flatMap(createdBy ->
+                optionalLastModifiedByProfile.map(lastModifiedBy ->
+                        new ReviewDTO(review.getId(), review.getMessage(), review.getStatus(), review.getCreatedOn(), createdBy, review.getLastModifiedOn(), lastModifiedBy)
+                )
+        );
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<ReviewDTO> findReviews(UUID changeProposalId) {
         return this.changeProposalRepository.findById(changeProposalId)
                 .map(ChangeProposal::getReviews)
                 .map(reviews -> reviews.stream()
-                        .map(review -> new ReviewDTO(review.getId(), review.getMessage(), review.getStatus()))
+                        .flatMap(review -> this.toDTO(review).stream())
                         .toList())
                 .orElse(List.of());
 

@@ -70,8 +70,20 @@ public class Membership {
         return role;
     }
 
+    public AggregateReference<Account, UUID> getCreatedBy() {
+        return createdBy;
+    }
+
     public Instant getCreatedOn() {
         return createdOn;
+    }
+
+    public AggregateReference<Account, UUID> getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public Instant getLastModifiedOn() {
+        return lastModifiedOn;
     }
 
     public void updateRole(MembershipRole role) {

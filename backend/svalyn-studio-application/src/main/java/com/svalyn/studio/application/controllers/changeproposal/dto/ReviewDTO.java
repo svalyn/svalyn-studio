@@ -19,19 +19,24 @@
 
 package com.svalyn.studio.application.controllers.changeproposal.dto;
 
+import com.svalyn.studio.application.controllers.dto.Profile;
 import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * The review DTO for the GraphQL layer.
  *
- * @param id The id
- * @param message The message
- * @param status The status
- *
  * @author sbegaudeau
  */
-public record ReviewDTO(@NotNull UUID id, @NotNull String message, @NotNull ReviewStatus status) {
+public record ReviewDTO(
+        @NotNull UUID id,
+        @NotNull String message,
+        @NotNull ReviewStatus status,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Instant lastModifiedOn,
+        @NotNull Profile lastModifiedBy) {
 }

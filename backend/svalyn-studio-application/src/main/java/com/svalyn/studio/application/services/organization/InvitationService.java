@@ -46,9 +46,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Used to manipulate invitations.
@@ -56,39 +57,52 @@ import java.util.Set;
  * @author sbegaudeau
  */
 @Service
-@Transactional(readOnly = true)
 public class InvitationService implements IInvitationService {
+
+    private final IAccountRepository accountRepository;
 
     private final IOrganizationRepository organizationRepository;
 
     private final IOrganizationUpdateService organizationUpdateService;
 
-    private final IAccountRepository accountRepository;
-
     private final IMessageService messageService;
 
-    public InvitationService(IOrganizationRepository organizationRepository, IOrganizationUpdateService organizationUpdateService, IAccountRepository accountRepository, IMessageService messageService) {
+    public InvitationService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository, IOrganizationUpdateService organizationUpdateService, IMessageService messageService) {
+        this.accountRepository = Objects.requireNonNull(accountRepository);
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.organizationUpdateService = Objects.requireNonNull(organizationUpdateService);
-        this.accountRepository = Objects.requireNonNull(accountRepository);
         this.messageService = Objects.requireNonNull(messageService);
+    }
+
+    private Optional<InvitationDTO> toDTO(Invitation invitation, UUID organizationId) {
+        var optionalCreatedByProfile = this.accountRepository.findById(invitation.getCreatedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalLastModifiedByProfile = this.accountRepository.findById(invitation.getLastModifiedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalMemberProfile = this.accountRepository.findById(invitation.getMemberId().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+
+        return optionalMemberProfile.flatMap(member ->
+                optionalCreatedByProfile.flatMap(createdBy ->
+                        optionalLastModifiedByProfile.map(lastModifiedBy ->
+                                new InvitationDTO(invitation.getId(), organizationId, member, invitation.getCreatedOn(), createdBy, invitation.getLastModifiedOn(), lastModifiedBy)
+                        )
+                )
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<InvitationDTO> findAll(int page, int rowsPerPage) {
         var userId = UserIdProvider.get().getId();
-        var optionalAccount = this.accountRepository.findById(userId);
-        return optionalAccount.map(account -> {
-            var organizations = this.organizationRepository.findAllWhereInvited(userId, page, rowsPerPage);
-            var organizationsCount = this.organizationRepository.countAllWhereInvited(userId, page, rowsPerPage);
-            var invitations = organizations.stream()
-                    .flatMap(organization -> organization.getInvitations().stream()
-                            .filter(invitation -> invitation.getMemberId().getId().equals(userId))
-                            .map(invitation -> new InvitationDTO(invitation.getId(), organization.getId(), new Profile(account.getName(), account.getImageUrl()))))
-                    .toList();
-            return new PageImpl<>(invitations, PageRequest.of(page, rowsPerPage), organizationsCount);
-        }).orElse(new PageImpl<>(List.of()));
+        var organizations = this.organizationRepository.findAllWhereInvited(userId, page, rowsPerPage);
+        var organizationsCount = this.organizationRepository.countAllWhereInvited(userId, page, rowsPerPage);
+        var invitations = organizations.stream()
+                .flatMap(organization -> organization.getInvitations().stream()
+                        .filter(invitation -> invitation.getMemberId().getId().equals(userId))
+                        .flatMap(invitation -> this.toDTO(invitation, organization.getId()).stream()))
+                .toList();
+        return new PageImpl<>(invitations, PageRequest.of(page, rowsPerPage), organizationsCount);
     }
 
     @Override
@@ -98,9 +112,7 @@ public class InvitationService implements IInvitationService {
         var invitations = optionalOrganization.map(Organization::getInvitations).orElse(Set.of());
         var sortedInvitations = invitations.stream()
                 .sorted(Comparator.comparing(Invitation::getCreatedOn))
-                .flatMap(invitation -> this.accountRepository.findById(invitation.getMemberId().getId())
-                        .map(account -> new InvitationDTO(invitation.getId(), organization.id(), new Profile(account.getName(), account.getImageUrl())))
-                        .stream())
+                .flatMap(invitation -> this.toDTO(invitation, organization.id()).stream())
                 .toList();
 
         var fromIndex = Math.min(page * rowsPerPage, sortedInvitations.size());

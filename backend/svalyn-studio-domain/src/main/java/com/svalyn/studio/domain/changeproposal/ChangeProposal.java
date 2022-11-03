@@ -102,6 +102,22 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
         return reviews;
     }
 
+    public AggregateReference<Account, UUID> getCreatedBy() {
+        return createdBy;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public AggregateReference<Account, UUID> getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public Instant getLastModifiedOn() {
+        return lastModifiedOn;
+    }
+
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
         this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), Instant.now(), this));

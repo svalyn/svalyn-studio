@@ -21,9 +21,3 @@ spring:
       path: /api/graphql
     graphiql:
       enabled: false
-logging:
-  level:
-    org:
-      springframework:
-        jdbc:
-          core: TRACE

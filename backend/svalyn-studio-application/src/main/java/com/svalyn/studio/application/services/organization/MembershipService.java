@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -50,20 +51,37 @@ import java.util.Set;
  * @author sbegaudeau
  */
 @Service
-@Transactional(readOnly = true)
 public class MembershipService implements IMembershipService {
+
+    private final IAccountRepository accountRepository;
 
     private final IOrganizationRepository organizationRepository;
 
     private final IOrganizationUpdateService organizationUpdateService;
 
-    private final IAccountRepository accountRepository;
-
-    public MembershipService(IOrganizationRepository organizationRepository, IOrganizationUpdateService organizationUpdateService, IAccountRepository accountRepository) {
+    public MembershipService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository, IOrganizationUpdateService organizationUpdateService) {
+        this.accountRepository = Objects.requireNonNull(accountRepository);
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.organizationUpdateService = Objects.requireNonNull(organizationUpdateService);
-        this.accountRepository = Objects.requireNonNull(accountRepository);
     }
+
+    private Optional<MembershipDTO> toDTO(Membership membership) {
+        var optionalCreatedByProfile = this.accountRepository.findById(membership.getCreatedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalLastModifiedByProfile = this.accountRepository.findById(membership.getLastModifiedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalMemberProfile = this.accountRepository.findById(membership.getMemberId().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+
+        return optionalMemberProfile.flatMap(member ->
+                optionalCreatedByProfile.flatMap(createdBy ->
+                        optionalLastModifiedByProfile.map(lastModifiedBy ->
+                                new MembershipDTO(membership.getId(), member, membership.getCreatedOn(), createdBy, membership.getLastModifiedOn(), lastModifiedBy)
+                        )
+                )
+        );
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<MembershipDTO> findAll(OrganizationDTO organization, int page, int rowsPerPage) {
@@ -71,9 +89,7 @@ public class MembershipService implements IMembershipService {
         var memberships = optionalOrganization.map(Organization::getMemberships).orElse(Set.of());
         var sortedMemberships = memberships.stream()
                 .sorted(Comparator.comparing(Membership::getCreatedOn))
-                .flatMap(membership -> this.accountRepository.findById(membership.getMemberId().getId())
-                        .map(account -> new MembershipDTO(membership.getId(), new Profile(account.getName(), account.getImageUrl())))
-                        .stream())
+                .flatMap(membership -> this.toDTO(membership).stream())
                 .toList();
 
         var fromIndex = Math.min(page * rowsPerPage, sortedMemberships.size());

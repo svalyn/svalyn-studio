@@ -65,8 +65,20 @@ public class Invitation {
         return this.memberId;
     }
 
+    public AggregateReference<Account, UUID> getCreatedBy() {
+        return createdBy;
+    }
+
     public Instant getCreatedOn() {
         return createdOn;
+    }
+
+    public AggregateReference<Account, UUID> getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public Instant getLastModifiedOn() {
+        return lastModifiedOn;
     }
 
     public static Builder newInvitation() {

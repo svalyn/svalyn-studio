@@ -19,20 +19,26 @@
 
 package com.svalyn.studio.application.controllers.project.dto;
 
+import com.svalyn.studio.application.controllers.dto.Profile;
+
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * The project DTO for the GraphQL layer.
  *
- * @param organizationId The id of the organization
- * @param id The id of the project
- * @param identifier The identifier
- * @param name The name
- * @param description The description
- * @param readMe The READ ME
- *
  * @author sbegaudeau
  */
-public record ProjectDTO(@NotNull UUID organizationId, @NotNull UUID id, @NotNull String identifier, @NotNull String name, @NotNull String description, @NotNull String readMe) {
+public record ProjectDTO(
+        @NotNull UUID organizationId,
+        @NotNull UUID id,
+        @NotNull String identifier,
+        @NotNull String name,
+        @NotNull String description,
+        @NotNull String readMe,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Instant lastModifiedOn,
+        @NotNull Profile lastModifiedBy) {
 }

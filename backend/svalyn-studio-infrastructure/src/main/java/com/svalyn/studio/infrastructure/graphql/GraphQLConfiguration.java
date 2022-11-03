@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.infrastructure.graphql;
 
+import graphql.schema.GraphQLScalarType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
@@ -32,6 +33,14 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 public class GraphQLConfiguration {
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer(ValidatedDirectiveWiring validatedDirectiveWiring) {
-        return wiringBuilder -> wiringBuilder.directive("validated", validatedDirectiveWiring);
+        var instantScalar = GraphQLScalarType.newScalar()
+                .name("Instant")
+                .description("Implementation of java.time.Instant")
+                .coercing(new InstantCoercing())
+                .build();
+
+        return wiringBuilder -> wiringBuilder
+                .directive("validated", validatedDirectiveWiring)
+                .scalar(instantScalar);
     }
 }

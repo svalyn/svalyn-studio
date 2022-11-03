@@ -18,20 +18,25 @@
  */
 package com.svalyn.studio.application.controllers.organization.dto;
 
+import com.svalyn.studio.application.controllers.dto.Profile;
 import com.svalyn.studio.domain.organization.MembershipRole;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * The organization DTO for the GraphQL layer.
  *
- * @param id The id
- * @param identifier The user defined identifier
- * @param name The name
- * @param role The role
- *
  * @author sbegaudeau
  */
-public record OrganizationDTO(@NotNull UUID id, @NotNull String identifier, @NotNull String name, @NotNull MembershipRole role) {
+public record OrganizationDTO(
+        @NotNull UUID id,
+        @NotNull String identifier,
+        @NotNull String name,
+        @NotNull MembershipRole role,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Instant lastModifiedOn,
+        @NotNull Profile lastModifiedBy) {
 }

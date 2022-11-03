@@ -1,3 +1,5 @@
+scalar Instant
+
 directive @validated on FIELD_DEFINITION
 
 type Query {
@@ -39,6 +41,10 @@ type Organization {
   identifier: ID!
   name: String!
   role: MembershipRole!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
   invitations(page: Int!, rowsPerPage: Int!): OrganizationInvitationsConnection!
   memberships(page: Int!, rowsPerPage: Int!): OrganizationMembershipsConnection!
   projects(page: Int!, rowsPerPage: Int!): OrganizationProjectsConnection!
@@ -63,6 +69,10 @@ type Invitation {
   id: ID!
   organization: Organization!
   member: Profile!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
 }
 
 type OrganizationMembershipsConnection {
@@ -77,6 +87,10 @@ type OrganizationMembershipsEdge {
 type Membership {
   id: ID!
   member: Profile!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
 }
 
 type Profile {
@@ -98,8 +112,12 @@ type Project {
   name: String!
   description: String!
   readMe: String!
-  changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
   organization: Organization!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
+  changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
 }
 
 type ProjectChangeProposalsConnection {
@@ -117,6 +135,10 @@ type ChangeProposal {
   readMe: String!
   status: ChangeProposalStatus!
   project: Project!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
   resources: ChangeProposalResourcesConnection!
   reviews: ChangeProposalReviewsConnection!
 }
@@ -153,6 +175,10 @@ type Review {
   id: ID!
   message: String!
   status: ReviewStatus!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
 }
 
 enum ReviewStatus {

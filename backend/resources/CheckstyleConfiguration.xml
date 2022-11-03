@@ -21,6 +21,7 @@
         <module name="JavadocType">
             <property name="severity" value="error"/>
             <property name="authorFormat" value="[a-z]+"/>
+            <property name="allowMissingParamTags" value="true"/>
         </module>
         <module name="MissingJavadocType">
             <property name="severity" value="error"/>
