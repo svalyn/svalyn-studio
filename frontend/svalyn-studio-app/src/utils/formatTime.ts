@@ -17,28 +17,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.changeproposal.dto;
+const units: { amount: number; name: Intl.RelativeTimeFormatUnit }[] = [
+  { amount: 60, name: 'seconds' },
+  { amount: 60, name: 'minutes' },
+  { amount: 24, name: 'hours' },
+  { amount: 7, name: 'days' },
+  { amount: 4.34524, name: 'weeks' },
+  { amount: 12, name: 'months' },
+  { amount: Number.POSITIVE_INFINITY, name: 'years' },
+];
 
-import com.svalyn.studio.application.controllers.dto.Profile;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
+export const formatTime = (date: Date): string => {
+  let duration = (date.valueOf() - new Date().valueOf()) / 1000;
 
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.UUID;
+  for (let index = 0; index <= units.length; index++) {
+    const unit = units[index];
+    if (Math.abs(duration) < unit.amount) {
+      return new Intl.RelativeTimeFormat('en-us', { numeric: 'auto' }).format(Math.round(duration), unit.name);
+    }
+    duration = duration / unit.amount;
+  }
 
-/**
- * The change proposal DTO for the GraphQL layer.
- *
- * @author sbegaudeau
- */
-public record ChangeProposalDTO(
-        @NotNull UUID projectId,
-        @NotNull UUID id,
-        @NotNull String name,
-        @NotNull String readMe,
-        @NotNull ChangeProposalStatus status,
-        @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
-        @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
-}
+  return '';
+};

@@ -22,15 +22,19 @@ package com.svalyn.studio.application.controllers.organization.dto;
 import com.svalyn.studio.application.controllers.dto.Profile;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * The membership DTO for the GraphQL layer.
  *
- * @param id The id
- * @param member The member
- *
  * @author sbegaudeau
  */
-public record MembershipDTO(@NotNull UUID id, @NotNull Profile member) {
+public record MembershipDTO(
+        @NotNull UUID id,
+        @NotNull Profile member,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Instant lastModifiedOn,
+        @NotNull Profile lastModifiedBy) {
 }

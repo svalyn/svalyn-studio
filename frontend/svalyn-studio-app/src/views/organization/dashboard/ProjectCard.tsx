@@ -17,28 +17,24 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.changeproposal.dto;
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
+import { ProjectCardProps } from './ProjectCard.types';
 
-import com.svalyn.studio.application.controllers.dto.Profile;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.UUID;
-
-/**
- * The change proposal DTO for the GraphQL layer.
- *
- * @author sbegaudeau
- */
-public record ChangeProposalDTO(
-        @NotNull UUID projectId,
-        @NotNull UUID id,
-        @NotNull String name,
-        @NotNull String readMe,
-        @NotNull ChangeProposalStatus status,
-        @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
-        @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
-}
+export const ProjectCard = ({ identifier, name, description }: ProjectCardProps) => {
+  return (
+    <Card>
+      <CardActionArea component={RouterLink} to={`/projects/${identifier}`}>
+        <CardContent>
+          <Typography variant="h5">{name}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {description}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+};

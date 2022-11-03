@@ -17,28 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.changeproposal.dto;
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { formatTime } from '../utils/formatTime';
+import { CreatedOnProps } from './CreatedOn.types';
 
-import com.svalyn.studio.application.controllers.dto.Profile;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.UUID;
-
-/**
- * The change proposal DTO for the GraphQL layer.
- *
- * @author sbegaudeau
- */
-public record ChangeProposalDTO(
-        @NotNull UUID projectId,
-        @NotNull UUID id,
-        @NotNull String name,
-        @NotNull String readMe,
-        @NotNull ChangeProposalStatus status,
-        @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
-        @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
-}
+export const CreatedOn = ({ profile, date }: CreatedOnProps) => {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
+      <Avatar alt={profile.name} src={profile.imageUrl} sx={{ width: 24, height: 24 }} />
+      <Typography variant="body1">created this {formatTime(date)}</Typography>
+    </Box>
+  );
+};

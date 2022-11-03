@@ -19,26 +19,36 @@
 
 import { gql, useQuery } from '@apollo/client';
 import Box, { BoxProps } from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
+import { CreatedOn } from '../../../widgets/CreatedOn';
+import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
 import {
   GetOrganizationDashboardData,
   GetOrganizationDashboardVariables,
   OrganizationDashboardProps,
   OrganizationDashboardState,
 } from './OrganizationDashboard.types';
+import { ProjectCard } from './ProjectCard';
 
 const getOrganizationDashboardQuery = gql`
   query getOrganizationDashboard($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
     viewer {
       organization(identifier: $identifier) {
+        createdOn
+        createdBy {
+          name
+          imageUrl
+        }
+        lastModifiedOn
+        lastModifiedBy {
+          name
+          imageUrl
+        }
         projects(page: $page, rowsPerPage: $rowsPerPage) {
           edges {
             node {
@@ -106,45 +116,36 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
         <Typography variant="h6" gutterBottom>
           Dashboard
         </Typography>
-        <div>
-          {projects.map((project) => (
-            <Paper variant="outlined" key={project.identifier} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
-              <Box
-                sx={{
-                  paddingTop: (theme) => theme.spacing(2),
-                  paddingRight: (theme) => theme.spacing(3),
-                  paddingBottom: (theme) => theme.spacing(2),
-                  paddingLeft: (theme) => theme.spacing(3),
-                }}
-              >
-                <Link variant="h5" underline="hover" component={RouterLink} to={`/projects/${project.identifier}`}>
-                  {project.name}
-                </Link>
+        <Grid container spacing={2}>
+          <Grid item xs={10}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: (theme) => theme.spacing(2) }}>
+              {projects.map((project) => (
+                <ProjectCard identifier={project.identifier} name={project.name} description={project.description} />
+              ))}
+            </Box>
+            {state.organization ? (
+              <TablePagination
+                component="div"
+                count={state.organization.projects.pageInfo.count}
+                page={state.page}
+                onPageChange={handlePageChange}
+                rowsPerPage={state.rowsPerPage}
+                rowsPerPageOptions={[state.rowsPerPage]}
+              />
+            ) : null}
+          </Grid>
+          <Grid item xs={2}>
+            {state.organization ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+                <CreatedOn profile={state.organization.createdBy} date={new Date(state.organization.createdOn)} />
+                <LastModifiedOn
+                  profile={state.organization.lastModifiedBy}
+                  date={new Date(state.organization.lastModifiedOn)}
+                />
               </Box>
-              <Divider />
-              <Box
-                sx={{
-                  paddingTop: (theme) => theme.spacing(2),
-                  paddingRight: (theme) => theme.spacing(3),
-                  paddingBottom: (theme) => theme.spacing(2),
-                  paddingLeft: (theme) => theme.spacing(3),
-                }}
-              >
-                <Typography>{project.description}</Typography>
-              </Box>
-            </Paper>
-          ))}
-          {state.organization ? (
-            <TablePagination
-              component="div"
-              count={state.organization.projects.pageInfo.count}
-              page={state.page}
-              onPageChange={handlePageChange}
-              rowsPerPage={state.rowsPerPage}
-              rowsPerPageOptions={[state.rowsPerPage]}
-            />
-          ) : null}
-        </div>
+            ) : null}
+          </Grid>
+        </Grid>
       </Main>
       <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
     </>

@@ -38,6 +38,15 @@ export interface Viewer {
 
 export interface Organization {
   projects: OrganizationProjectsConnection;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
+}
+
+export interface Profile {
+  name: string;
+  imageUrl: string;
 }
 
 export interface OrganizationProjectsConnection {

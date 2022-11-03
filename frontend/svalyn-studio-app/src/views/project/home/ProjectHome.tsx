@@ -33,6 +33,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
+import { CreatedOn } from '../../../widgets/CreatedOn';
+import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
 import {
   ErrorPayload,
   GetProjectHomeData,
@@ -50,6 +52,16 @@ const getProjectHomeQuery = gql`
         name
         description
         readMe
+        createdOn
+        createdBy {
+          name
+          imageUrl
+        }
+        lastModifiedOn
+        lastModifiedBy {
+          name
+          imageUrl
+        }
         organization {
           identifier
           name
@@ -168,7 +180,7 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
             <Typography variant="h4">/</Typography>
             <Typography variant="h4">{state.project.name}</Typography>
           </Box>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item xs={10}>
               <>
                 <Paper variant="outlined">
@@ -206,12 +218,16 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
               </>
             </Grid>
             <Grid item xs={2}>
-              <Typography variant="h6" gutterBottom sx={{ px: (theme) => theme.spacing(2) }}>
-                Description
-              </Typography>
-              <Typography variant="body2" sx={{ px: (theme) => theme.spacing(2) }}>
-                {state.project.description}
-              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    Description
+                  </Typography>
+                  <Typography variant="body2">{state.project.description}</Typography>
+                </Box>
+                <CreatedOn profile={state.project.createdBy} date={new Date(state.project.createdOn)} />
+                <LastModifiedOn profile={state.project.lastModifiedBy} date={new Date(state.project.lastModifiedOn)} />
+              </Box>
             </Grid>
           </Grid>
         </Box>

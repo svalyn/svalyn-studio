@@ -17,28 +17,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.changeproposal.dto;
+export interface CreatedOnProps {
+  profile: Profile;
+  date: Date;
+}
 
-import com.svalyn.studio.application.controllers.dto.Profile;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.util.UUID;
-
-/**
- * The change proposal DTO for the GraphQL layer.
- *
- * @author sbegaudeau
- */
-public record ChangeProposalDTO(
-        @NotNull UUID projectId,
-        @NotNull UUID id,
-        @NotNull String name,
-        @NotNull String readMe,
-        @NotNull ChangeProposalStatus status,
-        @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
-        @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+export interface Profile {
+  name: string;
+  imageUrl: string;
 }

@@ -42,7 +42,16 @@ export interface Project {
   name: string;
   description: string;
   readMe: string;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
   organization: Organization;
+}
+
+export interface Profile {
+  name: string;
+  imageUrl: string;
 }
 
 export interface Organization {

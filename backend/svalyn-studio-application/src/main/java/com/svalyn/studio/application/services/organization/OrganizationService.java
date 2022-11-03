@@ -21,6 +21,7 @@ package com.svalyn.studio.application.services.organization;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.dto.Profile;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationSuccessPayload;
@@ -31,6 +32,7 @@ import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganiza
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
+import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
@@ -39,6 +41,7 @@ import com.svalyn.studio.domain.organization.services.api.IOrganizationDeletionS
 import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +58,8 @@ import java.util.UUID;
 @Service
 public class OrganizationService implements IOrganizationService {
 
+    private final IAccountRepository accountRepository;
+
     private final IOrganizationRepository organizationRepository;
 
     private final IOrganizationCreationService organizationCreationService;
@@ -65,7 +70,8 @@ public class OrganizationService implements IOrganizationService {
 
     private final IOrganizationPermissionService organizationPermissionService;
 
-    public OrganizationService(IOrganizationRepository organizationRepository, IOrganizationCreationService organizationCreationService, IOrganizationUpdateService organizationUpdateService, IOrganizationDeletionService organizationDeletionService, IOrganizationPermissionService organizationPermissionService) {
+    public OrganizationService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository, IOrganizationCreationService organizationCreationService, IOrganizationUpdateService organizationUpdateService, IOrganizationDeletionService organizationDeletionService, IOrganizationPermissionService organizationPermissionService) {
+        this.accountRepository = Objects.requireNonNull(accountRepository);
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.organizationCreationService = Objects.requireNonNull(organizationCreationService);
         this.organizationUpdateService = Objects.requireNonNull(organizationUpdateService);
@@ -73,28 +79,49 @@ public class OrganizationService implements IOrganizationService {
         this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
     }
 
+    private Optional<OrganizationDTO> toDTO(Organization organization) {
+        var optionalCreatedByProfile = this.accountRepository.findById(organization.getCreatedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+        var optionalLastModifiedByProfile = this.accountRepository.findById(organization.getLastModifiedBy().getId())
+                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+
+        var userId = UserIdProvider.get().getId();
+        return optionalCreatedByProfile.flatMap(createdBy ->
+                optionalLastModifiedByProfile.map(lastModifiedBy ->
+                        new OrganizationDTO(
+                                organization.getId(),
+                                organization.getIdentifier(),
+                                organization.getName(),
+                                this.organizationPermissionService.role(userId, organization),
+                                organization.getCreatedOn(),
+                                createdBy,
+                                organization.getLastModifiedOn(),
+                                lastModifiedBy
+                        )
+                )
+        );
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<OrganizationDTO> findAll() {
-        var userId = UserIdProvider.get().getId();
-        return this.organizationRepository.findAll(PageRequest.of(0, 20))
-                .map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName(), this.organizationPermissionService.role(userId, organization)));
+        var pageable = PageRequest.of(0, 20);
+        var organizationDTOs = this.organizationRepository.findAll(pageable).stream().flatMap(organization -> this.toDTO(organization).stream()).toList();
+        return new PageImpl<>(organizationDTOs, pageable, organizationDTOs.size());
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findById(UUID id) {
         var userId = UserIdProvider.get().getId();
-        return this.organizationRepository.findById(id)
-                .map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName(), this.organizationPermissionService.role(userId, organization)));
+        return this.organizationRepository.findById(id).flatMap(this::toDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findByIdentifier(String identifier) {
         var userId = UserIdProvider.get().getId();
-        return this.organizationRepository.findByIdentifier(identifier)
-                .map(organization -> new OrganizationDTO(organization.getId(), organization.getIdentifier(), organization.getName(), this.organizationPermissionService.role(userId, organization)));
+        return this.organizationRepository.findByIdentifier(identifier).flatMap(this::toDTO);
     }
 
     @Override
@@ -107,7 +134,7 @@ public class OrganizationService implements IOrganizationService {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Organization> success) {
             var userId = UserIdProvider.get().getId();
-            payload = new CreateOrganizationSuccessPayload(input.id(), new OrganizationDTO(success.data().getId(), success.data().getIdentifier(), success.data().getName(), this.organizationPermissionService.role(userId, success.data())));
+            payload = new CreateOrganizationSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
         }
         return payload;
     }
