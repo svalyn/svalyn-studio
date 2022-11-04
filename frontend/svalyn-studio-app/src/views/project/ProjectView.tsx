@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
 import { matchPath, useLocation, useParams } from 'react-router-dom';
@@ -68,7 +68,9 @@ export const ProjectView = () => {
     setState((prevState) => ({ ...prevState, panel }));
   }, [location]);
 
-  const [getProject, { loading, data, error }] = useLazyQuery<GetProjectData, GetProjectVariables>(getProjectQuery);
+  const { projectIdentifier } = useParams();
+  const variables: GetProjectVariables = { identifier: projectIdentifier ?? '' };
+  const { loading, data, error } = useQuery<GetProjectData, GetProjectVariables>(getProjectQuery, { variables });
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -84,14 +86,6 @@ export const ProjectView = () => {
       }
     }
   }, [loading, data, error]);
-
-  const { projectIdentifier } = useParams();
-  useEffect(() => {
-    if (projectIdentifier) {
-      const variables: GetProjectVariables = { identifier: projectIdentifier };
-      getProject({ variables });
-    }
-  }, [projectIdentifier]);
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 

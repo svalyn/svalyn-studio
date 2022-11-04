@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
@@ -46,9 +46,11 @@ export const OrganizationView = () => {
     timestamp: Date.now(),
   });
 
-  const [getOrganization, { loading, data, error }] = useLazyQuery<GetOrganizationData, GetOrganizationVariables>(
-    getOrganizationQuery
-  );
+  const { organizationIdentifier } = useParams();
+  const variables: GetOrganizationVariables = { identifier: organizationIdentifier ?? '' };
+  const { loading, data, error } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
+    variables,
+  });
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -64,14 +66,6 @@ export const OrganizationView = () => {
       }
     }
   }, [loading, data, error]);
-
-  const { organizationIdentifier } = useParams();
-  useEffect(() => {
-    if (organizationIdentifier) {
-      const variables: GetOrganizationVariables = { identifier: organizationIdentifier };
-      getOrganization({ variables });
-    }
-  }, [organizationIdentifier]);
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
