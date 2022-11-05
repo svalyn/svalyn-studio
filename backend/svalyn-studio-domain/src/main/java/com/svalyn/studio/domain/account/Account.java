@@ -93,6 +93,7 @@ public class Account extends AbstractValidatingAggregateRoot<Account> {
     public void updateDetails(String name, String imageUrl) {
         this.name = Objects.requireNonNull(name);
         this.imageUrl = Objects.requireNonNull(imageUrl);
+        this.lastModifiedOn = Instant.now();
         this.registerEvent(new AccountModifiedEvent(UUID.randomUUID(), Instant.now(), this));
     }
 

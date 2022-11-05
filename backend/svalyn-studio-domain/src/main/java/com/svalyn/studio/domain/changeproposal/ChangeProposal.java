@@ -120,11 +120,16 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
 
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
+        this.lastModifiedBy = UserIdProvider.get();
+        this.lastModifiedOn = Instant.now();
         this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), Instant.now(), this));
     }
 
     public void updateStatus(ChangeProposalStatus status) {
         this.status = Objects.requireNonNull(status);
+        this.lastModifiedBy = UserIdProvider.get();
+        this.lastModifiedOn = Instant.now();
+
         this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), Instant.now(), this));
 
         if (this.status == ChangeProposalStatus.INTEGRATED) {
@@ -150,6 +155,9 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
             this.reviews.add(review);
             this.registerEvent(new ReviewPerformedEvent(UUID.randomUUID(), Instant.now(), this, review));
         }
+
+        this.lastModifiedBy = UserIdProvider.get();
+        this.lastModifiedOn = Instant.now();
     }
 
     public void dispose() {
