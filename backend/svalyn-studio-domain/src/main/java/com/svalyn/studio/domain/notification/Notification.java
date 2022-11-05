@@ -60,6 +60,8 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
 
     public void updateStatus(NotificationStatus status) {
         this.status = Objects.requireNonNull(status);
+        this.lastModifiedBy = UserIdProvider.get();
+        this.lastModifiedOn = Instant.now();
 
         if (status == NotificationStatus.READ) {
             this.registerEvent(new NotificationMarkedAsReadEvent(UUID.randomUUID(), Instant.now(), this));

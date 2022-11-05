@@ -82,6 +82,8 @@ public class Review {
     public void update(String message, ReviewStatus status) {
         this.message = Objects.requireNonNull(message);
         this.status = Objects.requireNonNull(status);
+        this.lastModifiedBy = UserIdProvider.get();
+        this.lastModifiedOn = Instant.now();
     }
 
     public static Builder newReview() {

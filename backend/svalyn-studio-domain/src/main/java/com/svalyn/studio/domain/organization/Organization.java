@@ -134,6 +134,7 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
                 .memberId(AggregateReference.to(memberId))
                 .build();
         this.invitations.add(invitation);
+
         this.registerEvent(new MemberInvitedEvent(UUID.randomUUID(), Instant.now(), this, invitation));
     }
 
