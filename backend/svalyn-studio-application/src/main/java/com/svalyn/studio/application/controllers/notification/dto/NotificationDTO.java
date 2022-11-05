@@ -17,25 +17,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+package com.svalyn.studio.application.controllers.notification.dto;
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.domain.notification.NotificationStatus;
 
-export interface GetViewerData {
-  viewer: Viewer;
-}
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.UUID;
 
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
+/**
+ * The notification DTO for the GraphQL layer.
+ *
+ * @author sbegaudeau
+ */
+public record NotificationDTO(
+        @NotNull UUID id,
+        @NotNull String title,
+        @NotNull NotificationStatus status,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Instant lastModifiedOn,
+        @NotNull Profile lastModifiedBy) {
 }
-
-export interface GetViewerVariables {}

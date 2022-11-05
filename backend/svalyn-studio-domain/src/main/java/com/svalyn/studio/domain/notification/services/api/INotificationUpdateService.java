@@ -17,25 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+package com.svalyn.studio.domain.notification.services.api;
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.domain.IResult;
+import com.svalyn.studio.domain.notification.NotificationStatus;
 
-export interface GetViewerData {
-  viewer: Viewer;
-}
+import java.util.List;
+import java.util.UUID;
 
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
+/**
+ * Used to update notifications.
+ *
+ * @author sbegaudeau
+ */
+public interface INotificationUpdateService {
+    IResult<Void> updateStatus(List<UUID> notificationIds, NotificationStatus status);
 }
-
-export interface GetViewerVariables {}

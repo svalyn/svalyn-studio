@@ -281,5 +281,35 @@
         <addForeignKeyConstraint baseTableName="review" baseColumnNames="created_by" constraintName="fk_review_created_by" referencedTableName="account" referencedColumnNames="id" />
         <addForeignKeyConstraint baseTableName="review" baseColumnNames="last_modified_by" constraintName="fk_review_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
 
+        <createTable tableName="notification">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owned_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="owned_by" constraintName="fk_notification_owned_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="created_by" constraintName="fk_notification_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="last_modified_by" constraintName="fk_notification_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
     </changeSet>
 </databaseChangeLog>

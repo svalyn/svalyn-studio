@@ -17,25 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+package com.svalyn.studio.application.controllers.notification.dto;
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.application.controllers.dto.IInput;
+import com.svalyn.studio.domain.notification.NotificationStatus;
 
-export interface GetViewerData {
-  viewer: Viewer;
-}
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.UUID;
 
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
+/**
+ * Input used to update the status of some notifications.
+ *
+ * @author sbegaudeau
+ */
+public record UpdateNotificationsStatusInput(@NotNull UUID id, @NotNull List<UUID> notificationIds, @NotNull NotificationStatus status) implements IInput {
 }
-
-export interface GetViewerVariables {}

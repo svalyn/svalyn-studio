@@ -17,25 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+package com.svalyn.studio.domain.notification;
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
+/**
+ * The various status of a notification.
+ *
+ * @author sbegaudeau
+ */
+public enum NotificationStatus {
+    UNREAD, READ, DONE
 }
-
-export interface GetViewerData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
-}
-
-export interface GetViewerVariables {}

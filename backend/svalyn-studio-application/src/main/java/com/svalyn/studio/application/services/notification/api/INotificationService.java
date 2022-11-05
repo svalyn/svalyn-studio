@@ -17,25 +17,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+package com.svalyn.studio.application.services.notification.api;
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.application.controllers.notification.dto.NotificationDTO;
+import com.svalyn.studio.application.controllers.notification.dto.UpdateNotificationsStatusInput;
+import com.svalyn.studio.domain.notification.NotificationStatus;
+import org.springframework.data.domain.Page;
 
-export interface GetViewerData {
-  viewer: Viewer;
-}
+import java.util.List;
 
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
-}
+/**
+ * Used to manipulate notifications.
+ *
+ * @author sbegaudeau
+ */
+public interface INotificationService {
+    long unreadNotificationsCount();
 
-export interface GetViewerVariables {}
+    Page<NotificationDTO> findAllByStatus(List<NotificationStatus> status, int page, int rowsPerPage);
+
+    IPayload updateStatus(UpdateNotificationsStatusInput input);
+}

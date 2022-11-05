@@ -29,6 +29,7 @@ import { LoginView } from '../views/login/LoginView';
 import { NewChangeProposalView } from '../views/new-changeproposal/NewChangeProposalView';
 import { NewOrganizationView } from '../views/new-organization/NewOrganizationView';
 import { NotFoundView } from '../views/notfound/NotFoundView';
+import { NotificationsView } from '../views/notifications/NotificationsView';
 import { OAuth2RedirectView } from '../views/oauth2redirect/OAuth2RedirectView';
 import { OrganizationView } from '../views/organization/OrganizationView';
 import { ProfileView } from '../views/profile/ProfileView';
@@ -58,6 +59,7 @@ export const App = () => {
             <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
             <Route path="/profile" element={<ProfileView />} />
             <Route path="/invitations" element={<InvitationsView />} />
+            <Route path="/notifications" element={<NotificationsView />} />
             <Route path="/error" element={<ErrorView />} />
             <Route path="help" element={<HelpView />} />
             <Route path="*" element={<NotFoundView />} />

@@ -17,25 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+package com.svalyn.studio.domain.notification.events;
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
+import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.notification.Notification;
 
-export interface GetViewerData {
-  viewer: Viewer;
-}
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.UUID;
 
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
+/**
+ * Event fired when a notification is mark as read.
+ *
+ * @author sbegaudeau
+ */
+public record NotificationMarkedAsReadEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull Notification notification) implements IDomainEvent {
 }
-
-export interface GetViewerVariables {}

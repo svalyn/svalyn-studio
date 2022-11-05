@@ -22,9 +22,11 @@ import HelpIcon from '@mui/icons-material/Help';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import PersonIcon from '@mui/icons-material/Person';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -47,6 +49,7 @@ const getViewerQuery = gql`
     viewer {
       name
       imageUrl
+      unreadNotificationsCount
     }
   }
 `;
@@ -118,6 +121,11 @@ export const Navbar = ({ children }: NavbarProps) => {
                   marginLeft: 'auto',
                 }}
               >
+                <IconButton component={RouterLink} to="/notifications" size="small" color="inherit">
+                  <Badge badgeContent={state.viewer.unreadNotificationsCount} color="secondary">
+                    <NotificationsNoneIcon />
+                  </Badge>
+                </IconButton>
                 <IconButton onClick={handleOpenUserMenu}>
                   <Avatar alt={state.viewer.name} src={state.viewer.imageUrl} sx={{ width: 24, height: 24 }} />
                 </IconButton>
