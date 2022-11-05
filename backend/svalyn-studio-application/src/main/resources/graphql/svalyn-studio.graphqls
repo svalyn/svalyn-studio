@@ -18,6 +18,8 @@ type Viewer {
   organization(identifier: ID!): Organization
   project(identifier: ID!): Project
   changeProposal(id: ID!): ChangeProposal
+  notifications(status: [NotificationStatus!]!, page: Int!, rowsPerPage: Int!): ViewerNotificationsConnection!
+  unreadNotificationsCount: Int!
 }
 
 type ViewerInvitationsConnection {
@@ -186,6 +188,31 @@ enum ReviewStatus {
   REQUESTED_CHANGES
 }
 
+type ViewerNotificationsConnection {
+  edges: [ViewerNotificationsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ViewerNotificationsEdge {
+  node: Notification!
+}
+
+type Notification {
+  id: ID!
+  title: String!
+  status: NotificationStatus!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  DONE
+}
+
 type Mutation {
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @validated
   updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload! @validated
@@ -206,6 +233,7 @@ type Mutation {
   updateChangeProposalStatus(input: UpdateChangeProposalStatusInput!): UpdateChangeProposalStatusPayload! @validated
   deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload! @validated
   performReview(input: PerformReviewInput!): PerformReviewPayload! @validated
+  updateNotificationsStatus(input: UpdateNotificationsStatusInput!): UpdateNotificationsStatusPayload! @validated
 }
 
 type ErrorPayload {
@@ -380,3 +408,11 @@ input PerformReviewInput {
 }
 
 union PerformReviewPayload = ErrorPayload | SuccessPayload
+
+input UpdateNotificationsStatusInput {
+  id: ID!
+  notificationIds: [ID!]!
+  status: NotificationStatus!
+}
+
+union UpdateNotificationsStatusPayload = ErrorPayload | SuccessPayload

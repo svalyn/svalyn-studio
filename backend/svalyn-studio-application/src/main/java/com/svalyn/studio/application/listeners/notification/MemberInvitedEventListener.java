@@ -17,13 +17,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.resource.listeners;
+package com.svalyn.studio.application.listeners.notification;
 
-import com.svalyn.studio.domain.changeproposal.ChangeProposalResource;
-import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
-import com.svalyn.studio.domain.resource.Resource;
-import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import com.svalyn.studio.domain.notification.Notification;
+import com.svalyn.studio.domain.notification.repositories.INotificationRepository;
+import com.svalyn.studio.domain.organization.events.MemberInvitedEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -31,27 +29,25 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import java.util.Objects;
 
 /**
- * Used to delete the resources used by a change proposal.
+ * Used to send a notification after an account has been invited to join an organization.
  *
  * @author sbegaudeau
  */
 @Service
-public class ChangeProposalDeletedEventListener {
-    private final IResourceRepository resourceRepository;
+public class MemberInvitedEventListener {
+    private final INotificationRepository notificationRepository;
 
-    public ChangeProposalDeletedEventListener(IResourceRepository resourceRepository) {
-        this.resourceRepository = Objects.requireNonNull(resourceRepository);
+    public MemberInvitedEventListener(INotificationRepository notificationRepository) {
+        this.notificationRepository = Objects.requireNonNull(notificationRepository);
     }
 
     @Transactional
     @TransactionalEventListener
-    public void onChangeProposalDeletedEvent(ChangeProposalDeletedEvent event) {
-        var resourceIds = event.changeProposal().getChangeProposalResources().stream()
-                .map(ChangeProposalResource::getResource)
-                .map(AggregateReference::getId)
-                .toList();
-        var resources = this.resourceRepository.findAllById(resourceIds);
-        resources.forEach(Resource::dispose);
-        this.resourceRepository.deleteAll(resources);
+    public void onMemberInvitedEvent(MemberInvitedEvent event) {
+        var notification = Notification.newNotification()
+                .title("You have been invited to join the organization " + event.organization().getName())
+                .ownedBy(event.invitation().getMemberId())
+                .build();
+        this.notificationRepository.save(notification);
     }
 }

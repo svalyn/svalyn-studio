@@ -17,25 +17,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
+export interface NavigationsTableHeadProps {
+  notificationsCount: number;
+  selectedNotificationsCount: number;
+  onSelectAll: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }
-
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
-
-export interface GetViewerData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
-}
-
-export interface GetViewerVariables {}

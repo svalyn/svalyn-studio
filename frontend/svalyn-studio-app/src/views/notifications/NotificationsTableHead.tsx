@@ -17,25 +17,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NavbarProps {
-  children?: React.ReactNode;
-}
+import Checkbox from '@mui/material/Checkbox';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { NavigationsTableHeadProps } from './NotificationsTableHead.types';
 
-export interface NavbarState {
-  viewer: Viewer | null;
-  anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
-  message: string | null;
-}
-
-export interface GetViewerData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  name: string;
-  imageUrl: string;
-  unreadNotificationsCount: number;
-}
-
-export interface GetViewerVariables {}
+export const NavigationsTableHead = ({
+  notificationsCount,
+  selectedNotificationsCount,
+  onSelectAll,
+}: NavigationsTableHeadProps) => {
+  return (
+    <TableHead>
+      <TableRow sx={{ borderLeft: '3px solid transparent' }}>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={notificationsCount > 0 && selectedNotificationsCount === notificationsCount}
+            onChange={onSelectAll}
+            indeterminate={selectedNotificationsCount > 0 && selectedNotificationsCount < notificationsCount}
+          />
+        </TableCell>
+        <TableCell>Title</TableCell>
+        <TableCell>Date</TableCell>
+      </TableRow>
+    </TableHead>
+  );
+};
