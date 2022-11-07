@@ -26,6 +26,8 @@ package com.svalyn.studio.infrastructure.security;
 public interface OAuth2UserInfo {
     String getId();
 
+    String getUsername();
+
     String getName();
 
     String getEmail();

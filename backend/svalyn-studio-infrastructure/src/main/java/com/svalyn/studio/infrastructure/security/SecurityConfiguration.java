@@ -24,11 +24,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -37,6 +46,7 @@ import java.util.Objects;
  * @author sbegaudeau
  */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfiguration {
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -76,6 +86,21 @@ public class SecurityConfiguration {
                 .failureHandler(this.oAuth2AuthenticationFailureHandler)
                 .successHandler(this.oAuth2AuthenticationSuccessHandler);
 
+        AuthenticationSuccessHandler authenticationSuccessHandler = (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
+            this.logger.debug("AuthenticationSuccessHandler: Status 200 OK");
+            response.setStatus(HttpStatus.OK.value());
+        };
+        AuthenticationFailureHandler authenticationFailureHandler = (HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) -> {
+            this.logger.debug("AuthenticationFailureHandler: Status 401 UNAUTHORIZED");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        };
+        http.formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/api/login")
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler);
+        http.rememberMe();
+
         LogoutSuccessHandler logoutSuccessHandler = (request, response, authentication) -> {
             this.logger.debug("LogoutSuccessHandler: Status 200 OK");
             response.setStatus(HttpStatus.OK.value());
@@ -98,5 +123,10 @@ public class SecurityConfiguration {
                 .accessDeniedHandler(accessDeniedHandler);
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

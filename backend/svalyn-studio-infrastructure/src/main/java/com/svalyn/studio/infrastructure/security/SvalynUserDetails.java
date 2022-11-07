@@ -16,57 +16,48 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 package com.svalyn.studio.infrastructure.security;
 
-import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.IUser;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
- * The oauth2 user created from the domain.
+ * The user details created from the account information.
  *
  * @author sbegaudeau
  */
-public class SvalynOAuth2User implements OAuth2User, IUser {
-    private final UUID id;
+public class SvalynUserDetails extends User implements IUser {
 
-    private final String username;
+    private final UUID id;
 
     private final String name;
 
-    private final String email;
-
     private final String imageUrl;
 
-    private final Map<String, Object> attributes;
+    public SvalynUserDetails(UUID id, String name, String imageUrl, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
+        this.id = Objects.requireNonNull(id);
+        this.name = Objects.requireNonNull(name);
+        this.imageUrl = Objects.requireNonNull(imageUrl);
+    }
 
-    private final Collection<? extends GrantedAuthority> authorities;
-
-    public SvalynOAuth2User(Account account, OAuth2User oAuth2User) {
-        this.id = account.getId();
-        this.username = account.getUsername();
-        this.name = account.getName();
-        this.email = account.getEmail();
-        this.imageUrl = account.getImageUrl();
-        this.attributes = oAuth2User.getAttributes();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + account.getRole()));
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public SvalynUserDetails(UUID id, String name, String imageUrl, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+        this.id = Objects.requireNonNull(id);
+        this.name = Objects.requireNonNull(name);
+        this.imageUrl = Objects.requireNonNull(imageUrl);
     }
 
     @Override
     public UUID getId() {
-        return id;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
+        return this.id;
     }
 
     @Override
@@ -74,22 +65,8 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
         return this.name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public String getImageUrl() {
-        return imageUrl;
-    }
-
-    @Override
-    public Map<String, Object> getAttributes() {
-        return this.attributes;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        return this.imageUrl;
     }
 }

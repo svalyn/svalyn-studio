@@ -37,11 +37,20 @@
             <column name="provider_id" type="TEXT">
                 <constraints nullable="false"/>
             </column>
+            <column name="role" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="TEXT">
+                <constraints nullable="false" unique="true" checkConstraint="CHECK (char_length(name) > 0"/>
+            </column>
+            <column name="password" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
             <column name="name" type="TEXT">
                 <constraints nullable="false" checkConstraint="CHECK (char_length(name) > 0"/>
             </column>
             <column name="email" type="TEXT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="image_url" type="TEXT">
                 <constraints nullable="false"/>

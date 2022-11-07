@@ -85,7 +85,7 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
         var oAuth2UserInfo = optionalOAuth2UserInfo.get();
         Account account;
 
-        var optionalExistingAccountEntity = this.accountRepository.findByEmail(oAuth2UserInfo.getEmail());
+        var optionalExistingAccountEntity = this.accountRepository.findByUsername(oAuth2UserInfo.getUsername());
         if (optionalExistingAccountEntity.isPresent()) {
             var existingAccountEntity = optionalExistingAccountEntity.get();
             if (!existingAccountEntity.getProvider().equalsIgnoreCase(userRequest.getClientRegistration().getRegistrationId())) {
@@ -119,6 +119,9 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
         var account = Account.newAccount()
                 .provider(oAuth2UserRequest.getClientRegistration().getRegistrationId())
                 .providerId(oAuth2UserInfo.getId())
+                .role("USER")
+                .username(oAuth2UserInfo.getUsername())
+                .password("")
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
                 .imageUrl(oAuth2UserInfo.getImageUrl())
