@@ -45,6 +45,11 @@ public class GithubOAuth2UserInfo implements OAuth2UserInfo {
     }
 
     @Override
+    public String getUsername() {
+        return Optional.ofNullable(this.attributes.get("login")).map(Object::toString).orElse("");
+    }
+
+    @Override
     public String getName() {
         return Optional.ofNullable(this.attributes.get("name")).map(Object::toString).orElse("");
     }

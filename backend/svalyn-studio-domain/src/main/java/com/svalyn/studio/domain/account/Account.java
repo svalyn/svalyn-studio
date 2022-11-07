@@ -23,7 +23,6 @@ import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.events.AccountCreatedEvent;
 import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
@@ -44,14 +43,18 @@ public class Account extends AbstractValidatingAggregateRoot<Account> {
 
     private String provider;
 
-    @Column("provider_id")
     private String providerId;
+
+    private String role;
+
+    private String username;
+
+    private String password;
 
     private String name;
 
     private String email;
 
-    @Column("image_url")
     private String imageUrl;
 
     private Instant createdOn;
@@ -68,6 +71,18 @@ public class Account extends AbstractValidatingAggregateRoot<Account> {
 
     public String getProviderId() {
         return providerId;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getName() {
@@ -111,6 +126,12 @@ public class Account extends AbstractValidatingAggregateRoot<Account> {
 
         private String providerId;
 
+        private String role;
+
+        private String username;
+
+        private String password;
+
         private String name;
 
         private String email;
@@ -124,6 +145,21 @@ public class Account extends AbstractValidatingAggregateRoot<Account> {
 
         public Builder providerId(String providerId) {
             this.providerId = Objects.requireNonNull(providerId);
+            return this;
+        }
+
+        public Builder role(String role) {
+            this.role = Objects.requireNonNull(role);
+            return this;
+        }
+
+        public Builder username(String username) {
+            this.username = Objects.requireNonNull(username);
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = Objects.requireNonNull(password);
             return this;
         }
 
@@ -146,6 +182,9 @@ public class Account extends AbstractValidatingAggregateRoot<Account> {
             var account = new Account();
             account.provider = Objects.requireNonNull(provider);
             account.providerId = Objects.requireNonNull(providerId);
+            account.role = Objects.requireNonNull(role);
+            account.username = Objects.requireNonNull(username);
+            account.password = Objects.requireNonNull(password);
             account.name = Objects.requireNonNull(name);
             account.email = Objects.requireNonNull(email);
             account.imageUrl = Objects.requireNonNull(imageUrl);

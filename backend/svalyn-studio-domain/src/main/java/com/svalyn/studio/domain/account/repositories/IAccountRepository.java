@@ -32,5 +32,7 @@ import java.util.UUID;
  */
 @Repository
 public interface IAccountRepository extends PagingAndSortingRepository<Account, UUID> {
+    Optional<Account> findByUsername(String username);
+
     Optional<Account> findByEmail(String email);
 }

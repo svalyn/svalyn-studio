@@ -74,6 +74,6 @@ public class ProjectDeletionServiceIntegrationTests extends AbstractIntegrationT
     public void givenProject_whenDeletedByNonMember_thenAnErrorIsReturned() {
         var result = this.projectDeletionService.deleteProject("mockproject");
         assertThat(result).isInstanceOf(Failure.class);
-        assertThat(this.domainEvents.getDomainEvents()).hasSize(0);
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(ProjectDeletedEvent.class::isInstance).count()).isEqualTo(0);
     }
 }

@@ -16,21 +16,9 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.domain.authentication;
 
-import java.util.UUID;
-
-/**
- * Used to represent a user.
- *
- * @author sbegaudeau
- */
-public interface IUser {
-    UUID getId();
-
-    String getUsername();
-
-    String getName();
-
-    String getImageUrl();
+export interface LoginViewState {
+  tab: LoginViewTab;
 }
+
+export type LoginViewTab = 'LOGIN_WITH_GITHUB' | 'LOGIN_WITH_CREDENTIALS';

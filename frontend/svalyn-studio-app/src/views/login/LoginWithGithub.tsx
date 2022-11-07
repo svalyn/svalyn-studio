@@ -16,21 +16,30 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.domain.authentication;
 
-import java.util.UUID;
+import GitHubIcon from '@mui/icons-material/GitHub';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
-/**
- * Used to represent a user.
- *
- * @author sbegaudeau
- */
-public interface IUser {
-    UUID getId();
+const { VITE_BACKEND_URL, VITE_FRONTEND_URL } = import.meta.env;
 
-    String getUsername();
-
-    String getName();
-
-    String getImageUrl();
-}
+export const LoginWithGithub = () => {
+  return (
+    <Box>
+      <Typography variant="h6">Login</Typography>
+      <Typography variant="h4">Welcome to Svalyn!</Typography>
+      <Typography variant="body1" marginBottom="1em">
+        Let's begin working on your domain to build awesome tools.
+      </Typography>
+      <Button
+        component="a"
+        href={`${VITE_BACKEND_URL}/oauth2/authorization/github?redirect_uri=${VITE_FRONTEND_URL}/oauth2/redirect`}
+        variant="contained"
+        startIcon={<GitHubIcon />}
+      >
+        Login with Github
+      </Button>
+    </Box>
+  );
+};
