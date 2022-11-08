@@ -26,7 +26,7 @@ import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
 import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class ChangeProposalDeletedEventListenerIntegrationTests extends Abstract
     @Autowired
     private DomainEvents domainEvents;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         this.domainEvents.clear();
     }

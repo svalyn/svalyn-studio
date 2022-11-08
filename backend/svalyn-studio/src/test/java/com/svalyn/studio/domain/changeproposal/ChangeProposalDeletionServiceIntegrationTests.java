@@ -25,7 +25,7 @@ import com.svalyn.studio.WithMockPrincipal;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalDeletionService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class ChangeProposalDeletionServiceIntegrationTests extends AbstractInteg
     @Autowired
     private DomainEvents domainEvents;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         this.domainEvents.clear();
     }

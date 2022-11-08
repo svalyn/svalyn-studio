@@ -28,7 +28,7 @@ import com.svalyn.studio.domain.notification.events.NotificationCreatedEvent;
 import com.svalyn.studio.domain.notification.repositories.INotificationRepository;
 import com.svalyn.studio.domain.organization.events.OrganizationCreatedEvent;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationCreationService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class OrganizationCreatedEventListenerIntegrationTests extends AbstractIn
     @Autowired
     private DomainEvents domainEvents;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         this.domainEvents.clear();
     }

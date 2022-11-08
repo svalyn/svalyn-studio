@@ -25,7 +25,7 @@ import com.svalyn.studio.WithMockPrincipal;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.resource.events.ResourceCreatedEvent;
 import com.svalyn.studio.domain.resource.services.api.IResourceCreationService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class ResourceCreationServiceIntegrationTests extends AbstractIntegration
     @Autowired
     private DomainEvents domainEvents;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         this.domainEvents.clear();
     }
