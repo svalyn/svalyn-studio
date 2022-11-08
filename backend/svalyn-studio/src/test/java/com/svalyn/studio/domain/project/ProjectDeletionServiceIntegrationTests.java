@@ -26,7 +26,7 @@ import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.project.events.ProjectDeletedEvent;
 import com.svalyn.studio.domain.project.services.api.IProjectDeletionService;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class ProjectDeletionServiceIntegrationTests extends AbstractIntegrationT
     @Autowired
     private DomainEvents domainEvents;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         this.domainEvents.clear();
     }

@@ -33,6 +33,7 @@ import com.svalyn.studio.domain.organization.events.MembershipRevokedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationModifiedEvent;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
     @Autowired
     private DomainEvents domainEvents;
 
-    @AfterEach
+    @BeforeEach
     public void cleanup() {
         this.domainEvents.clear();
     }
