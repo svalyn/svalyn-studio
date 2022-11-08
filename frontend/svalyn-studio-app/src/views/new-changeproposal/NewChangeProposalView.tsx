@@ -230,7 +230,7 @@ export const NewChangeProposalView = () => {
           </Container>
         </div>
       </div>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

@@ -141,7 +141,7 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
           <Button onClick={onSubmitReview}>Submit Review</Button>
         </DialogActions>
       </Dialog>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

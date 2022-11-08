@@ -18,9 +18,7 @@
  */
 
 export interface OrganizationViewState {
-  organization: Organization | null;
-  message: string | null;
-  timestamp: number;
+  errorSnackbarOpen: boolean;
 }
 
 export interface Organization {

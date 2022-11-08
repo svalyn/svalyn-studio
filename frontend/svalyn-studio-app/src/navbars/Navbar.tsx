@@ -177,7 +177,7 @@ export const Navbar = ({ children }: NavbarProps) => {
           ) : null}
         </Toolbar>
       </AppBar>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

@@ -22,11 +22,11 @@ import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
 import { ErrorSnackbarProps } from './ErrorSnackbar.types';
 
-export const ErrorSnackbar = ({ message, onClose }: ErrorSnackbarProps) => {
+export const ErrorSnackbar = ({ open, message, onClose }: ErrorSnackbarProps) => {
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      open={message !== null}
+      open={open}
       autoHideDuration={5000}
       onClose={onClose}
       message={message}

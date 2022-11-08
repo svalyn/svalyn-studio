@@ -105,7 +105,7 @@ export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose
           <Button onClick={handleDeleteOrganization}>Delete</Button>
         </DialogActions>
       </Dialog>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

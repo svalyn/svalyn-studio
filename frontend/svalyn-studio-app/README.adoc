@@ -1,0 +1,12 @@
+= Svalyn Studio App
+
+Steps to run the frontend:
+
+- `npm install`
+- `npm run dev`
+
+Step to run the end to end tests:
+
+- `npm install`
+- `npx playwright test --trace on`
+- `npx playwright show-report`

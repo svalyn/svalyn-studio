@@ -78,7 +78,7 @@ export const ProfileView = () => {
           ) : null}
         </Container>
       </div>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

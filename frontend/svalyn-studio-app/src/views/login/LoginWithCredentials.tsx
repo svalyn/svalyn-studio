@@ -92,6 +92,9 @@ export const LoginWithCredentials = () => {
             fullWidth
             autoFocus
             required
+            inputProps={{
+              'aria-label': 'Username',
+            }}
           />
           <TextField
             type="password"
@@ -101,13 +104,16 @@ export const LoginWithCredentials = () => {
             variant="outlined"
             fullWidth
             required
+            inputProps={{
+              'aria-label': 'Password',
+            }}
           />
           <Button variant="contained" onClick={handleLogin}>
             Login
           </Button>
         </Stack>
       </Box>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };
