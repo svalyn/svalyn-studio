@@ -206,7 +206,7 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
           </Container>
         </Box>
       ) : null}
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

@@ -150,19 +150,25 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
                 </Typography>
                 <Stack direction="column" spacing={4}>
                   <TextField
-                    label="Project name"
+                    label="Project Name"
                     helperText="This is where your various models will live"
                     value={state.name}
                     onChange={handleNameChanged}
                     autoFocus
                     required
+                    inputProps={{
+                      'aria-label': 'Project Name',
+                    }}
                   />
                   <TextField
-                    label="Project ID"
+                    label="Project Identifier"
                     helperText="A unique identifier composed of letters, numbers and dashes"
                     value={state.identifier}
                     onChange={handleIdentifierChanged}
                     required
+                    inputProps={{
+                      'aria-label': 'Project Identifier',
+                    }}
                   />
                   <TextField
                     label="Description"
@@ -171,8 +177,8 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
                     onChange={handleDescriptionChanged}
                     minRows={5}
                     maxRows={5}
-                    inputProps={{ maxLength: 260 }}
                     multiline
+                    inputProps={{ 'aria-label': 'Project Description', maxLength: 260 }}
                   />
                 </Stack>
               </Stack>
@@ -198,7 +204,7 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
           </Grid>
         </Box>
       </Dialog>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

@@ -176,7 +176,7 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
           </Grid>
         </Box>
       ) : null}
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

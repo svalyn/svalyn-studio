@@ -232,7 +232,7 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
           </Grid>
         </Box>
       ) : null}
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

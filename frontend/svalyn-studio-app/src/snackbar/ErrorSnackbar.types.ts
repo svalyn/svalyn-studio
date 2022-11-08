@@ -18,6 +18,7 @@
  */
 
 export interface ErrorSnackbarProps {
+  open: boolean;
   message: string | null;
   onClose: () => void;
 }

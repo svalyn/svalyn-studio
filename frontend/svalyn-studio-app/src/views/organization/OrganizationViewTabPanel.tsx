@@ -55,6 +55,19 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
     newProjectDialogOpen: false,
   });
 
+  useEffect(() => {
+    const dashboardMatch = matchPath('/orgs/:organizationId', location.pathname);
+    const membersMatch = matchPath('/orgs/:organizationId/members', location.pathname);
+    const settingsMatch = matchPath('/orgs/:organizationId/settings', location.pathname);
+    if (dashboardMatch && state.activeTab !== 0) {
+      setState((prevState) => ({ ...prevState, activeTab: 0 }));
+    } else if (membersMatch && state.activeTab !== 1) {
+      setState((prevState) => ({ ...prevState, activeTab: 1 }));
+    } else if (settingsMatch && state.activeTab !== 2) {
+      setState((prevState) => ({ ...prevState, activeTab: 2 }));
+    }
+  }, [location]);
+
   const navigate = useNavigate();
   useEffect(() => {
     if (state.activeTab === 0 && !dashboardMatch) {

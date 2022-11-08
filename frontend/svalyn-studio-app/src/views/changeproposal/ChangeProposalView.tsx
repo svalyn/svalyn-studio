@@ -83,7 +83,7 @@ export const ChangeProposalView = () => {
         <Navbar />
         {state.changeProposal ? <ChangeProposalViewTabPanel changeProposal={state.changeProposal} /> : null}
       </div>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

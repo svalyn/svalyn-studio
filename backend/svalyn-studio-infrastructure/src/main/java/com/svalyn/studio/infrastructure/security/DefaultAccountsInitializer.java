@@ -23,6 +23,7 @@ import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,8 @@ import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -47,18 +50,24 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final String defaultAdminPassword;
+
     private final Logger logger = LoggerFactory.getLogger(DefaultAccountsInitializer.class);
 
-    public DefaultAccountsInitializer(IAccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+    public DefaultAccountsInitializer(IAccountRepository accountRepository, PasswordEncoder passwordEncoder, @Value("${svalyn.accounts.admin.password:}") String defaultAdminPassword) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
+        this.defaultAdminPassword = Objects.requireNonNull(defaultAdminPassword);
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
         if (!this.accountRepository.findByUsername("admin").isPresent()) {
-            var password = this.generateSecureRandomPassword();
+            var password = Optional.of(this.defaultAdminPassword)
+                    .filter(Predicate.not(String::isBlank))
+                    .orElseGet(this::generateSecureRandomPassword);
+
             this.logger.info("The \"admin\" account has been created with the password \"" + password + "\" (ignore the quotes)");
 
             var adminAccount = Account.newAccount()

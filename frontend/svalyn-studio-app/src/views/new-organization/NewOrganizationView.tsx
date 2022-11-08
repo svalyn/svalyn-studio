@@ -153,6 +153,9 @@ export const NewOrganizationView = () => {
                   variant="outlined"
                   autoFocus
                   required
+                  inputProps={{
+                    'aria-label': 'Organization Name',
+                  }}
                 />
                 <TextField
                   label="Organization Identifier"
@@ -161,6 +164,9 @@ export const NewOrganizationView = () => {
                   onChange={handleOrganizationIdChanged}
                   variant="outlined"
                   required
+                  inputProps={{
+                    'aria-label': 'Organization Identifier',
+                  }}
                 />
                 <Button variant="contained" onClick={handleCreateOrganization} disabled={!state.isFormValid}>
                   Create
@@ -173,7 +179,7 @@ export const NewOrganizationView = () => {
           </Container>
         </div>
       </div>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

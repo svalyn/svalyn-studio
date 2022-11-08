@@ -18,7 +18,7 @@
  */
 
 import { ApolloProvider } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { getApolloClient } from './ApolloClient';
 import {
@@ -34,12 +34,14 @@ export const AuthenticationRedirectionBoundary = ({ children }: AuthenticationRe
     setState((prevState) => ({ ...prevState, authenticationError: false }));
   }, [location]);
 
-  const onAuthenticationError = () => setState((prevState) => ({ ...prevState, authenticationError: true }));
+  const onAuthenticationError = useCallback(
+    () => setState((prevState) => ({ ...prevState, authenticationError: true })),
+    []
+  );
+  const apolloClient = useMemo(() => getApolloClient(onAuthenticationError), [onAuthenticationError]);
 
   if (state.authenticationError) {
     return <Navigate to="/login" />;
   }
-
-  const apolloClient = getApolloClient(onAuthenticationError);
   return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
 };

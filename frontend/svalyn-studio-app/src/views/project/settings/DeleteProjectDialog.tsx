@@ -103,7 +103,7 @@ export const DeleteProjectDialog = ({ projectIdentifier, open, onClose }: Delete
           <Button onClick={handleDeleteProject}>Delete</Button>
         </DialogActions>
       </Dialog>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

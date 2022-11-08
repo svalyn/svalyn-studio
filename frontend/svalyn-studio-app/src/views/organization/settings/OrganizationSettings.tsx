@@ -120,13 +120,16 @@ export const OrganizationSettings = ({ organizationIdentifier, role }: Organizat
             }}
           >
             <TextField
-              label="Organization name"
+              label="Organization Name"
               variant="outlined"
               size="small"
               fullWidth
               value={state.name}
               onChange={handleNameChange}
               disabled={role !== 'ADMIN'}
+              inputProps={{
+                'aria-label': 'Organization Name',
+              }}
             />
             <Button variant="outlined" onClick={handleRename} disabled={role !== 'ADMIN'}>
               Rename
@@ -145,7 +148,7 @@ export const OrganizationSettings = ({ organizationIdentifier, role }: Organizat
           </Button>
         </Paper>
       </Container>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
       {state.deleteOrganizationDialogOpen ? (
         <DeleteOrganizationDialog
           open={state.deleteOrganizationDialogOpen}

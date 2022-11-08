@@ -19,7 +19,7 @@
 
 import { gql, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { NotFoundView } from '../notfound/NotFoundView';
@@ -41,47 +41,38 @@ const getOrganizationQuery = gql`
 
 export const OrganizationView = () => {
   const [state, setState] = useState<OrganizationViewState>({
-    organization: null,
-    message: null,
-    timestamp: Date.now(),
+    errorSnackbarOpen: false,
   });
 
   const { organizationIdentifier } = useParams();
   const variables: GetOrganizationVariables = { identifier: organizationIdentifier ?? '' };
-  const { loading, data, error } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
+  const { data, error, refetch } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
     variables,
   });
+  useEffect(() => setState((prevState) => ({ ...prevState, errorSnackbarOpen: !!error })), [error]);
+
+  const location = useLocation();
   useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const {
-          viewer: { organization },
-        } = data;
-        if (organization) {
-          setState((prevState) => ({ ...prevState, organization, timestamp: Date.now() }));
-        }
-      }
-      if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
-      }
+    if (data) {
+      refetch(variables);
     }
-  }, [loading, data, error]);
+  }, [location.pathname]);
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
+  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, errorSnackbarOpen: false }));
 
-  if (!loading && state.organization === null) {
+  if (data && !data.viewer.organization) {
     return <NotFoundView />;
   }
 
   return (
     <>
       <div>
-        <Navbar>{state.organization ? <OrganizationPicker organization={state.organization} /> : null}</Navbar>
-        {state.organization ? (
-          <OrganizationViewTabPanel organization={state.organization} key={state.timestamp} />
-        ) : null}
+        <Navbar>
+          {data?.viewer.organization ? <OrganizationPicker organization={data.viewer.organization} /> : null}
+        </Navbar>
+        {data?.viewer.organization ? <OrganizationViewTabPanel organization={data.viewer.organization} /> : null}
       </div>
-      <ErrorSnackbar message={state.message} onClose={handleCloseSnackbar} />
+      <ErrorSnackbar open={state.errorSnackbarOpen} message={error?.message ?? null} onClose={handleCloseSnackbar} />
     </>
   );
 };
