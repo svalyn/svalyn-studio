@@ -19,8 +19,13 @@
 package com.svalyn.studio.infrastructure.web;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.PathResourceResolver;
+
+import java.io.IOException;
 
 /**
  * Spring MVC configuration.
@@ -31,6 +36,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOriginPatterns("http://localhost:[*]").allowCredentials(true);
+        registry.addMapping("/**")
+                .allowedOriginPatterns("http://localhost:[*]")
+                .allowCredentials(true);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/assets/*.js", "/assets/*.ttf").addResourceLocations("classpath:/static/assets/");
+        registry.addResourceHandler("/index.html", "/svalyn.svg").addResourceLocations("classpath:/static/");
+
+        registry.addResourceHandler("", "/", "/**")
+                .addResourceLocations("classpath:/static/index.html")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        boolean shouldResolve = !resourcePath.startsWith("/api");
+                        shouldResolve = shouldResolve && !resourcePath.startsWith("api");
+                        shouldResolve = shouldResolve && location.exists() && location.isReadable();
+                        if (shouldResolve) {
+                            return location;
+                        }
+                        return null;
+                    }
+                });
     }
 }

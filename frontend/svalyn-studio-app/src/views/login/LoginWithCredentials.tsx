@@ -28,7 +28,7 @@ import { getCookie } from '../../cookies/getCookie';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { LoginWithCredentialsState } from './LoginWithCredentials.types';
 
-const { VITE_BACKEND_URL, VITE_FRONTEND_URL } = import.meta.env;
+const { VITE_BACKEND_URL } = import.meta.env;
 
 export const LoginWithCredentials = () => {
   const [state, setState] = useState<LoginWithCredentialsState>({

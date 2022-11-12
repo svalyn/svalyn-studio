@@ -22,7 +22,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const { VITE_BACKEND_URL, VITE_FRONTEND_URL } = import.meta.env;
+const { VITE_BACKEND_URL } = import.meta.env;
 
 export const LoginWithGithub = () => {
   return (
@@ -34,7 +34,7 @@ export const LoginWithGithub = () => {
       </Typography>
       <Button
         component="a"
-        href={`${VITE_BACKEND_URL}/oauth2/authorization/github?redirect_uri=${VITE_FRONTEND_URL}/oauth2/redirect`}
+        href={`${VITE_BACKEND_URL}/oauth2/authorization/github?redirect_uri=${window.location.protocol}//${window.location.host}/oauth2/redirect`}
         variant="contained"
         startIcon={<GitHubIcon />}
       >
