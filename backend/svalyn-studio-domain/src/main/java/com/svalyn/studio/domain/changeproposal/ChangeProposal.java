@@ -30,6 +30,8 @@ import com.svalyn.studio.domain.changeproposal.events.ReviewModifiedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.project.Project;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -47,7 +49,10 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("change_proposal")
-public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangeProposal> {
+public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangeProposal> implements Persistable<UUID> {
+    @Transient
+    private boolean isNew;
+
     @Id
     private UUID id;
 
@@ -74,6 +79,7 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
 
     private Instant lastModifiedOn;
 
+    @Override
     public UUID getId() {
         return id;
     }
@@ -117,6 +123,12 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
     public Instant getLastModifiedOn() {
         return lastModifiedOn;
     }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
 
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
@@ -204,6 +216,8 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
 
         public ChangeProposal build() {
             var changeProposal = new ChangeProposal();
+            changeProposal.isNew = true;
+            changeProposal.id = UUID.randomUUID();
             changeProposal.name = Objects.requireNonNull(name);
             changeProposal.readMe = Objects.requireNonNull(readMe);
             changeProposal.project = Objects.requireNonNull(project);

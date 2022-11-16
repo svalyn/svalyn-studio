@@ -25,6 +25,8 @@ import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.resource.events.ResourceCreatedEvent;
 import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -38,7 +40,11 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("resource")
-public class Resource extends AbstractValidatingAggregateRoot<Resource> {
+public class Resource extends AbstractValidatingAggregateRoot<Resource> implements Persistable<UUID> {
+
+    @Transient
+    private boolean isNew;
+
     @Id
     private UUID id;
 
@@ -64,6 +70,11 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> {
 
     public byte[] getContent() {
         return content;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
     }
 
     public void dispose() {
@@ -96,6 +107,8 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> {
 
         public Resource build() {
             var resource = new Resource();
+            resource.isNew = true;
+            resource.id = UUID.randomUUID();
             resource.name = Objects.requireNonNull(name);
             resource.content = Objects.requireNonNull(content);
 
