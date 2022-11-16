@@ -101,6 +101,7 @@ public class AccountIntegrationTests extends AbstractIntegrationTests {
                 .build();
         this.accountRepository.save(account);
 
+        account = this.accountRepository.findById(account.getId()).get();
         account.updateDetails("John T. Doe", "https://www.example.org/image/avatar.png+v2");
         this.accountRepository.save(account);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(AccountModifiedEvent.class::isInstance).count()).isEqualTo(1);

@@ -27,6 +27,8 @@ import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
 import com.svalyn.studio.domain.project.events.ProjectDeletedEvent;
 import com.svalyn.studio.domain.project.events.ProjectModifiedEvent;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -41,7 +43,11 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("project")
-public class Project extends AbstractValidatingAggregateRoot<Project> {
+public class Project extends AbstractValidatingAggregateRoot<Project> implements Persistable<UUID> {
+
+    @Transient
+    private boolean isNew;
+
     @Id
     private UUID id;
 
@@ -102,6 +108,11 @@ public class Project extends AbstractValidatingAggregateRoot<Project> {
 
     public Instant getLastModifiedOn() {
         return lastModifiedOn;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
     }
 
     public void updateName(String name) {
@@ -181,7 +192,8 @@ public class Project extends AbstractValidatingAggregateRoot<Project> {
 
         public Project build() {
             var project = new Project();
-
+            project.isNew = true;
+            project.id = UUID.randomUUID();
             project.organization = Objects.requireNonNull(this.organization);
             project.identifier = Objects.requireNonNull(this.identifier);
             project.name = Objects.requireNonNull(this.name);

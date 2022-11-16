@@ -27,6 +27,8 @@ import com.svalyn.studio.domain.notification.events.NotificationMarkedAsDoneEven
 import com.svalyn.studio.domain.notification.events.NotificationMarkedAsReadEvent;
 import com.svalyn.studio.domain.notification.events.NotificationMarkedAsUnreadEvent;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -40,7 +42,11 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Table("notification")
-public class Notification extends AbstractValidatingAggregateRoot<Notification> {
+public class Notification extends AbstractValidatingAggregateRoot<Notification> implements Persistable<UUID> {
+
+    @Transient
+    private boolean isNew;
+
     @Id
     private UUID id;
 
@@ -104,6 +110,11 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
         return lastModifiedOn;
     }
 
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
     public static Builder newNotification() {
         return new Builder();
     }
@@ -134,6 +145,8 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
 
         public Notification build() {
             var notification = new Notification();
+            notification.isNew = true;
+            notification.id = UUID.randomUUID();
             notification.title = Objects.requireNonNull(title);
             notification.ownedBy = Objects.requireNonNull(ownedBy);
             notification.status = NotificationStatus.UNREAD;

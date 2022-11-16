@@ -35,6 +35,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -56,7 +58,10 @@ import java.util.stream.Collectors;
  * @author sbegaudeau
  */
 @Table("organization")
-public class Organization extends AbstractValidatingAggregateRoot<Organization> {
+public class Organization extends AbstractValidatingAggregateRoot<Organization> implements Persistable<UUID> {
+
+    @Transient
+    private boolean isNew;
 
     @Id
     private UUID id;
@@ -119,6 +124,11 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
 
     public Instant getLastModifiedOn() {
         return lastModifiedOn;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
     }
 
     public void updateName(String name) {
@@ -241,6 +251,8 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
 
         public Organization build() {
             var organization = new Organization();
+            organization.isNew = true;
+            organization.id = UUID.randomUUID();
             organization.identifier = Objects.requireNonNull(identifier);
             organization.name = Objects.requireNonNull(this.name);
             organization.memberships = this.members.stream()
