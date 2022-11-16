@@ -18,7 +18,6 @@
  */
 package com.svalyn.studio.domain.organization.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.organization.Membership;
 import com.svalyn.studio.domain.organization.Organization;
 
@@ -35,5 +34,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record MembershipRevokedEvent(UUID id, Instant createdOn, Organization organization, Membership membership) implements IDomainEvent {
+public record MembershipRevokedEvent(UUID id, Instant createdOn, Organization organization, Membership membership) implements IOrganizationEvent {
 }

@@ -18,7 +18,6 @@
  */
 package com.svalyn.studio.domain.organization.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.organization.Organization;
 
 import java.time.Instant;
@@ -33,5 +32,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record OrganizationModifiedEvent(UUID id, Instant createdOn, Organization organization) implements IDomainEvent {
+public record OrganizationModifiedEvent(UUID id, Instant createdOn, Organization organization) implements IOrganizationEvent {
 }

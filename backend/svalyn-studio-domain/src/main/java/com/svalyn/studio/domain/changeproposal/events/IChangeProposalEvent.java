@@ -16,23 +16,15 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.domain.organization.events;
 
-import com.svalyn.studio.domain.organization.Invitation;
-import com.svalyn.studio.domain.organization.Organization;
+package com.svalyn.studio.domain.changeproposal.events;
 
-import java.time.Instant;
-import java.util.UUID;
+import com.svalyn.studio.domain.IDomainEvent;
 
 /**
- * Event fired when a member is invited.
- *
- * @param id The identifier of the event
- * @param createdOn The creation date of the event
- * @param organization The organization
- * @param invitation The invitation
+ * Interface implemented by all the change proposal events.
  *
  * @author sbegaudeau
  */
-public record MemberInvitedEvent(UUID id, Instant createdOn, Organization organization, Invitation invitation) implements IOrganizationEvent {
+public interface IChangeProposalEvent extends IDomainEvent {
 }
