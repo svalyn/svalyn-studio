@@ -19,7 +19,6 @@
 
 package com.svalyn.studio.domain.resource.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.resource.Resource;
 
 import java.time.Instant;
@@ -34,5 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ResourceDeletedEvent(UUID id, Instant createdOn, Resource resource) implements IDomainEvent {
+public record ResourceDeletedEvent(UUID id, Instant createdOn, Resource resource) implements IResourceEvent {
 }

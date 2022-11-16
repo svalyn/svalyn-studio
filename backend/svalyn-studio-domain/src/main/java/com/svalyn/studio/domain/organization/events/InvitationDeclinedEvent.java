@@ -18,7 +18,6 @@
  */
 package com.svalyn.studio.domain.organization.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.organization.Invitation;
 import com.svalyn.studio.domain.organization.Organization;
 
@@ -35,5 +34,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record InvitationDeclinedEvent(UUID id, Instant createdOn, Organization organization, Invitation invitation) implements IDomainEvent {
+public record InvitationDeclinedEvent(UUID id, Instant createdOn, Organization organization, Invitation invitation) implements IOrganizationEvent {
 }

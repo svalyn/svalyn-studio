@@ -18,7 +18,6 @@
  */
 package com.svalyn.studio.domain.account.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.account.Account;
 
 import java.time.Instant;
@@ -33,5 +32,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record AccountModifiedEvent(UUID id, Instant createdOn, Account account) implements IDomainEvent {
+public record AccountModifiedEvent(UUID id, Instant createdOn, Account account) implements IAccountEvent {
 }

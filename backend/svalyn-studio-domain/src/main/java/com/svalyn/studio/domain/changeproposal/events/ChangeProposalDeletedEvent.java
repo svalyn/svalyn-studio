@@ -19,7 +19,6 @@
 
 package com.svalyn.studio.domain.changeproposal.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.changeproposal.ChangeProposal;
 
 import java.time.Instant;
@@ -34,5 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ChangeProposalDeletedEvent(UUID id, Instant createdOn, ChangeProposal changeProposal) implements IDomainEvent {
+public record ChangeProposalDeletedEvent(UUID id, Instant createdOn, ChangeProposal changeProposal) implements IChangeProposalEvent {
 }

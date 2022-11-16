@@ -19,7 +19,6 @@
 
 package com.svalyn.studio.domain.project.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.project.Project;
 
 import java.time.Instant;
@@ -34,5 +33,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ProjectModifiedEvent(UUID id, Instant createdOn, Project project) implements IDomainEvent {
+public record ProjectModifiedEvent(UUID id, Instant createdOn, Project project) implements IProjectEvent {
 }

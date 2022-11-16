@@ -19,7 +19,6 @@
 
 package com.svalyn.studio.domain.notification.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.notification.Notification;
 
 import javax.validation.constraints.NotNull;
@@ -31,5 +30,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record NotificationMarkedAsDoneEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull Notification notification) implements IDomainEvent {
+public record NotificationMarkedAsDoneEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull Notification notification) implements INotificationEvent {
 }

@@ -19,7 +19,6 @@
 
 package com.svalyn.studio.domain.changeproposal.events;
 
-import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.changeproposal.ChangeProposal;
 import com.svalyn.studio.domain.changeproposal.Review;
 
@@ -36,5 +35,5 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ReviewPerformedEvent(UUID id, Instant createdOn, ChangeProposal changeProposal, Review review) implements IDomainEvent {
+public record ReviewPerformedEvent(UUID id, Instant createdOn, ChangeProposal changeProposal, Review review) implements IChangeProposalEvent {
 }
