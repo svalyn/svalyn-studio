@@ -72,6 +72,22 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
         return content;
     }
 
+    public AggregateReference<Account, UUID> getCreatedBy() {
+        return createdBy;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public AggregateReference<Account, UUID> getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public Instant getLastModifiedOn() {
+        return lastModifiedOn;
+    }
+
     @Override
     public boolean isNew() {
         return this.isNew;
