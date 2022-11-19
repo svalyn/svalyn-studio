@@ -21,3 +21,6 @@ spring:
       path: /api/graphql
     graphiql:
       enabled: false
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092

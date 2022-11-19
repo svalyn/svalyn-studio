@@ -20,4 +20,4 @@
 
 docker stop svalyn-studio-postgres
 docker rm svalyn-studio-postgres
-docker run --name svalyn-studio-postgres -p 5434:5432 -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -d postgres
+docker run --name svalyn-studio-postgres -p 5434:5432 -e POSTGRES_DB=postgres -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -d postgres
