@@ -48,6 +48,7 @@ const getViewerQuery = gql`
   query getViewer {
     viewer {
       name
+      username
       imageUrl
       unreadNotificationsCount
     }
@@ -146,7 +147,11 @@ export const Navbar = ({ children }: NavbarProps) => {
                     </ListItemIcon>
                     <ListItemText>Dashboard</ListItemText>
                   </MenuItem>
-                  <MenuItem component={RouterLink} to="/profile" onClick={handleCloseUserMenu}>
+                  <MenuItem
+                    component={RouterLink}
+                    to={`/profile/${state.viewer.username}`}
+                    onClick={handleCloseUserMenu}
+                  >
                     <ListItemIcon>
                       <PersonIcon fontSize="small" />
                     </ListItemIcon>

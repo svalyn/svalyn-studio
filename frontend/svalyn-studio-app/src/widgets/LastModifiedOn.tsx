@@ -19,14 +19,24 @@
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
 import { formatTime } from '../utils/formatTime';
 import { LastModifiedOnProps } from './LastModifiedOn.types';
 
 export const LastModifiedOn = ({ profile, date }: LastModifiedOnProps) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
-      <Avatar alt={profile.name} src={profile.imageUrl} sx={{ width: 24, height: 24 }} />
+      <Tooltip title={profile.name}>
+        <Avatar
+          component={RouterLink}
+          to={`/profile/${profile.username}`}
+          alt={profile.name}
+          src={profile.imageUrl}
+          sx={{ width: 24, height: 24 }}
+        />
+      </Tooltip>
       <Typography variant="body1">modified this {formatTime(date)}</Typography>
     </Box>
   );

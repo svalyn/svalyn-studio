@@ -67,11 +67,11 @@ public class MembershipService implements IMembershipService {
 
     private Optional<MembershipDTO> toDTO(Membership membership) {
         var optionalCreatedByProfile = this.accountRepository.findById(membership.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(membership.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalMemberProfile = this.accountRepository.findById(membership.getMemberId().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalMemberProfile.flatMap(member ->
                 optionalCreatedByProfile.flatMap(createdBy ->

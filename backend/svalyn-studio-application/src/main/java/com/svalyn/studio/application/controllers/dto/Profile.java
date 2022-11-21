@@ -19,19 +19,12 @@
 
 package com.svalyn.studio.application.controllers.dto;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * The profile DTO for the GraphQL layer.
  *
- * @param name The name
- * @param imageUrl The URL of the image
- *
  * @author sbegaudeau
  */
-public record Profile(String name, String imageUrl) {
-    public Profile(String name, String imageUrl) {
-        this.name = Objects.requireNonNull(name);
-        this.imageUrl = Objects.requireNonNull(imageUrl);
-    }
+public record Profile(@NotNull String name, @NotNull String username, @NotNull String imageUrl) {
 }

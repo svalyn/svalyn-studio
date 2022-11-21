@@ -77,9 +77,9 @@ public class ProjectService implements IProjectService {
 
     private Optional<ProjectDTO> toDTO(Project project) {
         var optionalCreatedByProfile = this.accountRepository.findById(project.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(project.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

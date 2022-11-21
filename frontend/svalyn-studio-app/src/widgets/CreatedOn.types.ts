@@ -24,5 +24,6 @@ export interface CreatedOnProps {
 
 export interface Profile {
   name: string;
+  username: string;
   imageUrl: string;
 }

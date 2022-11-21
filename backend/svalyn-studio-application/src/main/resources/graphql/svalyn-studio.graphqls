@@ -12,8 +12,10 @@ type PageInfo {
 
 type Viewer {
   name: String!
+  username: String!
   imageUrl: String!
   invitations(page: Int!, rowsPerPage: Int!): ViewerInvitationsConnection!
+  profile(username: String!): Profile
   organizations: ViewerOrganizationsConnection!
   organization(identifier: ID!): Organization
   project(identifier: ID!): Project
@@ -97,6 +99,7 @@ type Membership {
 
 type Profile {
   name: String!
+  username: String!
   imageUrl: String!
 }
 

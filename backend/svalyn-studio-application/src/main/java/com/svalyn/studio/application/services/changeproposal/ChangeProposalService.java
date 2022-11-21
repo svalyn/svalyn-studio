@@ -89,9 +89,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private Optional<ChangeProposalDTO> toDTO(ChangeProposal changeProposal) {
         var optionalCreatedByProfile = this.accountRepository.findById(changeProposal.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(changeProposal.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->
@@ -170,9 +170,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private Optional<ReviewDTO> toDTO(Review review) {
         var optionalCreatedByProfile = this.accountRepository.findById(review.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(review.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

@@ -57,7 +57,7 @@ export const App = () => {
             <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
             <Route path="/login" element={<LoginView />} />
             <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
-            <Route path="/profile" element={<ProfileView />} />
+            <Route path="/profile/:username" element={<ProfileView />} />
             <Route path="/invitations" element={<InvitationsView />} />
             <Route path="/notifications" element={<NotificationsView />} />
             <Route path="/error" element={<ErrorView />} />

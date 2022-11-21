@@ -33,6 +33,6 @@ public class ViewerController {
 
     @QueryMapping
     public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return new Viewer(user.getName(), user.getImageUrl());
+        return new Viewer(user.getName(), user.getUsername(), user.getImageUrl());
     }
 }

@@ -17,27 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
-import { formatTime } from '../utils/formatTime';
-import { CreatedOnProps } from './CreatedOn.types';
+package com.svalyn.studio.application.services.account.api;
 
-export const CreatedOn = ({ profile, date }: CreatedOnProps) => {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
-      <Tooltip title={profile.name}>
-        <Avatar
-          component={RouterLink}
-          to={`/profile/${profile.username}`}
-          alt={profile.name}
-          src={profile.imageUrl}
-          sx={{ width: 24, height: 24 }}
-        />
-      </Tooltip>
-      <Typography variant="body1">created this {formatTime(date)}</Typography>
-    </Box>
-  );
-};
+import com.svalyn.studio.application.controllers.dto.Profile;
+
+import java.util.Optional;
+
+/**
+ * Used to manipulate accounts.
+ *
+ * @author sbegaudeau
+ */
+public interface IAccountService {
+    Optional<Profile> findProfileByUsername(String username);
+}

@@ -55,11 +55,13 @@ const getProjectHomeQuery = gql`
         createdOn
         createdBy {
           name
+          username
           imageUrl
         }
         lastModifiedOn
         lastModifiedBy {
           name
+          username
           imageUrl
         }
         organization {

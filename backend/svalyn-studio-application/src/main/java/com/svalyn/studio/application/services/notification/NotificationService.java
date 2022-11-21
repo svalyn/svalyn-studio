@@ -66,11 +66,11 @@ public class NotificationService implements INotificationService {
 
     private Optional<NotificationDTO> toDTO(Notification notification) {
         var optionalOwnedByProfile = this.accountRepository.findById(notification.getOwnedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalCreatedByProfile = this.accountRepository.findById(notification.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(notification.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalOwnedByProfile.flatMap(ownedBy ->
                 optionalCreatedByProfile.flatMap(createdBy ->

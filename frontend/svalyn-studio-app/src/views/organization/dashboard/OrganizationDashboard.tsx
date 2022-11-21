@@ -42,11 +42,13 @@ const getOrganizationDashboardQuery = gql`
         createdOn
         createdBy {
           name
+          username
           imageUrl
         }
         lastModifiedOn
         lastModifiedBy {
           name
+          username
           imageUrl
         }
         projects(page: $page, rowsPerPage: $rowsPerPage) {

@@ -76,11 +76,11 @@ public class InvitationService implements IInvitationService {
 
     private Optional<InvitationDTO> toDTO(Invitation invitation, UUID organizationId) {
         var optionalCreatedByProfile = this.accountRepository.findById(invitation.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(invitation.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalMemberProfile = this.accountRepository.findById(invitation.getMemberId().getId())
-                .map(account -> new Profile(account.getName(), account.getImageUrl()));
+                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalMemberProfile.flatMap(member ->
                 optionalCreatedByProfile.flatMap(createdBy ->

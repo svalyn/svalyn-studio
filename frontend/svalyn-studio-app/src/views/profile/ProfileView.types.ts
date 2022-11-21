@@ -27,8 +27,15 @@ export interface GetViewerData {
 }
 
 export interface Viewer {
+  profile: Profile | null;
+}
+
+export interface Profile {
   name: string;
+  username: string;
   imageUrl: string;
 }
 
-export interface GetViewerVariables {}
+export interface GetViewerVariables {
+  username: string;
+}

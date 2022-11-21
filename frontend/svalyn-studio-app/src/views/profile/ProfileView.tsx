@@ -19,20 +19,25 @@
 
 import { gql, useQuery } from '@apollo/client';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { GetViewerData, GetViewerVariables, ProfileViewState } from './ProfileView.types';
 
 const getViewerQuery = gql`
-  query getViewer {
+  query getViewer($username: String!) {
     viewer {
-      name
-      imageUrl
+      profile(username: $username) {
+        name
+        username
+        imageUrl
+      }
     }
   }
 `;
@@ -43,7 +48,9 @@ export const ProfileView = () => {
     message: null,
   });
 
-  const { loading, data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery);
+  const { username } = useParams();
+  const variables: GetViewerVariables = { username: username ?? '' };
+  const { loading, data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery, { variables });
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -62,11 +69,17 @@ export const ProfileView = () => {
         <Navbar />
         <Container maxWidth="lg">
           <Toolbar />
-          {state.viewer !== null ? (
+          {state.viewer && state.viewer.profile ? (
             <Grid container spacing={2}>
-              <Grid item container xs={4} justifyContent="center">
-                <Avatar src={state.viewer.imageUrl} alt={state.viewer.name} sx={{ width: 200, height: 200 }} />
-                <Typography variant="h6">{state.viewer.name}</Typography>
+              <Grid item xs={4} justifyContent="center">
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <Avatar
+                    src={state.viewer.profile.imageUrl}
+                    alt={state.viewer.profile.name}
+                    sx={{ width: 200, height: 200 }}
+                  />
+                  <Typography variant="h6">{state.viewer.profile.name}</Typography>
+                </Box>
               </Grid>
               <Grid item xs={8}>
                 <Typography variant="h4" gutterBottom>
