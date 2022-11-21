@@ -19,11 +19,13 @@
 
 package com.svalyn.studio.application.services.changeproposal.api;
 
+import com.svalyn.studio.application.controllers.changeproposal.dto.AddResourcesToChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalResourceDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewInput;
+import com.svalyn.studio.application.controllers.changeproposal.dto.RemoveResourcesFromChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
@@ -56,6 +58,10 @@ public interface IChangeProposalService {
     IPayload updateChangeProposalReadMe(UpdateChangeProposalReadMeInput input);
 
     IPayload updateChangeProposalStatus(UpdateChangeProposalStatusInput input);
+
+    IPayload addResourcesToChangeProposal(AddResourcesToChangeProposalInput input);
+
+    IPayload removeResourcesFromChangeProposal(RemoveResourcesFromChangeProposalInput input);
 
     IPayload performReview(PerformReviewInput input);
 

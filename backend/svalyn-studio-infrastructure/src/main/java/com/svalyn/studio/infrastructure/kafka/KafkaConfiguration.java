@@ -52,27 +52,27 @@ public class KafkaConfiguration {
 
     @Bean
     public NewTopic loggingAccount() {
-        return TopicBuilder.name(KafkaMessageProducer.TOPIC_LOGGING_ACCOUNT).build();
+        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_ACCOUNT).build();
     }
 
     @Bean
     public NewTopic loggingChangeProposal() {
-        return TopicBuilder.name(KafkaMessageProducer.TOPIC_LOGGING_CHANGEPROPOSAL).build();
+        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_CHANGEPROPOSAL).build();
     }
 
     @Bean
     public NewTopic loggingProject() {
-        return TopicBuilder.name(KafkaMessageProducer.TOPIC_LOGGING_PROJECT).build();
+        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_PROJECT).build();
     }
 
     @Bean
     public NewTopic loggingOrganization() {
-        return TopicBuilder.name(KafkaMessageProducer.TOPIC_LOGGING_ORGANIZATION).build();
+        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_ORGANIZATION).build();
     }
 
     @Bean
     public NewTopic loggingResource() {
-        return TopicBuilder.name(KafkaMessageProducer.TOPIC_LOGGING_RESOURCE).build();
+        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_RESOURCE).build();
     }
 
     @Bean

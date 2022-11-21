@@ -28,6 +28,10 @@ import com.svalyn.studio.domain.changeproposal.Review;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalCreatedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ResourcesAddedToChangeProposalEvent;
+import com.svalyn.studio.domain.changeproposal.events.ResourcesRemovedFromChangeProposalEvent;
+import com.svalyn.studio.domain.changeproposal.events.ReviewModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.project.Project;
@@ -41,7 +45,11 @@ import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ChangeProp
 import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ChangeProposalMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ChangeProposalModifiedMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ChangeProposalResourceMessage;
+import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ResourcesAddedToChangeProposalMessage;
+import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ResourcesRemovedFromChangeProposalMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ReviewMessage;
+import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ReviewModifiedMessage;
+import com.svalyn.studio.infrastructure.kafka.messages.changeproposal.ReviewPerformedMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.project.ProjectSummaryMessage;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -87,6 +95,14 @@ public class ChangeProposalEventToMessageConverter implements IDomainEventToMess
             optionalMessage = this.toMessage(changeProposalModifiedEvent);
         } else if (event instanceof ChangeProposalDeletedEvent changeProposalDeletedEvent) {
             optionalMessage = this.toMessage(changeProposalDeletedEvent);
+        } else if (event instanceof ReviewPerformedEvent reviewPerformedEvent) {
+            optionalMessage = this.toMessage(reviewPerformedEvent);
+        } else if (event instanceof ReviewModifiedEvent reviewModifiedEvent) {
+            optionalMessage = this.toMessage(reviewModifiedEvent);
+        } else if (event instanceof ResourcesAddedToChangeProposalEvent resourcesAddedToChangeProposalEvent) {
+            optionalMessage = this.toMessage(resourcesAddedToChangeProposalEvent);
+        } else if (event instanceof ResourcesRemovedFromChangeProposalEvent resourcesRemovedFromChangeProposalEvent) {
+            optionalMessage = this.toMessage(resourcesRemovedFromChangeProposalEvent);
         }
 
         return optionalMessage;
@@ -119,6 +135,46 @@ public class ChangeProposalEventToMessageConverter implements IDomainEventToMess
                         IDomainEventToMessageConverter.FROM,
                         ChangeProposalDeletedMessage.class.getSimpleName(),
                         new ChangeProposalDeletedMessage(event.createdOn(), changeProposalMessage)
+                ));
+    }
+
+    private Optional<Message> toMessage(ReviewPerformedEvent event) {
+        return this.toMessage(event.changeProposal())
+                .map(changeProposalMessage -> new Message(
+                        UUID.randomUUID(),
+                        IDomainEventToMessageConverter.FROM,
+                        ReviewPerformedMessage.class.getSimpleName(),
+                        new ReviewPerformedMessage(event.createdOn(), changeProposalMessage)
+                ));
+    }
+
+    private Optional<Message> toMessage(ReviewModifiedEvent event) {
+        return this.toMessage(event.changeProposal())
+                .map(changeProposalMessage -> new Message(
+                        UUID.randomUUID(),
+                        IDomainEventToMessageConverter.FROM,
+                        ReviewModifiedMessage.class.getSimpleName(),
+                        new ReviewModifiedMessage(event.createdOn(), changeProposalMessage)
+                ));
+    }
+
+    private Optional<Message> toMessage(ResourcesAddedToChangeProposalEvent event) {
+        return this.toMessage(event.changeProposal())
+                .map(changeProposalMessage -> new Message(
+                        UUID.randomUUID(),
+                        IDomainEventToMessageConverter.FROM,
+                        ResourcesAddedToChangeProposalMessage.class.getSimpleName(),
+                        new ResourcesAddedToChangeProposalMessage(event.createdOn(), changeProposalMessage)
+                ));
+    }
+
+    private Optional<Message> toMessage(ResourcesRemovedFromChangeProposalEvent event) {
+        return this.toMessage(event.changeProposal())
+                .map(changeProposalMessage -> new Message(
+                        UUID.randomUUID(),
+                        IDomainEventToMessageConverter.FROM,
+                        ResourcesRemovedFromChangeProposalMessage.class.getSimpleName(),
+                        new ResourcesRemovedFromChangeProposalMessage(event.createdOn(), changeProposalMessage)
                 ));
     }
 

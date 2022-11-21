@@ -19,12 +19,14 @@
 
 package com.svalyn.studio.application.services.changeproposal;
 
+import com.svalyn.studio.application.controllers.changeproposal.dto.AddResourcesToChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalResourceDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalSuccessPayload;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewInput;
+import com.svalyn.studio.application.controllers.changeproposal.dto.RemoveResourcesFromChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
@@ -211,6 +213,34 @@ public class ChangeProposalService implements IChangeProposalService {
         IPayload payload = null;
 
         var result = this.changeProposalUpdateService.updateStatus(input.changeProposalId(), input.status());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(input.id(), failure.message());
+        } else if (result instanceof Success<Void> success) {
+            payload = new SuccessPayload(input.id());
+        }
+        return payload;
+    }
+
+    @Override
+    @Transactional
+    public IPayload addResourcesToChangeProposal(AddResourcesToChangeProposalInput input) {
+        IPayload payload = null;
+
+        var result = this.changeProposalUpdateService.addResources(input.changeProposalId(), input.resourceIds());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(input.id(), failure.message());
+        } else if (result instanceof Success<Void> success) {
+            payload = new SuccessPayload(input.id());
+        }
+        return payload;
+    }
+
+    @Override
+    @Transactional
+    public IPayload removeResourcesFromChangeProposal(RemoveResourcesFromChangeProposalInput input) {
+        IPayload payload = null;
+
+        var result = this.changeProposalUpdateService.removeResources(input.changeProposalId(), input.changeProposalResourceIds());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Void> success) {

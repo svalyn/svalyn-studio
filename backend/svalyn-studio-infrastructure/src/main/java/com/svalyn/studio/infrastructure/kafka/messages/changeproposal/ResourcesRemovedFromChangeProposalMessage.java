@@ -17,28 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.changeproposal.services.api;
+package com.svalyn.studio.infrastructure.kafka.messages.changeproposal;
 
-import com.svalyn.studio.domain.IResult;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-import com.svalyn.studio.domain.changeproposal.ReviewStatus;
+import com.svalyn.studio.infrastructure.kafka.messages.IMessageContent;
 
-import java.util.List;
-import java.util.UUID;
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 /**
- * Used to manipulate change proposals.
+ * Used to indicate that resources have been removed from a change proposal.
  *
  * @author sbegaudeau
  */
-public interface IChangeProposalUpdateService {
-    IResult<Void> updateReadMe(UUID changeProposalId, String content);
-
-    IResult<Void> updateStatus(UUID changeProposalId, ChangeProposalStatus status);
-
-    IResult<Void> addResources(UUID changeProposalId, List<UUID> resourceIds);
-
-    IResult<Void> removeResources(UUID changeProposalId, List<UUID> resourceIds);
-
-    IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status);
+public record ResourcesRemovedFromChangeProposalMessage(@NotNull Instant createdOn, @NotNull ChangeProposalMessage changeProposal) implements IMessageContent {
 }

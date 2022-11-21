@@ -43,15 +43,15 @@ import java.util.Optional;
 @Service
 public class KafkaMessageProducer {
 
-    public static final String TOPIC_LOGGING_ACCOUNT = "logging.account";
+    public static final String TOPIC_EVENT_ACCOUNT = "event.account";
 
-    public static final String TOPIC_LOGGING_CHANGEPROPOSAL = "logging.changeproposal";
+    public static final String TOPIC_EVENT_CHANGEPROPOSAL = "event.changeproposal";
 
-    public static final String TOPIC_LOGGING_PROJECT = "logging.project";
+    public static final String TOPIC_EVENT_PROJECT = "event.project";
 
-    public static final String TOPIC_LOGGING_ORGANIZATION = "logging.organization";
+    public static final String TOPIC_EVENT_ORGANIZATION = "event.organization";
 
-    public static final String TOPIC_LOGGING_RESOURCE = "logging.resource";
+    public static final String TOPIC_EVENT_RESOURCE = "event.resource";
 
     private final KafkaTemplate<String, Message> kafkaTemplate;
 
@@ -74,27 +74,27 @@ public class KafkaMessageProducer {
 
     @TransactionalEventListener
     public void onAccountEvent(IAccountEvent event) {
-        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_LOGGING_ACCOUNT, message));
+        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_ACCOUNT, message));
     }
 
     @TransactionalEventListener
     public void onChangeProposalEvent(IChangeProposalEvent event) {
-        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_LOGGING_CHANGEPROPOSAL, message));
+        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_CHANGEPROPOSAL, message));
     }
 
     @TransactionalEventListener
     public void onProjectEvent(IProjectEvent event) {
-        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_LOGGING_PROJECT, message));
+        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_PROJECT, message));
     }
 
     @TransactionalEventListener
     public void onOrganizationEvent(IOrganizationEvent event) {
-        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_LOGGING_ORGANIZATION, message));
+        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_ORGANIZATION, message));
     }
 
     @TransactionalEventListener
     public void onResourceEvent(IResourceEvent event) {
-        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_LOGGING_RESOURCE, message));
+        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_RESOURCE, message));
     }
 
 }

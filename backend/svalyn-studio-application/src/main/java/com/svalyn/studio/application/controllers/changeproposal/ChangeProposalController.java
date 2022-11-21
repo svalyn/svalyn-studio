@@ -19,11 +19,13 @@
 
 package com.svalyn.studio.application.controllers.changeproposal;
 
+import com.svalyn.studio.application.controllers.changeproposal.dto.AddResourcesToChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalResourceDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.CreateChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.DeleteChangeProposalsInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.PerformReviewInput;
+import com.svalyn.studio.application.controllers.changeproposal.dto.RemoveResourcesFromChangeProposalInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalReadMeInput;
 import com.svalyn.studio.application.controllers.changeproposal.dto.UpdateChangeProposalStatusInput;
@@ -117,6 +119,16 @@ public class ChangeProposalController {
     @MutationMapping
     public IPayload updateChangeProposalStatus(@Argument @Valid UpdateChangeProposalStatusInput input) {
         return this.changeProposalService.updateChangeProposalStatus(input);
+    }
+
+    @MutationMapping
+    public IPayload addResourcesToChangeProposal(@Argument @Valid AddResourcesToChangeProposalInput input) {
+        return this.changeProposalService.addResourcesToChangeProposal(input);
+    }
+
+    @MutationMapping
+    public IPayload removeResourcesFromChangeProposal(@Argument @Valid RemoveResourcesFromChangeProposalInput input) {
+        return this.changeProposalService.removeResourcesFromChangeProposal(input);
     }
 
     @MutationMapping
