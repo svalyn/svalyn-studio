@@ -17,28 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.changeproposal.services.api;
+package com.svalyn.studio.domain.changeproposal.events;
 
-import com.svalyn.studio.domain.IResult;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
-import com.svalyn.studio.domain.changeproposal.ReviewStatus;
+import com.svalyn.studio.domain.changeproposal.ChangeProposal;
+import com.svalyn.studio.domain.changeproposal.ChangeProposalResource;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Used to manipulate change proposals.
+ * Event fired when resources are removed from a change proposal.
  *
  * @author sbegaudeau
  */
-public interface IChangeProposalUpdateService {
-    IResult<Void> updateReadMe(UUID changeProposalId, String content);
-
-    IResult<Void> updateStatus(UUID changeProposalId, ChangeProposalStatus status);
-
-    IResult<Void> addResources(UUID changeProposalId, List<UUID> resourceIds);
-
-    IResult<Void> removeResources(UUID changeProposalId, List<UUID> resourceIds);
-
-    IResult<Void> performReview(UUID changeProposalId, String message, ReviewStatus status);
+public record ResourcesRemovedFromChangeProposalEvent(UUID id, Instant createdOn, ChangeProposal changeProposal, List<ChangeProposalResource> changeProposalResources) implements IChangeProposalEvent {
 }

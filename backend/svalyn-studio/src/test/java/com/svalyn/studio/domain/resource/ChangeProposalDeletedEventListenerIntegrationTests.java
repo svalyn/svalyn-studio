@@ -22,6 +22,7 @@ package com.svalyn.studio.domain.resource;
 import com.svalyn.studio.AbstractIntegrationTests;
 import com.svalyn.studio.DomainEvents;
 import com.svalyn.studio.WithMockPrincipal;
+import com.svalyn.studio.domain.changeproposal.ChangeProposalResource;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -71,16 +73,18 @@ public class ChangeProposalDeletedEventListenerIntegrationTests extends Abstract
     public void givenResources_whenPersisted_thenHaveAnId() {
         var optionalChangeProposal = this.changeProposalRepository.findById(UUID.fromString("60dd31a6-7e0c-47e9-af9f-b290e383822d"));
         assertThat(optionalChangeProposal).isPresent();
-        assertThat(this.resourceRepository.count()).isEqualTo(1);
 
         var changeProposal = optionalChangeProposal.get();
+        var resourceId = changeProposal.getChangeProposalResources().stream().findFirst().map(ChangeProposalResource::getResource).map(AggregateReference::getId).get();
+        assertThat(this.resourceRepository.existsById(resourceId)).isTrue();
+
         changeProposal.dispose();
         this.changeProposalRepository.delete(changeProposal);
 
         TestTransaction.flagForCommit();
         TestTransaction.end();
 
-        assertThat(this.resourceRepository.count()).isEqualTo(0);
+        assertThat(this.resourceRepository.existsById(resourceId)).isFalse();
         assertThat(this.domainEvents.getDomainEvents().stream().filter(ChangeProposalDeletedEvent.class::isInstance).count()).isEqualTo(1);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(ResourceDeletedEvent.class::isInstance).count()).isEqualTo(1);
 

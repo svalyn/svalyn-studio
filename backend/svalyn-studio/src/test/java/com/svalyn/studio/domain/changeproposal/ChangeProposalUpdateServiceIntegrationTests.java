@@ -26,6 +26,8 @@ import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalIntegratedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ResourcesAddedToChangeProposalEvent;
+import com.svalyn.studio.domain.changeproposal.events.ResourcesRemovedFromChangeProposalEvent;
 import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalUpdateService;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,4 +104,25 @@ public class ChangeProposalUpdateServiceIntegrationTests extends AbstractIntegra
         assertThat(result).isInstanceOf(Success.class);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(ReviewPerformedEvent.class::isInstance).count()).isEqualTo(1);
     }
+
+    @Test
+    @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
+    @DisplayName("Given a change proposal, when new resources are added', then an event is published")
+    @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void givenChangeProposal_whenNewResourcesAreAdded_thenAnEventIsPublished() {
+        var result = this.changeProposalUpdateService.addResources(UUID.fromString("60dd31a6-7e0c-47e9-af9f-b290e383822d"), List.of(UUID.fromString("8d3ac60f-e6e6-4bcc-b795-19f909fe5142"), UUID.fromString("ee466a5c-2b20-42d1-b442-c72b0f33833c")));
+        assertThat(result).isInstanceOf(Success.class);
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(ResourcesAddedToChangeProposalEvent.class::isInstance).count()).isEqualTo(1);
+    }
+
+    @Test
+    @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
+    @DisplayName("Given a change proposal, when resources are removed, then an event is published")
+    @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void givenChangeProposal_whenResourcesAreRemoved_thenAnEventIsPublished() {
+        var result = this.changeProposalUpdateService.removeResources(UUID.fromString("40cab43e-0de8-48a3-bc95-b3836ea7781c"), List.of(UUID.fromString("5a037854-2edf-4fbe-aa71-16ea786d27be")));
+        assertThat(result).isInstanceOf(Success.class);
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(ResourcesRemovedFromChangeProposalEvent.class::isInstance).count()).isEqualTo(1);
+    }
+
 }

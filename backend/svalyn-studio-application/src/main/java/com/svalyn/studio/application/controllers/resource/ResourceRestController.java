@@ -48,7 +48,7 @@ public class ResourceRestController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IPayload> createResources(@RequestParam("files")MultipartFile[] multipartFiles) {
+    public ResponseEntity<IPayload> createResources(@RequestParam("files") MultipartFile[] multipartFiles) {
         var payload = this.resourceService.createResources(multipartFiles);
         if (payload instanceof ErrorPayload) {
             return new ResponseEntity<>(payload, HttpStatus.BAD_REQUEST);

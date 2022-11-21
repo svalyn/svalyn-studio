@@ -26,6 +26,8 @@ import com.svalyn.studio.domain.changeproposal.events.ChangeProposalCreatedEvent
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalIntegratedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ChangeProposalModifiedEvent;
+import com.svalyn.studio.domain.changeproposal.events.ResourcesAddedToChangeProposalEvent;
+import com.svalyn.studio.domain.changeproposal.events.ResourcesRemovedFromChangeProposalEvent;
 import com.svalyn.studio.domain.changeproposal.events.ReviewModifiedEvent;
 import com.svalyn.studio.domain.changeproposal.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.project.Project;
@@ -39,6 +41,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -147,6 +150,18 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
         if (this.status == ChangeProposalStatus.INTEGRATED) {
             this.registerEvent(new ChangeProposalIntegratedEvent(UUID.randomUUID(), Instant.now(), this));
         }
+    }
+
+    public void addChangeProposalResources(List<ChangeProposalResource> changeProposalResources) {
+        this.changeProposalResources.addAll(changeProposalResources);
+
+        this.registerEvent(new ResourcesAddedToChangeProposalEvent(UUID.randomUUID(), Instant.now(), this, changeProposalResources.stream().toList()));
+    }
+
+    public void removeChangeProposalResources(List<ChangeProposalResource> changeProposalResources) {
+        this.changeProposalResources.removeAll(changeProposalResources);
+
+        this.registerEvent(new ResourcesRemovedFromChangeProposalEvent(UUID.randomUUID(), Instant.now(), this, changeProposalResources.stream().toList()));
     }
 
     public void performReview(String message, ReviewStatus status) {

@@ -231,6 +231,8 @@ type Mutation {
   createChangeProposal(input: CreateChangeProposalInput!): CreateChangeProposalPayload! @validated
   updateChangeProposalReadMe(input: UpdateChangeProposalReadMeInput!): UpdateChangeProposalReadMePayload! @validated
   updateChangeProposalStatus(input: UpdateChangeProposalStatusInput!): UpdateChangeProposalStatusPayload! @validated
+  addResourcesToChangeProposal(input: AddResourcesToChangeProposalInput!): AddResourcesToChangeProposalPayload! @validated
+  removeResourcesFromChangeProposal(input: RemoveResourcesFromChangeProposalInput!): RemoveResourcesFromChangeProposalPayload! @validated
   deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload! @validated
   performReview(input: PerformReviewInput!): PerformReviewPayload! @validated
   updateNotificationsStatus(input: UpdateNotificationsStatusInput!): UpdateNotificationsStatusPayload! @validated
@@ -392,6 +394,22 @@ input UpdateChangeProposalStatusInput {
 }
 
 union UpdateChangeProposalStatusPayload = ErrorPayload | SuccessPayload
+
+input AddResourcesToChangeProposalInput {
+  id: ID!
+  changeProposalId: ID!
+  resourceIds: [ID!]!
+}
+
+union AddResourcesToChangeProposalPayload = ErrorPayload | SuccessPayload
+
+input RemoveResourcesFromChangeProposalInput {
+  id: ID!
+  changeProposalId: ID!
+  resourceIds: [ID!]!
+}
+
+union RemoveResourcesFromChangeProposalPayload = ErrorPayload | SuccessPayload
 
 input DeleteChangeProposalsInput {
   id: ID!
