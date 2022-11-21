@@ -34,6 +34,7 @@ export interface GetViewerData {
 
 export interface Viewer {
   name: string;
+  username: string;
   imageUrl: string;
   unreadNotificationsCount: number;
 }

@@ -24,5 +24,6 @@ export interface LastModifiedOnProps {
 
 export interface Profile {
   name: string;
+  username: string;
   imageUrl: string;
 }

@@ -51,6 +51,7 @@ export interface Project {
 
 export interface Profile {
   name: string;
+  username: string;
   imageUrl: string;
 }
 

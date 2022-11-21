@@ -23,10 +23,7 @@ import javax.validation.constraints.NotNull;
 /**
  * A viewer of the application.
  *
- * @param name The name of the viewer
- * @param imageUrl The URL of the image representing the viewer
- *
  * @author sbegaudeau
  */
-public record Viewer(@NotNull String name, @NotNull String imageUrl) {
+public record Viewer(@NotNull String name, @NotNull String username, @NotNull String imageUrl) {
 }
