@@ -52,6 +52,7 @@ public abstract class AbstractIntegrationTests {
         registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
         registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
 
+        registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
         registry.add("spring.kafka.producer.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
     }
 
