@@ -122,7 +122,12 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
           <Grid item xs={10}>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: (theme) => theme.spacing(2) }}>
               {projects.map((project) => (
-                <ProjectCard identifier={project.identifier} name={project.name} description={project.description} />
+                <ProjectCard
+                  key={project.identifier}
+                  identifier={project.identifier}
+                  name={project.name}
+                  description={project.description}
+                />
               ))}
             </Box>
             {state.organization ? (
