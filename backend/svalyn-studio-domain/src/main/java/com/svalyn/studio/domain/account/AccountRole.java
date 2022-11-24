@@ -16,39 +16,15 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio;
 
-import org.springframework.security.test.context.support.WithSecurityContext;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package com.svalyn.studio.domain.account;
 
 /**
- * Annotation used to mock a principal.
+ * The role of the account.
  *
  * @author sbegaudeau
  */
-@Retention(RetentionPolicy.RUNTIME)
-@WithSecurityContext(factory = WithMockPrincipalSecurityContextFactory.class)
-public @interface WithMockPrincipal {
-    String userId();
-
-    /**
-     * Used to store some constants for the mock principal.
-     *
-     * @author sbegaudeau
-     */
-    final class UserId {
-
-        public static final String JOHN_DOE = "7ba7bda7-13b9-422a-838b-e45a3597e952";
-        public static final String JANE_DOE = "1116f75f-2ceb-43cf-b6a6-c11dabbc5977";
-        public static final String JULES_DOE = "5e45aead-48f2-462b-a50e-1191ace697bd";
-        public static final String JAMES_DOE = "a685c7d7-b4a4-4d58-8f76-ef05e6392fe4";
-
-        public static final String ADMIN = "4164c661-e0cb-4071-b25d-8516440bb8e8";
-
-        private UserId() {
-            // Prevent instantiation
-        }
-    }
+public enum AccountRole {
+    USER,
+    ADMIN,
 }

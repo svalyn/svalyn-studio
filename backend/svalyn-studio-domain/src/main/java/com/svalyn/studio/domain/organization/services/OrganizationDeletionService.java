@@ -27,6 +27,7 @@ import com.svalyn.studio.domain.message.api.IMessageService;
 import com.svalyn.studio.domain.organization.MembershipRole;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationDeletionService;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -41,10 +42,13 @@ public class OrganizationDeletionService implements IOrganizationDeletionService
 
     private final IOrganizationRepository organizationRepository;
 
+    private final IOrganizationPermissionService organizationPermissionService;
+
     private final IMessageService messageService;
 
-    public OrganizationDeletionService(IOrganizationRepository organizationRepository, IMessageService messageService) {
+    public OrganizationDeletionService(IOrganizationRepository organizationRepository, IOrganizationPermissionService organizationPermissionService, IMessageService messageService) {
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
         this.messageService = Objects.requireNonNull(messageService);
     }
 
@@ -57,11 +61,8 @@ public class OrganizationDeletionService implements IOrganizationDeletionService
             var organization = optionalOrganization.get();
 
             var userId = UserIdProvider.get().getId();
-            var optionalMembership = organization.getMemberships().stream()
-                    .filter(membership -> membership.getMemberId().getId().equals(userId))
-                    .filter(membership -> membership.getRole() == MembershipRole.ADMIN)
-                    .findFirst();
-            if (optionalMembership.isPresent()) {
+            var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+            if (membershipRole == MembershipRole.ADMIN) {
                 organization.dispose();
                 this.organizationRepository.delete(organization);
                 result = new Success<>(null);

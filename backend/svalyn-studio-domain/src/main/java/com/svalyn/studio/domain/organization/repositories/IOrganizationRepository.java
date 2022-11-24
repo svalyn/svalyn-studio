@@ -18,6 +18,7 @@
  */
 package com.svalyn.studio.domain.organization.repositories;
 
+import com.svalyn.studio.domain.organization.MembershipRole;
 import com.svalyn.studio.domain.organization.Organization;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -54,4 +55,10 @@ public interface IOrganizationRepository extends PagingAndSortingRepository<Orga
     OFFSET :offset
     """)
     long countAllWhereInvited(UUID userId, long offset, int limit);
+
+    @Query(value = """
+    SELECT membership.role FROM organization organization JOIN membership membership ON organization.id = membership.organization_id
+    WHERE organization.id = :organizationId AND membership.member_id = :userId
+    """)
+    Optional<MembershipRole> findMembershipRole(UUID userId, UUID organizationId);
 }

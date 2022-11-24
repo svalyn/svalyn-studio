@@ -28,7 +28,9 @@ import com.svalyn.studio.domain.changeproposal.ChangeProposalResource;
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalCreationService;
 import com.svalyn.studio.domain.message.api.IMessageService;
-import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
+import com.svalyn.studio.domain.organization.MembershipRole;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
+import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,7 @@ import java.util.stream.Collectors;
 @Service
 public class ChangeProposalCreationService implements IChangeProposalCreationService {
 
-    private final IOrganizationRepository organizationRepository;
+    private final IOrganizationPermissionService organizationPermissionService;
 
     private final IProjectRepository projectRepository;
 
@@ -54,11 +56,21 @@ public class ChangeProposalCreationService implements IChangeProposalCreationSer
 
     private final IMessageService messageService;
 
-    public ChangeProposalCreationService(IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IChangeProposalRepository changeProposalRepository, IMessageService messageService) {
-        this.organizationRepository = Objects.requireNonNull(organizationRepository);
+    public ChangeProposalCreationService(IOrganizationPermissionService organizationPermissionService, IProjectRepository projectRepository, IChangeProposalRepository changeProposalRepository, IMessageService messageService) {
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.changeProposalRepository = Objects.requireNonNull(changeProposalRepository);
         this.messageService = Objects.requireNonNull(messageService);
+    }
+
+    private MembershipRole membershipRole(UUID projectId) {
+        var userId = UserIdProvider.get().getId();
+
+        return this.projectRepository.findById(projectId)
+                .map(Project::getOrganization)
+                .map(AggregateReference::getId)
+                .map(organizationId -> this.organizationPermissionService.role(userId, organizationId))
+                .orElse(MembershipRole.NONE);
     }
 
     @Override
@@ -68,20 +80,12 @@ public class ChangeProposalCreationService implements IChangeProposalCreationSer
         var optionalProject = this.projectRepository.findByIdentifier(projectIdentifier);
         if (optionalProject.isPresent()) {
             var project = optionalProject.get();
-            var optionalOrganization = this.organizationRepository.findById(project.getOrganization().getId());
-            if (optionalOrganization.isPresent()) {
-                var organization = optionalOrganization.get();
-
-                var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-
+            var membershipRole = this.membershipRole(project.getId());
+            if (membershipRole != MembershipRole.NONE) {
                 if (name.isBlank()) {
                     result = new Failure<>(this.messageService.cannotBeBlank("name"));
                 } else if (resourceIds.isEmpty()) {
                     result = new Failure<>(this.messageService.cannotBeEmpty("resources"));
-                } else if (!isMember) {
-                    result = new Failure<>(this.messageService.unauthorized());
                 } else {
                     var changeProposalResources = resourceIds.stream()
                             .map(resourceId -> ChangeProposalResource.newChangeProposalResource()
@@ -100,7 +104,7 @@ public class ChangeProposalCreationService implements IChangeProposalCreationSer
                     result = new Success<>(changeProposal);
                 }
             } else {
-                result = new Failure<>(this.messageService.doesNotExist("organization"));
+                result = new Failure<>(this.messageService.unauthorized());
             }
         } else {
             result = new Failure<>(this.messageService.doesNotExist("project"));

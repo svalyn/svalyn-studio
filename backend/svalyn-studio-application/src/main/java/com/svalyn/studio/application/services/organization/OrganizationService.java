@@ -92,7 +92,7 @@ public class OrganizationService implements IOrganizationService {
                                 organization.getId(),
                                 organization.getIdentifier(),
                                 organization.getName(),
-                                this.organizationPermissionService.role(userId, organization),
+                                this.organizationPermissionService.role(userId, organization.getId()),
                                 organization.getCreatedOn(),
                                 createdBy,
                                 organization.getLastModifiedOn(),

@@ -32,7 +32,6 @@ import com.svalyn.studio.domain.organization.events.MemberLeftEvent;
 import com.svalyn.studio.domain.organization.events.MembershipRevokedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationModifiedEvent;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -159,6 +158,16 @@ public class OrganizationUpdateServiceIntegrationTests extends AbstractIntegrati
 
     @Test
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
+    @DisplayName("Given an organization, when an invitation is accepted by an unauthorized user, then an error is returned")
+    @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void givenAnOrganization_whenInvitationAcceptedByUnauthorizedUser_thenAnErrorIsReturned() {
+        var result = this.organizationUpdateService.acceptInvitation("mockorganization", UUID.fromString("c3d41db3-02f1-4cec-8d7f-48e8f5eafe2f"));
+        assertThat(result).isInstanceOf(Failure.class);
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(InvitationAcceptedEvent.class::isInstance).count()).isEqualTo(0);
+    }
+
+    @Test
+    @WithMockPrincipal(userId = WithMockPrincipal.UserId.JULES_DOE)
     @DisplayName("Given an organization, when an invitation is accepted, then a domain event is published")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void givenAnOrganization_whenInvitationAccepted_thenAnEventIsPublished() {

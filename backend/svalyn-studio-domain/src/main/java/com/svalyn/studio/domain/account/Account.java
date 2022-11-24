@@ -51,7 +51,7 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
 
     private String providerId;
 
-    private String role;
+    private AccountRole role;
 
     private String username;
 
@@ -79,7 +79,7 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
         return providerId;
     }
 
-    public String getRole() {
+    public AccountRole getRole() {
         return role;
     }
 
@@ -137,7 +137,7 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
 
         private String providerId;
 
-        private String role;
+        private AccountRole role;
 
         private String username;
 
@@ -159,7 +159,7 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
             return this;
         }
 
-        public Builder role(String role) {
+        public Builder role(AccountRole role) {
             this.role = Objects.requireNonNull(role);
             return this;
         }

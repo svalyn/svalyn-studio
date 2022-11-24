@@ -10,6 +10,9 @@ INSERT INTO account (id, provider, provider_id, role, username, password, name, 
 INSERT INTO account (id, provider, provider_id, role, username, password, name, email, image_url, created_on, last_modified_on) VALUES
 ('a685c7d7-b4a4-4d58-8f76-ef05e6392fe4', 'github', '000004', 'USER', 'jamesdoe', '', 'James Doe', 'jamesdoe@example.org', 'https://www.example.org/image/avatar.png', '2022-09-28 17:29:52.616', '2022-09-28 17:29:52.616');
 
+INSERT INTO account (id, provider, provider_id, role, username, password, name, email, image_url, created_on, last_modified_on) VALUES
+('4164c661-e0cb-4071-b25d-8516440bb8e8', 'email', '000005', 'ADMIN', 'admin', 'password', 'Admin', 'admin@example.org', 'https://www.example.org/image/avatar.png', '2022-11-12 18:29:52.616', '2022-11-12 18:29:52.616');
+
 
 INSERT INTO organization (id, identifier, name, created_by, created_on, last_modified_by, last_modified_on) VALUES
 ('a9261e91-fb20-4d48-8731-d5297e441315', 'mockorganization', 'Mock Organization', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-09-17 22:38:19.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-09-17 22:38:19.331943');
