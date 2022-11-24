@@ -19,6 +19,7 @@
 package com.svalyn.studio.infrastructure.security;
 
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.account.AccountRole;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +120,7 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
         var account = Account.newAccount()
                 .provider(oAuth2UserRequest.getClientRegistration().getRegistrationId())
                 .providerId(oAuth2UserInfo.getId())
-                .role("USER")
+                .role(AccountRole.USER)
                 .username(oAuth2UserInfo.getUsername())
                 .password("")
                 .name(oAuth2UserInfo.getName())

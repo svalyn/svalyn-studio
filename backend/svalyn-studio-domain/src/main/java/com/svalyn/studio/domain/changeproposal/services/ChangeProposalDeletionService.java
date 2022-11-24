@@ -27,7 +27,8 @@ import com.svalyn.studio.domain.changeproposal.ChangeProposal;
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalDeletionService;
 import com.svalyn.studio.domain.message.api.IMessageService;
-import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
+import com.svalyn.studio.domain.organization.MembershipRole;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -47,7 +48,7 @@ import java.util.UUID;
 @Service
 public class ChangeProposalDeletionService implements IChangeProposalDeletionService {
 
-    private final IOrganizationRepository organizationRepository;
+    private final IOrganizationPermissionService organizationPermissionService;
 
     private final IProjectRepository projectRepository;
 
@@ -55,11 +56,21 @@ public class ChangeProposalDeletionService implements IChangeProposalDeletionSer
 
     private final IMessageService messageService;
 
-    public ChangeProposalDeletionService(IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IChangeProposalRepository changeProposalRepository, IMessageService messageService) {
-        this.organizationRepository = Objects.requireNonNull(organizationRepository);
+    public ChangeProposalDeletionService(IOrganizationPermissionService organizationPermissionService, IProjectRepository projectRepository, IChangeProposalRepository changeProposalRepository, IMessageService messageService) {
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.changeProposalRepository = Objects.requireNonNull(changeProposalRepository);
         this.messageService = Objects.requireNonNull(messageService);
+    }
+
+    private MembershipRole membershipRole(UUID projectId) {
+        var userId = UserIdProvider.get().getId();
+
+        return this.projectRepository.findById(projectId)
+                .map(Project::getOrganization)
+                .map(AggregateReference::getId)
+                .map(organizationId -> this.organizationPermissionService.role(userId, organizationId))
+                .orElse(MembershipRole.NONE);
     }
 
     @Override
@@ -70,21 +81,8 @@ public class ChangeProposalDeletionService implements IChangeProposalDeletionSer
 
         var changeProposals = this.changeProposalRepository.findAllById(changeProposalIds);
         for (var changeProposal: changeProposals) {
-            var optionalOrganization = this.projectRepository.findById(changeProposal.getProject().getId())
-                    .map(Project::getOrganization)
-                    .map(AggregateReference::getId)
-                    .flatMap(this.organizationRepository::findById);
-
-            if (optionalOrganization.isPresent()) {
-                var organization = optionalOrganization.get();
-                var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-
-                canDeleteChangeProposal.put(changeProposal.getId(), isMember);
-            } else {
-                canDeleteChangeProposal.put(changeProposal.getId(), false);
-            }
+            var membershipRole = this.membershipRole(changeProposal.getProject().getId());
+            canDeleteChangeProposal.put(changeProposal.getId(), membershipRole != MembershipRole.NONE);
         }
 
         var canDeleteAllChangeProposals = canDeleteChangeProposal.values().stream().allMatch(Boolean.TRUE::equals);

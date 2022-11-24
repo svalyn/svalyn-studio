@@ -20,6 +20,7 @@
 package com.svalyn.studio.infrastructure.security;
 
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.account.AccountRole;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,18 +53,21 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
 
     private final String defaultAdminPassword;
 
+    private final boolean createAdminAccount;
+
     private final Logger logger = LoggerFactory.getLogger(DefaultAccountsInitializer.class);
 
-    public DefaultAccountsInitializer(IAccountRepository accountRepository, PasswordEncoder passwordEncoder, @Value("${svalyn.accounts.admin.password:}") String defaultAdminPassword) {
+    public DefaultAccountsInitializer(IAccountRepository accountRepository, PasswordEncoder passwordEncoder, @Value("${svalyn.accounts.admin.password:}") String defaultAdminPassword, @Value("${svalyn.accounts.admin.enabled:true}") boolean createAdminAccount) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
         this.defaultAdminPassword = Objects.requireNonNull(defaultAdminPassword);
+        this.createAdminAccount = Objects.requireNonNull(createAdminAccount);
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        if (!this.accountRepository.findByUsername("admin").isPresent()) {
+        if (this.createAdminAccount && !this.accountRepository.findByUsername("admin").isPresent()) {
             var password = Optional.of(this.defaultAdminPassword)
                     .filter(Predicate.not(String::isBlank))
                     .orElseGet(this::generateSecureRandomPassword);
@@ -73,7 +77,7 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
             var adminAccount = Account.newAccount()
                     .provider("svalyn")
                     .providerId("<none>")
-                    .role("ADMIN")
+                    .role(AccountRole.ADMIN)
                     .username("admin")
                     .password(this.passwordEncoder.encode(password))
                     .name("Admin")

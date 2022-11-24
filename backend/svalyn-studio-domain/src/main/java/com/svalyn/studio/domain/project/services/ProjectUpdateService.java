@@ -24,7 +24,9 @@ import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.message.api.IMessageService;
+import com.svalyn.studio.domain.organization.MembershipRole;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import com.svalyn.studio.domain.project.services.api.IProjectUpdateService;
 import org.springframework.stereotype.Service;
@@ -39,13 +41,16 @@ import java.util.Objects;
 @Service
 public class ProjectUpdateService implements IProjectUpdateService {
 
+    private final IOrganizationPermissionService organizationPermissionService;
+
     private final IOrganizationRepository organizationRepository;
 
     private final IProjectRepository projectRepository;
 
     private final IMessageService messageService;
 
-    public ProjectUpdateService(IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IMessageService messageService) {
+    public ProjectUpdateService(IOrganizationPermissionService organizationPermissionService, IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IMessageService messageService) {
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.messageService = Objects.requireNonNull(messageService);
@@ -63,10 +68,10 @@ public class ProjectUpdateService implements IProjectUpdateService {
             if (optionalOrganization.isPresent()) {
                 var organization = optionalOrganization.get();
                 var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
 
-                if (isMember) {
+                var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+
+                if (membershipRole != MembershipRole.NONE) {
                     project.updateName(name);
                     this.projectRepository.save(project);
 
@@ -96,10 +101,10 @@ public class ProjectUpdateService implements IProjectUpdateService {
             if (optionalOrganization.isPresent()) {
                 var organization = optionalOrganization.get();
                 var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
 
-                if (isMember) {
+                var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+
+                if (membershipRole != MembershipRole.NONE) {
                     project.updateDescription(description);
                     this.projectRepository.save(project);
 
@@ -129,10 +134,10 @@ public class ProjectUpdateService implements IProjectUpdateService {
             if (optionalOrganization.isPresent()) {
                 var organization = optionalOrganization.get();
                 var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
 
-                if (isMember) {
+                var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+
+                if (membershipRole != MembershipRole.NONE) {
                     project.updateReadMe(content);
                     this.projectRepository.save(project);
 

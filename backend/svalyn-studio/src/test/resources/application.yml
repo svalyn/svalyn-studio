@@ -23,3 +23,7 @@ spring:
       path: /api/graphql
     graphiql:
       enabled: false
+svalyn:
+  accounts:
+    admin:
+      enabled: false

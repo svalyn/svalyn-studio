@@ -19,12 +19,15 @@
 
 package com.svalyn.studio.domain.organization.services;
 
-import com.svalyn.studio.domain.organization.Membership;
+import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.account.AccountRole;
+import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.organization.MembershipRole;
-import com.svalyn.studio.domain.organization.Organization;
+import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -34,12 +37,33 @@ import java.util.UUID;
  */
 @Service
 public class OrganizationPermissionService implements IOrganizationPermissionService {
+
+    private final IAccountRepository accountRepository;
+
+    private final IOrganizationRepository organizationRepository;
+
+    public OrganizationPermissionService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository) {
+        this.accountRepository = Objects.requireNonNull(accountRepository);
+        this.organizationRepository = Objects.requireNonNull(organizationRepository);
+    }
+
     @Override
-    public MembershipRole role(UUID userId, Organization organization) {
-        return organization.getMemberships().stream()
-                .filter(membership -> membership.getMemberId().getId().equals(userId))
-                .findFirst()
-                .map(Membership::getRole)
+    public MembershipRole role(UUID userId, UUID organizationId) {
+        return this.organizationRepository.findMembershipRole(userId, organizationId)
+                .orElseGet(() -> this.fromAccount(userId));
+    }
+
+    private MembershipRole fromAccount(UUID userId) {
+        return this.accountRepository.findById(userId)
+                .map(Account::getRole)
+                .map(this::toMembershipRole)
                 .orElse(MembershipRole.NONE);
+    }
+
+    private MembershipRole toMembershipRole(AccountRole accountRole) {
+        if (accountRole == AccountRole.ADMIN) {
+            return MembershipRole.ADMIN;
+        }
+        return MembershipRole.NONE;
     }
 }

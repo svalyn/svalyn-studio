@@ -26,6 +26,7 @@ import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.message.api.IMessageService;
 import com.svalyn.studio.domain.organization.MembershipRole;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationUpdateService;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +44,13 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
 
     private final IOrganizationRepository organizationRepository;
 
+    private final IOrganizationPermissionService organizationPermissionService;
+
     private final IMessageService messageService;
 
-    public OrganizationUpdateService(IOrganizationRepository organizationRepository, IMessageService messageService) {
+    public OrganizationUpdateService(IOrganizationRepository organizationRepository, IOrganizationPermissionService organizationPermissionService, IMessageService messageService) {
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
         this.messageService = Objects.requireNonNull(messageService);
     }
 
@@ -59,11 +63,8 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
             var organization = optionalOrganization.get();
 
             var userId = UserIdProvider.get().getId();
-            var optionalMembership = organization.getMemberships().stream()
-                    .filter(membership -> membership.getMemberId().getId().equals(userId))
-                    .filter(membership -> membership.getRole() == MembershipRole.ADMIN)
-                    .findFirst();
-            if (optionalMembership.isPresent()) {
+            var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+            if (membershipRole == MembershipRole.ADMIN) {
                 organization.updateName(name);
                 this.organizationRepository.save(organization);
                 result = new Success<>(null);
@@ -116,14 +117,13 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
         var optionalOrganization = this.organizationRepository.findByIdentifier(identifier);
         if (optionalOrganization.isPresent()) {
             var organization = optionalOrganization.get();
-            var usedId = UserIdProvider.get().getId();
-            var isAdmin = organization.getMemberships().stream()
-                    .filter(membership -> membership.getMemberId().getId().equals(usedId))
-                    .anyMatch(membership -> membership.getRole() == MembershipRole.ADMIN);
+            var userId = UserIdProvider.get().getId();
+            var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+
             var isRemovingAnAdmin = organization.getMemberships().stream()
                     .filter(membership -> membershipIds.contains(membership.getId()))
                     .anyMatch(membership -> membership.getRole() == MembershipRole.ADMIN);
-            if (isAdmin && !isRemovingAnAdmin) {
+            if (membershipRole == MembershipRole.ADMIN && !isRemovingAnAdmin) {
                 organization.revokeMemberships(membershipIds);
                 this.organizationRepository.save(organization);
                 result = new Success<>(null);
@@ -142,12 +142,12 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
         var optionalOrganization = this.organizationRepository.findByIdentifier(identifier);
         if (optionalOrganization.isPresent()) {
             var organization = optionalOrganization.get();
-            var isAdmin = organization.getMemberships().stream()
-                    .filter(membership -> membership.getMemberId().getId().equals(UserIdProvider.get().getId()))
-                    .anyMatch(membership -> membership.getRole() == MembershipRole.ADMIN);
+
+            var membershipRole = this.organizationPermissionService.role(UserIdProvider.get().getId(), organization.getId());
+
             var isAlreadyMember = organization.getMemberships().stream()
                     .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-            if (isAdmin && !isAlreadyMember) {
+            if (membershipRole == MembershipRole.ADMIN && !isAlreadyMember) {
                 organization.inviteMember(userId);
                 this.organizationRepository.save(organization);
                 result = new Success<>(null);
@@ -167,10 +167,9 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
         if (optionalOrganization.isPresent()) {
             var organization = optionalOrganization.get();
             var userId = UserIdProvider.get().getId();
-            var isAdmin = organization.getMemberships().stream()
-                    .filter(membership -> membership.getMemberId().getId().equals(userId))
-                    .anyMatch(membership -> membership.getRole() == MembershipRole.ADMIN);
-            if (isAdmin) {
+            var membershipRole = this.organizationPermissionService.role(userId, organization.getId());
+
+            if (membershipRole == MembershipRole.ADMIN) {
                 organization.revokeInvitation(invitationId);
                 this.organizationRepository.save(organization);
                 result = new Success<>(null);
@@ -189,11 +188,11 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
         var optionalOrganization = this.organizationRepository.findByIdentifier(identifier);
         if (optionalOrganization.isPresent()) {
             var organization = optionalOrganization.get();
+
             var userId = UserIdProvider.get().getId();
-            var isAdmin = organization.getMemberships().stream()
-                    .filter(membership -> membership.getMemberId().getId().equals(userId))
-                    .anyMatch(membership -> membership.getRole() == MembershipRole.ADMIN);
-            if (isAdmin) {
+            var isUserInvited = organization.getInvitations().stream()
+                    .anyMatch(invitation -> invitation.getId().equals(invitationId) && invitation.getMemberId().getId().equals(userId));
+            if (isUserInvited) {
                 organization.acceptInvitation(invitationId);
                 this.organizationRepository.save(organization);
                 result = new Success<>(null);
@@ -212,10 +211,10 @@ public class OrganizationUpdateService implements IOrganizationUpdateService {
         var optionalOrganization = this.organizationRepository.findByIdentifier(identifier);
         if (optionalOrganization.isPresent()) {
             var organization = optionalOrganization.get();
+
             var userId = UserIdProvider.get().getId();
             var isUserInvited = organization.getInvitations().stream()
-                    .filter(invitation -> invitation.getId().equals(invitationId))
-                    .anyMatch(invitation -> invitation.getMemberId().getId().equals(userId));
+                    .anyMatch(invitation -> invitation.getId().equals(invitationId) && invitation.getMemberId().getId().equals(userId));
             if (isUserInvited) {
                 organization.declineInvitation(invitationId);
                 this.organizationRepository.save(organization);

@@ -20,7 +20,6 @@
 package com.svalyn.studio.domain.organization.services.api;
 
 import com.svalyn.studio.domain.organization.MembershipRole;
-import com.svalyn.studio.domain.organization.Organization;
 
 import java.util.UUID;
 
@@ -30,5 +29,5 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 public interface IOrganizationPermissionService {
-    MembershipRole role(UUID userId, Organization organization);
+    MembershipRole role(UUID userId, UUID organizationId);
 }

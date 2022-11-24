@@ -30,7 +30,8 @@ import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.changeproposal.services.api.IChangeProposalUpdateService;
 import com.svalyn.studio.domain.message.api.IMessageService;
-import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
+import com.svalyn.studio.domain.organization.MembershipRole;
+import com.svalyn.studio.domain.organization.services.api.IOrganizationPermissionService;
 import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
@@ -50,7 +51,7 @@ import java.util.stream.Collectors;
 @Service
 public class ChangeProposalUpdateService implements IChangeProposalUpdateService {
 
-    private final IOrganizationRepository organizationRepository;
+    private final IOrganizationPermissionService organizationPermissionService;
 
     private final IProjectRepository projectRepository;
 
@@ -60,12 +61,22 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
 
     private final IMessageService messageService;
 
-    public ChangeProposalUpdateService(IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IResourceRepository resourceRepository, IChangeProposalRepository changeProposalRepository, IMessageService messageService) {
-        this.organizationRepository = Objects.requireNonNull(organizationRepository);
+    public ChangeProposalUpdateService(IOrganizationPermissionService organizationPermissionService, IProjectRepository projectRepository, IResourceRepository resourceRepository, IChangeProposalRepository changeProposalRepository, IMessageService messageService) {
+        this.organizationPermissionService = Objects.requireNonNull(organizationPermissionService);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.resourceRepository = Objects.requireNonNull(resourceRepository);
         this.changeProposalRepository = Objects.requireNonNull(changeProposalRepository);
         this.messageService = Objects.requireNonNull(messageService);
+    }
+
+    private MembershipRole membershipRole(UUID projectId) {
+        var userId = UserIdProvider.get().getId();
+
+        return this.projectRepository.findById(projectId)
+                .map(Project::getOrganization)
+                .map(AggregateReference::getId)
+                .map(organizationId -> this.organizationPermissionService.role(userId, organizationId))
+                .orElse(MembershipRole.NONE);
     }
 
     @Override
@@ -76,27 +87,13 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
         if (optionalChangeProposal.isPresent()) {
             var changeProposal = optionalChangeProposal.get();
 
-
-            var optionalOrganization = this.projectRepository.findById(changeProposal.getProject().getId())
-                    .map(Project::getOrganization)
-                    .map(AggregateReference::getId)
-                    .flatMap(this.organizationRepository::findById);
-            if (optionalOrganization.isPresent()) {
-                var organization = optionalOrganization.get();
-                var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-
-                if (isMember) {
-                    changeProposal.updateReadMe(content);
-                    this.changeProposalRepository.save(changeProposal);
-
-                    result = new Success<>(null);
-                } else {
-                    result = new Failure<>(this.messageService.unauthorized());
-                }
+            var membershipRole = this.membershipRole(changeProposal.getProject().getId());
+            if (membershipRole != MembershipRole.NONE) {
+                changeProposal.updateReadMe(content);
+                this.changeProposalRepository.save(changeProposal);
+                result = new Success<>(null);
             } else {
-                result = new Failure<>(this.messageService.doesNotExist("organization"));
+                result = new Failure<>(this.messageService.unauthorized());
             }
         } else {
             result = new Failure<>(this.messageService.doesNotExist("change proposal"));
@@ -113,26 +110,18 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
         if (optionalChangeProposal.isPresent()) {
             var changeProposal = optionalChangeProposal.get();
 
-            var optionalOrganization = this.projectRepository.findById(changeProposal.getProject().getId())
-                    .map(Project::getOrganization)
-                    .map(AggregateReference::getId)
-                    .flatMap(this.organizationRepository::findById);
-            if (optionalOrganization.isPresent()) {
-                var organization = optionalOrganization.get();
-                var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-
-                if (isMember && changeProposal.getStatus() != status) {
+            var membershipRole = this.membershipRole(changeProposal.getProject().getId());
+            if (membershipRole != MembershipRole.NONE) {
+                if (changeProposal.getStatus() != status) {
                     changeProposal.updateStatus(status);
                     this.changeProposalRepository.save(changeProposal);
 
                     result = new Success<>(null);
                 } else {
-                    result = new Failure<>(this.messageService.unauthorized());
+                    result = new Failure<>(this.messageService.invalid());
                 }
             } else {
-                result = new Failure<>(this.messageService.doesNotExist("organization"));
+                result = new Failure<>(this.messageService.unauthorized());
             }
         } else {
             result = new Failure<>(this.messageService.doesNotExist("change proposal"));
@@ -149,9 +138,6 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
         var optionalProject = optionalChangeProposal.map(ChangeProposal::getProject)
                 .map(AggregateReference::getId)
                 .flatMap(this.projectRepository::findById);
-        var optionalOrganization = optionalProject.map(Project::getOrganization)
-                .map(AggregateReference::getId)
-                .flatMap(this.organizationRepository::findById);
 
         var resourcesExist = resourceIds.stream().allMatch(this.resourceRepository::existsById);
 
@@ -161,18 +147,12 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
             result = new Failure<>(this.messageService.doesNotExist("change proposal"));
         } else if (optionalProject.isEmpty()) {
             result = new Failure<>(this.messageService.doesNotExist("project"));
-        } else if (optionalOrganization.isEmpty()) {
-            result = new Failure<>(this.messageService.doesNotExist("organization"));
         } else {
-            var organization = optionalOrganization.get();
-            var userId = UserIdProvider.get().getId();
-            var isMember = organization.getMemberships().stream()
-                    .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-            if (!isMember) {
+            var changeProposal = optionalChangeProposal.get();
+            var membershipRole = this.membershipRole(changeProposal.getProject().getId());
+            if (membershipRole == MembershipRole.NONE) {
                 result = new Failure<>(this.messageService.unauthorized());
             } else {
-                var changeProposal = optionalChangeProposal.get();
-
                 var resourceAlreadyInChangeProposal = changeProposal.getChangeProposalResources().stream()
                         .map(ChangeProposalResource::getResource)
                         .map(AggregateReference::getId)
@@ -204,26 +184,17 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
         var optionalProject = optionalChangeProposal.map(ChangeProposal::getProject)
                 .map(AggregateReference::getId)
                 .flatMap(this.projectRepository::findById);
-        var optionalOrganization = optionalProject.map(Project::getOrganization)
-                .map(AggregateReference::getId)
-                .flatMap(this.organizationRepository::findById);
 
         if (optionalChangeProposal.isEmpty()) {
             result = new Failure<>(this.messageService.doesNotExist("change proposal"));
         } else if (optionalProject.isEmpty()) {
             result = new Failure<>(this.messageService.doesNotExist("project"));
-        } else if (optionalOrganization.isEmpty()) {
-            result = new Failure<>(this.messageService.doesNotExist("organization"));
         } else {
-            var organization = optionalOrganization.get();
-            var userId = UserIdProvider.get().getId();
-            var isMember = organization.getMemberships().stream()
-                    .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-            if (!isMember) {
+            var changeProposal = optionalChangeProposal.get();
+            var membershipRole = this.membershipRole(changeProposal.getProject().getId());
+            if (membershipRole == MembershipRole.NONE) {
                 result = new Failure<>(this.messageService.unauthorized());
             } else {
-                var changeProposal = optionalChangeProposal.get();
-
                 var resourcesToDelete = changeProposal.getChangeProposalResources().stream()
                         .filter(changeProposalResource -> changeProposalResourceIds.contains(changeProposalResource.getId()))
                         .toList();
@@ -249,26 +220,13 @@ public class ChangeProposalUpdateService implements IChangeProposalUpdateService
         if (optionalChangeProposal.isPresent()) {
             var changeProposal = optionalChangeProposal.get();
 
-            var optionalOrganization = this.projectRepository.findById(changeProposal.getProject().getId())
-                    .map(Project::getOrganization)
-                    .map(AggregateReference::getId)
-                    .flatMap(this.organizationRepository::findById);
-            if (optionalOrganization.isPresent()) {
-                var organization = optionalOrganization.get();
-                var userId = UserIdProvider.get().getId();
-                var isMember = organization.getMemberships().stream()
-                        .anyMatch(membership -> membership.getMemberId().getId().equals(userId));
-
-                if (isMember) {
-                    changeProposal.performReview(message, status);
-                    this.changeProposalRepository.save(changeProposal);
-
-                    result = new Success<>(null);
-                } else {
-                    result = new Failure<>(this.messageService.unauthorized());
-                }
+            var membershipRole = this.membershipRole(changeProposal.getProject().getId());
+            if (membershipRole != MembershipRole.NONE) {
+                changeProposal.performReview(message, status);
+                this.changeProposalRepository.save(changeProposal);
+                result = new Success<>(null);
             } else {
-                result = new Failure<>(this.messageService.doesNotExist("organization"));
+                result = new Failure<>(this.messageService.unauthorized());
             }
         } else {
             result = new Failure<>(this.messageService.doesNotExist("change proposal"));
