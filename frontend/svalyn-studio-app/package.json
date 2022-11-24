@@ -23,6 +23,7 @@
     "react-dropzone": "14.2.3",
     "react-markdown": "8.0.3",
     "react-router-dom": "6.4.1",
+    "reactflow": "11.3.0",
     "uuid": "9.0.0"
   },
   "devDependencies": {

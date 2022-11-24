@@ -18,19 +18,15 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
-import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
@@ -40,6 +36,8 @@ import {
   GetChangeProposalVariables,
   Resource,
 } from './ChangeProposalFiles.types';
+import { GraphViewer } from './GraphViewer';
+import { RawViewer } from './RawViewer';
 
 const getChangeProposalFilesQuery = gql`
   query getChangeProposalFiles($id: ID!) {
@@ -136,40 +134,17 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                 .map((edge) => edge.node)
                 .map((resource) => (
                   <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={resource.id}>
-                    <Paper
-                      id={resource.id}
-                      variant="outlined"
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          px: (theme) => theme.spacing(2),
-                          py: '2px',
-                        }}
-                      >
-                        <Typography variant="subtitle1">{resource.name}</Typography>
-                        <div>
-                          <IconButton
-                            component="a"
-                            type="application/octet-stream"
-                            href={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
-                          >
-                            <DownloadIcon fontSize="small" />
-                          </IconButton>
-                        </div>
-                      </Box>
-                      <Divider />
-                      <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
-                        <pre>{resource.content}</pre>
-                      </Box>
-                    </Paper>
+                    {resource.name.endsWith('.graph.json') ? (
+                      <GraphViewer
+                        resource={resource}
+                        downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
+                      />
+                    ) : (
+                      <RawViewer
+                        resource={resource}
+                        downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
+                      />
+                    )}
                   </Box>
                 ))}
             </Grid>
