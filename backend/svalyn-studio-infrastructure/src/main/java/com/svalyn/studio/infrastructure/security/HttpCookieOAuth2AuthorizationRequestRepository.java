@@ -25,9 +25,9 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Base64;
 
@@ -79,14 +79,11 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     }
 
     @Override
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#removeAuthorizationRequest");
-        return this.loadAuthorizationRequest(request);
-    }
-
-    @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
-        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#removeAuthorizationRequest2");
+        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#removeAuthorizationRequest");
+
+        var oAuth2AuthorizationRequest = this.loadAuthorizationRequest(request);
+
         for (var cookie: request.getCookies()) {
             if (cookie.getName().equalsIgnoreCase(OAUTH2_AUTHORIZATION_REQUEST_COOKIE)) {
                 Cookie oAuth2AuthorizationRequestCookie = new Cookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE, "");
@@ -100,7 +97,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
                 response.addCookie(redirectUriCookie);
             }
         }
-        return AuthorizationRequestRepository.super.removeAuthorizationRequest(request, response);
+        return oAuth2AuthorizationRequest;
     }
 
 }

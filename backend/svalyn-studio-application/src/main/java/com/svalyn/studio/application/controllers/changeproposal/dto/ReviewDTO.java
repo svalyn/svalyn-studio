@@ -22,7 +22,7 @@ package com.svalyn.studio.application.controllers.changeproposal.dto;
 import com.svalyn.studio.application.controllers.dto.Profile;
 import com.svalyn.studio.domain.changeproposal.ReviewStatus;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 

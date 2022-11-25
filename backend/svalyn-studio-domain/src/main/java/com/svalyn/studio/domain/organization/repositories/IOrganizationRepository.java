@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.organization.repositories;
 import com.svalyn.studio.domain.organization.MembershipRole;
 import com.svalyn.studio.domain.organization.Organization;
 import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +35,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Repository
-public interface IOrganizationRepository extends PagingAndSortingRepository<Organization, UUID> {
+public interface IOrganizationRepository extends PagingAndSortingRepository<Organization, UUID>, ListCrudRepository<Organization, UUID> {
     boolean existsByIdentifier(String identifier);
 
     Optional<Organization> findByIdentifier(String identifier);

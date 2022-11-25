@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.dto;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * The profile DTO for the GraphQL layer.

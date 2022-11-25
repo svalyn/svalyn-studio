@@ -18,7 +18,7 @@
  */
 package com.svalyn.studio.application.controllers.viewer;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A viewer of the application.

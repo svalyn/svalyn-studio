@@ -21,7 +21,7 @@ package com.svalyn.studio.infrastructure.kafka.messages.changeproposal;
 
 import com.svalyn.studio.infrastructure.kafka.messages.IMessageContent;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 /**

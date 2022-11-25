@@ -23,24 +23,26 @@ import com.svalyn.studio.infrastructure.kafka.messages.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+
+import java.util.function.BiConsumer;
 
 /**
  * Used to log Kafka send results.
  *
  * @author sbegaudeau
  */
-public class KafkaListenableFutureCallback implements ListenableFutureCallback<SendResult<String, Message>> {
+public class KafkaListenableFutureCallback implements BiConsumer<SendResult<String, Message>, Throwable> {
 
     private final Logger logger = LoggerFactory.getLogger(KafkaListenableFutureCallback.class);
 
     @Override
-    public void onFailure(Throwable exception) {
-        this.logger.warn(exception.getMessage(), exception);
+    public void accept(SendResult<String, Message> sendResult, Throwable throwable) {
+        if (throwable != null) {
+            this.logger.warn(throwable.getMessage(), throwable);
+        }
+        if (sendResult != null) {
+            this.logger.trace(sendResult.toString());
+        }
     }
 
-    @Override
-    public void onSuccess(SendResult<String, Message> result) {
-        this.logger.trace(result.toString());
-    }
 }

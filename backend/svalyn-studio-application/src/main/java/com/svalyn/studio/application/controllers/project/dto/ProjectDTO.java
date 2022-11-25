@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.project.dto;
 
 import com.svalyn.studio.application.controllers.dto.Profile;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 

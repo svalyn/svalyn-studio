@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.project.repositories;
 
 import com.svalyn.studio.domain.project.Project;
 import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +35,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Repository
-public interface IProjectRepository extends PagingAndSortingRepository<Project, UUID> {
+public interface IProjectRepository extends PagingAndSortingRepository<Project, UUID>, ListCrudRepository<Project, UUID> {
 
     Optional<Project> findByIdentifier(String identifier);
 

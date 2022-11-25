@@ -22,7 +22,7 @@ package com.svalyn.studio.application.controllers.notification.dto;
 import com.svalyn.studio.application.controllers.dto.IInput;
 import com.svalyn.studio.domain.notification.NotificationStatus;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 

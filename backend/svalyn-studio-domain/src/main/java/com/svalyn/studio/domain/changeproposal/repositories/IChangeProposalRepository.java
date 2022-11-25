@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.changeproposal.repositories;
 
 import com.svalyn.studio.domain.changeproposal.ChangeProposal;
 import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -33,7 +34,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Repository
-public interface IChangeProposalRepository extends PagingAndSortingRepository<ChangeProposal, UUID> {
+public interface IChangeProposalRepository extends PagingAndSortingRepository<ChangeProposal, UUID>, ListCrudRepository<ChangeProposal, UUID> {
     @Query("""
     SELECT * FROM change_proposal changeProposal
     WHERE changeProposal.project_id = :projectId

@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.infrastructure.kafka.messages.account;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 
