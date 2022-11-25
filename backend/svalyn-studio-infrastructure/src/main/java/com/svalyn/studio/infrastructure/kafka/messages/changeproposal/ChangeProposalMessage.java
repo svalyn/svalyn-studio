@@ -23,7 +23,7 @@ import com.svalyn.studio.domain.changeproposal.ChangeProposalStatus;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.project.ProjectSummaryMessage;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;

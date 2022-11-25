@@ -36,8 +36,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -68,12 +68,16 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/graphql").authenticated();
-        http.authorizeRequests().antMatchers("/**").permitAll();
+        http.authorizeHttpRequests((authz) -> {
+            authz.requestMatchers("/api/graphql").authenticated();
+            authz.requestMatchers("/**").permitAll();
+        });
 
         http.cors();
         http.csrf().disable();
         //http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
+        http.securityContext((securityContext) -> securityContext.requireExplicitSave(false));
 
         http.oauth2Login()
                 .authorizationEndpoint()

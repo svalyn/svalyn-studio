@@ -20,6 +20,7 @@
 package com.svalyn.studio.domain.resource.repositories;
 
 import com.svalyn.studio.domain.resource.Resource;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -31,5 +32,5 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Repository
-public interface IResourceRepository extends PagingAndSortingRepository<Resource, UUID> {
+public interface IResourceRepository extends PagingAndSortingRepository<Resource, UUID>, ListCrudRepository<Resource, UUID> {
 }

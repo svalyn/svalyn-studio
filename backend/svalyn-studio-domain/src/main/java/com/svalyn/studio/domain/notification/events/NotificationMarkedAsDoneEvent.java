@@ -21,7 +21,7 @@ package com.svalyn.studio.domain.notification.events;
 
 import com.svalyn.studio.domain.notification.Notification;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 

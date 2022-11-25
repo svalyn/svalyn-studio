@@ -21,7 +21,7 @@ package com.svalyn.studio.infrastructure.kafka.messages.resource;
 
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 

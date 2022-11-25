@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.notification.repositories;
 
 import com.svalyn.studio.domain.notification.Notification;
 import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -33,7 +34,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Repository
-public interface INotificationRepository extends PagingAndSortingRepository<Notification, UUID> {
+public interface INotificationRepository extends PagingAndSortingRepository<Notification, UUID>, ListCrudRepository<Notification, UUID> {
     @Query("""
     SELECT * FROM notification notification
     WHERE notification.id IN (:notificationIds) AND notification.owned_by = :userId

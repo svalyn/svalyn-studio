@@ -37,7 +37,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import java.util.Arrays;
 

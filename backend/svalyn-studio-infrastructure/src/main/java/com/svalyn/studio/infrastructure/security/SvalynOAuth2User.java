@@ -25,7 +25,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,7 +56,7 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
         this.email = account.getEmail();
         this.imageUrl = account.getImageUrl();
         this.attributes = oAuth2User.getAttributes();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + account.getRole()));
+        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + account.getRole()));
     }
 
     @Override

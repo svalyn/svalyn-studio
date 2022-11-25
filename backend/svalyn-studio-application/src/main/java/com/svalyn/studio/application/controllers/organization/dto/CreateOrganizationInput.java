@@ -20,7 +20,7 @@ package com.svalyn.studio.application.controllers.organization.dto;
 
 import com.svalyn.studio.application.controllers.dto.IInput;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**

@@ -69,7 +69,7 @@ public class KafkaMessageProducer {
     }
 
     private void publishMessage(String topic, Message message) {
-        this.kafkaTemplate.send(topic, message).addCallback(new KafkaListenableFutureCallback());
+        this.kafkaTemplate.send(topic, message).whenComplete(new KafkaListenableFutureCallback());
     }
 
     @TransactionalEventListener

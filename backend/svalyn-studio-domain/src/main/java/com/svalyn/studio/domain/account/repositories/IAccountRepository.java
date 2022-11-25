@@ -19,6 +19,7 @@
 package com.svalyn.studio.domain.account.repositories;
 
 import com.svalyn.studio.domain.account.Account;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +32,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 @Repository
-public interface IAccountRepository extends PagingAndSortingRepository<Account, UUID> {
+public interface IAccountRepository extends PagingAndSortingRepository<Account, UUID>, ListCrudRepository<Account, UUID> {
     Optional<Account> findByUsername(String username);
 
     Optional<Account> findByEmail(String email);

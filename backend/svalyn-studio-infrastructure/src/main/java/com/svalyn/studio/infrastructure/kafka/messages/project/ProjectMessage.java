@@ -22,7 +22,7 @@ package com.svalyn.studio.infrastructure.kafka.messages.project;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 

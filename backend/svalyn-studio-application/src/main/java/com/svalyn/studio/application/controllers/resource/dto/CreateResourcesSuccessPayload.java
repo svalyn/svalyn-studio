@@ -21,7 +21,7 @@ package com.svalyn.studio.application.controllers.resource.dto;
 
 import com.svalyn.studio.application.controllers.dto.IPayload;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
