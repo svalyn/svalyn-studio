@@ -16,32 +16,18 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+package com.svalyn.studio.application.controllers.account.dto;
 
-import java.util.Objects;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Controller used to manipulate the viewer.
+ * The authentication token created DTO for the GraphQL layer.
  *
  * @author sbegaudeau
  */
-@Controller
-public class ViewerController {
-
-    private final IAccountService accountService;
-
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
-
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
+public record AuthenticationTokenCreatedDTO(
+        @NotNull String name,
+        @NotNull String accessKey,
+        @NotNull String secretKey) {
 }

@@ -22,10 +22,12 @@ import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.IUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,14 +51,22 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public SvalynOAuth2User(Account account, OAuth2User oAuth2User) {
+    public SvalynOAuth2User(Account account, OAuth2User oAuth2User, OAuth2AccessToken oAuth2AccessToken) {
         this.id = account.getId();
         this.username = account.getUsername();
         this.name = account.getName();
         this.email = account.getEmail();
         this.imageUrl = account.getImageUrl();
         this.attributes = oAuth2User.getAttributes();
-        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + account.getRole()));
+
+        var authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole()));
+        authorities.add(new OAuth2UserAuthority(oAuth2User.getAttributes()));
+        var oAuth2Authorities = oAuth2AccessToken.getScopes().stream()
+                .map(scope -> new SimpleGrantedAuthority("SCOPE_" + scope))
+                .toList();
+        authorities.addAll(oAuth2Authorities);
+        this.authorities = authorities;
     }
 
     @Override

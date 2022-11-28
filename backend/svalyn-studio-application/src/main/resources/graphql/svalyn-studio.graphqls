@@ -22,6 +22,7 @@ type Viewer {
   changeProposal(id: ID!): ChangeProposal
   notifications(status: [NotificationStatus!]!, page: Int!, rowsPerPage: Int!): ViewerNotificationsConnection!
   unreadNotificationsCount: Int!
+  authenticationTokens(page: Int!, rowsPerPage: Int!): ViewerAuthenticationTokensConnection!
 }
 
 type ViewerInvitationsConnection {
@@ -216,7 +217,31 @@ enum NotificationStatus {
   DONE
 }
 
+type ViewerAuthenticationTokensConnection {
+  edges: [ViewerAuthenticationTokensEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ViewerAuthenticationTokensEdge {
+  node: AuthenticationToken!
+}
+
+type AuthenticationToken {
+  id: ID!
+  name: String!
+  status: AuthenticationTokenStatus!
+  createdOn: Instant!
+  lastModifiedOn: Instant!
+}
+
+enum AuthenticationTokenStatus {
+  ACTIVE
+  INACTIVE
+}
+
 type Mutation {
+  createAuthenticationToken(input: CreateAuthenticationTokenInput!): CreateAuthenticationTokenPayload! @validated
+  updateAuthenticationTokensStatus(input: UpdateAuthenticationTokensStatusInput!): UpdateAuthenticationTokensStatusPayload! @validated
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @validated
   updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload! @validated
   inviteMember(input: InviteMemberInput!): InviteMemberPayload! @validated
@@ -249,6 +274,32 @@ type ErrorPayload {
 type SuccessPayload {
   id: ID!
 }
+
+input CreateAuthenticationTokenInput {
+  id: ID!
+  name: String!
+}
+
+union CreateAuthenticationTokenPayload = ErrorPayload | CreateAuthenticationTokenSuccessPayload
+
+type CreateAuthenticationTokenSuccessPayload {
+  id: ID!
+  authenticationToken: AuthenticationTokenCreated!
+}
+
+type AuthenticationTokenCreated {
+  name: String!
+  accessKey: String!
+  secretKey: String!
+}
+
+input UpdateAuthenticationTokensStatusInput {
+  id: ID!
+  authenticationTokenIds: [ID!]!
+  status: AuthenticationTokenStatus!
+}
+
+union UpdateAuthenticationTokensStatusPayload = ErrorPayload | SuccessPayload
 
 input CreateOrganizationInput {
   id: ID!

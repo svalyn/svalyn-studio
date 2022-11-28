@@ -72,7 +72,7 @@ export const LoginWithCredentials = () => {
       if (response.ok) {
         navigate('/');
       } else {
-        setState((prevState) => ({ ...prevState, message: 'An error has occurred while trying to log in' }));
+        setState((prevState) => ({ ...prevState, message: 'Invalid login or password' }));
       }
     });
   };

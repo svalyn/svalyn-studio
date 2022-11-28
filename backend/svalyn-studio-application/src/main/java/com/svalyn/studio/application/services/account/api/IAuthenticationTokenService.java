@@ -16,32 +16,24 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+package com.svalyn.studio.application.services.account.api;
 
-import java.util.Objects;
+import com.svalyn.studio.application.controllers.account.dto.AuthenticationTokenDTO;
+import com.svalyn.studio.application.controllers.account.dto.CreateAuthenticationTokenInput;
+import com.svalyn.studio.application.controllers.account.dto.UpdateAuthenticationTokensStatusInput;
+import com.svalyn.studio.application.controllers.dto.IPayload;
+import org.springframework.data.domain.Page;
 
 /**
- * Controller used to manipulate the viewer.
+ * Used to manipulate authentication tokens.
  *
  * @author sbegaudeau
  */
-@Controller
-public class ViewerController {
+public interface IAuthenticationTokenService {
+    Page<AuthenticationTokenDTO> findAll(int page, int rowsPerPage);
 
-    private final IAccountService accountService;
+    IPayload createAuthenticationToken(CreateAuthenticationTokenInput input);
 
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
-
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
+    IPayload updateAuthenticationTokensStatus(UpdateAuthenticationTokensStatusInput input);
 }

@@ -24,6 +24,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
@@ -162,6 +163,12 @@ export const Navbar = ({ children }: NavbarProps) => {
                       <MailOutlineIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>Invitations</ListItemText>
+                  </MenuItem>
+                  <MenuItem component={RouterLink} to="/settings" onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                      <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Settings</ListItemText>
                   </MenuItem>
                   <MenuItem component={RouterLink} to="/help" onClick={handleCloseUserMenu}>
                     <ListItemIcon>

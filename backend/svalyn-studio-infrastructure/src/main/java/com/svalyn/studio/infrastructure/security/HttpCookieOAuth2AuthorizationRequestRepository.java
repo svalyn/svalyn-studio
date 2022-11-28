@@ -46,7 +46,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#loadAuthorizationRequest");
+        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#loadAuthorizationRequest - " + request.getRequestURI());
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equalsIgnoreCase(OAUTH2_AUTHORIZATION_REQUEST_COOKIE))
                 .findFirst()
@@ -60,7 +60,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
-        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#saveAuthorizationRequest");
+        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#saveAuthorizationRequest - " + request.getRequestURI());
         String value = Base64.getUrlEncoder().encodeToString(SerializationUtils.serialize(authorizationRequest));
         Cookie oAuth2AuthorizationRequestCookie = new Cookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE, value);
         oAuth2AuthorizationRequestCookie.setPath("/");
@@ -80,7 +80,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
-        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#removeAuthorizationRequest");
+        this.logger.debug("HttpCookieOAuth2AuthorizationRequestRepository#removeAuthorizationRequest - " + request.getRequestURI());
 
         var oAuth2AuthorizationRequest = this.loadAuthorizationRequest(request);
 
