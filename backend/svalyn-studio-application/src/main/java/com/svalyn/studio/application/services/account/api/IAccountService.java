@@ -20,8 +20,10 @@
 package com.svalyn.studio.application.services.account.api;
 
 import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.viewer.Viewer;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Used to manipulate accounts.
@@ -29,5 +31,8 @@ import java.util.Optional;
  * @author sbegaudeau
  */
 public interface IAccountService {
+
+    Optional<Viewer> findViewerById(UUID id);
+
     Optional<Profile> findProfileByUsername(String username);
 }

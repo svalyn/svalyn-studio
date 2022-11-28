@@ -6,4 +6,7 @@ DELETE FROM project;
 DELETE FROM invitation;
 DELETE FROM membership;
 DELETE FROM organization;
+DELETE FROM password_credentials;
+DELETE FROM oauth2_metadata;
+DELETE FROM authentication_token;
 DELETE FROM account;

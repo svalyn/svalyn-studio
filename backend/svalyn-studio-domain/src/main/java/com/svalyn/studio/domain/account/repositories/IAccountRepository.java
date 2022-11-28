@@ -19,6 +19,7 @@
 package com.svalyn.studio.domain.account.repositories;
 
 import com.svalyn.studio.domain.account.Account;
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -36,4 +37,10 @@ public interface IAccountRepository extends PagingAndSortingRepository<Account, 
     Optional<Account> findByUsername(String username);
 
     Optional<Account> findByEmail(String email);
+
+    @Query("""
+    SELECT * FROM account account JOIN authentication_token authenticationToken ON account.id = authenticationToken.account_id
+    WHERE authenticationToken.access_key = :accessKey AND authenticationToken.status = 'ACTIVE'
+    """)
+    Optional<Account> findByAccessKey(String accessKey);
 }

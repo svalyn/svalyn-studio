@@ -20,6 +20,7 @@
 package com.svalyn.studio.application.services.account;
 
 import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.viewer.Viewer;
 import com.svalyn.studio.application.services.account.api.IAccountService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Used to manipulate accounts.
@@ -40,6 +42,12 @@ public class AccountService implements IAccountService {
 
     public AccountService(IAccountRepository accountRepository) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Viewer> findViewerById(UUID id) {
+        return this.accountRepository.findById(id).map(account -> new Viewer(account.getName(), account.getUsername(), account.getImageUrl()));
     }
 
     @Override

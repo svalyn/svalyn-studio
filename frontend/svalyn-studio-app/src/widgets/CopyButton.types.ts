@@ -16,32 +16,15 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+import React from 'react';
 
-import java.util.Objects;
+export interface CopyButtonProps {
+  children: React.ReactNode;
+  fullWidth?: boolean;
+  text: string;
+}
 
-/**
- * Controller used to manipulate the viewer.
- *
- * @author sbegaudeau
- */
-@Controller
-public class ViewerController {
-
-    private final IAccountService accountService;
-
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
-
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
+export interface CopyButtonState {
+  copied: boolean;
 }

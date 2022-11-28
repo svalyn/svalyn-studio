@@ -20,6 +20,7 @@ package com.svalyn.studio.infrastructure.security;
 
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.AccountRole;
+import com.svalyn.studio.domain.account.OAuth2Metadata;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The user service which will retrieve and update the domain using the oauth2 user info.
@@ -80,24 +82,22 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
         var optionalOAuth2UserInfo = this.getUserInfo(userRequest.getClientRegistration().getRegistrationId(), oAuth2User, additionalData);
 
         if (optionalOAuth2UserInfo.isEmpty()) {
+            this.logger.debug("OAuth2UserInfo empty");
             throw new OAuth2AuthenticationException("The OAuth2 provider " + userRequest.getClientRegistration().getRegistrationId() + ", used for the authentication, is not supported");
         }
 
         var oAuth2UserInfo = optionalOAuth2UserInfo.get();
         Account account;
 
-        var optionalExistingAccountEntity = this.accountRepository.findByUsername(oAuth2UserInfo.getUsername());
+        var optionalExistingAccountEntity = this.accountRepository.findByEmail(oAuth2UserInfo.getEmail());
         if (optionalExistingAccountEntity.isPresent()) {
             var existingAccountEntity = optionalExistingAccountEntity.get();
-            if (!existingAccountEntity.getProvider().equalsIgnoreCase(userRequest.getClientRegistration().getRegistrationId())) {
-                throw new OAuth2AuthenticationException("You are trying to log in using " + userRequest.getClientRegistration().getRegistrationId() + " but your account has been created using " + existingAccountEntity.getProvider());
-            }
             account = this.updateAccount(existingAccountEntity, userRequest, oAuth2UserInfo);
         } else {
             account = this.createAccount(userRequest, oAuth2UserInfo);
         }
 
-        return new SvalynOAuth2User(account, oAuth2User);
+        return new SvalynOAuth2User(account, oAuth2User, userRequest.getAccessToken());
     }
 
     private Optional<OAuth2UserInfo> getUserInfo(String registrationId, OAuth2User oAuth2User, List<Map<String, Object>> additionalData) {
@@ -110,22 +110,37 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
     private Account updateAccount(Account account, OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         this.logger.debug("Updating account " + oAuth2UserRequest.getClientRegistration().getRegistrationId() + "#" + oAuth2UserInfo.getId());
 
-        account.updateDetails(oAuth2UserInfo.getName(), oAuth2UserInfo.getImageUrl());
+        var hasLoggedWithProvider = account.getOAuth2Metadata().stream()
+                .anyMatch(oAuth2Metadata -> oAuth2Metadata.getProvider().equalsIgnoreCase(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
+        if (!hasLoggedWithProvider) {
+            var oAuth2Metadata = OAuth2Metadata.newOAuth2Metadata()
+                    .provider(oAuth2UserRequest.getClientRegistration().getRegistrationId())
+                    .providerId(oAuth2UserInfo.getId())
+                    .build();
+
+            account.addOAuth2Metadata(oAuth2Metadata);
+        } else if (!account.getName().equals(oAuth2UserInfo.getName()) || !account.getImageUrl().equals(oAuth2UserInfo.getImageUrl())) {
+            account.updateDetails(oAuth2UserInfo.getName(), oAuth2UserInfo.getImageUrl());
+        }
+
         return this.accountRepository.save(account);
     }
 
     private Account createAccount(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         this.logger.debug("Creating account " + oAuth2UserRequest.getClientRegistration().getRegistrationId() + "#" + oAuth2UserInfo.getId());
 
-        var account = Account.newAccount()
+        var oAuth2Metadata = OAuth2Metadata.newOAuth2Metadata()
                 .provider(oAuth2UserRequest.getClientRegistration().getRegistrationId())
                 .providerId(oAuth2UserInfo.getId())
+                .build();
+
+        var account = Account.newAccount()
                 .role(AccountRole.USER)
                 .username(oAuth2UserInfo.getUsername())
-                .password("")
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
                 .imageUrl(oAuth2UserInfo.getImageUrl())
+                .oAuth2Metadata(Set.of(oAuth2Metadata))
                 .build();
 
         return this.accountRepository.save(account);

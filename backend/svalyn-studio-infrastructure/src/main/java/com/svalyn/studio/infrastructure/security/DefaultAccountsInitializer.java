@@ -21,7 +21,9 @@ package com.svalyn.studio.infrastructure.security;
 
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.AccountRole;
+import com.svalyn.studio.domain.account.PasswordCredentials;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
+import com.svalyn.studio.domain.account.services.api.IPasswordGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,15 +32,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Used to create the default accounts while the server is starting.
@@ -49,6 +46,8 @@ import java.util.stream.Stream;
 public class DefaultAccountsInitializer implements CommandLineRunner {
     private final IAccountRepository accountRepository;
 
+    private final IPasswordGenerator passwordGenerator;
+
     private final PasswordEncoder passwordEncoder;
 
     private final String defaultAdminPassword;
@@ -57,8 +56,9 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(DefaultAccountsInitializer.class);
 
-    public DefaultAccountsInitializer(IAccountRepository accountRepository, PasswordEncoder passwordEncoder, @Value("${svalyn.accounts.admin.password:}") String defaultAdminPassword, @Value("${svalyn.accounts.admin.enabled:true}") boolean createAdminAccount) {
+    public DefaultAccountsInitializer(IAccountRepository accountRepository, IPasswordGenerator passwordGenerator, PasswordEncoder passwordEncoder, @Value("${svalyn.accounts.admin.password:}") String defaultAdminPassword, @Value("${svalyn.accounts.admin.enabled:true}") boolean createAdminAccount) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
+        this.passwordGenerator = Objects.requireNonNull(passwordGenerator);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
         this.defaultAdminPassword = Objects.requireNonNull(defaultAdminPassword);
         this.createAdminAccount = Objects.requireNonNull(createAdminAccount);
@@ -70,16 +70,18 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
         if (this.createAdminAccount && !this.accountRepository.findByUsername("admin").isPresent()) {
             var password = Optional.of(this.defaultAdminPassword)
                     .filter(Predicate.not(String::isBlank))
-                    .orElseGet(this::generateSecureRandomPassword);
+                    .orElseGet(this.passwordGenerator::generatePassword);
 
             this.logger.info("The \"admin\" account has been created with the password \"" + password + "\" (ignore the quotes)");
 
+            var passwordCredentials = PasswordCredentials.newPasswordCredentials()
+                    .password(this.passwordEncoder.encode(password))
+                    .build();
+
             var adminAccount = Account.newAccount()
-                    .provider("svalyn")
-                    .providerId("<none>")
                     .role(AccountRole.ADMIN)
                     .username("admin")
-                    .password(this.passwordEncoder.encode(password))
+                    .passwordCredentials(Set.of(passwordCredentials))
                     .name("Admin")
                     .email("")
                     .imageUrl("")
@@ -87,33 +89,5 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
 
             this.accountRepository.save(adminAccount);
         }
-    }
-
-    public String generateSecureRandomPassword() {
-        Stream<Character> pwdStream = Stream.concat(getRandomNumbers(4), Stream.concat(getRandomSpecialChars(5), Stream.concat(getRandomAlphabets(7, true), getRandomAlphabets(9, false))));
-        List<Character> charList = pwdStream.collect(Collectors.toList());
-        Collections.shuffle(charList);
-        String password = charList.stream()
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString();
-        return password;
-    }
-
-    public Stream<Character> getRandomAlphabets(int count, boolean upperCase) {
-        IntStream characters = null;
-        if (upperCase) {
-            characters = new SecureRandom().ints(count, 65, 90);
-        } else {
-            characters = new SecureRandom().ints(count, 97, 122);
-        }
-        return characters.mapToObj(data -> (char) data);
-    }
-
-    public Stream<Character> getRandomNumbers(int count) {
-        return new SecureRandom().ints(count, 48, 57).mapToObj(data -> (char) data);
-    }
-
-    public Stream<Character> getRandomSpecialChars(int count) {
-        return new SecureRandom().ints(count, 33, 45).mapToObj(data -> (char) data);
     }
 }

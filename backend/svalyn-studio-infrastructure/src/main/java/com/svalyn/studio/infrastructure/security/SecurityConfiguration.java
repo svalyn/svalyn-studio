@@ -18,6 +18,8 @@
  */
 package com.svalyn.studio.infrastructure.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,8 +39,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -75,9 +76,14 @@ public class SecurityConfiguration {
 
         http.cors();
         http.csrf().disable();
-        //http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        // http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
-        http.securityContext((securityContext) -> securityContext.requireExplicitSave(false));
+        // See https://github.com/spring-projects/spring-security/issues/12314
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+
+        http.securityContext((securityContext) -> {
+            securityContext.requireExplicitSave(false);
+        });
 
         http.oauth2Login()
                 .authorizationEndpoint()
@@ -92,6 +98,7 @@ public class SecurityConfiguration {
 
         AuthenticationSuccessHandler authenticationSuccessHandler = (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
             this.logger.debug("AuthenticationSuccessHandler: Status 200 OK");
+            this.logger.debug("Request has session : " + request.getSession(false));
             response.setStatus(HttpStatus.OK.value());
         };
         AuthenticationFailureHandler authenticationFailureHandler = (HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) -> {

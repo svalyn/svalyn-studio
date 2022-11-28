@@ -16,32 +16,23 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+package com.svalyn.studio.domain.account.services.api;
 
-import java.util.Objects;
+import com.svalyn.studio.domain.IResult;
+import com.svalyn.studio.domain.account.AuthenticationTokenCreated;
+import com.svalyn.studio.domain.account.AuthenticationTokenStatus;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
- * Controller used to manipulate the viewer.
+ * Used to update accounts.
  *
  * @author sbegaudeau
  */
-@Controller
-public class ViewerController {
+public interface IAccountUpdateService {
+    IResult<AuthenticationTokenCreated> createAuthenticationToken(String name);
 
-    private final IAccountService accountService;
-
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
-
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
+    IResult<Void> updateAuthenticationTokensStatus(List<UUID> authenticationTokenIds, AuthenticationTokenStatus status);
 }

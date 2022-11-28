@@ -16,32 +16,33 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+import CheckIcon from '@mui/icons-material/Check';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import Button from '@mui/material/Button';
+import { useState } from 'react';
+import { CopyButtonProps, CopyButtonState } from './CopyButton.types';
 
-import java.util.Objects;
+export const CopyButton = ({ children, fullWidth, text }: CopyButtonProps) => {
+  const [state, setState] = useState<CopyButtonState>({
+    copied: false,
+  });
 
-/**
- * Controller used to manipulate the viewer.
- *
- * @author sbegaudeau
- */
-@Controller
-public class ViewerController {
+  const handleClick: React.MouseEventHandler<HTMLButtonElement> = () => {
+    navigator.clipboard.writeText(text).finally(() => {
+      setState((prevState) => ({ ...prevState, copied: true }));
+    });
+  };
 
-    private final IAccountService accountService;
-
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
-
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
-}
+  return (
+    <Button
+      variant="outlined"
+      onClick={handleClick}
+      endIcon={state.copied ? <CheckIcon /> : <ContentCopyIcon />}
+      fullWidth={fullWidth}
+      sx={{ textTransform: 'none' }}
+    >
+      {children}
+    </Button>
+  );
+};

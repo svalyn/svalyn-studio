@@ -16,32 +16,46 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+export interface NewAuthenticationTokenDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
 
-import java.util.Objects;
+export interface NewAuthenticationTokenDialogState {
+  name: string;
+  errorSnackbarOpen: boolean;
+}
 
-/**
- * Controller used to manipulate the viewer.
- *
- * @author sbegaudeau
- */
-@Controller
-public class ViewerController {
+export interface CreateAuthenticationTokenVariables {
+  input: CreateAuthenticationTokenInput;
+}
 
-    private final IAccountService accountService;
+export interface CreateAuthenticationTokenInput {
+  id: string;
+  name: string;
+}
 
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
+export interface CreateAuthenticationTokenData {
+  createAuthenticationToken: CreateAuthenticationTokenPayload;
+}
 
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
+export interface CreateAuthenticationTokenPayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends CreateAuthenticationTokenPayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface CreateAuthenticationTokenSuccessPayload extends CreateAuthenticationTokenPayload {
+  __typename: 'CreateAuthenticationTokenSuccessPayload';
+  authenticationToken: AuthenticationTokenCreated;
+}
+
+export interface AuthenticationTokenCreated {
+  name: string;
+  accessKey: string;
+  secretKey: string;
 }

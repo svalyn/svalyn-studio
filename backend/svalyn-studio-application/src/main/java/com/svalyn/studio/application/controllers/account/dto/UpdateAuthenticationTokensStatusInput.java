@@ -16,32 +16,23 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+package com.svalyn.studio.application.controllers.account.dto;
 
-import java.util.Objects;
+import com.svalyn.studio.application.controllers.dto.IInput;
+import com.svalyn.studio.domain.account.AuthenticationTokenStatus;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
- * Controller used to manipulate the viewer.
+ * Input used to update the status of some authentication tokens.
  *
  * @author sbegaudeau
  */
-@Controller
-public class ViewerController {
-
-    private final IAccountService accountService;
-
-    public ViewerController(IAccountService accountService) {
-        this.accountService = Objects.requireNonNull(accountService);
-    }
-
-    @QueryMapping
-    public Viewer viewer(@AuthenticationPrincipal IUser user) {
-        return this.accountService.findViewerById(user.getId()).orElse(null);
-    }
+public record UpdateAuthenticationTokensStatusInput(
+        @NotNull UUID id,
+        @NotNull List<UUID> authenticationTokenIds,
+        @NotNull AuthenticationTokenStatus status) implements IInput {
 }

@@ -22,7 +22,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
-    <changeSet  author="sbegaudeau"  id="1">
+    <changeSet  author="sbegaudeau"  id="2022.11.0">
         <sql dbms="PostgreSQL">
             CREATE EXTENSION IF NOT EXISTS pgcrypto
         </sql>

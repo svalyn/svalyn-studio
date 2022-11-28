@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2022 Stéphane Bégaudeau.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+  ~ associated documentation files (the "Software"), to deal in the Software without restriction,
+  ~ including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+  ~ and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+  ~ subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial
+  ~ portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+  ~ LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+  ~ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet  author="sbegaudeau"  id="2023.1.0">
+        <dropColumn tableName="account" columnName="provider" />
+        <dropColumn tableName="account" columnName="provider_id" />
+        <dropColumn tableName="account" columnName="password" />
+
+        <createTable tableName="password_credentials">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="password" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="password_credentials" baseColumnNames="account_id" constraintName="fk_password_credentials_account_id" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="oauth2_metadata">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="provider" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_id" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="oauth2_metadata" baseColumnNames="account_id" constraintName="fk_oauth2_metadata_account_id" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="authentication_token">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_key" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secret_key" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="authentication_token" baseColumnNames="account_id" constraintName="fk_authentication_token_account_id" referencedTableName="account" referencedColumnNames="id" />
+    </changeSet>
+</databaseChangeLog>
