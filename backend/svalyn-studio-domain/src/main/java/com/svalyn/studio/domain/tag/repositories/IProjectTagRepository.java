@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,24 +17,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages.project;
+package com.svalyn.studio.domain.tag.repositories;
 
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
+import com.svalyn.studio.domain.tag.ProjectTag;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-import jakarta.validation.constraints.NotNull;
-
-import java.util.Map;
 import java.util.UUID;
 
 /**
- * The public summary of a project.
+ * Repository used to persist and retrieve project tags.
  *
  * @author sbegaudeau
  */
-public record ProjectSummaryMessage(
-        @NotNull UUID id,
-        @NotNull String identifier,
-        @NotNull String name,
-        @NotNull Map<String, String> tags,
-        @NotNull OrganizationSummaryMessage organization) {
+public interface IProjectTagRepository extends PagingAndSortingRepository<ProjectTag, UUID>, ListCrudRepository<ProjectTag, UUID> {
+    @Query(value = """
+    SELECT
+      CASE WHEN COUNT(projectTag) > 0
+      THEN TRUE
+      ELSE FALSE
+      END
+    FROM project_tag projectTag
+    JOIN tag tag ON tag.id = projectTag.tag_id
+    WHERE projectTag.project_id = :projectId AND tag.key = :key AND tag.value = :value
+    """)
+    boolean existsByKeyAndValue(UUID projectId, String key, String value);
 }

@@ -102,7 +102,7 @@ public class ProjectService implements IProjectService {
     @Override
     @Transactional(readOnly = true)
     public Page<ProjectDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage) {
-        var projects = this.projectRepository.findAllByOrganizationId(organizationId, page, rowsPerPage).stream()
+        var projects = this.projectRepository.findAllByOrganizationId(organizationId, page * rowsPerPage, rowsPerPage).stream()
                 .flatMap(project -> this.toDTO(project).stream())
                 .toList();
         var count = this.projectRepository.countAllByOrganizationId(organizationId);

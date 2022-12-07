@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -30,6 +30,7 @@ import { ProjectDrawer } from './ProjectDrawer';
 import { ProjectViewPanel } from './ProjectDrawer.types';
 import { GetProjectData, GetProjectVariables, ProjectViewState } from './ProjectView.types';
 import { ProjectSettings } from './settings/ProjectSettings';
+import { ProjectTags } from './tags/ProjectTags';
 
 const getProjectQuery = gql`
   query getProject($identifier: ID!) {
@@ -49,11 +50,14 @@ const getProjectQuery = gql`
 export const ProjectView = () => {
   const location = useLocation();
   const changeProposalsMatch = matchPath('/projects/:projectId/changeproposals', location.pathname);
+  const tagsMatch = matchPath('/projects/:projectId/tags', location.pathname);
   const settingsMatch = matchPath('/projects/:projectId/settings', location.pathname);
 
   let panel: ProjectViewPanel = 'Home';
   if (changeProposalsMatch) {
     panel = 'ChangeProposals';
+  } else if (tagsMatch) {
+    panel = 'Tags';
   } else if (settingsMatch) {
     panel = 'Settings';
   }
@@ -94,16 +98,24 @@ export const ProjectView = () => {
   }
 
   let panelElement = null;
-  if (state.project && state.panel === 'Home') {
-    panelElement = <ProjectHome projectIdentifier={state.project.identifier} role={state.project.organization.role} />;
-  } else if (state.project && state.panel === 'ChangeProposals') {
-    panelElement = (
-      <ProjectChangeProposal projectIdentifier={state.project.identifier} role={state.project.organization.role} />
-    );
-  } else if (state.project && state.panel === 'Settings') {
-    panelElement = (
-      <ProjectSettings projectIdentifier={state.project.identifier} role={state.project.organization.role} />
-    );
+  if (state.project) {
+    if (state.panel === 'Home') {
+      panelElement = (
+        <ProjectHome projectIdentifier={state.project.identifier} role={state.project.organization.role} />
+      );
+    } else if (state.panel === 'ChangeProposals') {
+      panelElement = (
+        <ProjectChangeProposal projectIdentifier={state.project.identifier} role={state.project.organization.role} />
+      );
+    } else if (state.panel === 'Tags') {
+      panelElement = (
+        <ProjectTags projectIdentifier={state.project.identifier} role={state.project.organization.role} />
+      );
+    } else if (state.panel === 'Settings') {
+      panelElement = (
+        <ProjectSettings projectIdentifier={state.project.identifier} role={state.project.organization.role} />
+      );
+    }
   }
 
   return (

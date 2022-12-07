@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,12 +16,19 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.domain.organization;
 
+package com.svalyn.studio.domain.tag;
+
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.project.Project;
+import com.svalyn.studio.domain.tag.events.TagAddedToProjectEvent;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
@@ -29,37 +36,34 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Details of the membership to an organization.
+ * Tag applied to a project.
  *
  * @author sbegaudeau
  */
-@Table(name = "membership")
-public class Membership {
+@Table(name = "project_tag")
+public class ProjectTag extends AbstractValidatingAggregateRoot<ProjectTag> implements Persistable<UUID> {
+    @Transient
+    private boolean isNew;
+
     @Id
     private UUID id;
 
-    private AggregateReference<Account, UUID> memberId;
+    @Column("project_id")
+    private AggregateReference<Project, UUID> project;
 
-    private MembershipRole role;
+    @Column("tag_id")
+    private AggregateReference<Tag, UUID> tag;
 
     private AggregateReference<Account, UUID> createdBy;
 
     private Instant createdOn;
 
-    private AggregateReference<Account, UUID> lastModifiedBy;
-
-    private Instant lastModifiedOn;
-
     public UUID getId() {
         return id;
     }
 
-    public AggregateReference<Account, UUID> getMemberId() {
-        return this.memberId;
-    }
-
-    public MembershipRole getRole() {
-        return role;
+    public AggregateReference<Tag, UUID> getTag() {
+        return tag;
     }
 
     public AggregateReference<Account, UUID> getCreatedBy() {
@@ -70,58 +74,51 @@ public class Membership {
         return createdOn;
     }
 
-    public AggregateReference<Account, UUID> getLastModifiedBy() {
-        return lastModifiedBy;
+    @Override
+    public boolean isNew() {
+        return this.isNew;
     }
 
-    public Instant getLastModifiedOn() {
-        return lastModifiedOn;
-    }
-
-    public void updateRole(MembershipRole role) {
-        this.role = Objects.requireNonNull(role);
-
-        this.lastModifiedBy = UserIdProvider.get();
-        this.lastModifiedOn = Instant.now();
-    }
-
-    public static Builder newMembership() {
+    public static Builder newProjectTag() {
         return new Builder();
     }
 
     /**
-     * Used to create new memberships.
+     * Used to create project tags.
      *
      * @author sbegaudeau
      */
     public static final class Builder {
-        private AggregateReference<Account, UUID> memberId;
 
-        private MembershipRole role;
+        private AggregateReference<Project, UUID> project;
 
-        public Builder memberId(AggregateReference<Account, UUID> memberId) {
-            this.memberId = Objects.requireNonNull(memberId);
+        private AggregateReference<Tag, UUID> tag;
+
+        public Builder organization(AggregateReference<Project, UUID> project) {
+            this.project = Objects.requireNonNull(project);
             return this;
         }
 
-        public Builder role(MembershipRole role) {
-            this.role = Objects.requireNonNull(role);
+        public Builder tag(AggregateReference<Tag, UUID> tag) {
+            this.tag = Objects.requireNonNull(tag);
             return this;
         }
 
-        public Membership build() {
-            var membership = new Membership();
-            membership.memberId = Objects.requireNonNull(memberId);
-            membership.role = Objects.requireNonNull(role);
+        public ProjectTag build() {
+            var projectTag = new ProjectTag();
+            projectTag.isNew = true;
+            projectTag.id = UUID.randomUUID();
+            projectTag.project = Objects.requireNonNull(this.project);
+            projectTag.tag = Objects.requireNonNull(this.tag);
 
             var now = Instant.now();
             var userId = UserIdProvider.get();
-            membership.createdBy = userId;
-            membership.createdOn = now;
-            membership.lastModifiedBy = userId;
-            membership.lastModifiedOn = now;
+            projectTag.createdBy = userId;
+            projectTag.createdOn = now;
 
-            return membership;
+            projectTag.registerEvent(new TagAddedToProjectEvent(UUID.randomUUID(), now, projectTag));
+
+            return projectTag;
         }
     }
 }

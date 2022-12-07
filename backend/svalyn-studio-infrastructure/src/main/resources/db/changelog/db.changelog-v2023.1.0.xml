@@ -28,7 +28,7 @@
         <dropColumn tableName="account" columnName="password" />
 
         <createTable tableName="password_credentials">
-            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="password" type="TEXT">
@@ -47,10 +47,10 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="password_credentials" baseColumnNames="account_id" constraintName="fk_password_credentials_account_id" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="password_credentials" baseColumnNames="account_id" constraintName="fk_password_credentials_account_id" referencedTableName="account" referencedColumnNames="id" onDelete="CASCADE" />
 
         <createTable tableName="oauth2_metadata">
-            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="provider" type="TEXT">
@@ -69,10 +69,10 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="oauth2_metadata" baseColumnNames="account_id" constraintName="fk_oauth2_metadata_account_id" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="oauth2_metadata" baseColumnNames="account_id" constraintName="fk_oauth2_metadata_account_id" referencedTableName="account" referencedColumnNames="id" onDelete="CASCADE" />
 
         <createTable tableName="authentication_token">
-            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="TEXT">
@@ -97,6 +97,74 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="authentication_token" baseColumnNames="account_id" constraintName="fk_authentication_token_account_id" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="authentication_token" baseColumnNames="account_id" constraintName="fk_authentication_token_account_id" referencedTableName="account" referencedColumnNames="id" onDelete="CASCADE" />
+
+        <createTable tableName="tag">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="key" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="tag" baseColumnNames="created_by" constraintName="fk_tag_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="tag" baseColumnNames="last_modified_by" constraintName="fk_tag_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="organization_tag">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="organization_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="organization_tag" baseColumnNames="organization_id" constraintName="fk_organization_tag_organization_id" referencedTableName="organization" referencedColumnNames="id" onDelete="CASCADE" />
+        <addForeignKeyConstraint baseTableName="organization_tag" baseColumnNames="tag_id" constraintName="fk_organization_tag_tag_id" referencedTableName="tag" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="organization_tag" baseColumnNames="created_by" constraintName="fk_organization_tag_created_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="project_tag">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="project_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="project_tag" baseColumnNames="project_id" constraintName="fk_project_tag_project_id" referencedTableName="project" referencedColumnNames="id" onDelete="CASCADE" />
+        <addForeignKeyConstraint baseTableName="project_tag" baseColumnNames="tag_id" constraintName="fk_project_tag_tag_id" referencedTableName="tag" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="project_tag" baseColumnNames="created_by" constraintName="fk_project_tag_created_by" referencedTableName="account" referencedColumnNames="id" />
     </changeSet>
 </databaseChangeLog>

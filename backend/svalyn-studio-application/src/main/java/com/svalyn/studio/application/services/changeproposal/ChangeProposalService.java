@@ -119,7 +119,7 @@ public class ChangeProposalService implements IChangeProposalService {
     @Override
     @Transactional(readOnly = true)
     public Page<ChangeProposalDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage) {
-        var changesProposals = this.changeProposalRepository.findAllByProjectId(projectId, page, rowsPerPage)
+        var changesProposals = this.changeProposalRepository.findAllByProjectId(projectId, page * rowsPerPage, rowsPerPage)
                 .stream()
                 .flatMap(changeProposal -> this.toDTO(changeProposal).stream())
                 .toList();

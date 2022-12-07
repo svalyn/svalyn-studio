@@ -17,24 +17,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages.project;
+package com.svalyn.studio.domain.tag.repositories;
 
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
+import com.svalyn.studio.domain.tag.OrganizationTag;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-import jakarta.validation.constraints.NotNull;
-
-import java.util.Map;
 import java.util.UUID;
 
 /**
- * The public summary of a project.
+ * Repository used to persist and retrieve organization tags.
  *
  * @author sbegaudeau
  */
-public record ProjectSummaryMessage(
-        @NotNull UUID id,
-        @NotNull String identifier,
-        @NotNull String name,
-        @NotNull Map<String, String> tags,
-        @NotNull OrganizationSummaryMessage organization) {
+@Repository
+public interface IOrganizationTagRepository extends PagingAndSortingRepository<OrganizationTag, UUID>, ListCrudRepository<OrganizationTag, UUID> {
+    @Query(value = """
+    SELECT
+      CASE WHEN COUNT(organizationTag) > 0
+      THEN TRUE
+      ELSE FALSE
+      END
+    FROM organization_tag organizationTag
+    JOIN tag tag ON tag.id = organizationTag.tag_id
+    WHERE organizationTag.organization_id = :organizationId AND tag.key = :key AND tag.value = :value
+    """)
+    boolean existsByKeyAndValue(UUID organizationId, String key, String value);
 }

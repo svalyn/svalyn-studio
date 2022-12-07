@@ -26,6 +26,8 @@ import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.events.OrganizationCreatedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationDeletedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationModifiedEvent;
+import com.svalyn.studio.domain.tag.Tag;
+import com.svalyn.studio.domain.tag.repositories.ITagRepository;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
 import com.svalyn.studio.infrastructure.kafka.messages.Message;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
@@ -39,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Used to convert organization events.
@@ -50,8 +53,11 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
 
     private final IAccountRepository accountRepository;
 
-    public OrganizationEventToMessageConverter(IAccountRepository accountRepository) {
+    private final ITagRepository tagRepository;
+
+    public OrganizationEventToMessageConverter(IAccountRepository accountRepository, ITagRepository tagRepository) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
+        this.tagRepository = Objects.requireNonNull(tagRepository);
     }
 
     @Override
@@ -101,6 +107,7 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
     }
 
     private Optional<OrganizationMessage> toMessage(Organization organization) {
+        var organizationTags = this.tagRepository.findAllByOrganizationId(organization.getId()).stream().collect(Collectors.toMap(Tag::getKey, Tag::getValue));
         var optionalCreatedBySummary = this.accountRepository.findById(organization.getCreatedBy().getId()).map(this::toSummary);
         var optionalLastModifiedBySummary = this.accountRepository.findById(organization.getLastModifiedBy().getId()).map(this::toSummary);
 
@@ -110,6 +117,7 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
                                 organization.getId(),
                                 organization.getIdentifier(),
                                 organization.getName(),
+                                organizationTags,
                                 createdBySummary,
                                 organization.getCreatedOn(),
                                 lastModifiedBySummary,

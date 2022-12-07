@@ -52,6 +52,7 @@ type Organization {
   lastModifiedBy: Profile!
   invitations(page: Int!, rowsPerPage: Int!): OrganizationInvitationsConnection!
   memberships(page: Int!, rowsPerPage: Int!): OrganizationMembershipsConnection!
+  tags(page: Int!, rowsPerPage: Int!): OrganizationTagsConnection!
   projects(page: Int!, rowsPerPage: Int!): OrganizationProjectsConnection!
 }
 
@@ -104,6 +105,21 @@ type Profile {
   imageUrl: String!
 }
 
+type OrganizationTagsConnection {
+  edges: [OrganizationTagsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type OrganizationTagsEdge {
+  node: Tag!
+}
+
+type Tag {
+  id: ID!
+  key: String!
+  value: String!
+}
+
 type OrganizationProjectsConnection {
   edges: [OrganizationProjectsEdge!]!
   pageInfo: PageInfo!
@@ -123,7 +139,17 @@ type Project {
   createdBy: Profile!
   lastModifiedOn: Instant!
   lastModifiedBy: Profile!
+  tags(page: Int!, rowsPerPage: Int!): ProjectTagsConnection!
   changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
+}
+
+type ProjectTagsConnection {
+  edges: [ProjectTagsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProjectTagsEdge {
+  node: Tag!
 }
 
 type ProjectChangeProposalsConnection {
@@ -244,6 +270,7 @@ type Mutation {
   updateAuthenticationTokensStatus(input: UpdateAuthenticationTokensStatusInput!): UpdateAuthenticationTokensStatusPayload! @validated
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @validated
   updateOrganizationName(input: UpdateOrganizationNameInput!): UpdateOrganizationNamePayload! @validated
+  addTagToOrganization(input: AddTagToOrganizationInput!): AddTagToOrganizationPayload! @validated
   inviteMember(input: InviteMemberInput!): InviteMemberPayload! @validated
   revokeInvitation(input: RevokeInvitationInput!): RevokeInvitationPayload! @validated
   acceptInvitation(input: AcceptInvitationInput!): AcceptInvitationPayload! @validated
@@ -255,6 +282,7 @@ type Mutation {
   updateProjectName(input: UpdateProjectNameInput!): UpdateProjectNamePayload! @validated
   updateProjectDescription(input: UpdateProjectDescriptionInput!): UpdateProjectDescriptionPayload! @validated
   updateProjectReadMe(input: UpdateProjectReadMeInput!): UpdateProjectReadMePayload! @validated
+  addTagToProject(input: AddTagToProjectInput!): AddTagToProjectPayload! @validated
   deleteProject(input: DeleteProjectInput!): DeleteProjectPayload! @validated
   createChangeProposal(input: CreateChangeProposalInput!): CreateChangeProposalPayload! @validated
   updateChangeProposalReadMe(input: UpdateChangeProposalReadMeInput!): UpdateChangeProposalReadMePayload! @validated
@@ -320,6 +348,15 @@ input UpdateOrganizationNameInput {
 }
 
 union UpdateOrganizationNamePayload = ErrorPayload | SuccessPayload
+
+input AddTagToOrganizationInput {
+  id: ID!
+  organizationIdentifier: ID!
+  key: String!
+  value: String!
+}
+
+union AddTagToOrganizationPayload = ErrorPayload | SuccessPayload
 
 input InviteMemberInput {
   id: ID!
@@ -412,6 +449,15 @@ input UpdateProjectReadMeInput {
 }
 
 union UpdateProjectReadMePayload = ErrorPayload | SuccessPayload
+
+input AddTagToProjectInput {
+  id: ID!
+  projectIdentifier: ID!
+  key: String!
+  value: String!
+}
+
+union AddTagToProjectPayload = ErrorPayload | SuccessPayload
 
 input DeleteProjectInput {
   id: ID!

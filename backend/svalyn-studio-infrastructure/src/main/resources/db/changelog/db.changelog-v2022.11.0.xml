@@ -316,7 +316,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="owned_by" constraintName="fk_notification_owned_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="owned_by" constraintName="fk_notification_owned_by" referencedTableName="account" referencedColumnNames="id" onDelete="CASCADE" />
         <addForeignKeyConstraint baseTableName="notification" baseColumnNames="created_by" constraintName="fk_notification_created_by" referencedTableName="account" referencedColumnNames="id" />
         <addForeignKeyConstraint baseTableName="notification" baseColumnNames="last_modified_by" constraintName="fk_notification_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
 
