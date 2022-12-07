@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -48,10 +48,12 @@ export const App = () => {
             <Route path="/" element={<HomeView />} />
             <Route path="/new/organization" element={<NewOrganizationView />} />
             <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
+            <Route path="/orgs/:organizationIdentifier/tags" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
             <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/changeproposals" element={<ProjectView />} />
+            <Route path="/projects/:projectIdentifier/tags" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
             <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />

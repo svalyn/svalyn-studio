@@ -16,11 +16,16 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.domain.organization;
 
+package com.svalyn.studio.domain.tag;
+
+import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.tag.events.TagCreatedEvent;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -29,18 +34,21 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Details of the membership to an organization.
+ * The aggregate root of the tag bounded context.
  *
  * @author sbegaudeau
  */
-@Table(name = "membership")
-public class Membership {
+@Table("tag")
+public class Tag extends AbstractValidatingAggregateRoot<Tag> implements Persistable<UUID> {
+    @Transient
+    private boolean isNew;
+
     @Id
     private UUID id;
 
-    private AggregateReference<Account, UUID> memberId;
+    private String key;
 
-    private MembershipRole role;
+    private String value;
 
     private AggregateReference<Account, UUID> createdBy;
 
@@ -50,16 +58,17 @@ public class Membership {
 
     private Instant lastModifiedOn;
 
+    @Override
     public UUID getId() {
         return id;
     }
 
-    public AggregateReference<Account, UUID> getMemberId() {
-        return this.memberId;
+    public String getKey() {
+        return key;
     }
 
-    public MembershipRole getRole() {
-        return role;
+    public String getValue() {
+        return value;
     }
 
     public AggregateReference<Account, UUID> getCreatedBy() {
@@ -78,50 +87,52 @@ public class Membership {
         return lastModifiedOn;
     }
 
-    public void updateRole(MembershipRole role) {
-        this.role = Objects.requireNonNull(role);
-
-        this.lastModifiedBy = UserIdProvider.get();
-        this.lastModifiedOn = Instant.now();
+    @Override
+    public boolean isNew() {
+        return this.isNew;
     }
 
-    public static Builder newMembership() {
+    public static Builder newTag() {
         return new Builder();
     }
 
     /**
-     * Used to create new memberships.
+     * Used to create new tags.
      *
      * @author sbegaudeau
      */
     public static final class Builder {
-        private AggregateReference<Account, UUID> memberId;
+        private String key;
 
-        private MembershipRole role;
+        private String value;
 
-        public Builder memberId(AggregateReference<Account, UUID> memberId) {
-            this.memberId = Objects.requireNonNull(memberId);
+        public Builder key(String key) {
+            this.key = Objects.requireNonNull(key);
             return this;
         }
 
-        public Builder role(MembershipRole role) {
-            this.role = Objects.requireNonNull(role);
+        public Builder value(String value) {
+            this.value = Objects.requireNonNull(value);
             return this;
         }
 
-        public Membership build() {
-            var membership = new Membership();
-            membership.memberId = Objects.requireNonNull(memberId);
-            membership.role = Objects.requireNonNull(role);
+        public Tag build() {
+            var tag = new Tag();
+            tag.isNew = true;
+            tag.id = UUID.randomUUID();
+            tag.key = Objects.requireNonNull(this.key);
+            tag.value = Objects.requireNonNull(this.value);
 
             var now = Instant.now();
             var userId = UserIdProvider.get();
-            membership.createdBy = userId;
-            membership.createdOn = now;
-            membership.lastModifiedBy = userId;
-            membership.lastModifiedOn = now;
+            tag.createdBy = userId;
+            tag.createdOn = now;
+            tag.lastModifiedBy = userId;
+            tag.lastModifiedOn = now;
 
-            return membership;
+            tag.registerEvent(new TagCreatedEvent(UUID.randomUUID(), now, tag));
+
+            return tag;
         }
     }
 }

@@ -37,6 +37,8 @@ import com.svalyn.studio.domain.organization.repositories.IOrganizationRepositor
 import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.repositories.IProjectRepository;
 import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
+import com.svalyn.studio.domain.tag.Tag;
+import com.svalyn.studio.domain.tag.repositories.ITagRepository;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
 import com.svalyn.studio.infrastructure.kafka.messages.Message;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
@@ -57,9 +59,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Used to convert change proposal events to messages.
@@ -77,11 +81,14 @@ public class ChangeProposalEventToMessageConverter implements IDomainEventToMess
 
     private final IResourceRepository resourceRepository;
 
-    public ChangeProposalEventToMessageConverter(IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IAccountRepository accountRepository, IResourceRepository resourceRepository) {
+    private final ITagRepository tagRepository;
+
+    public ChangeProposalEventToMessageConverter(IOrganizationRepository organizationRepository, IProjectRepository projectRepository, IAccountRepository accountRepository, IResourceRepository resourceRepository, ITagRepository tagRepository) {
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.resourceRepository = Objects.requireNonNull(resourceRepository);
+        this.tagRepository = Objects.requireNonNull(tagRepository);
     }
 
     @Override
@@ -184,8 +191,14 @@ public class ChangeProposalEventToMessageConverter implements IDomainEventToMess
         var optionalProject = this.projectRepository.findById(changeProposal.getProject().getId());
         var optionalOrganization = optionalProject.map(Project::getOrganization).map(AggregateReference::getId).flatMap(this.organizationRepository::findById);
 
-        var optionalOrganizationSummary = optionalOrganization.map(this::toSummary);
-        var optionalProjectSummary = optionalOrganizationSummary.flatMap(organizationSummary -> optionalProject.map(project -> this.toSummary(organizationSummary, project)));
+        var optionalOrganizationSummary = optionalOrganization.map(organization -> {
+            var organizationTags = this.tagRepository.findAllByOrganizationId(organization.getId()).stream().collect(Collectors.toMap(Tag::getKey, Tag::getValue));
+            return this.toSummary(organization, organizationTags);
+        });
+        var optionalProjectSummary = optionalOrganizationSummary.flatMap(organizationSummary -> optionalProject.map(project -> {
+            var projectTags = this.tagRepository.findAllByProjectId(project.getId()).stream().collect(Collectors.toMap(Tag::getKey, Tag::getValue));
+            return this.toSummary(organizationSummary, project, projectTags);
+        }));
         var optionalCreatedBySummary = optionalCreatedBy.map(this::toSummary);
         var optionalLastModifiedBySummary = optionalLastModifiedBy.map(this::toSummary);
 
@@ -247,11 +260,11 @@ public class ChangeProposalEventToMessageConverter implements IDomainEventToMess
         return new AccountSummaryMessage(account.getId(), account.getName(), account.getUsername());
     }
 
-    private OrganizationSummaryMessage toSummary(Organization organization) {
-        return new OrganizationSummaryMessage(organization.getId(), organization.getIdentifier(), organization.getName());
+    private OrganizationSummaryMessage toSummary(Organization organization, Map<String, String> tags) {
+        return new OrganizationSummaryMessage(organization.getId(), organization.getIdentifier(), organization.getName(), tags);
     }
 
-    private ProjectSummaryMessage toSummary(OrganizationSummaryMessage organization, Project project) {
-        return new ProjectSummaryMessage(project.getId(), project.getIdentifier(), project.getName(), organization);
+    private ProjectSummaryMessage toSummary(OrganizationSummaryMessage organization, Project project, Map<String, String> tags) {
+        return new ProjectSummaryMessage(project.getId(), project.getIdentifier(), project.getName(), tags, organization);
     }
 }

@@ -17,24 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages.project;
-
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
+package com.svalyn.studio.application.controllers.tag.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
- * The public summary of a project.
+ * The tag DTO for the GraphQL layer.
  *
  * @author sbegaudeau
  */
-public record ProjectSummaryMessage(
+public record TagDTO(
         @NotNull UUID id,
-        @NotNull String identifier,
-        @NotNull String name,
-        @NotNull Map<String, String> tags,
-        @NotNull OrganizationSummaryMessage organization) {
+        @NotNull String key,
+        @NotNull String value) {
 }

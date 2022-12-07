@@ -24,6 +24,7 @@ import com.svalyn.studio.infrastructure.kafka.messages.organization.Organization
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -37,6 +38,7 @@ public record ProjectMessage(
         @NotNull String name,
         @NotNull String description,
         @NotNull String readMe,
+        @NotNull Map<String, String> tags,
         @NotNull OrganizationSummaryMessage organization,
         @NotNull AccountSummaryMessage createdBy,
         @NotNull Instant createdOn,

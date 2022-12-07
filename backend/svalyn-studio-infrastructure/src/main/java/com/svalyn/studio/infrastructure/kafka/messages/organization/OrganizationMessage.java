@@ -23,6 +23,7 @@ import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMes
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -34,6 +35,7 @@ public record OrganizationMessage(
         @NotNull UUID id,
         @NotNull String identifier,
         @NotNull String name,
+        @NotNull Map<String, String> tags,
         @NotNull AccountSummaryMessage createdBy,
         @NotNull Instant createdOn,
         @NotNull AccountSummaryMessage lastModifiedBy,

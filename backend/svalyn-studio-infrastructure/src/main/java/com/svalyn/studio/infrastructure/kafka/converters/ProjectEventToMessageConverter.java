@@ -28,6 +28,8 @@ import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
 import com.svalyn.studio.domain.project.events.ProjectDeletedEvent;
 import com.svalyn.studio.domain.project.events.ProjectModifiedEvent;
+import com.svalyn.studio.domain.tag.Tag;
+import com.svalyn.studio.domain.tag.repositories.ITagRepository;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
 import com.svalyn.studio.infrastructure.kafka.messages.Message;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
@@ -39,9 +41,11 @@ import com.svalyn.studio.infrastructure.kafka.messages.project.ProjectModifiedMe
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Used to convert project events.
@@ -53,10 +57,13 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
 
     private final IOrganizationRepository organizationRepository;
 
+    private final ITagRepository tagRepository;
+
     private final IAccountRepository accountRepository;
 
-    public ProjectEventToMessageConverter(IOrganizationRepository organizationRepository, IAccountRepository accountRepository) {
+    public ProjectEventToMessageConverter(IOrganizationRepository organizationRepository, ITagRepository tagRepository, IAccountRepository accountRepository) {
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
+        this.tagRepository = Objects.requireNonNull(tagRepository);
         this.accountRepository = Objects.requireNonNull(accountRepository);
     }
 
@@ -107,9 +114,13 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
     }
 
     private Optional<ProjectMessage> toMessage(Project project) {
+        var projectTags = this.tagRepository.findAllByProjectId(project.getId()).stream().collect(Collectors.toMap(Tag::getKey, Tag::getValue));
         var optionalCreatedBySummary = this.accountRepository.findById(project.getCreatedBy().getId()).map(this::toSummary);
         var optionalLastModifiedBySummary = this.accountRepository.findById(project.getLastModifiedBy().getId()).map(this::toSummary);
-        var optionalOrganizationSummary = this.organizationRepository.findById(project.getOrganization().getId()).map(this::toSummary);
+
+        var organizationId = project.getOrganization().getId();
+        var organizationTags = this.tagRepository.findAllByOrganizationId(organizationId).stream().collect(Collectors.toMap(Tag::getKey, Tag::getValue));
+        var optionalOrganizationSummary = this.organizationRepository.findById(organizationId).map(organization -> this.toSummary(organization, organizationTags));
 
         return optionalCreatedBySummary.flatMap(createdBySummary ->
                 optionalLastModifiedBySummary.flatMap(lastModifiedBySummary ->
@@ -120,6 +131,7 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
                                         project.getName(),
                                         project.getDescription(),
                                         project.getReadMe(),
+                                        projectTags,
                                         organizationSummary,
                                         createdBySummary,
                                         project.getCreatedOn(),
@@ -135,7 +147,7 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
         return new AccountSummaryMessage(account.getId(), account.getName(), account.getUsername());
     }
 
-    private OrganizationSummaryMessage toSummary(Organization organization) {
-        return new OrganizationSummaryMessage(organization.getId(), organization.getIdentifier(), organization.getName());
+    private OrganizationSummaryMessage toSummary(Organization organization, Map<String, String> tags) {
+        return new OrganizationSummaryMessage(organization.getId(), organization.getIdentifier(), organization.getName(), tags);
     }
 }

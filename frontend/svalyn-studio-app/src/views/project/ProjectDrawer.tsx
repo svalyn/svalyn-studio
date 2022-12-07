@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,6 +19,7 @@
 
 import DifferenceIcon from '@mui/icons-material/Difference';
 import HomeIcon from '@mui/icons-material/Home';
+import LabelIcon from '@mui/icons-material/Label';
 import SettingsIcon from '@mui/icons-material/Settings';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -57,6 +58,17 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
               <DifferenceIcon />
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem>
+        <ListItem selected={selectedPanel === 'Tags'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            component={RouterLink}
+            to={`/projects/${projectIdentifier}/tags`}
+            sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
+              <LabelIcon />
             </ListItemIcon>
           </ListItemButton>
         </ListItem>

@@ -20,6 +20,8 @@
 package com.svalyn.studio.infrastructure.kafka.messages.organization;
 
 import jakarta.validation.constraints.NotNull;
+
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -30,5 +32,6 @@ import java.util.UUID;
 public record OrganizationSummaryMessage(
         @NotNull UUID id,
         @NotNull String identifier,
-        @NotNull String name) {
+        @NotNull String name,
+        @NotNull Map<String, String> tags) {
 }

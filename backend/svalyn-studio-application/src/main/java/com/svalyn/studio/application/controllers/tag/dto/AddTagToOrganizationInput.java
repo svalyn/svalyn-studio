@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,24 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages.project;
+package com.svalyn.studio.application.controllers.tag.dto;
 
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
-
+import com.svalyn.studio.application.controllers.dto.IInput;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
- * The public summary of a project.
+ * Input used to add a tag to an organization.
  *
  * @author sbegaudeau
  */
-public record ProjectSummaryMessage(
-        @NotNull UUID id,
-        @NotNull String identifier,
-        @NotNull String name,
-        @NotNull Map<String, String> tags,
-        @NotNull OrganizationSummaryMessage organization) {
+public record AddTagToOrganizationInput(@NotNull UUID id, @NotNull String organizationIdentifier, @NotNull String key, @NotNull String value) implements IInput {
 }

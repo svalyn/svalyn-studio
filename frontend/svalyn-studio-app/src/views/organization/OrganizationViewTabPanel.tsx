@@ -30,6 +30,7 @@ import { OrganizationMembers } from './members/OrganizationMembers';
 import { NewProjectDialog } from './NewProjectDialog';
 import { OrganizationViewTabPanelProps, OrganizationViewTabPanelState } from './OrganizationViewTabPanel.types';
 import { OrganizationSettings } from './settings/OrganizationSettings';
+import { OrganizationTags } from './tags/OrganizationTags';
 
 const a11yProps = (index: number) => {
   return {
@@ -41,13 +42,16 @@ const a11yProps = (index: number) => {
 export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPanelProps) => {
   const location = useLocation();
   const dashboardMatch = matchPath('/orgs/:organizationId', location.pathname);
+  const tagsMatch = matchPath('/orgs/:organizationId/tags', location.pathname);
   const membersMatch = matchPath('/orgs/:organizationId/members', location.pathname);
   const settingsMatch = matchPath('/orgs/:organizationId/settings', location.pathname);
   let activeTab = 0;
-  if (membersMatch) {
+  if (tagsMatch) {
     activeTab = 1;
-  } else if (settingsMatch) {
+  } else if (membersMatch) {
     activeTab = 2;
+  } else if (settingsMatch) {
+    activeTab = 3;
   }
 
   const [state, setState] = useState<OrganizationViewTabPanelState>({
@@ -57,14 +61,17 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
 
   useEffect(() => {
     const dashboardMatch = matchPath('/orgs/:organizationId', location.pathname);
+    const tagsMatch = matchPath('/orgs/:organizationId/tags', location.pathname);
     const membersMatch = matchPath('/orgs/:organizationId/members', location.pathname);
     const settingsMatch = matchPath('/orgs/:organizationId/settings', location.pathname);
     if (dashboardMatch && state.activeTab !== 0) {
       setState((prevState) => ({ ...prevState, activeTab: 0 }));
-    } else if (membersMatch && state.activeTab !== 1) {
+    } else if (tagsMatch && state.activeTab !== 1) {
       setState((prevState) => ({ ...prevState, activeTab: 1 }));
-    } else if (settingsMatch && state.activeTab !== 2) {
+    } else if (membersMatch && state.activeTab !== 2) {
       setState((prevState) => ({ ...prevState, activeTab: 2 }));
+    } else if (settingsMatch && state.activeTab !== 3) {
+      setState((prevState) => ({ ...prevState, activeTab: 3 }));
     }
   }, [location]);
 
@@ -73,10 +80,13 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
     if (state.activeTab === 0 && !dashboardMatch) {
       const path = generatePath('/orgs/:identifier', { identifier: organization.identifier });
       navigate(path);
-    } else if (state.activeTab === 1 && !membersMatch) {
+    } else if (state.activeTab === 1 && !tagsMatch) {
+      const path = generatePath('/orgs/:identifier/tags', { identifier: organization.identifier });
+      navigate(path);
+    } else if (state.activeTab === 2 && !membersMatch) {
       const path = generatePath('/orgs/:identifier/members', { identifier: organization.identifier });
       navigate(path);
-    } else if (state.activeTab === 2 && !settingsMatch) {
+    } else if (state.activeTab === 3 && !settingsMatch) {
       const path = generatePath('/orgs/:identifier/settings', { identifier: organization.identifier });
       navigate(path);
     }
@@ -102,8 +112,9 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
           </Typography>
           <Tabs value={state.activeTab} onChange={handleTabChanged}>
             <Tab label="Dashboard" {...a11yProps(0)} />
-            <Tab label="Members" {...a11yProps(1)} />
-            <Tab label="Settings" {...a11yProps(2)} />
+            <Tab label="Tags" {...a11yProps(1)} />
+            <Tab label="Members" {...a11yProps(2)} />
+            <Tab label="Settings" {...a11yProps(3)} />
           </Tabs>
           <Button
             variant="outlined"
@@ -121,11 +132,16 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
         </div>
         <div role="tabpanel" hidden={state.activeTab !== 1} id="tabpanel-1" aria-labelledby="tab-1">
           {state.activeTab === 1 && (
-            <OrganizationMembers organizationIdentifier={organization.identifier} role={organization.role} />
+            <OrganizationTags organizationIdentifier={organization.identifier} role={organization.role} />
           )}
         </div>
         <div role="tabpanel" hidden={state.activeTab !== 2} id="tabpanel-2" aria-labelledby="tab-2">
           {state.activeTab === 2 && (
+            <OrganizationMembers organizationIdentifier={organization.identifier} role={organization.role} />
+          )}
+        </div>
+        <div role="tabpanel" hidden={state.activeTab !== 3} id="tabpanel-3" aria-labelledby="tab-3">
+          {state.activeTab === 3 && (
             <OrganizationSettings organizationIdentifier={organization.identifier} role={organization.role} />
           )}
         </div>

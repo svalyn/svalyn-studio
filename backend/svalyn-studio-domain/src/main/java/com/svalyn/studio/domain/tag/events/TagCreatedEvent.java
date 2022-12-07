@@ -17,24 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages.project;
+package com.svalyn.studio.domain.tag.events;
 
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
-
+import com.svalyn.studio.domain.tag.Tag;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Map;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
- * The public summary of a project.
+ * Event fired when a tag is created.
  *
  * @author sbegaudeau
  */
-public record ProjectSummaryMessage(
-        @NotNull UUID id,
-        @NotNull String identifier,
-        @NotNull String name,
-        @NotNull Map<String, String> tags,
-        @NotNull OrganizationSummaryMessage organization) {
+public record TagCreatedEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull Tag tag) implements ITagEvent {
 }
