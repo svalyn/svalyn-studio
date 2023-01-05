@@ -79,6 +79,7 @@ public class NotificationService implements INotificationService {
                                         notification.getId(),
                                         notification.getTitle(),
                                         notification.getStatus(),
+                                        notification.getRelatedUrl(),
                                         notification.getCreatedOn(),
                                         createdBy,
                                         notification.getLastModifiedOn(),

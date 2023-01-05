@@ -58,6 +58,7 @@ public class ProjectCreatedEventListener {
                     .map(memberId -> Notification.newNotification()
                             .title("The project " + event.project().getName() + " has been created in the organization " + organization.getName())
                             .ownedBy(memberId)
+                            .relatedUrl("/projects/" + event.project().getIdentifier())
                             .build()
                     ).toList();
             this.notificationRepository.saveAll(notifications);

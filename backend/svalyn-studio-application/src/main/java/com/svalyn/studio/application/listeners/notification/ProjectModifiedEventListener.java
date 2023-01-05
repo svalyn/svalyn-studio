@@ -58,6 +58,7 @@ public class ProjectModifiedEventListener {
                     .map(memberId -> Notification.newNotification()
                             .title("The project " + event.project().getName() + " has been modified")
                             .ownedBy(memberId)
+                            .relatedUrl("/projects/" + event.project().getIdentifier())
                             .build()
                     ).toList();
             this.notificationRepository.saveAll(notifications);

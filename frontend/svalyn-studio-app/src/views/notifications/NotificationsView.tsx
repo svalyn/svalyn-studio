@@ -22,6 +22,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import InboxIcon from '@mui/icons-material/Inbox';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -37,6 +38,7 @@ import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
@@ -64,6 +66,7 @@ const getNotificationsQuery = gql`
             id
             title
             status
+            relatedUrl
             createdOn
           }
         }
@@ -162,7 +165,7 @@ export const NotificationsView = () => {
     }
   };
 
-  const selectNotification = (_: React.MouseEvent<HTMLTableRowElement, MouseEvent>, notification: Notification) => {
+  const selectNotification = (notification: Notification) => {
     setState((prevState) => {
       const selectedNotificationIndex: number = prevState.selectedNotifications.indexOf(notification.id);
       let selectedNotifications: string[] = [];
@@ -270,23 +273,17 @@ export const NotificationsView = () => {
                                     }`,
                                 }}
                                 key={notification.id}
-                                onClick={(event) => selectNotification(event, notification)}
                               >
                                 <TableCell padding="checkbox">
-                                  <Checkbox checked={isNotificationSelected} />
+                                  <Checkbox
+                                    checked={isNotificationSelected}
+                                    onClick={() => selectNotification(notification)}
+                                  />
                                 </TableCell>
                                 <TableCell>
-                                  <Typography
-                                    variant="subtitle1"
-                                    sx={{
-                                      color: (theme) =>
-                                        notification.status === 'UNREAD'
-                                          ? theme.palette.text.primary
-                                          : theme.palette.text.disabled,
-                                    }}
-                                  >
+                                  <Link variant="subtitle1" component={RouterLink} to={notification.relatedUrl}>
                                     {notification.title}
-                                  </Typography>
+                                  </Link>
                                 </TableCell>
                                 <TableCell>
                                   <Tooltip title={notification.createdOn}>

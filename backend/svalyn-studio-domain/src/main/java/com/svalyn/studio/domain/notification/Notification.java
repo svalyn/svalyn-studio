@@ -56,6 +56,8 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
 
     private NotificationStatus status;
 
+    private String relatedUrl;
+
     private AggregateReference<Account, UUID> createdBy;
 
     private Instant createdOn;
@@ -94,6 +96,10 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
         return status;
     }
 
+    public String getRelatedUrl() {
+        return relatedUrl;
+    }
+
     public AggregateReference<Account, UUID> getCreatedBy() {
         return createdBy;
     }
@@ -129,6 +135,8 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
 
         private AggregateReference<Account, UUID> ownedBy;
 
+        private String relatedUrl;
+
         private Builder() {
             // Prevent instantiation
         }
@@ -143,13 +151,19 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
             return this;
         }
 
+        public Builder relatedUrl(String relatedUrl) {
+            this.relatedUrl = Objects.requireNonNull(relatedUrl);
+            return this;
+        }
+
         public Notification build() {
             var notification = new Notification();
             notification.isNew = true;
             notification.id = UUID.randomUUID();
-            notification.title = Objects.requireNonNull(title);
-            notification.ownedBy = Objects.requireNonNull(ownedBy);
+            notification.title = Objects.requireNonNull(this.title);
+            notification.ownedBy = Objects.requireNonNull(this.ownedBy);
             notification.status = NotificationStatus.UNREAD;
+            notification.relatedUrl = Objects.requireNonNull(this.relatedUrl);
 
             var now = Instant.now();
             var userId = UserIdProvider.get();

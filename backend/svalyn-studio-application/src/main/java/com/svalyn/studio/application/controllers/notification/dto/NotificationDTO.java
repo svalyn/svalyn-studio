@@ -35,6 +35,7 @@ public record NotificationDTO(
         @NotNull UUID id,
         @NotNull String title,
         @NotNull NotificationStatus status,
+        @NotNull String relatedUrl,
         @NotNull Instant createdOn,
         @NotNull Profile createdBy,
         @NotNull Instant lastModifiedOn,

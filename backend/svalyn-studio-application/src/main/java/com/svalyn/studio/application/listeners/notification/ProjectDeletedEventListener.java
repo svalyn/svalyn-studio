@@ -58,6 +58,7 @@ public class ProjectDeletedEventListener {
                     .map(memberId -> Notification.newNotification()
                             .title("The project " + event.project().getName() + " has been deleted from the organization " + organization.getName())
                             .ownedBy(memberId)
+                            .relatedUrl("/orgs/" + organization.getIdentifier())
                             .build()
                     ).toList();
             this.notificationRepository.saveAll(notifications);
