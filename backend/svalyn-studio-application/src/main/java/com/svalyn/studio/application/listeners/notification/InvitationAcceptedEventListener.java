@@ -55,12 +55,15 @@ public class InvitationAcceptedEventListener {
             var newMemberNotification = Notification.newNotification()
                     .title("Welcome in the organization " + event.organization().getName())
                     .ownedBy(event.invitation().getMemberId())
+                    .relatedUrl("/orgs/" + event.organization().getIdentifier())
                     .build();
 
             var existingMemberNotifications = event.organization().getMemberships().stream()
                     .map(Membership::getMemberId)
+                    .filter(memberId -> !memberId.getId().equals(event.invitation().getMemberId().getId()))
                     .map(memberId -> Notification.newNotification()
                             .title(account.getName() + " has joined the organization " + event.organization().getName())
+                            .relatedUrl("/profile/" + account.getUsername())
                             .ownedBy(memberId)
                             .build()
                     ).toList();

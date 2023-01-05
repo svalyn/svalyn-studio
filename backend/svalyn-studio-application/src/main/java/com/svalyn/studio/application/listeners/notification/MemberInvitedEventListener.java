@@ -47,6 +47,7 @@ public class MemberInvitedEventListener {
         var notification = Notification.newNotification()
                 .title("You have been invited to join the organization " + event.organization().getName())
                 .ownedBy(event.invitation().getMemberId())
+                .relatedUrl("/orgs/" + event.organization().getIdentifier())
                 .build();
         this.notificationRepository.save(notification);
     }

@@ -231,6 +231,7 @@ type Notification {
   id: ID!
   title: String!
   status: NotificationStatus!
+  relatedUrl: String!
   createdOn: Instant!
   createdBy: Profile!
   lastModifiedOn: Instant!

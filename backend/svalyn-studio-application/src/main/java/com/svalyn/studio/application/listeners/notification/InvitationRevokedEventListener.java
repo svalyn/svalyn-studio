@@ -47,6 +47,7 @@ public class InvitationRevokedEventListener {
         var notification = Notification.newNotification()
                 .title("Your invitation to join the organization " + event.organization().getName() + " has been revoked")
                 .ownedBy(event.invitation().getMemberId())
+                .relatedUrl("/orgs/" + event.organization().getIdentifier())
                 .build();
         this.notificationRepository.save(notification);
     }

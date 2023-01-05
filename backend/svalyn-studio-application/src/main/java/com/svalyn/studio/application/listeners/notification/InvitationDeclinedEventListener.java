@@ -53,6 +53,7 @@ public class InvitationDeclinedEventListener {
             var notification = Notification.newNotification()
                     .title(account.getName() + " has declined your invitation to join the organization " + event.organization().getName())
                     .ownedBy(event.invitation().getCreatedBy())
+                    .relatedUrl("/profile/" + account.getUsername())
                     .build();
             this.notificationRepository.save(notification);
         });

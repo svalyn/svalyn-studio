@@ -48,6 +48,7 @@ public class AccountModifiedEventListener {
         var notification = Notification.newNotification()
                 .title("Your account has been updated with the latest version of your data")
                 .ownedBy(UserIdProvider.get())
+                .relatedUrl("/profile/" + event.account().getUsername())
                 .build();
         this.notificationRepository.save(notification);
     }

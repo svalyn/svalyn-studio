@@ -48,6 +48,7 @@ public class OrganizationCreatedEventListener {
         var notification = Notification.newNotification()
                 .title("The organization " + event.organization().getName() + " has been created, create a project and invite other users to get started")
                 .ownedBy(UserIdProvider.get())
+                .relatedUrl("/orgs/" + event.organization().getIdentifier())
                 .build();
         this.notificationRepository.save(notification);
     }

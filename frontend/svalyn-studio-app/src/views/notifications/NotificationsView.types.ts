@@ -49,6 +49,7 @@ export interface Notification {
   id: string;
   title: string;
   status: NotificationStatus;
+  relatedUrl: string;
   createdOn: string;
 }
 
