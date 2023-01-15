@@ -46,12 +46,14 @@ const getChangeProposalFilesQuery = gql`
         id
         name
         status
-        resources {
-          edges {
-            node {
-              id
-              name
-              content
+        change {
+          resources {
+            edges {
+              node {
+                id
+                name
+                content
+              }
             }
           }
         }
@@ -107,7 +109,7 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
             <Grid item xs={2}>
               <Paper variant="outlined">
                 <List>
-                  {state.changeProposal.resources.edges
+                  {state.changeProposal.change.resources.edges
                     .map((edge) => edge.node)
                     .map((resource) => (
                       <ListItem
@@ -130,7 +132,7 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
               </Paper>
             </Grid>
             <Grid item xs={10}>
-              {state.changeProposal.resources.edges
+              {state.changeProposal.change.resources.edges
                 .map((edge) => edge.node)
                 .map((resource) => (
                   <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={resource.id}>

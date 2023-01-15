@@ -22,17 +22,15 @@ package com.svalyn.studio.domain.resource;
 import com.svalyn.studio.AbstractIntegrationTests;
 import com.svalyn.studio.DomainEvents;
 import com.svalyn.studio.WithMockPrincipal;
-import com.svalyn.studio.domain.changeproposal.ChangeProposalResource;
-import com.svalyn.studio.domain.changeproposal.events.ChangeProposalDeletedEvent;
-import com.svalyn.studio.domain.changeproposal.repositories.IChangeProposalRepository;
-import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
-import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
+import com.svalyn.studio.domain.history.events.ChangeDeletedEvent;
+import com.svalyn.studio.domain.history.events.ChangeProposalDeletedEvent;
+import com.svalyn.studio.domain.history.repositories.IChangeProposalRepository;
+import com.svalyn.studio.domain.history.repositories.IChangeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -55,7 +53,7 @@ public class ChangeProposalDeletedEventListenerIntegrationTests extends Abstract
     private IChangeProposalRepository changeProposalRepository;
 
     @Autowired
-    private IResourceRepository resourceRepository;
+    private IChangeRepository changeRepository;
 
     @Autowired
     private DomainEvents domainEvents;
@@ -67,16 +65,17 @@ public class ChangeProposalDeletedEventListenerIntegrationTests extends Abstract
 
     @Test
     @WithMockPrincipal(userId = WithMockPrincipal.UserId.JOHN_DOE)
-    @DisplayName("Given a change proposal, when deleted, then the related resources are deleted")
+    @DisplayName("Given a change proposal, when deleted, then the related change and resources are deleted")
     @Sql(scripts = {"/scripts/initialize.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {"/scripts/cleanup.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, config = @SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED))
-    public void givenResources_whenPersisted_thenHaveAnId() {
+    public void givenChangeProposal_whenDeleted_thenTheRelatedChangeIsDeleted() {
         var optionalChangeProposal = this.changeProposalRepository.findById(UUID.fromString("60dd31a6-7e0c-47e9-af9f-b290e383822d"));
         assertThat(optionalChangeProposal).isPresent();
-
         var changeProposal = optionalChangeProposal.get();
-        var resourceId = changeProposal.getChangeProposalResources().stream().findFirst().map(ChangeProposalResource::getResource).map(AggregateReference::getId).get();
-        assertThat(this.resourceRepository.existsById(resourceId)).isTrue();
+
+        var optionalChange = this.changeRepository.findById(changeProposal.getChange().getId());
+        assertThat(optionalChange).isPresent();
+        var change = optionalChange.get();
 
         changeProposal.dispose();
         this.changeProposalRepository.delete(changeProposal);
@@ -84,9 +83,9 @@ public class ChangeProposalDeletedEventListenerIntegrationTests extends Abstract
         TestTransaction.flagForCommit();
         TestTransaction.end();
 
-        assertThat(this.resourceRepository.existsById(resourceId)).isFalse();
+        assertThat(this.changeProposalRepository.existsById(changeProposal.getId())).isFalse();
+        assertThat(this.changeRepository.existsById(changeProposal.getChange().getId())).isFalse();
         assertThat(this.domainEvents.getDomainEvents().stream().filter(ChangeProposalDeletedEvent.class::isInstance).count()).isEqualTo(1);
-        assertThat(this.domainEvents.getDomainEvents().stream().filter(ResourceDeletedEvent.class::isInstance).count()).isEqualTo(1);
-
+        assertThat(this.domainEvents.getDomainEvents().stream().filter(ChangeDeletedEvent.class::isInstance).count()).isEqualTo(1);
     }
 }

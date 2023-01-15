@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -26,7 +26,6 @@ export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface ProjectHomeState {
   project: Project | null;
-  editReadMeDialogOpen: boolean;
   message: string | null;
 }
 
@@ -42,11 +41,12 @@ export interface Project {
   name: string;
   description: string;
   readMe: string;
+  organization: Organization;
+  branch: Branch;
   createdOn: string;
   createdBy: Profile;
   lastModifiedOn: string;
   lastModifiedBy: Profile;
-  organization: Organization;
 }
 
 export interface Profile {
@@ -60,29 +60,32 @@ export interface Organization {
   name: string;
 }
 
+export interface Branch {
+  name: string;
+  change: Change | null;
+}
+
+export interface Change {
+  id: string;
+  name: string;
+  resources: ChangeResourcesConnection;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
+}
+
+export interface ChangeResourcesConnection {
+  edges: [ChangeResourcesEdge];
+}
+
+export interface ChangeResourcesEdge {
+  node: ChangeResource;
+}
+
+export interface ChangeResource {
+  id: string;
+  name: string;
+}
+
 export interface GetProjectHomeVariables {
   identifier: string;
-}
-
-export interface UpdateProjectReadMeData {
-  updateProjectReadMe: UpdateProjectReadMePayload;
-}
-
-export interface UpdateProjectReadMePayload {
-  __typename: string;
-}
-
-export interface ErrorPayload extends UpdateProjectReadMePayload {
-  __typename: 'ErrorPayload';
-  message: string;
-}
-
-export interface UpdateProjectReadMeVariables {
-  input: UpdateProjectReadMeInput;
-}
-
-export interface UpdateProjectReadMeInput {
-  id: string;
-  projectIdentifier: string;
-  content: string;
 }

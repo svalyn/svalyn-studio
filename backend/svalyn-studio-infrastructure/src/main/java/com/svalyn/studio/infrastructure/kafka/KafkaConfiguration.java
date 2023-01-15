@@ -57,7 +57,7 @@ public class KafkaConfiguration {
 
     @Bean
     public NewTopic loggingChangeProposal() {
-        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_CHANGEPROPOSAL).build();
+        return TopicBuilder.name(KafkaMessageProducer.TOPIC_EVENT_HISTORY).build();
     }
 
     @Bean

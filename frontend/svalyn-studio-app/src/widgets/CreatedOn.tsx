@@ -37,7 +37,7 @@ export const CreatedOn = ({ profile, date }: CreatedOnProps) => {
           sx={{ width: 24, height: 24 }}
         />
       </Tooltip>
-      <Typography variant="body1">created this {formatTime(date)}</Typography>
+      <Typography variant="body2">created this {formatTime(date)}</Typography>
     </Box>
   );
 };

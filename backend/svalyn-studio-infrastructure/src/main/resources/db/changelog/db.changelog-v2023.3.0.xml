@@ -28,5 +28,98 @@
                 <constraints nullable="false"/>
             </column>
         </addColumn>
+
+        <createTable tableName="change">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="parent_id"  type="UUID">
+                <constraints nullable="true" />
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="change" baseColumnNames="created_by" constraintName="fk_change_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="change" baseColumnNames="last_modified_by" constraintName="fk_change_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="change" baseColumnNames="parent_id" constraintName="fk_change_parent_id" referencedTableName="change" referencedColumnNames="id" />
+
+        <dropTable tableName="change_proposal_resource" />
+
+        <createTable tableName="change_resource">
+            <column  name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="resource_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="change_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="change_resource" columnNames="change_id, resource_id"/>
+        <addForeignKeyConstraint baseTableName="change_resource" baseColumnNames="resource_id" constraintName="fk_change_resource_resource_id" referencedTableName="resource" referencedColumnNames="id" onDelete="CASCADE" />
+        <addForeignKeyConstraint baseTableName="change_resource" baseColumnNames="change_id" constraintName="fk_change_resource_change_id" referencedTableName="change" referencedColumnNames="id" onDelete="CASCADE" />
+
+        <createTable tableName="branch">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_id"  type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="change_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="branch" columnNames="name, project_id"/>
+        <addForeignKeyConstraint baseTableName="branch" baseColumnNames="project_id" constraintName="fk_branch_project_id" referencedTableName="project" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="branch" baseColumnNames="change_id" constraintName="fk_branch_change_id" referencedTableName="change" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="branch" baseColumnNames="created_by" constraintName="fk_branch_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="branch" baseColumnNames="last_modified_by" constraintName="fk_branch_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <addColumn tableName="resource">
+            <column name="path" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="change_proposal">
+            <column name="change_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="change_proposal" baseColumnNames="change_id" constraintName="fk_change_proposal_change_id" referencedTableName="change" referencedColumnNames="id" onDelete="CASCADE" />
+
     </changeSet>
 </databaseChangeLog>

@@ -66,6 +66,8 @@ public class ResourceCreationService implements IResourceCreationService {
                     .map(entry -> Resource.newResource()
                             .name(entry.getKey())
                             .content(entry.getValue())
+                            .path("")
+                            .contentType("text/plain")
                             .build())
                     .toList();
             this.resourceRepository.saveAll(resources);
