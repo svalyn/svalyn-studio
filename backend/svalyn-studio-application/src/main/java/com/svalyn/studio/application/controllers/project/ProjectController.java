@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.project;
 
-import com.svalyn.studio.application.controllers.changeproposal.dto.ChangeProposalDTO;
+import com.svalyn.studio.application.controllers.history.dto.ChangeProposalDTO;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;

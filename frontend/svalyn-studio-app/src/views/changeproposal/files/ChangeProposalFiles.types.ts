@@ -41,16 +41,19 @@ export interface ChangeProposal {
   id: string;
   name: string;
   status: ChangeProposalStatus;
-  resources: ChangeProposalResourcesConnection;
+  change: Change;
 }
 
 export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
 
-export interface ChangeProposalResourcesConnection {
-  edges: ChangeProposalResourcesEdge[];
+export interface Change {
+  resources: ChangeResourcesConnection;
+}
+export interface ChangeResourcesConnection {
+  edges: ChangeResourcesEdge[];
 }
 
-export interface ChangeProposalResourcesEdge {
+export interface ChangeResourcesEdge {
   node: Resource;
 }
 

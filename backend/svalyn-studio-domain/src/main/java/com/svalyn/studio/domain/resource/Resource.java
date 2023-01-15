@@ -50,6 +50,10 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
 
     private String name;
 
+    private String path;
+
+    private String contentType;
+
     private byte[] content;
 
     private AggregateReference<Account, UUID> createdBy;
@@ -66,6 +70,14 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
 
     public String getName() {
         return name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getContentType() {
+        return contentType;
     }
 
     public byte[] getContent() {
@@ -109,10 +121,24 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
     public static final class Builder {
         private String name;
 
+        private String path;
+
+        private String contentType;
+
         private byte[] content;
 
         public Builder name(String name) {
             this.name = Objects.requireNonNull(name);
+            return this;
+        }
+
+        public Builder path(String path) {
+            this.path = Objects.requireNonNull(path);
+            return this;
+        }
+
+        public Builder contentType(String contentType) {
+            this.contentType = Objects.requireNonNull(contentType);
             return this;
         }
 
@@ -126,6 +152,8 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
             resource.isNew = true;
             resource.id = UUID.randomUUID();
             resource.name = Objects.requireNonNull(name);
+            resource.path = Objects.requireNonNull(path);
+            resource.contentType = Objects.requireNonNull(contentType);
             resource.content = Objects.requireNonNull(content);
 
             var now = Instant.now();

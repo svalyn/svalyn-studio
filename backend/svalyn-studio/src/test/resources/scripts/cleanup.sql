@@ -1,6 +1,7 @@
 DELETE FROM notification;
-DELETE FROM change_proposal_resource;
 DELETE FROM change_proposal;
+DELETE FROM change_resource;
+DELETE FROM change;
 DELETE FROM resource;
 DELETE FROM project;
 DELETE FROM invitation;

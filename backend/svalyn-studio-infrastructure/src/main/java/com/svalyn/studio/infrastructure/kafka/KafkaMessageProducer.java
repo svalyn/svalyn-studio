@@ -21,7 +21,7 @@ package com.svalyn.studio.infrastructure.kafka;
 
 import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.account.events.IAccountEvent;
-import com.svalyn.studio.domain.changeproposal.events.IChangeProposalEvent;
+import com.svalyn.studio.domain.history.events.IHistoryEvent;
 import com.svalyn.studio.domain.organization.events.IOrganizationEvent;
 import com.svalyn.studio.domain.project.events.IProjectEvent;
 import com.svalyn.studio.domain.resource.events.IResourceEvent;
@@ -45,7 +45,7 @@ public class KafkaMessageProducer {
 
     public static final String TOPIC_EVENT_ACCOUNT = "event.account";
 
-    public static final String TOPIC_EVENT_CHANGEPROPOSAL = "event.changeproposal";
+    public static final String TOPIC_EVENT_HISTORY = "event.history";
 
     public static final String TOPIC_EVENT_PROJECT = "event.project";
 
@@ -78,8 +78,8 @@ public class KafkaMessageProducer {
     }
 
     @TransactionalEventListener
-    public void onChangeProposalEvent(IChangeProposalEvent event) {
-        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_CHANGEPROPOSAL, message));
+    public void onHistoryEvent(IHistoryEvent event) {
+        this.toMessage(event).ifPresent(message -> this.publishMessage(TOPIC_EVENT_HISTORY, message));
     }
 
     @TransactionalEventListener

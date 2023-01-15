@@ -37,7 +37,7 @@ export const LastModifiedOn = ({ profile, date }: LastModifiedOnProps) => {
           sx={{ width: 24, height: 24 }}
         />
       </Tooltip>
-      <Typography variant="body1">modified this {formatTime(date)}</Typography>
+      <Typography variant="body2">modified this {formatTime(date)}</Typography>
     </Box>
   );
 };

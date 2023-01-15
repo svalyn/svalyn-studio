@@ -17,33 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation, useQuery } from '@apollo/client';
-import DownloadIcon from '@mui/icons-material/Download';
-import EditIcon from '@mui/icons-material/Edit';
+import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { Link as RouterLink } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
-import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
-import {
-  ErrorPayload,
-  GetProjectHomeData,
-  GetProjectHomeVariables,
-  ProjectHomeProps,
-  ProjectHomeState,
-  UpdateProjectReadMeData,
-  UpdateProjectReadMeVariables,
-} from './ProjectHome.types';
+import { ProjectBranchCard } from './ProjectBranchCard';
+import { GetProjectHomeData, GetProjectHomeVariables, ProjectHomeProps, ProjectHomeState } from './ProjectHome.types';
+import { ProjectReadMeCard } from './ProjectReadMeCard';
 
 const getProjectHomeQuery = gql`
   query getProjectHome($identifier: ID!) {
@@ -52,6 +38,30 @@ const getProjectHomeQuery = gql`
         name
         description
         readMe
+        organization {
+          identifier
+          name
+        }
+        branch(name: "main") {
+          name
+          change {
+            id
+            name
+            resources {
+              edges {
+                node {
+                  name
+                }
+              }
+            }
+            lastModifiedOn
+            lastModifiedBy {
+              name
+              username
+              imageUrl
+            }
+          }
+        }
         createdOn
         createdBy {
           name
@@ -64,35 +74,14 @@ const getProjectHomeQuery = gql`
           username
           imageUrl
         }
-        organization {
-          identifier
-          name
-        }
       }
     }
   }
 `;
-
-const updateProjectReadMeMutation = gql`
-  mutation updateProjectReadMe($input: UpdateProjectReadMeInput!) {
-    updateProjectReadMe(input: $input) {
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
-
-const trimLines = (content: string): string =>
-  content
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n');
 
 export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
   const [state, setState] = useState<ProjectHomeState>({
     project: null,
-    editReadMeDialogOpen: false,
     message: null,
   });
 
@@ -116,48 +105,9 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
     }
   }, [loading, data, error]);
 
-  const openReadMeDialog = () => setState((prevState) => ({ ...prevState, editReadMeDialogOpen: true }));
-  const closeReadMeDialog = () => setState((prevState) => ({ ...prevState, editReadMeDialogOpen: false }));
-
-  const [
-    updateProjectReadMe,
-    { loading: updateProjectReadMeLoading, data: updateProjectReadMeData, error: updateProjectReadMeError },
-  ] = useMutation<UpdateProjectReadMeData, UpdateProjectReadMeVariables>(updateProjectReadMeMutation);
-  useEffect(() => {
-    if (!updateProjectReadMeLoading) {
-      if (updateProjectReadMeData) {
-        const { updateProjectReadMe } = updateProjectReadMeData;
-        if (updateProjectReadMe.__typename === 'SuccessPayload') {
-          refetch(variables);
-        } else if (updateProjectReadMe.__typename === 'ErrorPayload') {
-          const errorPayload = updateProjectReadMe as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message, editReadMeDialogOpen: false }));
-        }
-      }
-      if (updateProjectReadMeError) {
-        setState((prevState) => ({
-          ...prevState,
-          message: updateProjectReadMeError.message,
-          editReadMeDialogOpen: false,
-        }));
-      }
-    }
-  }, [updateProjectReadMeLoading, updateProjectReadMeData, updateProjectReadMeError]);
-
-  const handleReadMeUpdate = (value: string) => {
-    const variables: UpdateProjectReadMeVariables = {
-      input: {
-        id: uuid(),
-        projectIdentifier,
-        content: value,
-      },
-    };
-    updateProjectReadMe({ variables });
-  };
+  const handleReadMeUpdate = () => refetch(variables);
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
-  const readMe = trimLines(state.project?.readMe ?? '');
 
   return (
     <>
@@ -183,43 +133,18 @@ export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
             <Typography variant="h4">{state.project.name}</Typography>
           </Box>
           <Grid container spacing={2}>
-            <Grid item xs={10}>
-              <>
-                <Paper variant="outlined">
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      px: (theme) => theme.spacing(2),
-                      py: '2px',
-                    }}
-                  >
-                    <Typography variant="subtitle1">README.md</Typography>
-                    <div>
-                      <IconButton sx={{ marginRight: '4px' }} onClick={openReadMeDialog} disabled={role === 'NONE'}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton component="a" download="README.md" href={URL.createObjectURL(new Blob([readMe]))}>
-                        <DownloadIcon fontSize="small" />
-                      </IconButton>
-                    </div>
-                  </Box>
-                  <Divider />
-                  <Box sx={{ px: (theme) => theme.spacing(2), py: (theme) => theme.spacing(1) }}>
-                    <ReactMarkdown children={readMe} />
-                  </Box>
-                </Paper>
-                <EditReadMeDialog
-                  content={readMe}
-                  open={state.editReadMeDialogOpen}
-                  onCancel={closeReadMeDialog}
-                  onUpdate={handleReadMeUpdate}
+            <Grid item xs={9}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+                <ProjectBranchCard projectIdentifier={projectIdentifier} branch={state.project.branch} />
+                <ProjectReadMeCard
+                  projectIdentifier={projectIdentifier}
+                  readMe={state.project.readMe}
+                  role={role}
+                  onReadMeUpdate={handleReadMeUpdate}
                 />
-              </>
+              </Box>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
                 <Box>
                   <Typography variant="h6" gutterBottom>

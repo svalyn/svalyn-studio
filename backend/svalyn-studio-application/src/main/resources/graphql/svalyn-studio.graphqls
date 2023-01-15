@@ -140,6 +140,8 @@ type Project {
   lastModifiedOn: Instant!
   lastModifiedBy: Profile!
   tags(page: Int!, rowsPerPage: Int!): ProjectTagsConnection!
+  branch(name: String!): Branch
+  branches(page: Int!, rowsPerPage: Int!): ProjectBranchesConnection!
   changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
 }
 
@@ -150,6 +152,35 @@ type ProjectTagsConnection {
 
 type ProjectTagsEdge {
   node: Tag!
+}
+
+type ProjectBranchesConnection {
+  edges: [ProjectBranchesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProjectBranchesEdge {
+  node: Branch!
+}
+
+type Branch {
+  id: ID!
+  name: String!
+  change: Change
+  changes(page: Int!, rowsPerPage: Int!): BranchChangesConnection!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
+}
+
+type BranchChangesConnection {
+  edges: [BranchChangesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BranchChangesEdge {
+  node: Change!
 }
 
 type ProjectChangeProposalsConnection {
@@ -166,13 +197,13 @@ type ChangeProposal {
   name: String!
   readMe: String!
   status: ChangeProposalStatus!
+  change: Change!
+  reviews: ChangeProposalReviewsConnection!
   project: Project!
   createdOn: Instant!
   createdBy: Profile!
   lastModifiedOn: Instant!
   lastModifiedBy: Profile!
-  resources: ChangeProposalResourcesConnection!
-  reviews: ChangeProposalReviewsConnection!
 }
 
 enum ChangeProposalStatus {
@@ -181,15 +212,26 @@ enum ChangeProposalStatus {
   CLOSED
 }
 
-type ChangeProposalResourcesConnection {
-  edges: [ChangeProposalResourcesEdge!]!
+type Change {
+  id: ID!
+  name: String!
+  resources: ChangeResourcesConnection!
+  createdOn: Instant!
+  createdBy: Profile!
+  lastModifiedOn: Instant!
+  lastModifiedBy: Profile!
 }
 
-type ChangeProposalResourcesEdge {
-  node: ChangeProposalResource!
+type ChangeResourcesConnection {
+  edges: [ChangeResourcesEdge!]!
+  pageInfo: PageInfo!
 }
 
-type ChangeProposalResource {
+type ChangeResourcesEdge {
+  node: ChangeResource!
+}
+
+type ChangeResource {
   id: ID!
   name: String!
   content: String!
