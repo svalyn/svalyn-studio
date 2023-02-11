@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@ package com.svalyn.studio.domain.organization;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.events.InvitationAcceptedEvent;
 import com.svalyn.studio.domain.organization.events.InvitationDeclinedEvent;
@@ -136,7 +137,8 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
 
-        this.registerEvent(new OrganizationModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new OrganizationModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void inviteMember(UUID memberId) {
@@ -145,7 +147,8 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
                 .build();
         this.invitations.add(invitation);
 
-        this.registerEvent(new MemberInvitedEvent(UUID.randomUUID(), Instant.now(), this, invitation));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new MemberInvitedEvent(UUID.randomUUID(), Instant.now(), createdBy, this, invitation));
     }
 
     public void acceptInvitation(UUID invitationId) {
@@ -162,7 +165,8 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
                     .build();
             this.memberships.add(membership);
 
-            this.registerEvent(new InvitationAcceptedEvent(UUID.randomUUID(), Instant.now(), this, invitation));
+            var createdBy = ProfileProvider.get();
+            this.registerEvent(new InvitationAcceptedEvent(UUID.randomUUID(), Instant.now(), createdBy, this, invitation));
         }
     }
 
@@ -174,7 +178,8 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
             Invitation invitation = optionalInvitation.get();
             this.invitations.remove(invitation);
 
-            this.registerEvent(new InvitationDeclinedEvent(UUID.randomUUID(), Instant.now(), this, invitation));
+            var createdBy = ProfileProvider.get();
+            this.registerEvent(new InvitationDeclinedEvent(UUID.randomUUID(), Instant.now(), createdBy, this, invitation));
         }
     }
 
@@ -186,31 +191,37 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
             Invitation invitation = optionalInvitation.get();
             this.invitations.remove(invitation);
 
-            this.registerEvent(new InvitationRevokedEvent(UUID.randomUUID(), Instant.now(), this, invitation));
+            var createdBy = ProfileProvider.get();
+            this.registerEvent(new InvitationRevokedEvent(UUID.randomUUID(), Instant.now(), createdBy, this, invitation));
         }
     }
 
     public void revokeMemberships(List<UUID> membershipIds) {
+        var createdBy = ProfileProvider.get();
+
         this.memberships.stream()
                 .filter(membership -> membershipIds.contains(membership.getId()))
                 .forEach(membership -> {
                     this.memberships.remove(membership);
-                    this.registerEvent(new MembershipRevokedEvent(UUID.randomUUID(), Instant.now(), this, membership));
+                    this.registerEvent(new MembershipRevokedEvent(UUID.randomUUID(), Instant.now(), createdBy, this, membership));
                 });
     }
 
     public void leave(UUID memberId) {
+        var createdBy = ProfileProvider.get();
+
         this.memberships.stream()
                 .filter(membership -> membership.getMemberId().getId().equals(memberId))
                 .findFirst()
                 .ifPresent(membership -> {
                     this.memberships.remove(membership);
-                    this.registerEvent(new MemberLeftEvent(UUID.randomUUID(), Instant.now(), this));
+                    this.registerEvent(new MemberLeftEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
                 });
     }
 
     public void dispose() {
-        this.registerEvent(new OrganizationDeletedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new OrganizationDeletedEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
     }
 
     public static Builder newOrganization() {
@@ -270,7 +281,8 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
             organization.lastModifiedBy = userId;
             organization.lastModifiedOn = now;
 
-            organization.registerEvent(new OrganizationCreatedEvent(UUID.randomUUID(), now, organization));
+            var createdBy = ProfileProvider.get();
+            organization.registerEvent(new OrganizationCreatedEvent(UUID.randomUUID(), now, createdBy, organization));
             return organization;
         }
     }

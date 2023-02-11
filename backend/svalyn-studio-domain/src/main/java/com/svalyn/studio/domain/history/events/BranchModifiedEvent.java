@@ -19,7 +19,9 @@
 
 package com.svalyn.studio.domain.history.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.Branch;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -29,5 +31,9 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record BranchModifiedEvent(UUID id, Instant createdOn, Branch branch) implements IHistoryEvent {
+public record BranchModifiedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Branch branch) implements IHistoryEvent {
 }

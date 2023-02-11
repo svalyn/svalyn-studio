@@ -19,7 +19,9 @@
 
 package com.svalyn.studio.domain.history.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.Change;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -29,5 +31,9 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ChangeDeletedEvent(UUID id, Instant createdOn, Change change) implements IHistoryEvent {
+public record ChangeDeletedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Change change) implements IHistoryEvent {
 }

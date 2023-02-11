@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -79,6 +79,7 @@ public class AuthenticationToken {
 
     public void updateStatus(AuthenticationTokenStatus status) {
         this.status = status;
+        this.lastModifiedOn = Instant.now();
     }
 
     public static Builder newTokenCredentials() {

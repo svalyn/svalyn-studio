@@ -21,7 +21,7 @@ package com.svalyn.studio.application.services.notification;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.notification.dto.NotificationDTO;
 import com.svalyn.studio.application.controllers.notification.dto.UpdateNotificationsStatusInput;
@@ -66,11 +66,11 @@ public class NotificationService implements INotificationService {
 
     private Optional<NotificationDTO> toDTO(Notification notification) {
         var optionalOwnedByProfile = this.accountRepository.findById(notification.getOwnedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalCreatedByProfile = this.accountRepository.findById(notification.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(notification.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalOwnedByProfile.flatMap(ownedBy ->
                 optionalCreatedByProfile.flatMap(createdBy ->

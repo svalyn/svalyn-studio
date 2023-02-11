@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.project.dto;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -38,7 +38,7 @@ public record ProjectDTO(
         @NotNull String description,
         @NotNull String readMe,
         @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
+        @NotNull ProfileDTO createdBy,
         @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+        @NotNull ProfileDTO lastModifiedBy) {
 }

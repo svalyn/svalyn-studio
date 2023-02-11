@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.project;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
@@ -119,25 +120,32 @@ public class Project extends AbstractValidatingAggregateRoot<Project> implements
         this.name = Objects.requireNonNull(name);
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
-        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void updateDescription(String description) {
         this.description = Objects.requireNonNull(description);
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
-        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void updateReadMe(String readMe) {
         this.readMe = Objects.requireNonNull(readMe);
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
-        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ProjectModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void dispose() {
-        this.registerEvent(new ProjectDeletedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ProjectDeletedEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
     }
 
     public static Builder newProject() {
@@ -207,7 +215,8 @@ public class Project extends AbstractValidatingAggregateRoot<Project> implements
             project.lastModifiedBy = userId;
             project.lastModifiedOn = now;
 
-            project.registerEvent(new ProjectCreatedEvent(UUID.randomUUID(), now, project));
+            var createdBy = ProfileProvider.get();
+            project.registerEvent(new ProjectCreatedEvent(UUID.randomUUID(), now, createdBy, project));
             return project;
         }
     }

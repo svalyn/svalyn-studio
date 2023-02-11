@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,7 +18,9 @@
  */
 package com.svalyn.studio.domain.organization.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.organization.Organization;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -26,11 +28,11 @@ import java.util.UUID;
 /**
  * Event fired when an organization is modified.
  *
- * @param id The identifier of the event
- * @param createdOn The creation date of the event
- * @param organization The organization
- *
  * @author sbegaudeau
  */
-public record OrganizationModifiedEvent(UUID id, Instant createdOn, Organization organization) implements IOrganizationEvent {
+public record OrganizationModifiedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Organization organization) implements IOrganizationEvent {
 }

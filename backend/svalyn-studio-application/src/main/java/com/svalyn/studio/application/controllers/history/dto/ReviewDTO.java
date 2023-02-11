@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.history.dto;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.domain.history.ReviewStatus;
 
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +36,7 @@ public record ReviewDTO(
         @NotNull String message,
         @NotNull ReviewStatus status,
         @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
+        @NotNull ProfileDTO createdBy,
         @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+        @NotNull ProfileDTO lastModifiedBy) {
 }

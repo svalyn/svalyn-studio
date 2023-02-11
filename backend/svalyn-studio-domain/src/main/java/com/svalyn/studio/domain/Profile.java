@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,18 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages;
+package com.svalyn.studio.domain;
 
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
+import jakarta.validation.constraints.NotNull;
 
-import java.time.Instant;
+import java.util.UUID;
 
 /**
- * The interface used by all the message content.
+ * Basic information on the account responsible for an event.
  *
  * @author sbegaudeau
  */
-public interface IMessageContent {
-    Instant createdOn();
-    AccountSummaryMessage createdBy();
+public record Profile(
+        @NotNull UUID id,
+        @NotNull String name,
+        @NotNull String username) {
 }

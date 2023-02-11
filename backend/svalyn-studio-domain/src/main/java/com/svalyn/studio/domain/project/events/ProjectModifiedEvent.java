@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,7 +19,9 @@
 
 package com.svalyn.studio.domain.project.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.project.Project;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -27,11 +29,11 @@ import java.util.UUID;
 /**
  * Event fired when a project is modified.
  *
- * @param id The identifier of the event
- * @param createdOn The creation date of the event
- * @param project The project
- *
  * @author sbegaudeau
  */
-public record ProjectModifiedEvent(UUID id, Instant createdOn, Project project) implements IProjectEvent {
+public record ProjectModifiedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Project project) implements IProjectEvent {
 }

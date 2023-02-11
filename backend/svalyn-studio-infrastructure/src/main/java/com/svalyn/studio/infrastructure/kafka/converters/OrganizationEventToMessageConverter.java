@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 package com.svalyn.studio.infrastructure.kafka.converters;
 
 import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.organization.Organization;
@@ -82,7 +83,7 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         OrganizationCreatedMessage.class.getSimpleName(),
-                        new OrganizationCreatedMessage(event.createdOn(), organization)
+                        new OrganizationCreatedMessage(event.createdOn(), this.toSummary(event.createdBy()), organization)
                 ));
     }
 
@@ -92,7 +93,7 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         OrganizationModifiedMessage.class.getSimpleName(),
-                        new OrganizationModifiedMessage(event.createdOn(), organization)
+                        new OrganizationModifiedMessage(event.createdOn(), this.toSummary(event.createdBy()), organization)
                 ));
     }
 
@@ -102,7 +103,7 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         OrganizationDeletedMessage.class.getSimpleName(),
-                        new OrganizationDeletedMessage(event.createdOn(), organization)
+                        new OrganizationDeletedMessage(event.createdOn(), this.toSummary(event.createdBy()), organization)
                 ));
     }
 
@@ -129,5 +130,9 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
 
     private AccountSummaryMessage toSummary(Account account) {
         return new AccountSummaryMessage(account.getId(), account.getName(), account.getUsername());
+    }
+
+    private AccountSummaryMessage toSummary(Profile profile) {
+        return new AccountSummaryMessage(profile.id(), profile.name(), profile.username());
     }
 }

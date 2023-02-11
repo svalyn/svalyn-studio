@@ -21,7 +21,7 @@ package com.svalyn.studio.application.services.organization;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationSuccessPayload;
@@ -81,9 +81,9 @@ public class OrganizationService implements IOrganizationService {
 
     private Optional<OrganizationDTO> toDTO(Organization organization) {
         var optionalCreatedByProfile = this.accountRepository.findById(organization.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(organization.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
 
         var userId = UserIdProvider.get().getId();
         return optionalCreatedByProfile.flatMap(createdBy ->

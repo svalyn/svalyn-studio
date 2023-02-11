@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.account;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.services.account.api.IAccountService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -42,7 +42,7 @@ public class ProfileController {
     }
 
     @SchemaMapping(typeName = "Viewer")
-    public Profile profile(@Argument String username) {
+    public ProfileDTO profile(@Argument String username) {
         return this.accountService.findProfileByUsername(username).orElse(null);
     }
 

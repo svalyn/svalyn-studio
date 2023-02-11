@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,8 +19,10 @@
 
 package com.svalyn.studio.domain.history.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.Change;
 import com.svalyn.studio.domain.history.ChangeResource;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,5 +33,10 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ResourcesRemovedFromChangeEvent(UUID id, Instant createdOn, Change change, List<ChangeResource> changeResources) implements IHistoryEvent {
+public record ResourcesRemovedFromChangeEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Change change,
+        @NotNull List<ChangeResource> changeResources) implements IHistoryEvent {
 }

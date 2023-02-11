@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.domain.tag.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.tag.ProjectTag;
 import jakarta.validation.constraints.NotNull;
 
@@ -30,5 +31,9 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record TagAddedToProjectEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull ProjectTag projectTag) implements ITagEvent {
+public record TagAddedToProjectEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull ProjectTag projectTag) implements ITagEvent {
 }

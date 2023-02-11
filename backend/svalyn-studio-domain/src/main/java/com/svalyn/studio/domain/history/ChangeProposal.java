@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.history.events.ChangeProposalCreatedEvent;
 import com.svalyn.studio.domain.history.events.ChangeProposalDeletedEvent;
@@ -134,7 +135,9 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
         this.readMe = Objects.requireNonNull(readMe);
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
-        this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void updateStatus(ChangeProposalStatus status) {
@@ -142,38 +145,41 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
 
-        this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ChangeProposalModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
 
         if (this.status == ChangeProposalStatus.INTEGRATED) {
-            this.registerEvent(new ChangeProposalIntegratedEvent(UUID.randomUUID(), Instant.now(), this));
+            this.registerEvent(new ChangeProposalIntegratedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
         }
     }
 
     public void performReview(String message, ReviewStatus status) {
-        var userId = UserIdProvider.get().getId();
+        this.lastModifiedBy = UserIdProvider.get();
+        this.lastModifiedOn = Instant.now();
+
+        var createdBy = ProfileProvider.get();
         var optionalExistingReview = this.reviews.stream()
-                .filter(review -> review.getCreatedBy().getId().equals(userId))
+                .filter(review -> review.getCreatedBy().getId().equals(this.lastModifiedBy.getId()))
                 .findFirst();
         if (optionalExistingReview.isPresent()) {
             var existingReview = optionalExistingReview.get();
             existingReview.update(message, status);
 
-            this.registerEvent(new ReviewModifiedEvent(UUID.randomUUID(), Instant.now(), this, existingReview));
+            this.registerEvent(new ReviewModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this, existingReview));
         } else {
             var review = Review.newReview()
                     .message(message)
                     .status(status)
                     .build();
             this.reviews.add(review);
-            this.registerEvent(new ReviewPerformedEvent(UUID.randomUUID(), Instant.now(), this, review));
+            this.registerEvent(new ReviewPerformedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this, review));
         }
 
-        this.lastModifiedBy = UserIdProvider.get();
-        this.lastModifiedOn = Instant.now();
     }
 
     public void dispose() {
-        this.registerEvent(new ChangeProposalDeletedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ChangeProposalDeletedEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
     }
 
     public static Builder newChangeProposal() {
@@ -232,7 +238,8 @@ public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangePropos
             changeProposal.lastModifiedBy = userId;
             changeProposal.lastModifiedOn = now;
 
-            changeProposal.registerEvent(new ChangeProposalCreatedEvent(UUID.randomUUID(), now, changeProposal));
+            var createdBy = ProfileProvider.get();
+            changeProposal.registerEvent(new ChangeProposalCreatedEvent(UUID.randomUUID(), now, createdBy, changeProposal));
 
             return changeProposal;
         }

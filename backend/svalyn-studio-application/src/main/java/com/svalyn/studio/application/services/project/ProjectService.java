@@ -21,7 +21,7 @@ package com.svalyn.studio.application.services.project;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectInput;
 import com.svalyn.studio.application.controllers.project.dto.CreateProjectSuccessPayload;
@@ -77,9 +77,9 @@ public class ProjectService implements IProjectService {
 
     private Optional<ProjectDTO> toDTO(Project project) {
         var optionalCreatedByProfile = this.accountRepository.findById(project.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(project.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

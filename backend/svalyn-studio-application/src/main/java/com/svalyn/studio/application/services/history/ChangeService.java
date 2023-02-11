@@ -22,7 +22,7 @@ package com.svalyn.studio.application.services.history;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.history.dto.ChangeDTO;
 import com.svalyn.studio.application.controllers.history.dto.ChangeResourceDTO;
 import com.svalyn.studio.application.services.history.api.IChangeService;
@@ -66,9 +66,9 @@ public class ChangeService implements IChangeService {
 
     private Optional<ChangeDTO> toDTO(Change change) {
         var optionalCreatedByProfile = this.accountRepository.findById(change.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(change.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

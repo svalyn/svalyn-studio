@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.notification.dto;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.domain.notification.NotificationStatus;
 
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +37,7 @@ public record NotificationDTO(
         @NotNull NotificationStatus status,
         @NotNull String relatedUrl,
         @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
+        @NotNull ProfileDTO createdBy,
         @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+        @NotNull ProfileDTO lastModifiedBy) {
 }

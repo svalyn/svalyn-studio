@@ -26,5 +26,5 @@ import jakarta.validation.constraints.NotNull;
  *
  * @author sbegaudeau
  */
-public record Profile(@NotNull String name, @NotNull String username, @NotNull String imageUrl) {
+public record ProfileDTO(@NotNull String name, @NotNull String username, @NotNull String imageUrl) {
 }

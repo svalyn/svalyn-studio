@@ -21,7 +21,7 @@ package com.svalyn.studio.application.services.organization;
 
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.organization.dto.MembershipDTO;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
@@ -67,11 +67,11 @@ public class MembershipService implements IMembershipService {
 
     private Optional<MembershipDTO> toDTO(Membership membership) {
         var optionalCreatedByProfile = this.accountRepository.findById(membership.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(membership.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalMemberProfile = this.accountRepository.findById(membership.getMemberId().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
 
         return optionalMemberProfile.flatMap(member ->
                 optionalCreatedByProfile.flatMap(createdBy ->

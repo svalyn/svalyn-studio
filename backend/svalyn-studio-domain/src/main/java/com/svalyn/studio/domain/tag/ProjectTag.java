@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.tag;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.project.Project;
 import com.svalyn.studio.domain.tag.events.TagAddedToProjectEvent;
@@ -116,7 +117,8 @@ public class ProjectTag extends AbstractValidatingAggregateRoot<ProjectTag> impl
             projectTag.createdBy = userId;
             projectTag.createdOn = now;
 
-            projectTag.registerEvent(new TagAddedToProjectEvent(UUID.randomUUID(), now, projectTag));
+            var createdBy = ProfileProvider.get();
+            projectTag.registerEvent(new TagAddedToProjectEvent(UUID.randomUUID(), now, createdBy, projectTag));
 
             return projectTag;
         }
