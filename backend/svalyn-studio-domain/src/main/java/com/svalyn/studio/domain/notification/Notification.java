@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.notification;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.notification.events.NotificationCreatedEvent;
 import com.svalyn.studio.domain.notification.events.NotificationMarkedAsDoneEvent;
@@ -71,12 +72,13 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
 
+        var createdBy = ProfileProvider.get();
         if (status == NotificationStatus.READ) {
-            this.registerEvent(new NotificationMarkedAsReadEvent(UUID.randomUUID(), Instant.now(), this));
+            this.registerEvent(new NotificationMarkedAsReadEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
         } else if (status == NotificationStatus.UNREAD) {
-            this.registerEvent(new NotificationMarkedAsUnreadEvent(UUID.randomUUID(), Instant.now(), this));
+            this.registerEvent(new NotificationMarkedAsUnreadEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
         } else if (status == NotificationStatus.DONE) {
-            this.registerEvent(new NotificationMarkedAsDoneEvent(UUID.randomUUID(), Instant.now(), this));
+            this.registerEvent(new NotificationMarkedAsDoneEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
         }
     }
 
@@ -172,7 +174,8 @@ public class Notification extends AbstractValidatingAggregateRoot<Notification> 
             notification.lastModifiedBy = userId;
             notification.lastModifiedOn = now;
 
-            notification.registerEvent(new NotificationCreatedEvent(UUID.randomUUID(), now, notification));
+            var createdBy = ProfileProvider.get();
+            notification.registerEvent(new NotificationCreatedEvent(UUID.randomUUID(), now, createdBy, notification));
             return notification;
         }
     }

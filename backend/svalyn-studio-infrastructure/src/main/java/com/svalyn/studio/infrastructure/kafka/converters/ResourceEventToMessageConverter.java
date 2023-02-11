@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 package com.svalyn.studio.infrastructure.kafka.converters;
 
 import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.resource.Resource;
@@ -72,7 +73,7 @@ public class ResourceEventToMessageConverter implements IDomainEventToMessageCon
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ResourceCreatedMessage.class.getSimpleName(),
-                        new ResourceCreatedMessage(event.createdOn(), resource)
+                        new ResourceCreatedMessage(event.createdOn(), this.toSummary(event.createdBy()), resource)
                 ));
     }
 
@@ -82,7 +83,7 @@ public class ResourceEventToMessageConverter implements IDomainEventToMessageCon
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ResourceDeletedMessage.class.getSimpleName(),
-                        new ResourceDeletedMessage(event.createdOn(), resource)
+                        new ResourceDeletedMessage(event.createdOn(), this.toSummary(event.createdBy()), resource)
                 ));
     }
 
@@ -106,5 +107,9 @@ public class ResourceEventToMessageConverter implements IDomainEventToMessageCon
 
     private AccountSummaryMessage toSummary(Account account) {
         return new AccountSummaryMessage(account.getId(), account.getName(), account.getUsername());
+    }
+
+    private AccountSummaryMessage toSummary(Profile profile) {
+        return new AccountSummaryMessage(profile.id(), profile.name(), profile.username());
     }
 }

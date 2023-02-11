@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,11 +20,13 @@
 package com.svalyn.studio.domain.account;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.events.AccountCreatedEvent;
 import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
 import com.svalyn.studio.domain.account.events.AuthenticationTokenCreatedEvent;
 import com.svalyn.studio.domain.account.events.AuthenticationTokenModifiedEvent;
 import com.svalyn.studio.domain.account.events.OAuth2MetadataCreatedEvent;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -130,25 +132,37 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
         this.name = Objects.requireNonNull(name);
         this.imageUrl = Objects.requireNonNull(imageUrl);
         this.lastModifiedOn = Instant.now();
-        this.registerEvent(new AccountModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+        var createdBy = new Profile(this.id, this.name, this.username);
+        this.registerEvent(new AccountModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void addOAuth2Metadata(OAuth2Metadata oAuth2Metadata) {
         this.oAuth2Metadata.add(oAuth2Metadata);
-        this.registerEvent(new OAuth2MetadataCreatedEvent(UUID.randomUUID(), Instant.now(), this));
+        this.lastModifiedOn = Instant.now();
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new OAuth2MetadataCreatedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void addAuthenticationToken(AuthenticationToken authenticationToken) {
         this.authenticationTokens.add(authenticationToken);
-        this.registerEvent(new AuthenticationTokenCreatedEvent(UUID.randomUUID(), Instant.now(), this));
+        this.lastModifiedOn = Instant.now();
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new AuthenticationTokenCreatedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public void updateAuthenticationTokensStatus(List<UUID> authenticationTokenIds, AuthenticationTokenStatus status) {
+        this.lastModifiedOn = Instant.now();
+
         this.authenticationTokens.stream()
                 .filter(authenticationToken -> authenticationTokenIds.contains(authenticationToken.getId()))
                 .forEach(authenticationToken -> {
                     authenticationToken.updateStatus(status);
-                    this.registerEvent(new AuthenticationTokenModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+                    var createdBy = ProfileProvider.get();
+                    this.registerEvent(new AuthenticationTokenModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
                 });
     }
 
@@ -229,7 +243,8 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
             account.createdOn = now;
             account.lastModifiedOn = now;
 
-            account.registerEvent(new AccountCreatedEvent(UUID.randomUUID(), now, account));
+            var createdBy = new Profile(account.id, name, username);
+            account.registerEvent(new AccountCreatedEvent(UUID.randomUUID(), now, createdBy, account));
             return account;
         }
     }

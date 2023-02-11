@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,8 +19,10 @@
 
 package com.svalyn.studio.domain.history.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.ChangeProposal;
 import com.svalyn.studio.domain.history.Review;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -28,12 +30,12 @@ import java.util.UUID;
 /**
  * Event fired when a review is performed.
  *
- * @param id The id of the event
- * @param createdOn The creation date of the event
- * @param changeProposal The change proposal
- * @param review The review
- *
  * @author sbegaudeau
  */
-public record ReviewPerformedEvent(UUID id, Instant createdOn, ChangeProposal changeProposal, Review review) implements IHistoryEvent {
+public record ReviewPerformedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull ChangeProposal changeProposal,
+        @NotNull Review review) implements IHistoryEvent {
 }

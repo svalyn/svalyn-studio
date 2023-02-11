@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 package com.svalyn.studio.infrastructure.kafka.converters;
 
 import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.organization.Organization;
@@ -89,7 +90,7 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ProjectCreatedMessage.class.getSimpleName(),
-                        new ProjectCreatedMessage(event.createdOn(), project)
+                        new ProjectCreatedMessage(event.createdOn(), this.toSummary(event.createdBy()), project)
                 ));
     }
 
@@ -99,7 +100,7 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ProjectModifiedMessage.class.getSimpleName(),
-                        new ProjectModifiedMessage(event.createdOn(), project)
+                        new ProjectModifiedMessage(event.createdOn(), this.toSummary(event.createdBy()), project)
                 ));
     }
 
@@ -109,7 +110,7 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ProjectDeletedMessage.class.getSimpleName(),
-                        new ProjectDeletedMessage(event.createdOn(), project)
+                        new ProjectDeletedMessage(event.createdOn(), this.toSummary(event.createdBy()), project)
                 ));
     }
 
@@ -145,6 +146,10 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
 
     private AccountSummaryMessage toSummary(Account account) {
         return new AccountSummaryMessage(account.getId(), account.getName(), account.getUsername());
+    }
+
+    private AccountSummaryMessage toSummary(Profile profile) {
+        return new AccountSummaryMessage(profile.id(), profile.name(), profile.username());
     }
 
     private OrganizationSummaryMessage toSummary(Organization organization, Map<String, String> tags) {

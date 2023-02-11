@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,8 +18,10 @@
  */
 package com.svalyn.studio.domain.organization.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.organization.Membership;
 import com.svalyn.studio.domain.organization.Organization;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -27,12 +29,12 @@ import java.util.UUID;
 /**
  * Event fired when a membership is revoked.
  *
- * @param id The identifier of the event
- * @param createdOn The creation date of the event
- * @param organization The organization
- * @param membership The membership
- *
  * @author sbegaudeau
  */
-public record MembershipRevokedEvent(UUID id, Instant createdOn, Organization organization, Membership membership) implements IOrganizationEvent {
+public record MembershipRevokedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Organization organization,
+        @NotNull Membership membership) implements IOrganizationEvent {
 }

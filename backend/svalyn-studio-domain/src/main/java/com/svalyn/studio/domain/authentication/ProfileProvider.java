@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,18 +17,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka.messages;
+package com.svalyn.studio.domain.authentication;
 
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
+import com.svalyn.studio.domain.Profile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.Instant;
+import java.util.Optional;
 
 /**
- * The interface used by all the message content.
+ * Used to retrieve the profile which has created an event.
  *
  * @author sbegaudeau
  */
-public interface IMessageContent {
-    Instant createdOn();
-    AccountSummaryMessage createdBy();
+public final class ProfileProvider {
+
+    private ProfileProvider() {
+        // Prevent instantiation
+    }
+
+    public static Profile get() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getPrincipal)
+                .filter(IUser.class::isInstance)
+                .map(IUser.class::cast)
+                .map(user -> new Profile(user.getId(), user.getName(), user.getUsername()))
+                .orElse(null);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,7 +19,9 @@
 
 package com.svalyn.studio.domain.resource.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.resource.Resource;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -27,11 +29,11 @@ import java.util.UUID;
 /**
  * Event fired when a resource is deleted.
  *
- * @param id The id of the event
- * @param createdOn The creation date of the event
- * @param resource The resource
- *
  * @author sbegaudeau
  */
-public record ResourceDeletedEvent(UUID id, Instant createdOn, Resource resource) implements IResourceEvent {
+public record ResourceDeletedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Resource resource) implements IResourceEvent {
 }

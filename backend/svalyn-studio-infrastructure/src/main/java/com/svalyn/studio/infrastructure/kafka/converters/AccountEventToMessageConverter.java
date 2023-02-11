@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 package com.svalyn.studio.infrastructure.kafka.converters;
 
 import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.events.AccountCreatedEvent;
 import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
@@ -28,6 +29,7 @@ import com.svalyn.studio.infrastructure.kafka.messages.Message;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountCreatedMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountMessage;
 import com.svalyn.studio.infrastructure.kafka.messages.account.AccountModifiedMessage;
+import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -58,7 +60,7 @@ public class AccountEventToMessageConverter implements IDomainEventToMessageConv
                 UUID.randomUUID(),
                 IDomainEventToMessageConverter.FROM,
                 AccountCreatedMessage.class.getSimpleName(),
-                new AccountCreatedMessage(accountCreatedEvent.createdOn(), this.toMessage(accountCreatedEvent.account()))
+                new AccountCreatedMessage(accountCreatedEvent.createdOn(), this.toMessage(accountCreatedEvent.createdBy()), this.toMessage(accountCreatedEvent.account()))
         ));
     }
 
@@ -67,7 +69,7 @@ public class AccountEventToMessageConverter implements IDomainEventToMessageConv
                 UUID.randomUUID(),
                 IDomainEventToMessageConverter.FROM,
                 AccountModifiedMessage.class.getSimpleName(),
-                new AccountModifiedMessage(accountModifiedEvent.createdOn(), this.toMessage(accountModifiedEvent.account()))
+                new AccountModifiedMessage(accountModifiedEvent.createdOn(), this.toMessage(accountModifiedEvent.createdBy()), this.toMessage(accountModifiedEvent.account()))
         ));
     }
 
@@ -78,5 +80,9 @@ public class AccountEventToMessageConverter implements IDomainEventToMessageConv
                 account.getCreatedOn(),
                 account.getLastModifiedOn()
         );
+    }
+
+    private AccountSummaryMessage toMessage(Profile profile) {
+        return new AccountSummaryMessage(profile.id(), profile.name(), profile.username());
     }
 }

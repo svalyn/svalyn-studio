@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.services.account.api;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.viewer.Viewer;
 
 import java.util.Optional;
@@ -34,5 +34,5 @@ public interface IAccountService {
 
     Optional<Viewer> findViewerById(UUID id);
 
-    Optional<Profile> findProfileByUsername(String username);
+    Optional<ProfileDTO> findProfileByUsername(String username);
 }

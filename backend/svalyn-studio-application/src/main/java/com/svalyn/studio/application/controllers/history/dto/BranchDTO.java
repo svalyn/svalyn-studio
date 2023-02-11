@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.history.dto;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
@@ -35,7 +35,7 @@ public record BranchDTO(
         @NotNull String name,
         @NotNull UUID changeId,
         @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
+        @NotNull ProfileDTO createdBy,
         @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+        @NotNull ProfileDTO lastModifiedBy) {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.tag;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.tag.events.TagAddedToOrganizationEvent;
@@ -117,7 +118,8 @@ public class OrganizationTag extends AbstractValidatingAggregateRoot<Organizatio
             organizationTag.createdBy = userId;
             organizationTag.createdOn = now;
 
-            organizationTag.registerEvent(new TagAddedToOrganizationEvent(UUID.randomUUID(), now, organizationTag));
+            var createdBy = ProfileProvider.get();
+            organizationTag.registerEvent(new TagAddedToOrganizationEvent(UUID.randomUUID(), now, createdBy, organizationTag));
 
             return organizationTag;
         }

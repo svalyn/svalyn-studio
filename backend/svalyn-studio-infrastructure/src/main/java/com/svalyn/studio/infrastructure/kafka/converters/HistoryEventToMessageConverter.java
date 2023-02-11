@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 package com.svalyn.studio.infrastructure.kafka.converters;
 
 import com.svalyn.studio.domain.IDomainEvent;
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.history.Change;
@@ -127,7 +128,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ChangeProposalCreatedMessage.class.getSimpleName(),
-                        new ChangeProposalCreatedMessage(event.createdOn(), changeProposalMessage)
+                        new ChangeProposalCreatedMessage(event.createdOn(), this.toMessage(event.createdBy()), changeProposalMessage)
                 ));
     }
 
@@ -137,7 +138,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ChangeProposalModifiedMessage.class.getSimpleName(),
-                        new ChangeProposalModifiedMessage(event.createdOn(), changeProposalMessage)
+                        new ChangeProposalModifiedMessage(event.createdOn(), this.toMessage(event.createdBy()), changeProposalMessage)
                 ));
     }
 
@@ -147,7 +148,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ChangeProposalDeletedMessage.class.getSimpleName(),
-                        new ChangeProposalDeletedMessage(event.createdOn(), changeProposalMessage)
+                        new ChangeProposalDeletedMessage(event.createdOn(), this.toMessage(event.createdBy()), changeProposalMessage)
                 ));
     }
 
@@ -157,7 +158,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ReviewPerformedMessage.class.getSimpleName(),
-                        new ReviewPerformedMessage(event.createdOn(), changeProposalMessage)
+                        new ReviewPerformedMessage(event.createdOn(), this.toMessage(event.createdBy()), changeProposalMessage)
                 ));
     }
 
@@ -167,7 +168,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ReviewModifiedMessage.class.getSimpleName(),
-                        new ReviewModifiedMessage(event.createdOn(), changeProposalMessage)
+                        new ReviewModifiedMessage(event.createdOn(), this.toMessage(event.createdBy()), changeProposalMessage)
                 ));
     }
 
@@ -177,7 +178,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ResourcesAddedToChangeMessage.class.getSimpleName(),
-                        new ResourcesAddedToChangeMessage(event.createdOn(), changeMessage)
+                        new ResourcesAddedToChangeMessage(event.createdOn(), this.toMessage(event.createdBy()), changeMessage)
                 ));
     }
 
@@ -187,7 +188,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         UUID.randomUUID(),
                         IDomainEventToMessageConverter.FROM,
                         ResourcesRemovedFromChangeMessage.class.getSimpleName(),
-                        new ResourcesRemovedFromChangeMessage(event.createdOn(), changeMessage)
+                        new ResourcesRemovedFromChangeMessage(event.createdOn(), this.toMessage(event.createdBy()), changeMessage)
                 ));
     }
 
@@ -276,6 +277,10 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
 
     private AccountSummaryMessage toSummary(Account account) {
         return new AccountSummaryMessage(account.getId(), account.getName(), account.getUsername());
+    }
+
+    private AccountSummaryMessage toMessage(Profile profile) {
+        return new AccountSummaryMessage(profile.id(), profile.name(), profile.username());
     }
 
     private OrganizationSummaryMessage toSummary(Organization organization, Map<String, String> tags) {

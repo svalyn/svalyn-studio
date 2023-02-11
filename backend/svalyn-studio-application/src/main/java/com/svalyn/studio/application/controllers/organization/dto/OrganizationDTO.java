@@ -18,7 +18,7 @@
  */
 package com.svalyn.studio.application.controllers.organization.dto;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.domain.organization.MembershipRole;
 
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +36,7 @@ public record OrganizationDTO(
         @NotNull String name,
         @NotNull MembershipRole role,
         @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
+        @NotNull ProfileDTO createdBy,
         @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+        @NotNull ProfileDTO lastModifiedBy) {
 }

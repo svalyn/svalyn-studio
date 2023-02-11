@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.tag;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.tag.events.TagCreatedEvent;
 import org.springframework.data.annotation.Id;
@@ -130,7 +131,8 @@ public class Tag extends AbstractValidatingAggregateRoot<Tag> implements Persist
             tag.lastModifiedBy = userId;
             tag.lastModifiedOn = now;
 
-            tag.registerEvent(new TagCreatedEvent(UUID.randomUUID(), now, tag));
+            var createdBy = ProfileProvider.get();
+            tag.registerEvent(new TagCreatedEvent(UUID.randomUUID(), now, createdBy, tag));
 
             return tag;
         }

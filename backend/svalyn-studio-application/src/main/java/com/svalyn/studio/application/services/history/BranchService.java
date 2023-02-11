@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.services.history;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.history.dto.BranchDTO;
 import com.svalyn.studio.application.services.history.api.IBranchService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
@@ -71,9 +71,9 @@ public class BranchService implements IBranchService {
 
     private Optional<BranchDTO> toDTO(Branch branch) {
         var optionalCreatedByProfile = this.accountRepository.findById(branch.getCreatedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(branch.getLastModifiedBy().getId())
-                .map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
         var changeId = Optional.ofNullable(branch.getChange()).map(AggregateReference::getId).orElse(null);
 
         return optionalCreatedByProfile.flatMap(createdBy ->

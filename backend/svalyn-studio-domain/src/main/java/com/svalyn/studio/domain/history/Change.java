@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.history.events.ChangeCreatedEvent;
 import com.svalyn.studio.domain.history.events.ChangeDeletedEvent;
@@ -108,17 +109,26 @@ public class Change extends AbstractValidatingAggregateRoot<Change> implements P
     public void addChangeResources(List<ChangeResource> changeResources) {
         this.changeResources.addAll(changeResources);
 
-        this.registerEvent(new ResourcesAddedToChangeEvent(UUID.randomUUID(), Instant.now(), this, changeResources.stream().toList()));
+        this.lastModifiedOn = Instant.now();
+        this.lastModifiedBy = UserIdProvider.get();
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ResourcesAddedToChangeEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this, changeResources.stream().toList()));
     }
 
     public void removeChangeResources(List<ChangeResource> changeResources) {
         this.changeResources.removeAll(changeResources);
 
-        this.registerEvent(new ResourcesRemovedFromChangeEvent(UUID.randomUUID(), Instant.now(), this, changeResources.stream().toList()));
+        this.lastModifiedOn = Instant.now();
+        this.lastModifiedBy = UserIdProvider.get();
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ResourcesRemovedFromChangeEvent(UUID.randomUUID(), Instant.now(), createdBy, this, changeResources.stream().toList()));
     }
 
     public void dispose() {
-        this.registerEvent(new ChangeDeletedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ChangeDeletedEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
     }
 
     public static Builder newChange() {
@@ -168,7 +178,8 @@ public class Change extends AbstractValidatingAggregateRoot<Change> implements P
             change.lastModifiedBy = userId;
             change.lastModifiedOn = now;
 
-            change.registerEvent(new ChangeCreatedEvent(UUID.randomUUID(), now, change));
+            var createdBy = ProfileProvider.get();
+            change.registerEvent(new ChangeCreatedEvent(UUID.randomUUID(), now, createdBy, change));
 
             return change;
         }

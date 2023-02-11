@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.services.account;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.viewer.Viewer;
 import com.svalyn.studio.application.services.account.api.IAccountService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
@@ -52,7 +52,7 @@ public class AccountService implements IAccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Profile> findProfileByUsername(String username) {
-        return this.accountRepository.findByUsername(username).map(account -> new Profile(account.getName(), account.getUsername(), account.getImageUrl()));
+    public Optional<ProfileDTO> findProfileByUsername(String username) {
+        return this.accountRepository.findByUsername(username).map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
     }
 }

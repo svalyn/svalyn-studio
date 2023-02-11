@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.domain.notification.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.notification.Notification;
 
 import jakarta.validation.constraints.NotNull;
@@ -30,5 +31,9 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record NotificationMarkedAsDoneEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull Notification notification) implements INotificationEvent {
+public record NotificationMarkedAsDoneEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Notification notification) implements INotificationEvent {
 }

@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.history.events.BranchCreatedEvent;
 import com.svalyn.studio.domain.history.events.BranchModifiedEvent;
@@ -107,7 +108,9 @@ public class Branch extends AbstractValidatingAggregateRoot<Branch> implements P
         this.change = Objects.requireNonNull(change);
         this.lastModifiedBy = UserIdProvider.get();
         this.lastModifiedOn = Instant.now();
-        this.registerEvent(new BranchModifiedEvent(UUID.randomUUID(), Instant.now(), this));
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new BranchModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
     }
 
     public static Builder newBranch() {
@@ -156,7 +159,8 @@ public class Branch extends AbstractValidatingAggregateRoot<Branch> implements P
             branch.lastModifiedBy = userId;
             branch.lastModifiedOn = now;
 
-            branch.registerEvent(new BranchCreatedEvent(UUID.randomUUID(), now, branch));
+            var createdBy = ProfileProvider.get();
+            branch.registerEvent(new BranchCreatedEvent(UUID.randomUUID(), now, createdBy, branch));
 
             return branch;
         }

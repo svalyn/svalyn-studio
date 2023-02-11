@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.domain.history.events;
 
+import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.Change;
 import jakarta.validation.constraints.NotNull;
 
@@ -30,5 +31,9 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public record ChangeCreatedEvent(@NotNull UUID id, @NotNull Instant createdOn, @NotNull Change change) implements IHistoryEvent {
+public record ChangeCreatedEvent(
+        @NotNull UUID id,
+        @NotNull Instant createdOn,
+        @NotNull Profile createdBy,
+        @NotNull Change change) implements IHistoryEvent {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,6 +21,7 @@ package com.svalyn.studio.domain.resource;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
+import com.svalyn.studio.domain.authentication.ProfileProvider;
 import com.svalyn.studio.domain.authentication.UserIdProvider;
 import com.svalyn.studio.domain.resource.events.ResourceCreatedEvent;
 import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
@@ -106,7 +107,8 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
     }
 
     public void dispose() {
-        this.registerEvent(new ResourceDeletedEvent(UUID.randomUUID(), Instant.now(), this));
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new ResourceDeletedEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
     }
 
     public static Builder newResource() {
@@ -163,7 +165,8 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
             resource.lastModifiedBy = userId;
             resource.lastModifiedOn = now;
 
-            resource.registerEvent(new ResourceCreatedEvent(UUID.randomUUID(), now, resource));
+            var createdBy = ProfileProvider.get();
+            resource.registerEvent(new ResourceCreatedEvent(UUID.randomUUID(), now, createdBy, resource));
 
             return resource;
         }

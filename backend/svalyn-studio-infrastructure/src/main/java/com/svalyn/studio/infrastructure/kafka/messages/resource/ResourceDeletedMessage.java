@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -21,6 +21,7 @@ package com.svalyn.studio.infrastructure.kafka.messages.resource;
 
 import com.svalyn.studio.infrastructure.kafka.messages.IMessageContent;
 
+import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
@@ -29,5 +30,8 @@ import java.time.Instant;
  *
  * @author sbegaudeau
  */
-public record ResourceDeletedMessage(@NotNull Instant createdOn, @NotNull ResourceMessage resource) implements IMessageContent {
+public record ResourceDeletedMessage(
+        @NotNull Instant createdOn,
+        @NotNull AccountSummaryMessage createdBy,
+        @NotNull ResourceMessage resource) implements IMessageContent {
 }

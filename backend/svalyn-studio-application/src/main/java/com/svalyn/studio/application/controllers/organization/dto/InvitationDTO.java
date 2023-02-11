@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.organization.dto;
 
-import com.svalyn.studio.application.controllers.dto.Profile;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
@@ -33,9 +33,9 @@ import java.util.UUID;
 public record InvitationDTO(
         @NotNull UUID id,
         @NotNull UUID organizationId,
-        @NotNull Profile member,
+        @NotNull ProfileDTO member,
         @NotNull Instant createdOn,
-        @NotNull Profile createdBy,
+        @NotNull ProfileDTO createdBy,
         @NotNull Instant lastModifiedOn,
-        @NotNull Profile lastModifiedBy) {
+        @NotNull ProfileDTO lastModifiedBy) {
 }
