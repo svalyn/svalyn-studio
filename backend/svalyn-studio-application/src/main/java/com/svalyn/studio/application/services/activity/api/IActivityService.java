@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,9 +17,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export type ProjectViewPanel = 'Home' | 'Activity' | 'ChangeProposals' | 'Tags' | 'Settings';
+package com.svalyn.studio.application.services.activity.api;
 
-export interface ProjectDrawerProps {
-  projectIdentifier: string;
-  selectedPanel: ProjectViewPanel;
+import com.svalyn.studio.application.controllers.activity.dto.ActivityEntryDTO;
+import org.springframework.data.domain.Page;
+
+import java.util.UUID;
+
+/**
+ * Used to manipulate activity entries.
+ *
+ * @author sbegaudeau
+ */
+public interface IActivityService {
+
+    Page<ActivityEntryDTO> findAllByUsername(String username, int page, int rowsPerPage);
+
+    Page<ActivityEntryDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage);
+
+    Page<ActivityEntryDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage);
 }

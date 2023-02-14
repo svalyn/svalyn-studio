@@ -1,3 +1,6 @@
+DELETE FROM organization_activity;
+DELETE FROM project_activity;
+DELETE FROM activity;
 DELETE FROM notification;
 DELETE FROM change_proposal;
 DELETE FROM change_resource;

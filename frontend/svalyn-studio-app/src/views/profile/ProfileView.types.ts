@@ -34,8 +34,40 @@ export interface Profile {
   name: string;
   username: string;
   imageUrl: string;
+  activityEntries: ProfileActivityEntriesConnection;
 }
 
+export interface ProfileActivityEntriesConnection {
+  edges: ProfileActivityEntriesEdge[];
+}
+
+export interface ProfileActivityEntriesEdge {
+  node: ActivityEntry;
+}
+
+export interface ActivityEntry {
+  id: string;
+  kind: ActivityKind;
+  title: string;
+  description: string;
+  createdOn: string;
+  createdBy: ActivityEntryProfile;
+}
+
+type ActivityKind =
+  | 'ACCOUNT_CREATED'
+  | 'ORGANIZATION_CREATED'
+  | 'PROJECT_CREATED'
+  | 'PROJECT_DELETED'
+  | 'CHANGE_PROPOSAL_CREATED'
+  | 'CHANGE_PROPOSAL_REVIEWED'
+  | 'CHANGE_PROPOSAL_INTEGRATED';
+
+export interface ActivityEntryProfile {
+  name: string;
+  username: string;
+  imageUrl: string;
+}
 export interface GetViewerVariables {
   username: string;
 }

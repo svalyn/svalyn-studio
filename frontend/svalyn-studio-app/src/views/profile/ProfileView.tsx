@@ -26,6 +26,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { ActivityTimeline } from '../../activity/ActivityTimeline';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { GetViewerData, GetViewerVariables, ProfileViewState } from './ProfileView.types';
@@ -37,6 +38,22 @@ const getViewerQuery = gql`
         name
         username
         imageUrl
+        activityEntries(page: 0, rowsPerPage: 20) {
+          edges {
+            node {
+              id
+              kind
+              title
+              description
+              createdOn
+              createdBy {
+                name
+                username
+                imageUrl
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -67,7 +84,7 @@ export const ProfileView = () => {
     <>
       <div>
         <Navbar />
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
           <Toolbar />
           {state.viewer && state.viewer.profile ? (
             <Grid container spacing={2}>
@@ -85,7 +102,9 @@ export const ProfileView = () => {
                 <Typography variant="h4" gutterBottom>
                   Activity
                 </Typography>
-                <Typography variant="body1">No activity recorded for this profile yet</Typography>
+                <ActivityTimeline
+                  activityEntries={state.viewer.profile.activityEntries.edges.map((edge) => edge.node)}
+                />
               </Grid>
             </Grid>
           ) : null}

@@ -71,6 +71,7 @@ public class Project extends AbstractValidatingAggregateRoot<Project> implements
 
     private Instant lastModifiedOn;
 
+    @Override
     public UUID getId() {
         return id;
     }

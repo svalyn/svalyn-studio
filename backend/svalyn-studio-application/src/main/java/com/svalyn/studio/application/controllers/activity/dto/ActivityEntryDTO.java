@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,9 +17,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export type ProjectViewPanel = 'Home' | 'Activity' | 'ChangeProposals' | 'Tags' | 'Settings';
+package com.svalyn.studio.application.controllers.activity.dto;
 
-export interface ProjectDrawerProps {
-  projectIdentifier: string;
-  selectedPanel: ProjectViewPanel;
+import com.svalyn.studio.application.controllers.dto.ProfileDTO;
+import com.svalyn.studio.domain.activity.ActivityKind;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.Instant;
+import java.util.UUID;
+
+/**
+ * The activity entry DTO for the GraphQL layer.
+ *
+ * @author sbegaudeau
+ */
+public record ActivityEntryDTO(
+        @NotNull UUID id,
+        @NotNull ActivityKind kind,
+        @NotNull String title,
+        @NotNull String description,
+        @NotNull Instant createdOn,
+        @NotNull ProfileDTO createdBy) {
 }
