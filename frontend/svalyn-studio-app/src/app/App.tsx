@@ -52,6 +52,7 @@ export const App = () => {
             <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
             <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
             <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
+            <Route path="/projects/:projectIdentifier/activity" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/changeproposals" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/tags" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />

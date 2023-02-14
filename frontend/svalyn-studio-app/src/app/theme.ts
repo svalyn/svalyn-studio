@@ -17,6 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { purple } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
 import SourceSansProRegular from '../fonts/SourceSansPro-Regular.ttf';
@@ -26,6 +27,11 @@ export const theme = createTheme({
     mode: 'light',
     background: {
       default: '#f4f6f8',
+    },
+    done: {
+      main: purple[600],
+      light: purple[600],
+      dark: purple[600],
     },
   },
   typography: {
@@ -50,3 +56,13 @@ export const theme = createTheme({
     },
   },
 });
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    done: Palette['primary'];
+  }
+
+  interface PaletteOptions {
+    done: PaletteOptions['primary'];
+  }
+}

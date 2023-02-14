@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -24,6 +24,7 @@ import { styled } from '@mui/material/styles';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { ActivityTimeline } from '../../../activity/ActivityTimeline';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
@@ -50,6 +51,22 @@ const getOrganizationDashboardQuery = gql`
           name
           username
           imageUrl
+        }
+        activityEntries(page: 0, rowsPerPage: 20) {
+          edges {
+            node {
+              id
+              kind
+              title
+              description
+              createdOn
+              createdBy {
+                name
+                username
+                imageUrl
+              }
+            }
+          }
         }
         projects(page: $page, rowsPerPage: $rowsPerPage) {
           edges {
@@ -116,7 +133,7 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
     <>
       <Main>
         <Typography variant="h6" gutterBottom>
-          Dashboard
+          Projects
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={10}>
@@ -139,6 +156,14 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
                 rowsPerPage={state.rowsPerPage}
                 rowsPerPageOptions={[state.rowsPerPage]}
               />
+            ) : null}
+            {state.organization ? (
+              <>
+                <Typography variant="h6" gutterBottom>
+                  Activity
+                </Typography>
+                <ActivityTimeline activityEntries={state.organization.activityEntries.edges.map((edge) => edge.node)} />
+              </>
             ) : null}
           </Grid>
           <Grid item xs={2}>

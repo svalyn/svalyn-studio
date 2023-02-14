@@ -42,6 +42,22 @@ type ViewerOrganizationsEdge {
   node: Organization!
 }
 
+type Profile {
+  name: String!
+  username: String!
+  imageUrl: String!
+  activityEntries(page: Int!, rowsPerPage: Int!): ProfileActivityEntriesConnection!
+}
+
+type ProfileActivityEntriesConnection {
+  edges: [ProfileActivityEntriesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProfileActivityEntriesEdge {
+  node: ActivityEntry!
+}
+
 type Organization {
   identifier: ID!
   name: String!
@@ -53,6 +69,7 @@ type Organization {
   invitations(page: Int!, rowsPerPage: Int!): OrganizationInvitationsConnection!
   memberships(page: Int!, rowsPerPage: Int!): OrganizationMembershipsConnection!
   tags(page: Int!, rowsPerPage: Int!): OrganizationTagsConnection!
+  activityEntries(page: Int!, rowsPerPage: Int!): OrganizationActivityEntriesConnection!
   projects(page: Int!, rowsPerPage: Int!): OrganizationProjectsConnection!
 }
 
@@ -99,12 +116,6 @@ type Membership {
   lastModifiedBy: Profile!
 }
 
-type Profile {
-  name: String!
-  username: String!
-  imageUrl: String!
-}
-
 type OrganizationTagsConnection {
   edges: [OrganizationTagsEdge!]!
   pageInfo: PageInfo!
@@ -118,6 +129,34 @@ type Tag {
   id: ID!
   key: String!
   value: String!
+}
+
+type OrganizationActivityEntriesConnection {
+  edges: [OrganizationActivityEntriesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type OrganizationActivityEntriesEdge {
+  node: ActivityEntry!
+}
+
+type ActivityEntry {
+  id: ID!
+  kind: ActivityKind!
+  title: String!
+  description: String!
+  createdOn: Instant!
+  createdBy: Profile!
+}
+
+enum ActivityKind {
+  ACCOUNT_CREATED
+  ORGANIZATION_CREATED
+  PROJECT_CREATED
+  PROJECT_DELETED
+  CHANGE_PROPOSAL_CREATED
+  CHANGE_PROPOSAL_REVIEWED
+  CHANGE_PROPOSAL_INTEGRATED
 }
 
 type OrganizationProjectsConnection {
@@ -140,6 +179,7 @@ type Project {
   lastModifiedOn: Instant!
   lastModifiedBy: Profile!
   tags(page: Int!, rowsPerPage: Int!): ProjectTagsConnection!
+  activityEntries(page: Int!, rowsPerPage: Int!): ProjectActivityEntriesConnection!
   branch(name: String!): Branch
   branches(page: Int!, rowsPerPage: Int!): ProjectBranchesConnection!
   changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
@@ -152,6 +192,15 @@ type ProjectTagsConnection {
 
 type ProjectTagsEdge {
   node: Tag!
+}
+
+type ProjectActivityEntriesConnection {
+  edges: [ProjectActivityEntriesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProjectActivityEntriesEdge {
+  node: ActivityEntry!
 }
 
 type ProjectBranchesConnection {

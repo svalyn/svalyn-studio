@@ -21,6 +21,7 @@ import DifferenceIcon from '@mui/icons-material/Difference';
 import HomeIcon from '@mui/icons-material/Home';
 import LabelIcon from '@mui/icons-material/Label';
 import SettingsIcon from '@mui/icons-material/Settings';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -47,6 +48,17 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
               <HomeIcon />
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem>
+        <ListItem selected={selectedPanel === 'Activity'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            component={RouterLink}
+            to={`/projects/${projectIdentifier}/activity`}
+            sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
+              <TimelineIcon />
             </ListItemIcon>
           </ListItemButton>
         </ListItem>

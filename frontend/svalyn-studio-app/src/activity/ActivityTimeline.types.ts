@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,9 +17,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export type ProjectViewPanel = 'Home' | 'Activity' | 'ChangeProposals' | 'Tags' | 'Settings';
-
-export interface ProjectDrawerProps {
-  projectIdentifier: string;
-  selectedPanel: ProjectViewPanel;
+export interface ActivityTimelineProps {
+  activityEntries: ActivityEntry[];
 }
+
+export interface ActivityEntry {
+  id: string;
+  kind: ActivityKind;
+  title: string;
+  description: string;
+  createdOn: string;
+  createdBy: Profile;
+}
+
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
+}
+
+type ActivityKind =
+  | 'ACCOUNT_CREATED'
+  | 'ORGANIZATION_CREATED'
+  | 'PROJECT_CREATED'
+  | 'PROJECT_DELETED'
+  | 'CHANGE_PROPOSAL_CREATED'
+  | 'CHANGE_PROPOSAL_REVIEWED'
+  | 'CHANGE_PROPOSAL_INTEGRATED';

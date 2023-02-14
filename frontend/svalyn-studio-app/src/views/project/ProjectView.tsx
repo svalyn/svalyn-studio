@@ -24,6 +24,7 @@ import { matchPath, useLocation, useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { NotFoundView } from '../notfound/NotFoundView';
+import { ProjectActivity } from './activity/ProjectActivity';
 import { ProjectChangeProposal } from './changeproposals/ProjectChangeProposal';
 import { ProjectHome } from './home/ProjectHome';
 import { ProjectDrawer } from './ProjectDrawer';
@@ -49,12 +50,15 @@ const getProjectQuery = gql`
 
 export const ProjectView = () => {
   const location = useLocation();
+  const activityMatch = matchPath('/projects/:projectId/activity', location.pathname);
   const changeProposalsMatch = matchPath('/projects/:projectId/changeproposals', location.pathname);
   const tagsMatch = matchPath('/projects/:projectId/tags', location.pathname);
   const settingsMatch = matchPath('/projects/:projectId/settings', location.pathname);
 
   let panel: ProjectViewPanel = 'Home';
-  if (changeProposalsMatch) {
+  if (activityMatch) {
+    panel = 'Activity';
+  } else if (changeProposalsMatch) {
     panel = 'ChangeProposals';
   } else if (tagsMatch) {
     panel = 'Tags';
@@ -103,6 +107,8 @@ export const ProjectView = () => {
       panelElement = (
         <ProjectHome projectIdentifier={state.project.identifier} role={state.project.organization.role} />
       );
+    } else if (state.panel === 'Activity') {
+      panelElement = <ProjectActivity projectIdentifier={state.project.identifier} />;
     } else if (state.panel === 'ChangeProposals') {
       panelElement = (
         <ProjectChangeProposal projectIdentifier={state.project.identifier} role={state.project.organization.role} />

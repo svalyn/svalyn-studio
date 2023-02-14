@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,9 +17,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export type ProjectViewPanel = 'Home' | 'Activity' | 'ChangeProposals' | 'Tags' | 'Settings';
+import Timeline from '@mui/lab/Timeline';
+import { timelineOppositeContentClasses } from '@mui/lab/TimelineOppositeContent';
+import { ActivityTimelineProps } from './ActivityTimeline.types';
+import { ActivityTimelineItem } from './ActivityTimelineItem';
 
-export interface ProjectDrawerProps {
-  projectIdentifier: string;
-  selectedPanel: ProjectViewPanel;
-}
+export const ActivityTimeline = ({ activityEntries }: ActivityTimelineProps) => {
+  return (
+    <Timeline
+      sx={{
+        [`& .${timelineOppositeContentClasses.root}`]: {
+          flex: 0.1,
+        },
+      }}
+    >
+      {activityEntries.map((activityItem) => {
+        return (
+          <ActivityTimelineItem
+            key={activityItem.id}
+            date={new Date(activityItem.createdOn)}
+            kind={activityItem.kind}
+            createdBy={activityItem.createdBy}
+            title={activityItem.title}
+            description={activityItem.description}
+          />
+        );
+      })}
+    </Timeline>
+  );
+};
