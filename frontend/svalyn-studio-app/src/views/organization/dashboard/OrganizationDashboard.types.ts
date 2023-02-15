@@ -21,6 +21,18 @@ export interface OrganizationDashboardProps {
   organizationIdentifier: string;
 }
 
+export interface ProjectsAreaProps {
+  projects: Project[];
+  pageInfo: PageInfo;
+  page: number;
+  rowsPerPage: number;
+  onPageChange: (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) => void;
+}
+
+export interface ActivityAreaProps {
+  activityEntries: ActivityEntry[];
+}
+
 export interface OrganizationDashboardState {
   organization: Organization | null;
   page: number;

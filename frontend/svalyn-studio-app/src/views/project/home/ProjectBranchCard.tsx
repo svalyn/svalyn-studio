@@ -17,6 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import DifferenceIcon from '@mui/icons-material/Difference';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -126,7 +127,12 @@ const ProjectEmptyBranchCard = ({ projectIdentifier, branch }: ProjectEmptyBranc
           There are no resource in the branch {branch.name}, please create and integrate a change proposal to add
           resources to the project
         </Typography>
-        <Button variant="outlined" component={RouterLink} to={`/projects/${projectIdentifier}/new/changeproposal`}>
+        <Button
+          variant="contained"
+          startIcon={<DifferenceIcon />}
+          component={RouterLink}
+          to={`/projects/${projectIdentifier}/new/changeproposal`}
+        >
           New change proposal
         </Button>
       </Box>

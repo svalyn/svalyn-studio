@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,8 @@
 import { gql, useQuery } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import Box from '@mui/material/Box';
 import Button, { ButtonProps } from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -106,7 +108,9 @@ export const OrganizationPicker = ({ organization }: OrganizationPickerProps) =>
           endIcon={<ArrowDropDownIcon />}
           onClick={openMenu}
         >
-          {state.selectedOrganization.name}
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
+            <CorporateFareIcon fontSize="small" /> {state.selectedOrganization.name}
+          </Box>
         </ContrastButton>
       ) : null}
       <Menu open={Boolean(state.anchorElement)} anchorEl={state.anchorElement} onClose={closeMenu}>
@@ -117,7 +121,9 @@ export const OrganizationPicker = ({ organization }: OrganizationPickerProps) =>
             to={`/orgs/${organization.identifier}`}
             onClick={closeMenu}
           >
-            {organization.name}
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
+              <CorporateFareIcon /> {organization.name}
+            </Box>
           </MenuItem>
         ))}
         {state.organizations.length > 0 ? <Divider /> : null}

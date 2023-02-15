@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -28,7 +28,7 @@ export const LoginWithGithub = () => {
   return (
     <Box>
       <Typography variant="h6">Login</Typography>
-      <Typography variant="h4">Welcome to Svalyn!</Typography>
+      <Typography variant="h4">Welcome</Typography>
       <Typography variant="body1" marginBottom="1em">
         Let's begin working on your domain to build awesome tools.
       </Typography>

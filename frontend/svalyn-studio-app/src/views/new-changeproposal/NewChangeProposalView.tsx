@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,6 +18,7 @@
  */
 
 import { gql, useMutation } from '@apollo/client';
+import DifferenceIcon from '@mui/icons-material/Difference';
 import FolderIcon from '@mui/icons-material/Folder';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -178,7 +179,7 @@ export const NewChangeProposalView = () => {
             <Toolbar />
             <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
               <Stack spacing={3}>
-                <Typography variant="h4">Let's create a change proposal!</Typography>
+                <Typography variant="h4">Let's create a change proposal</Typography>
                 <TextField
                   label="Name"
                   helperText="The change that you want to perform"
@@ -213,8 +214,13 @@ export const NewChangeProposalView = () => {
                     ))}
                   </List>
                 ) : null}
-                <Button variant="contained" onClick={handleCreateChangeProposal} disabled={acceptedFiles.length === 0}>
-                  Create
+                <Button
+                  variant="contained"
+                  startIcon={<DifferenceIcon />}
+                  onClick={handleCreateChangeProposal}
+                  disabled={acceptedFiles.length === 0}
+                >
+                  Create change proposal
                 </Button>
                 <Link
                   component={RouterLink}

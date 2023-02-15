@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -86,9 +86,10 @@ export const LoginView = () => {
           <Grid item xs={7}>
             <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
               <Typography variant="h6">Get started</Typography>
-              <Typography variant="h4">Collaborate on your domain with Svalyn</Typography>
+              <Typography variant="h4">Collaborate on your domain</Typography>
               <Typography variant="body1" marginBottom="1em">
-                Manage the complexity of your domain with Svalyn to build your tools.
+                Manage the complexity of your domain to build your business. Create organizations and projects to manage
+                your various resources with other collaborators.
               </Typography>
               <Button variant="outlined" startIcon={<HelpOutlineIcon />} component={Link} to="/help">
                 Learn more
