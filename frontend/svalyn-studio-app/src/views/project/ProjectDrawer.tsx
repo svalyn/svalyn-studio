@@ -19,8 +19,8 @@
 
 import DifferenceIcon from '@mui/icons-material/Difference';
 import HomeIcon from '@mui/icons-material/Home';
-import LabelIcon from '@mui/icons-material/Label';
 import SettingsIcon from '@mui/icons-material/Settings';
+import TagIcon from '@mui/icons-material/Tag';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -80,7 +80,7 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
             sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
-              <LabelIcon />
+              <TagIcon />
             </ListItemIcon>
           </ListItemButton>
         </ListItem>

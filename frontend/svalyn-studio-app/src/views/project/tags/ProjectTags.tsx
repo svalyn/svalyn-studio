@@ -19,6 +19,7 @@
 
 import { gql, useMutation, useQuery } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
+import TagIcon from '@mui/icons-material/Tag';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -31,6 +32,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -154,105 +156,118 @@ export const ProjectTags = ({ projectIdentifier, role }: ProjectTagsProps) => {
 
   return (
     <>
-      <Container
-        maxWidth="lg"
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: (theme) => theme.spacing(2),
-          paddingTop: (theme) => theme.spacing(4),
-        }}
-      >
-        <Paper
+      <div>
+        <Toolbar
+          sx={{
+            backgroundColor: 'white',
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+            <TagIcon fontSize="large" />
+            <Typography variant="h4">Tags</Typography>
+          </Box>
+        </Toolbar>
+        <Container
+          maxWidth="lg"
           sx={{
             display: 'flex',
             flexDirection: 'column',
             gap: (theme) => theme.spacing(2),
-            padding: (theme) => theme.spacing(3),
+            paddingTop: (theme) => theme.spacing(4),
           }}
         >
-          <Typography variant="h5">Tags</Typography>
-          <Box
+          <Paper
             sx={{
-              display: 'grid',
-              gridTemplateRows: '1fr',
-              gridTemplateColumns: '1fr 1fr min-content',
+              display: 'flex',
+              flexDirection: 'column',
               gap: (theme) => theme.spacing(2),
+              padding: (theme) => theme.spacing(3),
             }}
           >
-            <TextField
-              label="Key"
-              value={state.key}
-              onChange={handleKeyChange}
-              size="small"
-              disabled={role === 'NONE'}
-            />
-            <TextField
-              label="Value"
-              value={state.value}
-              onChange={handleValueChange}
-              size="small"
-              disabled={role === 'NONE'}
-            />
-            <Button
-              variant="outlined"
-              disabled={!isValidNewTag || role === 'NONE'}
-              onClick={handleAddTag}
-              sx={{ whiteSpace: 'nowrap' }}
-              size="small"
-              endIcon={<AddIcon />}
-            >
-              Add new tag
-            </Button>
-          </Box>
-        </Paper>
-        <Box>
-          {data && data.viewer && data.viewer.project && data.viewer.project.tags.edges.length > 0 ? (
-            <>
-              <TableContainer component={Paper} variant="outlined">
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width="50%">Key</TableCell>
-                      <TableCell width="50%">Value</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.viewer.project.tags.edges
-                      .map((edge) => edge.node)
-                      .map((tag) => (
-                        <TableRow key={tag.id}>
-                          <TableCell>{tag.key}</TableCell>
-                          <TableCell>{tag.value}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                sx={{ borderBottom: 'none' }}
-                component="div"
-                onPageChange={onPageChange}
-                rowsPerPageOptions={[10]}
-                rowsPerPage={10}
-                page={state.page}
-                count={data.viewer.project.tags.pageInfo.count}
-              />
-            </>
-          ) : (
-            <Typography
+            <Typography variant="h5">Tags</Typography>
+            <Box
               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: (theme) => theme.spacing(15),
+                display: 'grid',
+                gridTemplateRows: '1fr',
+                gridTemplateColumns: '1fr 1fr min-content',
+                gap: (theme) => theme.spacing(2),
               }}
             >
-              No tags added yet
-            </Typography>
-          )}
-        </Box>
-      </Container>
+              <TextField
+                label="Key"
+                value={state.key}
+                onChange={handleKeyChange}
+                size="small"
+                disabled={role === 'NONE'}
+              />
+              <TextField
+                label="Value"
+                value={state.value}
+                onChange={handleValueChange}
+                size="small"
+                disabled={role === 'NONE'}
+              />
+              <Button
+                variant="outlined"
+                disabled={!isValidNewTag || role === 'NONE'}
+                onClick={handleAddTag}
+                sx={{ whiteSpace: 'nowrap' }}
+                size="small"
+                endIcon={<AddIcon />}
+              >
+                Add new tag
+              </Button>
+            </Box>
+          </Paper>
+          <Box>
+            {data && data.viewer && data.viewer.project && data.viewer.project.tags.edges.length > 0 ? (
+              <>
+                <TableContainer component={Paper} variant="outlined">
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell width="50%">Key</TableCell>
+                        <TableCell width="50%">Value</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.viewer.project.tags.edges
+                        .map((edge) => edge.node)
+                        .map((tag) => (
+                          <TableRow key={tag.id}>
+                            <TableCell>{tag.key}</TableCell>
+                            <TableCell>{tag.value}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  sx={{ borderBottom: 'none' }}
+                  component="div"
+                  onPageChange={onPageChange}
+                  rowsPerPageOptions={[10]}
+                  rowsPerPage={10}
+                  page={state.page}
+                  count={data.viewer.project.tags.pageInfo.count}
+                />
+              </>
+            ) : (
+              <Typography
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: (theme) => theme.spacing(15),
+                }}
+              >
+                No tags added yet
+              </Typography>
+            )}
+          </Box>
+        </Container>
+      </div>
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );

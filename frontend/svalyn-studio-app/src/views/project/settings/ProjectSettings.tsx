@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,6 +18,7 @@
  */
 
 import { gql, useMutation } from '@apollo/client';
+import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -167,12 +168,13 @@ export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProp
         <Toolbar
           sx={{
             backgroundColor: 'white',
-            borderBottom: '1px solid #dee2e7',
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
           }}
         >
-          <Typography variant="h4" sx={{ marginRight: '2rem' }}>
-            Settings
-          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+            <SettingsIcon fontSize="large" />
+            <Typography variant="h4">Settings</Typography>
+          </Box>
         </Toolbar>
         <Container maxWidth="lg">
           <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>

@@ -18,6 +18,8 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
+import ClassIcon from '@mui/icons-material/Class';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import Box, { BoxProps } from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
@@ -29,10 +31,12 @@ import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
 import {
+  ActivityAreaProps,
   GetOrganizationDashboardData,
   GetOrganizationDashboardVariables,
   OrganizationDashboardProps,
   OrganizationDashboardState,
+  ProjectsAreaProps,
 } from './OrganizationDashboard.types';
 import { ProjectCard } from './ProjectCard';
 
@@ -127,42 +131,25 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
   };
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
-  const projects = state.organization?.projects.edges.map((edge) => edge.node) ?? [];
   return (
     <>
       <Main>
-        <Typography variant="h6" gutterBottom>
-          Projects
-        </Typography>
         <Grid container spacing={2}>
           <Grid item xs={10}>
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: (theme) => theme.spacing(2) }}>
-              {projects.map((project) => (
-                <ProjectCard
-                  key={project.identifier}
-                  identifier={project.identifier}
-                  name={project.name}
-                  description={project.description}
-                />
-              ))}
-            </Box>
-            {state.organization ? (
-              <TablePagination
-                component="div"
-                count={state.organization.projects.pageInfo.count}
-                page={state.page}
-                onPageChange={handlePageChange}
-                rowsPerPage={state.rowsPerPage}
-                rowsPerPageOptions={[state.rowsPerPage]}
-              />
-            ) : null}
             {state.organization ? (
               <>
-                <Typography variant="h6" gutterBottom>
-                  Activity
-                </Typography>
-                <ActivityTimeline activityEntries={state.organization.activityEntries.edges.map((edge) => edge.node)} />
+                {state.organization.projects.edges.length > 0 ? (
+                  <ProjectsArea
+                    projects={state.organization.projects.edges.map((edge) => edge.node)}
+                    pageInfo={state.organization.projects.pageInfo}
+                    page={state.page}
+                    rowsPerPage={state.rowsPerPage}
+                    onPageChange={handlePageChange}
+                  />
+                ) : (
+                  <EmptyProjectsArea />
+                )}
+                <ActivityArea activityEntries={state.organization.activityEntries.edges.map((edge) => edge.node)} />
               </>
             ) : null}
           </Grid>
@@ -181,5 +168,92 @@ export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDa
       </Main>
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
+  );
+};
+
+const ProjectsArea = ({ projects, pageInfo, page, rowsPerPage, onPageChange }: ProjectsAreaProps) => {
+  return (
+    <div>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: (theme) => theme.spacing(1),
+          paddingBottom: (theme) => theme.spacing(2),
+        }}
+      >
+        <ClassIcon fontSize="small" />
+        <Typography variant="h6">Projects</Typography>
+      </Box>
+      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: (theme) => theme.spacing(2) }}>
+        {projects.map((project) => (
+          <ProjectCard
+            key={project.identifier}
+            identifier={project.identifier}
+            name={project.name}
+            description={project.description}
+          />
+        ))}
+      </Box>
+      <TablePagination
+        component="div"
+        count={pageInfo.count}
+        page={page}
+        onPageChange={onPageChange}
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[rowsPerPage]}
+      />
+    </div>
+  );
+};
+
+const EmptyProjectsArea = () => {
+  return (
+    <div>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: (theme) => theme.spacing(1),
+          paddingBottom: (theme) => theme.spacing(2),
+        }}
+      >
+        <ClassIcon fontSize="small" />
+        <Typography variant="h6">Projects</Typography>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: (theme) => theme.spacing(30),
+        }}
+      >
+        <Typography variant="h6">No project found, create a new project to get started </Typography>
+      </Box>
+    </div>
+  );
+};
+
+const ActivityArea = ({ activityEntries }: ActivityAreaProps) => {
+  return (
+    <div>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: (theme) => theme.spacing(1),
+          paddingBottom: (theme) => theme.spacing(2),
+        }}
+      >
+        <TimelineIcon fontSize="small" />
+        <Typography variant="h6">Activity</Typography>
+      </Box>
+      <ActivityTimeline activityEntries={activityEntries} />
+    </div>
   );
 };

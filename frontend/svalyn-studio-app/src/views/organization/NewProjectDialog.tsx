@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,6 +18,7 @@
  */
 
 import { gql, useMutation } from '@apollo/client';
+import ClassIcon from '@mui/icons-material/Class';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -195,9 +196,16 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
                 </Typography>
               </div>
               <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleCreateProject} disabled={!state.isFormValid}>
-                  Create
+                <Button variant="outlined" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  startIcon={<ClassIcon />}
+                  variant="contained"
+                  onClick={handleCreateProject}
+                  disabled={!state.isFormValid}
+                >
+                  Create project
                 </Button>
               </Stack>
             </Grid>

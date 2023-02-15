@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import AddIcon from '@mui/icons-material/Add';
+import ClassIcon from '@mui/icons-material/Class';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TagIcon from '@mui/icons-material/Tag';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -107,20 +113,29 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
           }}
         >
-          <Typography variant="h4" sx={{ marginRight: '2rem' }}>
-            {organization.name}
-          </Typography>
-          <Tabs value={state.activeTab} onChange={handleTabChanged}>
-            <Tab label="Dashboard" {...a11yProps(0)} />
-            <Tab label="Tags" {...a11yProps(1)} />
-            <Tab label="Members" {...a11yProps(2)} />
-            <Tab label="Settings" {...a11yProps(3)} />
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+            <CorporateFareIcon fontSize="large" />
+            <Typography variant="h4" sx={{ marginRight: '2rem' }}>
+              {organization.name}
+            </Typography>
+          </Box>
+          <Tabs value={state.activeTab} onChange={handleTabChanged} sx={{ alignSelf: 'flex-end' }}>
+            <Tab label="Dashboard" icon={<HomeIcon />} iconPosition="start" {...a11yProps(0)} sx={{ minHeight: 0 }} />
+            <Tab label="Tags" icon={<TagIcon />} iconPosition="start" {...a11yProps(1)} sx={{ minHeight: 0 }} />
+            <Tab label="Members" icon={<PersonIcon />} iconPosition="start" {...a11yProps(2)} sx={{ minHeight: 0 }} />
+            <Tab
+              label="Settings"
+              icon={<SettingsIcon />}
+              iconPosition="start"
+              {...a11yProps(3)}
+              sx={{ minHeight: 0 }}
+            />
           </Tabs>
           <Button
-            variant="outlined"
+            variant="contained"
             sx={{ marginLeft: 'auto' }}
             size="small"
-            endIcon={<AddIcon />}
+            startIcon={<ClassIcon />}
             onClick={openNewProjectDialog}
             disabled={organization.role === 'NONE'}
           >

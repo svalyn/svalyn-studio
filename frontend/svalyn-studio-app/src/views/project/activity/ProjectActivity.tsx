@@ -18,7 +18,10 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { ActivityTimeline } from '../../../activity/ActivityTimeline';
@@ -75,22 +78,32 @@ export const ProjectActivity = ({ projectIdentifier }: ProjectActivityProps) => 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
   return (
     <>
-      <Container
-        maxWidth="lg"
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: (theme) => theme.spacing(2),
-          paddingTop: (theme) => theme.spacing(4),
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          Activity
-        </Typography>
-        {data?.viewer.project ? (
-          <ActivityTimeline activityEntries={data.viewer.project.activityEntries.edges.map((edge) => edge.node)} />
-        ) : null}
-      </Container>
+      <div>
+        <Toolbar
+          sx={{
+            backgroundColor: 'white',
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+            <TimelineIcon fontSize="large" />
+            <Typography variant="h4">Activity</Typography>
+          </Box>
+        </Toolbar>
+        <Container
+          maxWidth="lg"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: (theme) => theme.spacing(2),
+            paddingTop: (theme) => theme.spacing(4),
+          }}
+        >
+          {data?.viewer.project ? (
+            <ActivityTimeline activityEntries={data.viewer.project.activityEntries.edges.map((edge) => edge.node)} />
+          ) : null}
+        </Container>
+      </div>
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );

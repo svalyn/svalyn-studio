@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,6 +18,7 @@
  */
 
 import { gql, useMutation } from '@apollo/client';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
@@ -168,8 +169,13 @@ export const NewOrganizationView = () => {
                     'aria-label': 'Organization Identifier',
                   }}
                 />
-                <Button variant="contained" onClick={handleCreateOrganization} disabled={!state.isFormValid}>
-                  Create
+                <Button
+                  variant="contained"
+                  startIcon={<CorporateFareIcon />}
+                  onClick={handleCreateOrganization}
+                  disabled={!state.isFormValid}
+                >
+                  Create organization
                 </Button>
                 <Link component={RouterLink} to="/" variant="body2" underline="hover" align="center">
                   Back to the homepage
