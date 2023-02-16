@@ -32,7 +32,7 @@
 
     <groupId>svalyn</groupId>
     <artifactId>svalyn-studio-infrastructure</artifactId>
-    <version>2023.3.0-SNAPSHOT</version>
+    <version>2023.3.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -77,12 +77,12 @@
         <dependency>
             <groupId>svalyn</groupId>
             <artifactId>svalyn-studio-domain</artifactId>
-            <version>2023.3.0-SNAPSHOT</version>
+            <version>2023.3.0</version>
         </dependency>
         <dependency>
             <groupId>svalyn</groupId>
             <artifactId>svalyn-studio-application</artifactId>
-            <version>2023.3.0-SNAPSHOT</version>
+            <version>2023.3.0</version>
         </dependency>
     </dependencies>
 
