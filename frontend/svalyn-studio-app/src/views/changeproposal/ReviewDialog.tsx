@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -54,7 +54,7 @@ const performReviewMutation = gql`
 
 export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: ReviewDialogProps) => {
   const [state, setState] = useState<ReviewDialogState>({
-    content: '',
+    review: '',
     status: 'APPROVED',
     message: null,
   });
@@ -79,11 +79,11 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
     }
   }, [loading, data, error]);
 
-  const handleContentChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
+  const handleReviewChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
     const {
       target: { value },
     } = event;
-    setState((prevState) => ({ ...prevState, content: value }));
+    setState((prevState) => ({ ...prevState, review: value }));
   };
 
   const handleStatusChange = (_: React.ChangeEvent<HTMLInputElement>, value: string) => {
@@ -97,7 +97,7 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
       input: {
         id: uuid(),
         changeProposalId,
-        message: state.content,
+        message: state.review,
         status: state.status,
       },
     };
@@ -115,8 +115,8 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
             Leave a message on this change proposal
           </DialogContentText>
           <TextField
-            value={state.content}
-            onChange={handleContentChange}
+            value={state.review}
+            onChange={handleReviewChange}
             label="Message"
             variant="outlined"
             multiline
