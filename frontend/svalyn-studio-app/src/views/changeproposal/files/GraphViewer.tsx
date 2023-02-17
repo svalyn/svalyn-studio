@@ -48,6 +48,8 @@ export const GraphViewer = ({ resource, downloadURL }: GraphViewerProps) => {
     [setEdges]
   );
 
+  const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+
   return (
     <Paper
       id={resource.id}
@@ -67,7 +69,7 @@ export const GraphViewer = ({ resource, downloadURL }: GraphViewerProps) => {
           py: '2px',
         }}
       >
-        <Typography variant="subtitle1">{resource.name}</Typography>
+        <Typography variant="subtitle1">{fullpath}</Typography>
         <div>
           <IconButton component="a" type="application/octet-stream" href={downloadURL}>
             <DownloadIcon fontSize="small" />

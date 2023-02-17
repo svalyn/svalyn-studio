@@ -125,7 +125,7 @@ public class ChangeService implements IChangeService {
             var change = optionalChange.get();
             return change.getChangeResources().stream()
                     .flatMap(changeResource -> this.resourceRepository.findById(changeResource.getResource().getId())
-                            .map(resource -> new ChangeResourceDTO(changeResource.getId(), resource.getName(), new String(resource.getContent(), StandardCharsets.UTF_8)))
+                            .map(resource -> new ChangeResourceDTO(changeResource.getId(), resource.getName(), resource.getPath(), resource.getContentType(), new String(resource.getContent(), StandardCharsets.UTF_8)))
                             .stream())
                     .toList();
         }

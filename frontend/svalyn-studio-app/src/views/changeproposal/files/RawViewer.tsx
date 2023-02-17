@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -26,6 +26,7 @@ import Typography from '@mui/material/Typography';
 import { RawViewerProps } from './RawViewer.types';
 
 export const RawViewer = ({ resource, downloadURL }: RawViewerProps) => {
+  const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
   return (
     <Paper
       id={resource.id}
@@ -45,7 +46,7 @@ export const RawViewer = ({ resource, downloadURL }: RawViewerProps) => {
           py: '2px',
         }}
       >
-        <Typography variant="subtitle1">{resource.name}</Typography>
+        <Typography variant="subtitle1">{fullpath}</Typography>
         <div>
           <IconButton component="a" type="application/octet-stream" href={downloadURL}>
             <DownloadIcon fontSize="small" />

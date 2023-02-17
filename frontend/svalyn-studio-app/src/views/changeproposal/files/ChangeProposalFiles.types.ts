@@ -60,8 +60,12 @@ export interface ChangeResourcesEdge {
 export interface Resource {
   id: string;
   name: string;
+  path: string;
+  contentType: ContentType;
   content: string;
 }
+
+type ContentType = 'TEXT_PLAIN' | 'UNKNOWN';
 
 export interface GetChangeProposalVariables {
   id: string;

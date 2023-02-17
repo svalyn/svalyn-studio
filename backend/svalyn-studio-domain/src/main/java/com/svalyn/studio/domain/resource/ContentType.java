@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,14 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface RawViewerProps {
-  resource: Resource;
-  downloadURL: string;
-}
+package com.svalyn.studio.domain.resource;
 
-export interface Resource {
-  id: string;
-  name: string;
-  path: string;
-  content: string;
+/**
+ * Used to describe the type of content of a resource.
+ *
+ * @author sbegaudeau
+ */
+public enum ContentType {
+    TEXT_PLAIN
 }

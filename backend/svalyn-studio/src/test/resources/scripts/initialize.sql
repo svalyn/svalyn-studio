@@ -30,13 +30,13 @@ INSERT INTO project (id, identifier, name, description, read_me, organization_id
 ('c0167908-8030-4679-a855-c057012ef27c', 'mockproject', 'Mock Project', 'Project description', 'README', 'a9261e91-fb20-4d48-8731-d5297e441315', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-06 23:22:18.863949', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-06 23:22:18.863949');
 
 INSERT INTO resource (id, name, content, path, content_type, created_by, created_on, last_modified_by, last_modified_on) VALUES
-('7f67d4a4-c74e-4dee-94ae-29ac7ebc3d43', 'test0.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '', 'text/plain', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-17 21:18:19.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-17 21:18:19.331943');
+('7f67d4a4-c74e-4dee-94ae-29ac7ebc3d43', 'test0.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '', 'TEXT_PLAIN', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-17 21:18:19.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-17 21:18:19.331943');
 
 INSERT INTO resource (id, name, content, path, content_type, created_by, created_on, last_modified_by, last_modified_on) VALUES
-('8d3ac60f-e6e6-4bcc-b795-19f909fe5142', 'test1.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '', 'text/plain', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 08:11:25.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 08:11:25.331943');
+('8d3ac60f-e6e6-4bcc-b795-19f909fe5142', 'test1.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '', 'TEXT_PLAIN', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 08:11:25.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 08:11:25.331943');
 
 INSERT INTO resource (id, name, content, path, content_type, created_by, created_on, last_modified_by, last_modified_on) VALUES
-('ee466a5c-2b20-42d1-b442-c72b0f33833c', 'test2.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '', 'text/plain', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-23 18:11:25.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-23 18:11:25.331943');
+('ee466a5c-2b20-42d1-b442-c72b0f33833c', 'test2.txt', decode('013d7d16d7ad4fefb61bd95b765c8ceb', 'hex'), '', 'TEXT_PLAIN', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-23 18:11:25.331943', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-23 18:11:25.331943');
 
 INSERT INTO change (id, parent_id, name, created_by, created_on, last_modified_by, last_modified_on) VALUES
 ('aa20af7d-6159-4383-9e21-9eb377f1e6e8', null, 'Initial contribution', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 23:34:21.212', '7ba7bda7-13b9-422a-838b-e45a3597e952', '2022-10-22 23:34:21.212');

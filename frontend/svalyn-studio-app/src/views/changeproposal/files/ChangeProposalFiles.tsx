@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -52,6 +52,8 @@ const getChangeProposalFilesQuery = gql`
               node {
                 id
                 name
+                path
+                contentType
                 content
               }
             }
@@ -136,13 +138,13 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                 .map((edge) => edge.node)
                 .map((resource) => (
                   <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={resource.id}>
-                    {resource.name.endsWith('.graph.json') ? (
-                      <GraphViewer
+                    {resource.contentType === 'TEXT_PLAIN' ? (
+                      <RawViewer
                         resource={resource}
                         downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
                       />
                     ) : (
-                      <RawViewer
+                      <GraphViewer
                         resource={resource}
                         downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
                       />

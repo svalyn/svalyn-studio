@@ -20,6 +20,7 @@
 package com.svalyn.studio.application.controllers.history;
 
 import com.svalyn.studio.application.services.history.api.IChangeService;
+import com.svalyn.studio.domain.resource.ContentType;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -55,19 +56,21 @@ public class ChangeResourcesController {
     public ResponseEntity<Resource> getModel(@PathVariable UUID changeId, @PathVariable UUID resourceId) {
         var optionalResource = this.changeService.findChangeResource(changeId, resourceId);
         if (optionalResource.isPresent()) {
-            var downloadableModel = optionalResource.get();
+            var resource = optionalResource.get();
 
             var contentDisposition = ContentDisposition.builder("attachement")
-                    .filename(downloadableModel.getName())
+                    .filename(resource.getName())
                     .build();
 
             var httpHeader = new HttpHeaders();
             httpHeader.setContentDisposition(contentDisposition);
-            httpHeader.setContentType(MediaType.APPLICATION_XML);
-            httpHeader.setContentLength(downloadableModel.getContent().length);
+            if (resource.getContentType().equals(ContentType.TEXT_PLAIN)) {
+                httpHeader.setContentType(MediaType.TEXT_PLAIN);
+            }
+            httpHeader.setContentLength(resource.getContent().length);
 
-            var resource = new InputStreamResource(new ByteArrayInputStream(downloadableModel.getContent()));
-            return new ResponseEntity<>(resource, httpHeader, HttpStatus.OK);
+            var inputStreamResource = new InputStreamResource(new ByteArrayInputStream(resource.getContent()));
+            return new ResponseEntity<>(inputStreamResource, httpHeader, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }

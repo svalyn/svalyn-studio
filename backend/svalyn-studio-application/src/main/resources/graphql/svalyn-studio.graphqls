@@ -283,7 +283,13 @@ type ChangeResourcesEdge {
 type ChangeResource {
   id: ID!
   name: String!
+  path: String!
   content: String!
+  contentType: ContentType!
+}
+
+enum ContentType {
+  TEXT_PLAIN
 }
 
 type ChangeProposalReviewsConnection {
