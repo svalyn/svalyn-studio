@@ -25,7 +25,7 @@ export interface ReviewDialogProps {
 }
 
 export interface ReviewDialogState {
-  content: string;
+  review: string;
   status: ReviewStatus;
   message: string | null;
 }
