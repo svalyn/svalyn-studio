@@ -53,7 +53,7 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
 
     private String path;
 
-    private String contentType;
+    private ContentType contentType;
 
     private byte[] content;
 
@@ -77,7 +77,7 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
         return path;
     }
 
-    public String getContentType() {
+    public ContentType getContentType() {
         return contentType;
     }
 
@@ -125,7 +125,7 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
 
         private String path;
 
-        private String contentType;
+        private ContentType contentType;
 
         private byte[] content;
 
@@ -139,7 +139,7 @@ public class Resource extends AbstractValidatingAggregateRoot<Resource> implemen
             return this;
         }
 
-        public Builder contentType(String contentType) {
+        public Builder contentType(ContentType contentType) {
             this.contentType = Objects.requireNonNull(contentType);
             return this;
         }

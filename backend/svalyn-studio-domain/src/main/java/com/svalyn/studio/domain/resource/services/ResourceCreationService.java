@@ -23,14 +23,23 @@ import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.message.api.IMessageService;
+import com.svalyn.studio.domain.resource.ContentType;
 import com.svalyn.studio.domain.resource.Resource;
 import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
 import com.svalyn.studio.domain.resource.services.api.IResourceCreationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Used to create resources.
@@ -43,6 +52,8 @@ public class ResourceCreationService implements IResourceCreationService {
     private final IResourceRepository resourceRepository;
 
     private final IMessageService messageService;
+
+    private final Logger logger = LoggerFactory.getLogger(ResourceCreationService.class);
 
     public ResourceCreationService(IResourceRepository resourceRepository, IMessageService messageService) {
         this.resourceRepository = Objects.requireNonNull(resourceRepository);
@@ -63,12 +74,7 @@ public class ResourceCreationService implements IResourceCreationService {
             result = new Failure<>(this.messageService.cannotBeEmpty("resources"));
         } else {
             var resources = resourceDescriptions.entrySet().stream()
-                    .map(entry -> Resource.newResource()
-                            .name(entry.getKey())
-                            .content(entry.getValue())
-                            .path("")
-                            .contentType("text/plain")
-                            .build())
+                    .flatMap(this::toResources)
                     .toList();
             this.resourceRepository.saveAll(resources);
 
@@ -76,5 +82,67 @@ public class ResourceCreationService implements IResourceCreationService {
         }
 
         return result;
+    }
+
+    private Stream<Resource> toResources(Map.Entry<String, byte[]> entry) {
+        Stream<Resource> resources = Stream.empty();
+
+        Path tempFile = null;
+        String contentType = null;
+        try {
+            tempFile = Files.createTempFile("temp", entry.getKey());
+            tempFile.toFile().deleteOnExit();
+
+            Files.write(tempFile, entry.getValue());
+            contentType = Files.probeContentType(tempFile);
+        } catch (IOException exception) {
+            this.logger.warn(exception.getMessage(), exception);
+        }
+
+        if (tempFile != null) {
+            if ("application/zip".equals(contentType)) {
+                resources = this.readZipResources(tempFile);
+            } else {
+                resources = Stream.of(this.toResource("", entry.getKey(), entry.getValue()));
+            }
+        }
+        return resources;
+    }
+
+    private Stream<Resource> readZipResources(Path zipFilePath) {
+        List<Resource> resources = new ArrayList<>();
+        try (var fileSystem = FileSystems.newFileSystem(zipFilePath, Map.of());) {
+            for (var rootDirectory : fileSystem.getRootDirectories()) {
+                Files.walk(rootDirectory).filter(path -> !Files.isDirectory(path)).forEach(path -> {
+                    try {
+                        var bytes = Files.readAllBytes(path);
+                        var name = path.getFileName().toString();
+                        var parentPath = path.getParent().toAbsolutePath().toString();
+                        if (parentPath.startsWith("/")) {
+                            parentPath = parentPath.substring("/".length());
+                        }
+
+                        var resource = this.toResource(parentPath, name, bytes);
+                        resources.add(resource);
+                    } catch (IOException exception) {
+                        this.logger.warn(exception.getMessage(), exception);
+                    }
+                });
+            }
+        } catch (IOException exception) {
+            this.logger.warn(exception.getMessage(), exception);
+        }
+
+        return resources.stream();
+    }
+
+    private Resource toResource(String path, String name, byte[] content) {
+        var resource = Resource.newResource()
+                .name(name)
+                .content(content)
+                .path(path)
+                .contentType(ContentType.TEXT_PLAIN)
+                .build();
+        return resource;
     }
 }
