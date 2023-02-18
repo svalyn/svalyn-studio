@@ -59,7 +59,6 @@ export interface ChangeResourcesEdge {
 }
 
 export interface ChangeResourceMetadata {
-  id: string;
   name: string;
   path: string;
   contentType: ContentType;

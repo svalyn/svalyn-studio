@@ -51,7 +51,6 @@ const getChangeProposalFilesQuery = gql`
           resources {
             edges {
               node {
-                id
                 name
                 path
                 contentType
@@ -63,8 +62,6 @@ const getChangeProposalFilesQuery = gql`
     }
   }
 `;
-
-const { VITE_BACKEND_URL } = import.meta.env;
 
 export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesProps) => {
   const [state, setState] = useState<ChangeProposalFilesState>({ changeProposal: null, message: null });
@@ -95,7 +92,8 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
     resource: ChangeResourceMetadata
   ) => {
     event.preventDefault();
-    var element = document.getElementById(resource.id);
+    const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+    var element = document.getElementById(fullpath);
     if (element) {
       element.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
@@ -113,48 +111,52 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                 <List>
                   {state.changeProposal.change.resources.edges
                     .map((edge) => edge.node)
-                    .map((resource) => (
-                      <ListItem
-                        key={resource.id}
-                        component={Link}
-                        href={`#${resource.id}`}
-                        onClick={(
-                          event:
-                            | React.MouseEvent<HTMLAnchorElement, MouseEvent>
-                            | React.MouseEvent<HTMLSpanElement, MouseEvent>
-                        ) => handleResourceClick(event, resource)}
-                      >
-                        <ListItemIcon>
-                          <InsertDriveFileIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={resource.name} />
-                      </ListItem>
-                    ))}
+                    .map((resource) => {
+                      const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+                      return (
+                        <ListItem
+                          key={fullpath}
+                          component={Link}
+                          href={`${fullpath}`}
+                          onClick={(
+                            event:
+                              | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+                              | React.MouseEvent<HTMLSpanElement, MouseEvent>
+                          ) => handleResourceClick(event, resource)}
+                        >
+                          <ListItemIcon>
+                            <InsertDriveFileIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={resource.name} />
+                        </ListItem>
+                      );
+                    })}
                 </List>
               </Paper>
             </Grid>
             <Grid item xs={10}>
               {state.changeProposal.change.resources.edges
                 .map((edge) => edge.node)
-                .map((resource) => (
-                  <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={resource.id}>
-                    {resource.contentType === 'TEXT_PLAIN' ? (
-                      <RawViewer
-                        id={resource.id}
-                        path={resource.path}
-                        name={resource.name}
-                        changeId={state.changeProposal?.change.id ?? ''}
-                      />
-                    ) : (
-                      <GraphViewer
-                        id={resource.id}
-                        path={resource.path}
-                        name={resource.name}
-                        changeId={state.changeProposal?.change.id ?? ''}
-                      />
-                    )}
-                  </Box>
-                ))}
+                .map((resource) => {
+                  const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+                  return (
+                    <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={fullpath}>
+                      {resource.contentType === 'TEXT_PLAIN' ? (
+                        <RawViewer
+                          changeId={state.changeProposal?.change.id ?? ''}
+                          path={resource.path}
+                          name={resource.name}
+                        />
+                      ) : (
+                        <GraphViewer
+                          changeId={state.changeProposal?.change.id ?? ''}
+                          path={resource.path}
+                          name={resource.name}
+                        />
+                      )}
+                    </Box>
+                  );
+                })}
             </Grid>
           </Grid>
         </Box>

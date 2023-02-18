@@ -18,10 +18,9 @@
  */
 
 export interface GraphViewerProps {
-  id: string;
+  changeId: string;
   path: string;
   name: string;
-  changeId: string;
 }
 
 export interface GraphViewerState {

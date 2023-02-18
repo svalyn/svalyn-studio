@@ -51,7 +51,7 @@ const getChangeResourceQuery = gql`
   }
 `;
 
-export const GraphViewer = ({ id, path, name, changeId }: GraphViewerProps) => {
+export const GraphViewer = ({ changeId, path, name }: GraphViewerProps) => {
   const [state, setState] = useState<GraphViewerState>({ message: null });
 
   const variables: GetChangeResourceVariables = {
@@ -95,7 +95,7 @@ export const GraphViewer = ({ id, path, name, changeId }: GraphViewerProps) => {
   return (
     <>
       <Paper
-        id={id}
+        id={fullpath}
         variant="outlined"
         sx={{
           display: 'flex',
