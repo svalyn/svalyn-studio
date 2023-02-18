@@ -17,46 +17,83 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { gql, useQuery } from '@apollo/client';
 import DownloadIcon from '@mui/icons-material/Download';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { RawViewerProps } from './RawViewer.types';
+import { useEffect, useState } from 'react';
+import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
+import { GetChangeResourceData, GetChangeResourceVariables, RawViewerProps, RawViewerState } from './RawViewer.types';
 
-export const RawViewer = ({ resource, downloadURL }: RawViewerProps) => {
-  const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+const getChangeResourceQuery = gql`
+  query getChangeResourceQuery($changeId: ID!, $path: String!, $name: String!) {
+    viewer {
+      change(id: $changeId) {
+        resource(path: $path, name: $name) {
+          content
+        }
+      }
+    }
+  }
+`;
+
+export const RawViewer = ({ id, path, name, changeId, downloadURL }: RawViewerProps) => {
+  const [state, setState] = useState<RawViewerState>({ message: null });
+
+  const fullpath = path.length > 0 ? `${path}/${name}` : name;
+
+  const variables: GetChangeResourceVariables = {
+    changeId,
+    path,
+    name,
+  };
+  const { data, error } = useQuery<GetChangeResourceData, GetChangeResourceVariables>(getChangeResourceQuery, {
+    variables,
+  });
+  useEffect(() => {
+    if (error) {
+      setState((prevState) => ({ ...prevState, message: error.message }));
+    }
+  }, [error]);
+
+  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
+
   return (
-    <Paper
-      id={resource.id}
-      variant="outlined"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Box
+    <>
+      <Paper
+        id={id}
+        variant="outlined"
         sx={{
           display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          px: (theme) => theme.spacing(2),
-          py: '2px',
+          flexDirection: 'column',
         }}
       >
-        <Typography variant="subtitle1">{fullpath}</Typography>
-        <div>
-          <IconButton component="a" type="application/octet-stream" href={downloadURL}>
-            <DownloadIcon fontSize="small" />
-          </IconButton>
-        </div>
-      </Box>
-      <Divider />
-      <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
-        <pre>{resource.content}</pre>
-      </Box>
-    </Paper>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            px: (theme) => theme.spacing(2),
+            py: '2px',
+          }}
+        >
+          <Typography variant="subtitle1">{fullpath}</Typography>
+          <div>
+            <IconButton component="a" type="application/octet-stream" href={downloadURL}>
+              <DownloadIcon fontSize="small" />
+            </IconButton>
+          </div>
+        </Box>
+        <Divider />
+        <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
+          {data ? <pre>{data.viewer.change?.resource?.content}</pre> : null}
+        </Box>
+      </Paper>
+      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
+    </>
   );
 };

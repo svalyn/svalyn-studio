@@ -20,8 +20,6 @@
 package com.svalyn.studio.application.services.history.api;
 
 import com.svalyn.studio.application.controllers.history.dto.ChangeDTO;
-import com.svalyn.studio.application.controllers.history.dto.ChangeResourceDTO;
-import com.svalyn.studio.domain.resource.Resource;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +36,4 @@ public interface IChangeService {
 
     Optional<ChangeDTO> findById(UUID changeId);
 
-    Optional<Resource> findChangeResource(UUID changeId, UUID resourceId);
-
-    List<ChangeResourceDTO> findChangeResources(UUID changeId);
 }

@@ -18,13 +18,35 @@
  */
 
 export interface RawViewerProps {
-  resource: Resource;
+  id: string;
+  path: string;
+  name: string;
+  changeId: string;
   downloadURL: string;
 }
 
-export interface Resource {
-  id: string;
-  name: string;
+export interface RawViewerState {
+  message: string | null;
+}
+
+export interface GetChangeResourceVariables {
+  changeId: string;
   path: string;
+  name: string;
+}
+
+export interface GetChangeResourceData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  change: Change | null;
+}
+
+export interface Change {
+  resource: ChangeResource | null;
+}
+
+export interface ChangeResource {
   content: string;
 }

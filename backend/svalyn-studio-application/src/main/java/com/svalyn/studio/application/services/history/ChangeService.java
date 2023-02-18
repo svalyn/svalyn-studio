@@ -24,19 +24,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.history.dto.ChangeDTO;
-import com.svalyn.studio.application.controllers.history.dto.ChangeResourceDTO;
 import com.svalyn.studio.application.services.history.api.IChangeService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.history.Change;
 import com.svalyn.studio.domain.history.repositories.IChangeRepository;
-import com.svalyn.studio.domain.resource.Resource;
-import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,14 +50,11 @@ public class ChangeService implements IChangeService {
 
     private final IChangeRepository changeRepository;
 
-    private final IResourceRepository resourceRepository;
-
     private final Logger logger = LoggerFactory.getLogger(ChangeService.class);
 
-    public ChangeService(IAccountRepository accountRepository, IChangeRepository changeRepository, IResourceRepository resourceRepository) {
+    public ChangeService(IAccountRepository accountRepository, IChangeRepository changeRepository) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.changeRepository = Objects.requireNonNull(changeRepository);
-        this.resourceRepository = Objects.requireNonNull(resourceRepository);
     }
 
     private Optional<ChangeDTO> toDTO(Change change) {
@@ -104,31 +97,5 @@ public class ChangeService implements IChangeService {
         }
 
         return changes;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Resource> findChangeResource(UUID changeId, UUID resourceId) {
-        return this.changeRepository.findById(changeId)
-                .flatMap(change -> change.getChangeResources().stream()
-                        .filter(changeResource -> resourceId.equals(changeResource.getId()))
-                        .findFirst())
-                .map(changeResource -> changeResource.getResource().getId())
-                .flatMap(this.resourceRepository::findById);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ChangeResourceDTO> findChangeResources(UUID changeId) {
-        var optionalChange = this.changeRepository.findById(changeId);
-        if (optionalChange.isPresent()) {
-            var change = optionalChange.get();
-            return change.getChangeResources().stream()
-                    .flatMap(changeResource -> this.resourceRepository.findById(changeResource.getResource().getId())
-                            .map(resource -> new ChangeResourceDTO(changeResource.getId(), resource.getName(), resource.getPath(), resource.getContentType(), new String(resource.getContent(), StandardCharsets.UTF_8)))
-                            .stream())
-                    .toList();
-        }
-        return List.of();
     }
 }

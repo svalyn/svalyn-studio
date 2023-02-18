@@ -19,19 +19,12 @@
 
 package com.svalyn.studio.application.controllers.history.dto;
 
-import com.svalyn.studio.domain.resource.ContentType;
 import jakarta.validation.constraints.NotNull;
-import java.util.UUID;
 
 /**
  * The change resource DTO for the GraphQL layer.
  *
  * @author sbegaudeau
  */
-public record ChangeResourceDTO(
-        @NotNull UUID id,
-        @NotNull String name,
-        @NotNull String path,
-        @NotNull ContentType contentType,
-        @NotNull String content) {
+public record ChangeResourceDTO(@NotNull String content) {
 }

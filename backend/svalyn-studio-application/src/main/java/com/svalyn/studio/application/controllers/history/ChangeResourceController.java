@@ -20,10 +20,10 @@
 package com.svalyn.studio.application.controllers.history;
 
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
-import com.svalyn.studio.application.controllers.history.dto.BranchDTO;
 import com.svalyn.studio.application.controllers.history.dto.ChangeDTO;
-import com.svalyn.studio.application.controllers.history.dto.ChangeProposalDTO;
-import com.svalyn.studio.application.services.history.api.IChangeService;
+import com.svalyn.studio.application.controllers.history.dto.ChangeResourceDTO;
+import com.svalyn.studio.application.controllers.history.dto.ChangeResourceMetadataDTO;
+import com.svalyn.studio.application.services.history.api.IChangeResourceService;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
 import graphql.relay.DefaultConnectionCursor;
@@ -34,51 +34,34 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
- * Controller used to manipulate changes.
+ * Controller used to manipulate change resources.
  *
  * @author sbegaudeau
  */
 @Controller
-public class ChangeController {
-    private final IChangeService changeService;
+public class ChangeResourceController {
 
-    public ChangeController(IChangeService changeService) {
-        this.changeService = Objects.requireNonNull(changeService);
+    private final IChangeResourceService changeResourceService;
+
+    public ChangeResourceController(IChangeResourceService changeResourceService) {
+        this.changeResourceService = Objects.requireNonNull(changeResourceService);
     }
 
-    @SchemaMapping(typeName = "Viewer")
-    public ChangeDTO change(@Argument UUID id) {
-        return this.changeService.findById(id).orElse(null);
+    @SchemaMapping(typeName = "Change")
+    public ChangeResourceDTO resource(ChangeDTO change, @Argument String path, @Argument String name) {
+        return this.changeResourceService.findChangeResource(change.id(), path, name).orElse(null);
     }
 
-    @SchemaMapping(typeName = "ChangeProposal")
-    public ChangeDTO change(ChangeProposalDTO changeProposal) {
-        return this.changeService.findById(changeProposal.changeId()).orElse(null);
-    }
-
-    @SchemaMapping(typeName = "Branch")
-    public ChangeDTO change(BranchDTO branch) {
-        return Optional.ofNullable(branch.changeId())
-                .flatMap(this.changeService::findById)
-                .orElse(null);
-    }
-
-    @SchemaMapping(typeName = "Branch")
-    public Connection<ChangeDTO> changes(BranchDTO branch, @Argument int page, @Argument int rowsPerPage) {
-        if (branch.changeId() == null) {
-            return new DefaultConnection<>(List.of(), new PageInfoWithCount(null, null, false, false, 0));
-        }
-        var pageData = this.changeService.findAllFromChangeId(branch.changeId(), page, rowsPerPage);
-        var edges = pageData.stream().map(change -> {
-            var value = new Relay().toGlobalId("Change", change.id().toString());
+    @SchemaMapping(typeName = "Change")
+    public Connection<ChangeResourceMetadataDTO> resources(ChangeDTO change) {
+        var pageData = this.changeResourceService.findChangeResources(change.id());
+        var edges = pageData.stream().map(changeResourceDTO -> {
+            var value = new Relay().toGlobalId("ChangeResource", changeResourceDTO.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<ChangeDTO> edge = new DefaultEdge<>(change, cursor);
+            Edge<ChangeResourceMetadataDTO> edge = new DefaultEdge<>(changeResourceDTO, cursor);
             return edge;
         }).toList();
         var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.size());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -47,6 +47,7 @@ export interface ChangeProposal {
 export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
 
 export interface Change {
+  id: string;
   resources: ChangeResourcesConnection;
 }
 export interface ChangeResourcesConnection {
@@ -54,15 +55,14 @@ export interface ChangeResourcesConnection {
 }
 
 export interface ChangeResourcesEdge {
-  node: Resource;
+  node: ChangeResourceMetadata;
 }
 
-export interface Resource {
+export interface ChangeResourceMetadata {
   id: string;
   name: string;
   path: string;
   contentType: ContentType;
-  content: string;
 }
 
 type ContentType = 'TEXT_PLAIN' | 'UNKNOWN';

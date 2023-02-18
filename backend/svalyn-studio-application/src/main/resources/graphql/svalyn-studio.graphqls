@@ -20,6 +20,7 @@ type Viewer {
   organization(identifier: ID!): Organization
   project(identifier: ID!): Project
   changeProposal(id: ID!): ChangeProposal
+  change(id: ID!): Change
   notifications(status: [NotificationStatus!]!, page: Int!, rowsPerPage: Int!): ViewerNotificationsConnection!
   unreadNotificationsCount: Int!
   authenticationTokens(page: Int!, rowsPerPage: Int!): ViewerAuthenticationTokensConnection!
@@ -265,6 +266,7 @@ type Change {
   id: ID!
   name: String!
   resources: ChangeResourcesConnection!
+  resource(path: String!, name: String!): ChangeResource
   createdOn: Instant!
   createdBy: Profile!
   lastModifiedOn: Instant!
@@ -277,19 +279,22 @@ type ChangeResourcesConnection {
 }
 
 type ChangeResourcesEdge {
-  node: ChangeResource!
+  node: ChangeResourceMetadata!
 }
 
-type ChangeResource {
+type ChangeResourceMetadata {
   id: ID!
   name: String!
   path: String!
-  content: String!
   contentType: ContentType!
 }
 
 enum ContentType {
   TEXT_PLAIN
+}
+
+type ChangeResource {
+  content: String!
 }
 
 type ChangeProposalReviewsConnection {

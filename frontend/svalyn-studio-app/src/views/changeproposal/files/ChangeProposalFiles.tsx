@@ -32,9 +32,9 @@ import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   ChangeProposalFilesProps,
   ChangeProposalFilesState,
+  ChangeResourceMetadata,
   GetChangeProposalData,
   GetChangeProposalVariables,
-  Resource,
 } from './ChangeProposalFiles.types';
 import { GraphViewer } from './GraphViewer';
 import { RawViewer } from './RawViewer';
@@ -47,6 +47,7 @@ const getChangeProposalFilesQuery = gql`
         name
         status
         change {
+          id
           resources {
             edges {
               node {
@@ -54,7 +55,6 @@ const getChangeProposalFilesQuery = gql`
                 name
                 path
                 contentType
-                content
               }
             }
           }
@@ -92,7 +92,7 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
 
   const handleResourceClick = (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent> | React.MouseEvent<HTMLSpanElement, MouseEvent>,
-    resource: Resource
+    resource: ChangeResourceMetadata
   ) => {
     event.preventDefault();
     var element = document.getElementById(resource.id);
@@ -140,12 +140,18 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                   <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={resource.id}>
                     {resource.contentType === 'TEXT_PLAIN' ? (
                       <RawViewer
-                        resource={resource}
+                        id={resource.id}
+                        path={resource.path}
+                        name={resource.name}
+                        changeId={state.changeProposal?.change.id ?? ''}
                         downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
                       />
                     ) : (
                       <GraphViewer
-                        resource={resource}
+                        id={resource.id}
+                        path={resource.path}
+                        name={resource.name}
+                        changeId={state.changeProposal?.change.id ?? ''}
                         downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
                       />
                     )}
