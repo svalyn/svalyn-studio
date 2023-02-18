@@ -72,8 +72,9 @@ export const ProjectBranchCard = ({ projectIdentifier, branch }: ProjectBranchCa
           {branch.change.resources.edges
             .map((edge) => edge.node)
             .map((resource) => {
+              const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
               return (
-                <TableRow key={resource.id}>
+                <TableRow key={fullpath}>
                   <TableCell>
                     <Box
                       sx={{
@@ -84,7 +85,7 @@ export const ProjectBranchCard = ({ projectIdentifier, branch }: ProjectBranchCa
                       }}
                     >
                       <InsertDriveFileIcon fontSize="small" />
-                      <Typography>{resource.name}</Typography>
+                      <Typography>{fullpath}</Typography>
                     </Box>
                   </TableCell>
                 </TableRow>

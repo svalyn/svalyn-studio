@@ -50,6 +50,7 @@ const getProjectHomeQuery = gql`
             resources {
               edges {
                 node {
+                  path
                   name
                 }
               }
