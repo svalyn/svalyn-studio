@@ -55,13 +55,15 @@ public class ChangeResourceService implements IChangeResourceService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Resource> findResource(UUID changeId, UUID changeResourceId) {
-        return this.changeRepository.findById(changeId)
-                .flatMap(change -> change.getChangeResources().stream()
-                        .filter(changeResource -> changeResourceId.equals(changeResource.getId()))
-                        .findFirst())
-                .map(changeResource -> changeResource.getResource().getId())
-                .flatMap(this.resourceRepository::findById);
+    public Optional<Resource> findResource(UUID changeId, String path, String name) {
+        return this.changeRepository.findById(changeId).flatMap(change -> {
+            var resourceIds = change.getChangeResources().stream()
+                    .map(ChangeResource::getResource)
+                    .map(AggregateReference::getId)
+                    .toList();
+
+            return this.resourceRepository.findByResourceIdsAndPathAndName(resourceIds, path, name);
+        });
     }
 
     @Override

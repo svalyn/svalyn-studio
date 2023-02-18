@@ -22,7 +22,6 @@ export interface RawViewerProps {
   path: string;
   name: string;
   changeId: string;
-  downloadURL: string;
 }
 
 export interface RawViewerState {

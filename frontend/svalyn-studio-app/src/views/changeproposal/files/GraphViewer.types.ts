@@ -22,7 +22,6 @@ export interface GraphViewerProps {
   path: string;
   name: string;
   changeId: string;
-  downloadURL: string;
 }
 
 export interface GraphViewerState {

@@ -35,6 +35,8 @@ import {
   GraphViewerState,
 } from './GraphViewer.types';
 
+const { VITE_BACKEND_URL } = import.meta.env;
+
 import 'reactflow/dist/style.css';
 
 const getChangeResourceQuery = gql`
@@ -49,7 +51,7 @@ const getChangeResourceQuery = gql`
   }
 `;
 
-export const GraphViewer = ({ id, path, name, changeId, downloadURL }: GraphViewerProps) => {
+export const GraphViewer = ({ id, path, name, changeId }: GraphViewerProps) => {
   const [state, setState] = useState<GraphViewerState>({ message: null });
 
   const variables: GetChangeResourceVariables = {
@@ -112,7 +114,11 @@ export const GraphViewer = ({ id, path, name, changeId, downloadURL }: GraphView
         >
           <Typography variant="subtitle1">{fullpath}</Typography>
           <div>
-            <IconButton component="a" type="application/octet-stream" href={downloadURL}>
+            <IconButton
+              component="a"
+              type="application/octet-stream"
+              href={`${VITE_BACKEND_URL}/api/changes/${changeId}/resources/${path}/${name}`}
+            >
               <DownloadIcon fontSize="small" />
             </IconButton>
           </div>

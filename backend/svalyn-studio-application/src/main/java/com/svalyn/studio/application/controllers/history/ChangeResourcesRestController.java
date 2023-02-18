@@ -52,9 +52,20 @@ public class ChangeResourcesRestController {
         this.changeResourceService = Objects.requireNonNull(changeResourceService);
     }
 
-    @GetMapping(path = "/{changeResourceId}")
-    public ResponseEntity<Resource> getModel(@PathVariable UUID changeId, @PathVariable UUID changeResourceId) {
-        var optionalResource = this.changeResourceService.findResource(changeId, changeResourceId);
+    @GetMapping(path = "/{*fullPath}")
+    public ResponseEntity<Resource> getModel(@PathVariable UUID changeId, @PathVariable String fullPath) {
+        var path = "";
+        var name = fullPath;
+        var lastSlashIndex = fullPath.lastIndexOf("/");
+        if (lastSlashIndex != -1 && lastSlashIndex != fullPath.length() - 1) {
+            name = fullPath.substring(lastSlashIndex + "/".length());
+            path = fullPath.substring(0, lastSlashIndex);
+            if (path.startsWith("/")) {
+                path = path.substring("/".length());
+            }
+        }
+
+        var optionalResource = this.changeResourceService.findResource(changeId, path, name);
         if (optionalResource.isPresent()) {
             var resource = optionalResource.get();
 
