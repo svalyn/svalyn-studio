@@ -33,7 +33,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 public interface IChangeResourceService {
-    Optional<Resource> findResource(UUID changeId, UUID resourceId);
+    Optional<Resource> findResource(UUID changeId, String path, String name);
 
     Optional<ChangeResourceDTO> findChangeResource(UUID changeId, String path, String name);
 

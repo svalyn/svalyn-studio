@@ -28,6 +28,8 @@ import { useEffect, useState } from 'react';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { GetChangeResourceData, GetChangeResourceVariables, RawViewerProps, RawViewerState } from './RawViewer.types';
 
+const { VITE_BACKEND_URL } = import.meta.env;
+
 const getChangeResourceQuery = gql`
   query getChangeResourceQuery($changeId: ID!, $path: String!, $name: String!) {
     viewer {
@@ -40,7 +42,7 @@ const getChangeResourceQuery = gql`
   }
 `;
 
-export const RawViewer = ({ id, path, name, changeId, downloadURL }: RawViewerProps) => {
+export const RawViewer = ({ id, path, name, changeId }: RawViewerProps) => {
   const [state, setState] = useState<RawViewerState>({ message: null });
 
   const fullpath = path.length > 0 ? `${path}/${name}` : name;
@@ -83,7 +85,11 @@ export const RawViewer = ({ id, path, name, changeId, downloadURL }: RawViewerPr
         >
           <Typography variant="subtitle1">{fullpath}</Typography>
           <div>
-            <IconButton component="a" type="application/octet-stream" href={downloadURL}>
+            <IconButton
+              component="a"
+              type="application/octet-stream"
+              href={`${VITE_BACKEND_URL}/api/changes/${changeId}/resources/${path}/${name}`}
+            >
               <DownloadIcon fontSize="small" />
             </IconButton>
           </div>
