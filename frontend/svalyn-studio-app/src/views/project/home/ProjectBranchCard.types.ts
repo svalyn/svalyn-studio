@@ -55,6 +55,6 @@ export interface ChangeResourcesEdge {
 }
 
 export interface ChangeResource {
-  id: string;
+  path: string;
   name: string;
 }

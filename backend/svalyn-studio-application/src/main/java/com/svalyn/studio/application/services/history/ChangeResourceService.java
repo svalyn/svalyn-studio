@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -90,8 +91,17 @@ public class ChangeResourceService implements IChangeResourceService {
                     .flatMap(changeResource -> this.resourceRepository.findById(changeResource.getResource().getId())
                             .map(resource -> new ChangeResourceMetadataDTO(changeResource.getId(), resource.getName(), resource.getPath(), resource.getContentType()))
                             .stream())
+                    .sorted(this.sortChangeResource())
                     .toList();
         }
         return List.of();
+    }
+
+    private Comparator<ChangeResourceMetadataDTO> sortChangeResource() {
+        return (resource1, resource2) -> {
+            var fullPath1 = resource1.path() + '/' + resource1.name();
+            var fullPath2 = resource2.path() + '/' + resource2.name();
+            return Comparator.<String>naturalOrder().compare(fullPath1, fullPath2);
+        };
     }
 }
