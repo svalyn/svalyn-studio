@@ -18,10 +18,9 @@
  */
 
 export interface RawViewerProps {
-  id: string;
+  changeId: string;
   path: string;
   name: string;
-  changeId: string;
 }
 
 export interface RawViewerState {

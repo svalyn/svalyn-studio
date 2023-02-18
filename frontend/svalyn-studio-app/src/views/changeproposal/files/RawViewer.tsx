@@ -42,7 +42,7 @@ const getChangeResourceQuery = gql`
   }
 `;
 
-export const RawViewer = ({ id, path, name, changeId }: RawViewerProps) => {
+export const RawViewer = ({ changeId, path, name }: RawViewerProps) => {
   const [state, setState] = useState<RawViewerState>({ message: null });
 
   const fullpath = path.length > 0 ? `${path}/${name}` : name;
@@ -66,7 +66,7 @@ export const RawViewer = ({ id, path, name, changeId }: RawViewerProps) => {
   return (
     <>
       <Paper
-        id={id}
+        id={fullpath}
         variant="outlined"
         sx={{
           display: 'flex',
