@@ -144,7 +144,9 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                         path={resource.path}
                         name={resource.name}
                         changeId={state.changeProposal?.change.id ?? ''}
-                        downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
+                        downloadURL={`${VITE_BACKEND_URL}/api/changes/${
+                          state.changeProposal?.change.id ?? ''
+                        }/resources/${resource.id}`}
                       />
                     ) : (
                       <GraphViewer
@@ -152,7 +154,9 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                         path={resource.path}
                         name={resource.name}
                         changeId={state.changeProposal?.change.id ?? ''}
-                        downloadURL={`${VITE_BACKEND_URL}/api/changeproposals/${changeProposalId}/resources/${resource.id}`}
+                        downloadURL={`${VITE_BACKEND_URL}/api/changes/${
+                          state.changeProposal?.change.id ?? ''
+                        }/resources/${resource.id}`}
                       />
                     )}
                   </Box>
