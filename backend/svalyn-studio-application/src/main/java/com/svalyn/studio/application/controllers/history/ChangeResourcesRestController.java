@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.controllers.history;
 
-import com.svalyn.studio.application.services.history.api.IChangeService;
+import com.svalyn.studio.application.services.history.api.IChangeResourceService;
 import com.svalyn.studio.domain.resource.ContentType;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -44,17 +44,17 @@ import java.util.UUID;
  */
 @Controller
 @RequestMapping("/api/changes/{changeId}/resources")
-public class ChangeResourcesController {
+public class ChangeResourcesRestController {
 
-    private final IChangeService changeService;
+    private final IChangeResourceService changeResourceService;
 
-    public ChangeResourcesController(IChangeService changeService) {
-        this.changeService = Objects.requireNonNull(changeService);
+    public ChangeResourcesRestController(IChangeResourceService changeResourceService) {
+        this.changeResourceService = Objects.requireNonNull(changeResourceService);
     }
 
-    @GetMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> getModel(@PathVariable UUID changeId, @PathVariable UUID resourceId) {
-        var optionalResource = this.changeService.findChangeResource(changeId, resourceId);
+    @GetMapping(path = "/{changeResourceId}")
+    public ResponseEntity<Resource> getModel(@PathVariable UUID changeId, @PathVariable UUID changeResourceId) {
+        var optionalResource = this.changeResourceService.findResource(changeId, changeResourceId);
         if (optionalResource.isPresent()) {
             var resource = optionalResource.get();
 

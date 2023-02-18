@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,30 +17,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.resource.repositories;
+package com.svalyn.studio.application.services.history.api;
 
+import com.svalyn.studio.application.controllers.history.dto.ChangeResourceDTO;
+import com.svalyn.studio.application.controllers.history.dto.ChangeResourceMetadataDTO;
 import com.svalyn.studio.domain.resource.Resource;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Repository used to persist and retrieve resources.
+ * Used to manipulate change resources.
  *
  * @author sbegaudeau
  */
-@Repository
-public interface IResourceRepository extends PagingAndSortingRepository<Resource, UUID>, ListCrudRepository<Resource, UUID> {
-    @Query(value = """
-    SELECT * FROM resource resource
-    WHERE resource.id IN (:resourceIds)
-    AND resource.path = :path
-    AND resource.name = :name  
-    """)
-    Optional<Resource> findByResourceIdsAndPathAndName(List<UUID> resourceIds, String path, String name);
+public interface IChangeResourceService {
+    Optional<Resource> findResource(UUID changeId, UUID resourceId);
+
+    Optional<ChangeResourceDTO> findChangeResource(UUID changeId, String path, String name);
+
+    List<ChangeResourceMetadataDTO> findChangeResources(UUID changeId);
 }
