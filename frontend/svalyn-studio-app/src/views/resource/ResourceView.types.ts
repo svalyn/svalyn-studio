@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,52 +17,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ChangeProposalFilesProps {
-  changeProposalId: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface ChangeProposalFilesState {
-  changeProposal: ChangeProposal | null;
+export interface ResourceViewState {
   message: string | null;
 }
 
-export interface GetChangeProposalData {
+export interface GetResourceVariables {
+  projectIdentifier: string;
+}
+
+export interface GetResourceData {
   viewer: Viewer;
 }
 
 export interface Viewer {
-  changeProposal: ChangeProposal | null;
+  project: Project;
 }
 
-export interface ChangeProposal {
-  id: string;
+export interface Project {
   name: string;
-  status: ChangeProposalStatus;
-  change: Change;
+  organization: Organization;
 }
 
-export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
-
-export interface Change {
-  id: string;
-  resources: ChangeResourcesConnection;
-}
-export interface ChangeResourcesConnection {
-  edges: ChangeResourcesEdge[];
-}
-
-export interface ChangeResourcesEdge {
-  node: ChangeResourceMetadata;
-}
-
-export interface ChangeResourceMetadata {
+export interface Organization {
+  identifier: string;
   name: string;
-  path: string;
-}
-
-export interface GetChangeProposalVariables {
-  id: string;
 }

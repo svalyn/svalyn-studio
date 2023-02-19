@@ -77,7 +77,7 @@ public class ChangeResourceService implements IChangeResourceService {
                    .toList();
 
            return this.resourceRepository.findByResourceIdsAndPathAndName(resourceIds, path, name)
-                   .map(resource -> new ChangeResourceDTO(new String(resource.getContent(), StandardCharsets.UTF_8)));
+                   .map(resource -> new ChangeResourceDTO(resource.getContentType(), new String(resource.getContent(), StandardCharsets.UTF_8)));
         });
     }
 

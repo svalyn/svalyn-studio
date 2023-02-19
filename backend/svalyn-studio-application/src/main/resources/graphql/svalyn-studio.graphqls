@@ -294,6 +294,7 @@ enum ContentType {
 }
 
 type ChangeResource {
+  contentType: ContentType!
   content: String!
 }
 

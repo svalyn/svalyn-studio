@@ -29,6 +29,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import { useEffect, useState } from 'react';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
+import { ViewerCard } from '../../../viewers/ViewerCard';
 import {
   ChangeProposalFilesProps,
   ChangeProposalFilesState,
@@ -36,8 +37,6 @@ import {
   GetChangeProposalData,
   GetChangeProposalVariables,
 } from './ChangeProposalFiles.types';
-import { GraphViewer } from './GraphViewer';
-import { RawViewer } from './RawViewer';
 
 const getChangeProposalFilesQuery = gql`
   query getChangeProposalFiles($id: ID!) {
@@ -53,7 +52,6 @@ const getChangeProposalFilesQuery = gql`
               node {
                 name
                 path
-                contentType
               }
             }
           }
@@ -141,19 +139,11 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
                   const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
                   return (
                     <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={fullpath}>
-                      {resource.contentType === 'TEXT_PLAIN' ? (
-                        <RawViewer
-                          changeId={state.changeProposal?.change.id ?? ''}
-                          path={resource.path}
-                          name={resource.name}
-                        />
-                      ) : (
-                        <GraphViewer
-                          changeId={state.changeProposal?.change.id ?? ''}
-                          path={resource.path}
-                          name={resource.name}
-                        />
-                      )}
+                      <ViewerCard
+                        changeId={state.changeProposal?.change.id ?? ''}
+                        path={resource.path}
+                        name={resource.name}
+                      />
                     </Box>
                   );
                 })}

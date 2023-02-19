@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.application.controllers.history.dto;
 
+import com.svalyn.studio.domain.resource.ContentType;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -26,5 +27,7 @@ import jakarta.validation.constraints.NotNull;
  *
  * @author sbegaudeau
  */
-public record ChangeResourceDTO(@NotNull String content) {
+public record ChangeResourceDTO(
+        @NotNull ContentType contentType,
+        @NotNull String content) {
 }

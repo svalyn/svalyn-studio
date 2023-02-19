@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,13 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface GraphViewerProps {
+export interface ViewerProps {
   changeId: string;
   path: string;
   name: string;
 }
 
-export interface GraphViewerState {
+export interface ViewerState {
   message: string | null;
 }
 
@@ -46,32 +46,8 @@ export interface Change {
 }
 
 export interface ChangeResource {
+  contentType: ContentType;
   content: string;
 }
 
-export interface Graph {
-  nodes: Node[];
-  edges: Edge[];
-}
-
-export interface Node {
-  id: string;
-  data: NodeData;
-  position: NodePosition;
-}
-
-export interface NodeData {
-  label: string;
-}
-
-export interface NodePosition {
-  x: number;
-  y: number;
-}
-
-export interface Edge {
-  id: string;
-  source: string;
-  target: string;
-  type: string;
-}
+type ContentType = 'TEXT_PLAIN' | 'UNKNOWN';

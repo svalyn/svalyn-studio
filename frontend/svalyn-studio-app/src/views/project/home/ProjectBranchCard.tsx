@@ -85,7 +85,12 @@ export const ProjectBranchCard = ({ projectIdentifier, branch }: ProjectBranchCa
                       }}
                     >
                       <InsertDriveFileIcon fontSize="small" />
-                      <Typography>{fullpath}</Typography>
+                      <Link
+                        component={RouterLink}
+                        to={`/projects/${projectIdentifier}/changes/${branch.change?.id}/resources/${fullpath}`}
+                      >
+                        {fullpath}
+                      </Link>
                     </Box>
                   </TableCell>
                 </TableRow>

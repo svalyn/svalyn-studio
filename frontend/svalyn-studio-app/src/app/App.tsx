@@ -34,6 +34,7 @@ import { OAuth2RedirectView } from '../views/oauth2redirect/OAuth2RedirectView';
 import { OrganizationView } from '../views/organization/OrganizationView';
 import { ProfileView } from '../views/profile/ProfileView';
 import { ProjectView } from '../views/project/ProjectView';
+import { ResourceView } from '../views/resource/ResourceView';
 import { SettingsView } from '../views/settings/SettingsView';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
 import { theme } from './theme';
@@ -57,6 +58,7 @@ export const App = () => {
             <Route path="/projects/:projectIdentifier/tags" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
             <Route path="/projects/:projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
+            <Route path="/projects/:projectIdentifier/changes/:changeId/resources/*" element={<ResourceView />} />
             <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />
             <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
             <Route path="/settings" element={<SettingsView />} />
