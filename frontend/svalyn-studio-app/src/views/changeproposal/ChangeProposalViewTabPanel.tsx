@@ -96,7 +96,10 @@ export const ChangeProposalViewTabPanel = ({ changeProposal }: ChangeProposalVie
             {changeProposal.project.name}
           </Link>
           <Typography variant="h5">/</Typography>
-          <Typography variant="h5" sx={{ maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Typography
+            variant="h5"
+            sx={{ maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+          >
             {changeProposal.name}
           </Typography>
           <ChangeProposalIcon status={changeProposal.status} fontSize="medium" />

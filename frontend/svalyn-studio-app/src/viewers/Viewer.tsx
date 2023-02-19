@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,23 +18,18 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
-import DownloadIcon from '@mui/icons-material/Download';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
-import { GetChangeResourceData, GetChangeResourceVariables, RawViewerProps, RawViewerState } from './RawViewer.types';
-
-const { VITE_BACKEND_URL } = import.meta.env;
+import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
+import { GraphViewer } from './GraphViewer';
+import { GetChangeResourceData, GetChangeResourceVariables, ViewerProps, ViewerState } from './Viewer.types';
 
 const getChangeResourceQuery = gql`
   query getChangeResourceQuery($changeId: ID!, $path: String!, $name: String!) {
     viewer {
       change(id: $changeId) {
         resource(path: $path, name: $name) {
+          contentType
           content
         }
       }
@@ -42,10 +37,8 @@ const getChangeResourceQuery = gql`
   }
 `;
 
-export const RawViewer = ({ changeId, path, name }: RawViewerProps) => {
-  const [state, setState] = useState<RawViewerState>({ message: null });
-
-  const fullpath = path.length > 0 ? `${path}/${name}` : name;
+export const Viewer = ({ changeId, path, name }: ViewerProps) => {
+  const [state, setState] = useState<ViewerState>({ message: null });
 
   const variables: GetChangeResourceVariables = {
     changeId,
@@ -63,42 +56,23 @@ export const RawViewer = ({ changeId, path, name }: RawViewerProps) => {
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
+  let rawViewer: JSX.Element | null = null;
+  if (data && data.viewer.change && data.viewer.change.resource) {
+    const { resource } = data.viewer.change;
+
+    if (resource.contentType === 'TEXT_PLAIN') {
+      rawViewer = (
+        <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
+          <pre>{resource.content}</pre>
+        </Box>
+      );
+    } else {
+      rawViewer = <GraphViewer content={resource.content} />;
+    }
+  }
   return (
     <>
-      <Paper
-        id={fullpath}
-        variant="outlined"
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            px: (theme) => theme.spacing(2),
-            py: '2px',
-          }}
-        >
-          <Typography variant="subtitle1">{fullpath}</Typography>
-          <div>
-            <IconButton
-              component="a"
-              type="application/octet-stream"
-              href={`${VITE_BACKEND_URL}/api/changes/${changeId}/resources/${path}/${name}`}
-            >
-              <DownloadIcon fontSize="small" />
-            </IconButton>
-          </div>
-        </Box>
-        <Divider />
-        <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
-          {data ? <pre>{data.viewer.change?.resource?.content}</pre> : null}
-        </Box>
-      </Paper>
+      {rawViewer}
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );

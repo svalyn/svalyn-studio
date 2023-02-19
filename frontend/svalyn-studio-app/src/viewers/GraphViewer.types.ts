@@ -17,34 +17,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface RawViewerProps {
-  changeId: string;
-  path: string;
-  name: string;
-}
-
-export interface RawViewerState {
-  message: string | null;
-}
-
-export interface GetChangeResourceVariables {
-  changeId: string;
-  path: string;
-  name: string;
-}
-
-export interface GetChangeResourceData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  change: Change | null;
-}
-
-export interface Change {
-  resource: ChangeResource | null;
-}
-
-export interface ChangeResource {
+export interface GraphViewerProps {
   content: string;
+}
+
+export interface Graph {
+  nodes: Node[];
+  edges: Edge[];
+}
+
+export interface Node {
+  id: string;
+  data: NodeData;
+  position: NodePosition;
+}
+
+export interface NodeData {
+  label: string;
+}
+
+export interface NodePosition {
+  x: number;
+  y: number;
+}
+
+export interface Edge {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
 }
