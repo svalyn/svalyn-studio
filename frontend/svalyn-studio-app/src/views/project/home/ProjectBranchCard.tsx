@@ -64,7 +64,13 @@ export const ProjectBranchCard = ({ projectIdentifier, branch }: ProjectBranchCa
         <Link component={RouterLink} to={`/profile/${branch.change.lastModifiedBy.username}`}>
           {branch.change.lastModifiedBy.username}
         </Link>
-        <Typography variant="subtitle1">{branch.change.name}</Typography>
+        <Link
+          component={RouterLink}
+          to={`/projects/${projectIdentifier}/changes/${branch.change.id}`}
+          variant="subtitle1"
+        >
+          {branch.change.name}
+        </Link>
       </Box>
       <Divider />
       <Table size="small">

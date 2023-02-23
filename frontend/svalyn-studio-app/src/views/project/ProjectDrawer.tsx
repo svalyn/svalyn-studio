@@ -32,7 +32,7 @@ import { ProjectDrawerProps } from './ProjectDrawer.types';
 
 const CompactDrawer = styled('div')(({ theme }) => ({
   width: '64px',
-  backgroundColor: 'white',
+  backgroundColor: theme.palette.background.paper,
   borderRight: `1px solid ${theme.palette.divider}`,
 }));
 
