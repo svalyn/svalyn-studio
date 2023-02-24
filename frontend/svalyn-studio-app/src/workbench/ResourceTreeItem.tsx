@@ -20,6 +20,7 @@
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import TreeItem from '@mui/lab/TreeItem';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { Folder, Resource, ResourceTreeItemData, ResourceTreeItemProps } from './ResourceTreeItem.types';
 
 const isFolder = (treeItemData: ResourceTreeItemData): treeItemData is Folder =>
@@ -34,7 +35,7 @@ export const ResourceTreeItem = ({ treeItemData: treeItem, onResourceClick }: Re
       label={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: (theme) => theme.spacing(0.5), whiteSpace: 'nowrap' }}>
           {isResource(treeItem) ? <InsertDriveFileOutlinedIcon fontSize="small" /> : null}
-          {treeItem.name}
+          <Typography variant="tbody">{treeItem.name}</Typography>
         </Box>
       }
       key={treeItem.name}

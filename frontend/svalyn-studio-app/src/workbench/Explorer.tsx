@@ -17,24 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import Box from '@mui/material/Box';
-import { ActivityBarProps } from './ActivityBar.types';
+import Typography from '@mui/material/Typography';
+import { ExplorerProps } from './Explorer.types';
 
-export const ActivityBar = ({}: ActivityBarProps) => {
+export const Explorer = ({ children }: ExplorerProps) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingTop: (theme) => theme.spacing(1),
-        width: (theme) => theme.spacing(6),
-        backgroundColor: (theme) => theme.palette.background.paper,
-        borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-      }}
-    >
-      <InsertDriveFileOutlinedIcon sx={{ color: (theme) => theme.palette.text.primary, fontSize: 24 }} />
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ px: (theme) => theme.spacing(2) }}>
+        <Typography variant="t5">Explorer</Typography>
+      </Box>
+      {children}
     </Box>
   );
 };
