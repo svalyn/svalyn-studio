@@ -19,6 +19,7 @@
 
 import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { GraphViewer } from './GraphViewer';
@@ -63,7 +64,9 @@ export const Viewer = ({ changeId, path, name }: ViewerProps) => {
     if (resource.contentType === 'TEXT_PLAIN') {
       rawViewer = (
         <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
-          <pre>{resource.content}</pre>
+          <pre>
+            <Typography variant="tcontent">{resource.content}</Typography>
+          </pre>
         </Box>
       );
     } else {

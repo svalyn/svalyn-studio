@@ -27,6 +27,7 @@ import { useEffect, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Viewer } from '../viewers/Viewer';
 import { ActivityBar } from './ActivityBar';
+import { Explorer } from './Explorer';
 import { ResourceTree } from './ResourceTree';
 import {
   GetChangeResourcesData,
@@ -140,7 +141,9 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
           maxSize={50}
           defaultSize={20}
         >
-          <ResourceTree resources={resources} onResourceClick={onResourceClick} />
+          <Explorer>
+            <ResourceTree resources={resources} onResourceClick={onResourceClick} />
+          </Explorer>
         </Panel>
         <PanelResizeHandle
           style={{
@@ -172,12 +175,12 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
                   whiteSpace: 'nowrap',
                   gap: (theme) => theme.spacing(0.5),
                   px: (theme) => theme.spacing(2),
-                  py: (theme) => theme.spacing(1),
                   cursor: 'pointer',
                   backgroundColor: () =>
                     openResource.id === state.currentResource?.id
                       ? theme.palette.background.paper
                       : theme.palette.background.default,
+                  borderRight: (theme) => `1px solid ${theme.palette.divider}`,
                 }}
                 onClick={() => onOpen(openResource)}
                 key={openResource.id}
@@ -192,6 +195,7 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
                   }}
                 />
                 <Typography
+                  variant="tbody2"
                   sx={{
                     color: () =>
                       openResource.id === state.currentResource?.id
@@ -201,7 +205,10 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
                 >
                   {openResource.name}
                 </Typography>
-                <CloseIcon onClick={(event) => onClose(event, openResource)} />
+                <CloseIcon
+                  sx={{ fontSize: (theme) => theme.spacing(2) }}
+                  onClick={(event) => onClose(event, openResource)}
+                />
               </Box>
             ))}
           </Box>

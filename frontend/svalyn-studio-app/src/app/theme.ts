@@ -36,6 +36,41 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: 'Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif',
+    t5: {
+      fontFamily: '-apple-system,"system-ui",BlinkMacSystemFont,"SF Mono",Monaco,Menlo,Courier,monospace,sans-serif',
+      fontSize: '11px',
+      fontWeight: '400',
+      lineHeight: '35px',
+      textTransform: 'uppercase',
+      whiteSpace: 'nowrap',
+    },
+    t6: {
+      fontFamily: '-apple-system,"system-ui",BlinkMacSystemFont,"SF Mono",Monaco,Menlo,Courier,monospace,sans-serif',
+      fontSize: '11px',
+      fontWeight: '700',
+      lineHeight: '22px',
+      textTransform: 'uppercase',
+      whiteSpace: 'nowrap',
+    },
+    tbody: {
+      fontFamily: '-apple-system,"system-ui",BlinkMacSystemFont,"SF Mono",Monaco,Menlo,Courier,monospace,sans-serif',
+      fontSize: '13px',
+      lineHeight: '22px',
+      whiteSpace: 'pre',
+    },
+    tbody2: {
+      fontFamily: '-apple-system,"system-ui",BlinkMacSystemFont,"SF Mono",Monaco,Menlo,Courier,monospace,sans-serif',
+      fontSize: '13px',
+      lineHeight: '35px',
+      whiteSpace: 'pre',
+    },
+    tcontent: {
+      fontFamily: 'Menlo, Monaco, "Courier New", monospace, -apple-system, BlinkMacSystemFont, sans-serif',
+      fontSize: '12px',
+      lineHeight: '22px',
+      fontWeight: '400',
+      tabSize: '4',
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -64,5 +99,31 @@ declare module '@mui/material/styles' {
 
   interface PaletteOptions {
     done: PaletteOptions['primary'];
+  }
+
+  interface TypographyVariants {
+    t5: React.CSSProperties;
+    t6: React.CSSProperties;
+    tbody: React.CSSProperties;
+    tbody2: React.CSSProperties;
+    tcontent: React.CSSProperties;
+  }
+
+  interface TypographyVariantsOptions {
+    t5?: React.CSSProperties;
+    t6?: React.CSSProperties;
+    tbody?: React.CSSProperties;
+    tbody2?: React.CSSProperties;
+    tcontent?: React.CSSProperties;
+  }
+}
+
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    t5: true;
+    t6: true;
+    tbody: true;
+    tbody2: true;
+    tcontent: true;
   }
 }

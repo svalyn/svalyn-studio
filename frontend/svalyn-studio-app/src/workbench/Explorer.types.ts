@@ -17,24 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import Box from '@mui/material/Box';
-import { ActivityBarProps } from './ActivityBar.types';
-
-export const ActivityBar = ({}: ActivityBarProps) => {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        paddingTop: (theme) => theme.spacing(1),
-        width: (theme) => theme.spacing(6),
-        backgroundColor: (theme) => theme.palette.background.paper,
-        borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-      }}
-    >
-      <InsertDriveFileOutlinedIcon sx={{ color: (theme) => theme.palette.text.primary, fontSize: 24 }} />
-    </Box>
-  );
-};
+export interface ExplorerProps {
+  children?: React.ReactNode;
+}
