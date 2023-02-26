@@ -17,13 +17,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface WorkbenchProps {
-  changeId: string;
-}
-
-export interface WorkbenchState {
-  openResources: Resource[];
-  currentResource: Resource | null;
+export interface TabBarProps {
+  resources: Resource[];
+  currentResourceId: string;
+  onOpen: (resource: Resource) => void;
+  onClose: (event: React.MouseEvent<SVGSVGElement, MouseEvent>, resource: Resource) => void;
 }
 
 export interface Resource {

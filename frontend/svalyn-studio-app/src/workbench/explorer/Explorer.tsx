@@ -17,17 +17,56 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { ExplorerProps } from './Explorer.types';
+import { useEffect, useState } from 'react';
+import {
+  ExplorerProps,
+  ExplorerState,
+  GetChangeResourcesData,
+  GetChangeResourcesVariables,
+  Resource,
+} from './Explorer.types';
+import { ResourceTree } from './ResourceTree';
 
-export const Explorer = ({ children }: ExplorerProps) => {
+const getChangeResourcesQuery = gql`
+  query getChangeResourcesQuery($changeId: ID!) {
+    viewer {
+      change(id: $changeId) {
+        resources {
+          edges {
+            node {
+              id
+              path
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const Explorer = ({ changeId, onResourceClick }: ExplorerProps) => {
+  const [state, setState] = useState<ExplorerState>({ message: null });
+  const variables: GetChangeResourcesVariables = { changeId };
+  const { data, error } = useQuery<GetChangeResourcesData, GetChangeResourcesVariables>(getChangeResourcesQuery, {
+    variables,
+  });
+  useEffect(() => {
+    if (error) {
+      setState((prevState) => ({ ...prevState, message: error.message }));
+    }
+  }, [error]);
+
+  const resources: Resource[] = (data?.viewer.change?.resources.edges ?? []).map((edge) => edge.node);
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ px: (theme) => theme.spacing(2) }}>
         <Typography variant="t5">Explorer</Typography>
       </Box>
-      {children}
+      <ResourceTree resources={resources} onResourceClick={onResourceClick} />
     </Box>
   );
 };
