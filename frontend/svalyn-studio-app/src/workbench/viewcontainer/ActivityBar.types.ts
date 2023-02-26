@@ -17,4 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ActivityBarProps {}
+import { SxProps, Theme } from '@mui/material/styles';
+import { FunctionComponent } from 'react';
+
+export interface ActivityBarProps {
+  views: ViewDescription[];
+  selectedViewId: string;
+  onClick: (view: ViewDescription) => void;
+}
+
+export interface IconProps {
+  sx?: SxProps<Theme> | undefined;
+}
+
+export interface ViewDescription {
+  id: string;
+  title: string;
+  icon: FunctionComponent<IconProps>;
+}

@@ -17,62 +17,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useQuery } from '@apollo/client';
-import CloseIcon from '@mui/icons-material/Close';
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
+import InsertChartOutlinedOutlinedIcon from '@mui/icons-material/InsertChartOutlinedOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
+import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Viewer } from '../viewers/Viewer';
-import { ActivityBar } from './ActivityBar';
-import { Explorer } from './Explorer';
-import { ResourceTree } from './ResourceTree';
-import {
-  GetChangeResourcesData,
-  GetChangeResourcesVariables,
-  Resource,
-  WorkbenchProps,
-  WorkbenchState,
-} from './Workbench.types';
-
-const getChangeResourcesQuery = gql`
-  query getChangeResourcesQuery($changeId: ID!) {
-    viewer {
-      change(id: $changeId) {
-        resources {
-          edges {
-            node {
-              id
-              path
-              name
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { Explorer } from './explorer/Explorer';
+import { TabBar } from './tabs/TabBar';
+import { ActivityBar } from './viewcontainer/ActivityBar';
+import { ViewDescription } from './viewcontainer/ActivityBar.types';
+import { Resource, WorkbenchProps, WorkbenchState } from './Workbench.types';
 
 export const Workbench = ({ changeId }: WorkbenchProps) => {
   const [state, setState] = useState<WorkbenchState>({
     openResources: [],
     currentResource: null,
-    message: null,
   });
 
   const theme = useTheme();
-
-  const variables: GetChangeResourcesVariables = { changeId };
-  const { data, error } = useQuery<GetChangeResourcesData, GetChangeResourcesVariables>(getChangeResourcesQuery, {
-    variables,
-  });
-  useEffect(() => {
-    if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
-    }
-  }, [error]);
 
   const onResourceClick = (resource: Resource) => {
     setState((prevState) => {
@@ -119,7 +85,13 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
     });
   };
 
-  const resources: Resource[] = (data?.viewer.change?.resources.edges ?? []).map((edge) => edge.node);
+  const views: ViewDescription[] = [
+    { id: 'explorer', title: 'Explorer', icon: InsertDriveFileOutlinedIcon },
+    { id: 'domains', title: 'Domains', icon: HubOutlinedIcon },
+    { id: 'objects', title: 'Objects', icon: LanOutlinedIcon },
+    { id: 'views', title: 'Views', icon: InsertChartOutlinedOutlinedIcon },
+  ];
+
   return (
     <Box
       data-testid="workbench"
@@ -134,16 +106,14 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
         }}
       ></Box>
       <PanelGroup direction="horizontal">
-        <ActivityBar />
+        <ActivityBar views={views} selectedViewId="explorer" onClick={() => {}} />
         <Panel
           style={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default }}
           minSize={10}
           maxSize={50}
           defaultSize={20}
         >
-          <Explorer>
-            <ResourceTree resources={resources} onResourceClick={onResourceClick} />
-          </Explorer>
+          <Explorer changeId={changeId} onResourceClick={onResourceClick} />
         </Panel>
         <PanelResizeHandle
           style={{
@@ -154,64 +124,12 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
           }}
         />
         <Panel style={{ display: 'grid', gridTemplateColumns: '1fr', gridTemplateRows: 'min-content 1fr' }}>
-          <Box
-            data-testid="tab-area"
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              overflow: 'auto',
-              flex: 'none',
-              backgroundColor: (theme) => theme.palette.background.default,
-              minHeight: '40px',
-            }}
-          >
-            {state.openResources.map((openResource) => (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  flex: 'none',
-                  whiteSpace: 'nowrap',
-                  gap: (theme) => theme.spacing(0.5),
-                  px: (theme) => theme.spacing(2),
-                  cursor: 'pointer',
-                  backgroundColor: () =>
-                    openResource.id === state.currentResource?.id
-                      ? theme.palette.background.paper
-                      : theme.palette.background.default,
-                  borderRight: (theme) => `1px solid ${theme.palette.divider}`,
-                }}
-                onClick={() => onOpen(openResource)}
-                key={openResource.id}
-              >
-                <InsertDriveFileOutlinedIcon
-                  fontSize="small"
-                  sx={{
-                    color: () =>
-                      openResource.id === state.currentResource?.id
-                        ? theme.palette.primary.main
-                        : theme.palette.text.primary,
-                  }}
-                />
-                <Typography
-                  variant="tbody2"
-                  sx={{
-                    color: () =>
-                      openResource.id === state.currentResource?.id
-                        ? theme.palette.primary.main
-                        : theme.palette.text.primary,
-                  }}
-                >
-                  {openResource.name}
-                </Typography>
-                <CloseIcon
-                  sx={{ fontSize: (theme) => theme.spacing(2) }}
-                  onClick={(event) => onClose(event, openResource)}
-                />
-              </Box>
-            ))}
-          </Box>
+          <TabBar
+            resources={state.openResources}
+            currentResourceId={state.currentResource?.id || ''}
+            onOpen={onOpen}
+            onClose={onClose}
+          />
           <Box
             data-testid="editor-area"
             sx={{

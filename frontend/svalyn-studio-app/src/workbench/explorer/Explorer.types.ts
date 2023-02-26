@@ -18,5 +18,40 @@
  */
 
 export interface ExplorerProps {
-  children?: React.ReactNode;
+  changeId: string;
+  onResourceClick: (resource: Resource) => void;
+}
+
+export interface ExplorerState {
+  message: string | null;
+}
+
+export interface GetChangeResourcesVariables {
+  changeId: string;
+}
+
+export interface GetChangeResourcesData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  change: Change | null;
+}
+
+export interface Change {
+  resources: ChangeResourcesConnection;
+}
+
+export interface ChangeResourcesConnection {
+  edges: ChangeResourcesEdge[];
+}
+
+export interface ChangeResourcesEdge {
+  node: Resource;
+}
+
+export interface Resource {
+  id: string;
+  path: string;
+  name: string;
 }
