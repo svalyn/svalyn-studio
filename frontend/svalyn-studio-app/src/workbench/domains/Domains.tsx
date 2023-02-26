@@ -17,23 +17,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Box from '@mui/material/Box';
-import { useParams } from 'react-router-dom';
-import { Workbench } from '../../workbench/Workbench';
+import { DomainsProps } from './Domains.types';
 
-export const WorkspaceView = () => {
-  const { changeId } = useParams();
-  return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateRows: 'minmax(0, 1fr)',
-        gridTemplateColumns: 'minmax(0, 1fr)',
-        width: '100vw',
-        height: '100vh',
-      }}
-    >
-      {changeId ? <Workbench changeId={changeId} /> : null}
-    </Box>
-  );
+export const Domains = ({}: DomainsProps) => {
+  return <div></div>;
 };
