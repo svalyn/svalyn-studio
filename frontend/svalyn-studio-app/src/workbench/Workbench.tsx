@@ -23,8 +23,8 @@ import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutl
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import { useState } from 'react';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { useRef, useState } from 'react';
+import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Viewer } from '../viewers/Viewer';
 import { Domains } from './domains/Domains';
 import { Explorer } from './explorer/Explorer';
@@ -36,14 +36,30 @@ import { Resource, WorkbenchProps, WorkbenchState } from './Workbench.types';
 export const Workbench = ({ changeId }: WorkbenchProps) => {
   const [state, setState] = useState<WorkbenchState>({
     selectedViewId: 'explorer',
+    viewPanelState: 'EXPANDED',
     openResources: [],
     currentResource: null,
   });
 
+  const panelRef = useRef<ImperativePanelHandle>(null);
   const theme = useTheme();
 
   const onSelectedView = (view: ViewDescription) => {
-    setState((prevState) => ({ ...prevState, selectedViewId: view.id }));
+    if (state.selectedViewId === view.id && panelRef.current) {
+      if (state.viewPanelState === 'EXPANDED') {
+        panelRef.current.collapse();
+        setState((prevState) => ({ ...prevState, viewPanelState: 'COLLAPSED' }));
+      } else {
+        panelRef.current.expand();
+        setState((prevState) => ({ ...prevState, viewPanelState: 'EXPANDED' }));
+      }
+    } else {
+      setState((prevState) => ({ ...prevState, selectedViewId: view.id }));
+    }
+  };
+
+  const onCollapse = (collapsed: boolean) => {
+    setState((prevState) => ({ ...prevState, viewPanelState: collapsed ? 'COLLAPSED' : 'EXPANDED' }));
   };
 
   const onResourceClick = (resource: Resource) => {
@@ -107,7 +123,7 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
         data-testid="header"
         sx={{
           height: (theme) => theme.spacing(4),
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: (theme) => theme.palette.background.paper,
           borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
         }}
       ></Box>
@@ -118,6 +134,9 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
           minSize={10}
           maxSize={50}
           defaultSize={20}
+          collapsible
+          onCollapse={onCollapse}
+          ref={panelRef}
         >
           {state.selectedViewId === 'explorer' && <Explorer changeId={changeId} onResourceClick={onResourceClick} />}
           {state.selectedViewId !== 'explorer' && <Domains />}

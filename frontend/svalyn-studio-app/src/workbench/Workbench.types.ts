@@ -23,9 +23,12 @@ export interface WorkbenchProps {
 
 export interface WorkbenchState {
   selectedViewId: string | null;
+  viewPanelState: PanelState;
   openResources: Resource[];
   currentResource: Resource | null;
 }
+
+export type PanelState = 'EXPANDED' | 'COLLAPSED';
 
 export interface Resource {
   id: string;
