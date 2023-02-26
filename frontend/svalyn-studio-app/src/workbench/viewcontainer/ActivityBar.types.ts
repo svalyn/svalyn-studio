@@ -22,7 +22,7 @@ import { FunctionComponent } from 'react';
 
 export interface ActivityBarProps {
   views: ViewDescription[];
-  selectedViewId: string;
+  selectedViewId: string | null;
   onClick: (view: ViewDescription) => void;
 }
 

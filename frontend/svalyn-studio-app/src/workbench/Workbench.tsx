@@ -26,6 +26,7 @@ import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Viewer } from '../viewers/Viewer';
+import { Domains } from './domains/Domains';
 import { Explorer } from './explorer/Explorer';
 import { TabBar } from './tabs/TabBar';
 import { ActivityBar } from './viewcontainer/ActivityBar';
@@ -34,11 +35,16 @@ import { Resource, WorkbenchProps, WorkbenchState } from './Workbench.types';
 
 export const Workbench = ({ changeId }: WorkbenchProps) => {
   const [state, setState] = useState<WorkbenchState>({
+    selectedViewId: 'explorer',
     openResources: [],
     currentResource: null,
   });
 
   const theme = useTheme();
+
+  const onSelectedView = (view: ViewDescription) => {
+    setState((prevState) => ({ ...prevState, selectedViewId: view.id }));
+  };
 
   const onResourceClick = (resource: Resource) => {
     setState((prevState) => {
@@ -106,14 +112,15 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
         }}
       ></Box>
       <PanelGroup direction="horizontal">
-        <ActivityBar views={views} selectedViewId="explorer" onClick={() => {}} />
+        <ActivityBar views={views} selectedViewId={state.selectedViewId} onClick={onSelectedView} />
         <Panel
           style={{ display: 'flex', flexDirection: 'column', backgroundColor: theme.palette.background.default }}
           minSize={10}
           maxSize={50}
           defaultSize={20}
         >
-          <Explorer changeId={changeId} onResourceClick={onResourceClick} />
+          {state.selectedViewId === 'explorer' && <Explorer changeId={changeId} onResourceClick={onResourceClick} />}
+          {state.selectedViewId !== 'explorer' && <Domains />}
         </Panel>
         <PanelResizeHandle
           style={{
@@ -133,6 +140,7 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
           <Box
             data-testid="editor-area"
             sx={{
+              overflow: 'scroll',
               padding: (theme) => theme.spacing(1),
               backgroundColor: (theme) => theme.palette.background.paper,
             }}

@@ -63,7 +63,7 @@ export const Viewer = ({ changeId, path, name }: ViewerProps) => {
 
     if (resource.contentType === 'TEXT_PLAIN') {
       rawViewer = (
-        <Box sx={{ px: (theme) => theme.spacing(2), overflowX: 'scroll' }}>
+        <Box sx={{ px: (theme) => theme.spacing(2), overflow: 'scroll' }}>
           <pre>
             <Typography variant="tcontent">{resource.content}</Typography>
           </pre>

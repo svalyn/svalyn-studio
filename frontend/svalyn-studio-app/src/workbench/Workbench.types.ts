@@ -22,6 +22,7 @@ export interface WorkbenchProps {
 }
 
 export interface WorkbenchState {
+  selectedViewId: string | null;
   openResources: Resource[];
   currentResource: Resource | null;
 }
