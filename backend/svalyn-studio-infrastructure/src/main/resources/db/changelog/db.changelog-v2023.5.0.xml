@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2023 Stéphane Bégaudeau.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+  ~ associated documentation files (the "Software"), to deal in the Software without restriction,
+  ~ including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+  ~ and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+  ~ subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial
+  ~ portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+  ~ LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+  ~ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  ~ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet  author="sbegaudeau"  id="2023.5.0">
+        <createTable tableName="domain">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="identifier" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="domain" baseColumnNames="created_by" constraintName="fk_domain_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="domain" baseColumnNames="last_modified_by" constraintName="fk_domain_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="entity">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="extended_entity" type="TEXT">
+            </column>
+            <column name="is_abstract" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="domain_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="entity" baseColumnNames="domain_id" constraintName="fk_entity_domain_id" referencedTableName="domain" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="entity" baseColumnNames="created_by" constraintName="fk_entity_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="entity" baseColumnNames="last_modified_by" constraintName="fk_entity_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="attribute">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_id" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_many" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="attribute" baseColumnNames="entity_id" constraintName="fk_attribute_entity_id" referencedTableName="entity" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="attribute" baseColumnNames="created_by" constraintName="fk_attribute_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="attribute" baseColumnNames="last_modified_by" constraintName="fk_attribute_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="relation">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_containment" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_many" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="relation" baseColumnNames="entity_id" constraintName="fk_relation_entity_id" referencedTableName="entity" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="relation" baseColumnNames="created_by" constraintName="fk_relation_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="relation" baseColumnNames="last_modified_by" constraintName="fk_relation_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="datatype">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="domain_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="datatype" baseColumnNames="domain_id" constraintName="fk_datatype_domain_id" referencedTableName="domain" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="datatype" baseColumnNames="created_by" constraintName="fk_datatype_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="datatype" baseColumnNames="last_modified_by" constraintName="fk_datatype_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="enumeration">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="domain_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="enumeration" baseColumnNames="domain_id" constraintName="fk_enumeration_domain_id" referencedTableName="domain" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="enumeration" baseColumnNames="created_by" constraintName="fk_enumeration_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="enumeration" baseColumnNames="last_modified_by" constraintName="fk_enumeration_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+
+        <createTable tableName="enumeration_literal">
+            <column name="id"  type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentation" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enumeration_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="enumeration_literal" baseColumnNames="enumeration_id" constraintName="fk_enumeration_literal_enumeration_id" referencedTableName="enumeration" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="enumeration_literal" baseColumnNames="created_by" constraintName="fk_enumeration_literal_created_by" referencedTableName="account" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="enumeration_literal" baseColumnNames="last_modified_by" constraintName="fk_enumeration_literal_last_modified_by" referencedTableName="account" referencedColumnNames="id" />
+    </changeSet>
+</databaseChangeLog>

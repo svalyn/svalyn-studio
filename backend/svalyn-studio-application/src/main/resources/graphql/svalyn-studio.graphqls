@@ -24,6 +24,8 @@ type Viewer {
   notifications(status: [NotificationStatus!]!, page: Int!, rowsPerPage: Int!): ViewerNotificationsConnection!
   unreadNotificationsCount: Int!
   authenticationTokens(page: Int!, rowsPerPage: Int!): ViewerAuthenticationTokensConnection!
+  domains(page: Int!, rowsPerPage: Int!): ViewerDomainsConnection!
+  domain(identifier: ID!): Domain
 }
 
 type ViewerInvitationsConnection {
@@ -369,6 +371,66 @@ enum AuthenticationTokenStatus {
   INACTIVE
 }
 
+type ViewerDomainsConnection {
+  edges: [ViewerDomainsEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ViewerDomainsEdge {
+  node: Domain!
+}
+
+type Domain {
+  identifier: ID!
+  version: ID!
+  label: String!
+  documentation: String!
+  entities: [Entity!]!
+  dataTypes: [DataType!]!
+  enumerations: [Enumeration!]!
+}
+
+type Entity {
+  name: String!
+  documentation: String!
+  extendedEntity: String
+  isAbstract: Boolean!
+  attributes: [Attribute!]!
+  relations: [Relation!]!
+}
+
+type Attribute {
+  name: String!
+  documentation: String!
+  type: String!
+  isId: Boolean!
+  isMany: Boolean!
+}
+
+type Relation {
+  name: String!
+  documentation: String!
+  type: String!
+  isContainment: Boolean!
+  isMany: Boolean!
+}
+
+type DataType {
+  name: String!
+  documentation: String!
+}
+
+type Enumeration {
+  name: String!
+  documentation: String!
+  literals: [EnumerationLiteral!]!
+}
+
+type EnumerationLiteral {
+  name: String!
+  documentation: String!
+}
+
 type Mutation {
   createAuthenticationToken(input: CreateAuthenticationTokenInput!): CreateAuthenticationTokenPayload! @validated
   updateAuthenticationTokensStatus(input: UpdateAuthenticationTokensStatusInput!): UpdateAuthenticationTokensStatusPayload! @validated
@@ -396,6 +458,7 @@ type Mutation {
   deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload! @validated
   performReview(input: PerformReviewInput!): PerformReviewPayload! @validated
   updateNotificationsStatus(input: UpdateNotificationsStatusInput!): UpdateNotificationsStatusPayload! @validated
+  createDomain(input: CreateDomainInput!): CreateDomainPayload!
 }
 
 type ErrorPayload {
@@ -638,3 +701,66 @@ input UpdateNotificationsStatusInput {
 }
 
 union UpdateNotificationsStatusPayload = ErrorPayload | SuccessPayload
+
+input CreateDomainInput {
+  id: ID!
+  domain: DomainInput!
+}
+
+input DomainInput {
+  identifier: ID!
+  version: ID!
+  label: String!
+  documentation: String!
+  entities: [EntityInput!]!
+  dataTypes: [DataTypeInput!]!
+  enumerations: [EnumerationInput!]!
+}
+
+input EntityInput {
+  name: String!
+  documentation: String!
+  extendedEntity: String
+  isAbstract: Boolean!
+  attributes: [AttributeInput!]!
+  relations: [RelationInput!]!
+}
+
+input AttributeInput {
+  name: String!
+  documentation: String!
+  type: String!
+  isId: Boolean!
+  isMany: Boolean!
+}
+
+input RelationInput {
+  name: String!
+  documentation: String!
+  type: String!
+  isContainment: Boolean!
+  isMany: Boolean!
+}
+
+input DataTypeInput {
+  name: String!
+  documentation: String!
+}
+
+input EnumerationInput {
+  name: String!
+  documentation: String!
+  literals: [EnumerationLiteralInput!]!
+}
+
+input EnumerationLiteralInput {
+  name: String!
+  documentation: String!
+}
+
+union CreateDomainPayload = ErrorPayload | CreatedDomainSuccessPayload
+
+type CreatedDomainSuccessPayload {
+  id: ID!
+  domain: Domain!
+}
