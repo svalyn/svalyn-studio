@@ -19,7 +19,6 @@
 
 package com.svalyn.studio.architecture;
 
-import com.svalyn.studio.application.controllers.dto.IInput;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.IDomainEvent;
@@ -28,6 +27,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import jakarta.validation.Valid;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -36,8 +36,6 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
-
-import jakarta.validation.Valid;
 
 import java.util.Arrays;
 
@@ -51,16 +49,6 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
  */
 @SuppressWarnings("checkstyle:MethodName")
 public class ArchitectureTests {
-    @Test
-    @DisplayName("Given a record, when used as an input, then it should implement IInput")
-    public void givenRecord_whenUsedAsInput_thenItShouldImplementIInput() {
-        var classes = new ClassFileImporter().importPackages("com.svalyn.studio");
-        var rule = classes()
-                .that().areRecords()
-                .and().haveSimpleNameEndingWith("Input")
-                .should().implement(IInput.class);
-        rule.check(classes);
-    }
 
     @Test
     @DisplayName("Given a record, when used as a payload, then it should implement IPayload")

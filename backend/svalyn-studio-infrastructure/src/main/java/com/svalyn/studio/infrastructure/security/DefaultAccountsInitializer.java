@@ -83,7 +83,7 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
                     .username("admin")
                     .passwordCredentials(Set.of(passwordCredentials))
                     .name("Admin")
-                    .email("")
+                    .email("admin@svalyn.com")
                     .imageUrl("")
                     .build();
 
