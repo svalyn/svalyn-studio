@@ -1,0 +1,16 @@
+---
+name: TagAddedToOrganizationEvent
+version: 2023.3.0
+summary: |
+  Indicates that a new tag has been added to an organization
+producers:
+  - Tag Creation Service
+owners:
+  - sbegaudeau
+---
+
+### Details
+
+This event is fired when a new tag has been added to an organization.
+
+<NodeGraph title="Consumer / Producer Diagram" />
