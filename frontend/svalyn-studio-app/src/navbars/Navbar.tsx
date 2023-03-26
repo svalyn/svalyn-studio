@@ -38,7 +38,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink, Navigate } from 'react-router-dom';
+import { Navigate, Link as RouterLink } from 'react-router-dom';
 import { getCookie } from '../cookies/getCookie';
 import { Svalyn } from '../icons/Svalyn';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
