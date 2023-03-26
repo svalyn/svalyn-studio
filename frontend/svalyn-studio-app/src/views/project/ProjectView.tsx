@@ -19,17 +19,18 @@
 
 import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import { useEffect, useState } from 'react';
-import { matchPath, useLocation, useParams } from 'react-router-dom';
+import { Link as RouterLink, matchPath, useLocation, useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { NotFoundView } from '../notfound/NotFoundView';
-import { ProjectActivity } from './activity/ProjectActivity';
-import { ProjectChangeProposal } from './changeproposals/ProjectChangeProposal';
-import { ProjectHome } from './home/ProjectHome';
 import { ProjectDrawer } from './ProjectDrawer';
 import { ProjectViewPanel } from './ProjectDrawer.types';
 import { GetProjectData, GetProjectVariables, ProjectViewState } from './ProjectView.types';
+import { ProjectActivity } from './activity/ProjectActivity';
+import { ProjectChangeProposal } from './changeproposals/ProjectChangeProposal';
+import { ProjectHome } from './home/ProjectHome';
 import { ProjectSettings } from './settings/ProjectSettings';
 import { ProjectTags } from './tags/ProjectTags';
 
@@ -127,7 +128,11 @@ export const ProjectView = () => {
   return (
     <>
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Navbar />
+        <Navbar>
+          <Link component={RouterLink} to="/domains" color="inherit" underline="hover" fontWeight={800}>
+            Domains
+          </Link>
+        </Navbar>
         {state.project ? (
           <Box
             sx={{

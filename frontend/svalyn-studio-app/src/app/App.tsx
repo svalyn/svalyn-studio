@@ -21,6 +21,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ChangeProposalView } from '../views/changeproposal/ChangeProposalView';
+import { DomainView } from '../views/domain/DomainView';
+import { DomainsView } from '../views/domains/DomainsView';
 import { ErrorView } from '../views/error/ErrorView';
 import { HelpView } from '../views/help/HelpView';
 import { HomeView } from '../views/home/HomeView';
@@ -63,6 +65,8 @@ export const App = () => {
             <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
             <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />
             <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
+            <Route path="/domains" element={<DomainsView />} />
+            <Route path="/domains/:domainIdentifier" element={<DomainView />} />
             <Route path="/settings" element={<SettingsView />} />
             <Route path="/settings/authentication-tokens" element={<SettingsView />} />
             <Route path="/login" element={<LoginView />} />
