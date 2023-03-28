@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,6 +80,8 @@ public class AccountUpdateServiceIntegrationTests extends AbstractIntegrationTes
         var secretKey = success.data().secretKey();
 
         try {
+            mvc.perform(logout("/api/logout"));
+
             mvc.perform(formLogin("/api/login").user(accessKey).password(secretKey))
                     .andExpect(status().isOk())
                     .andExpect(authenticated().withRoles("USER"));
@@ -101,6 +104,8 @@ public class AccountUpdateServiceIntegrationTests extends AbstractIntegrationTes
         var secretKey = success.data().secretKey();
 
         try {
+            mvc.perform(logout("/api/logout"));
+
             mvc.perform(formLogin("/api/login").user(accessKey).password(secretKey))
                     .andExpect(status().isOk())
                     .andExpect(authenticated().withRoles("ADMIN"));

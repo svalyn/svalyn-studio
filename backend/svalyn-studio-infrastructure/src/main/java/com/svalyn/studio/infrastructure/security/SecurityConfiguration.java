@@ -27,7 +27,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -77,13 +76,6 @@ public class SecurityConfiguration {
         http.cors();
         http.csrf().disable();
         // http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
-        // See https://github.com/spring-projects/spring-security/issues/12314
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
-
-        http.securityContext((securityContext) -> {
-            securityContext.requireExplicitSave(false);
-        });
 
         http.oauth2Login()
                 .authorizationEndpoint()
