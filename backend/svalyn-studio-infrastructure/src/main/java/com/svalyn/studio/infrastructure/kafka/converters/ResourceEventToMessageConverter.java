@@ -27,11 +27,11 @@ import com.svalyn.studio.domain.resource.Resource;
 import com.svalyn.studio.domain.resource.events.ResourceCreatedEvent;
 import com.svalyn.studio.domain.resource.events.ResourceDeletedEvent;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.resource.ResourceCreatedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.resource.ResourceDeletedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.resource.ResourceMessage;
+import com.svalyn.studio.message.Message;
+import com.svalyn.studio.message.account.AccountSummaryMessage;
+import com.svalyn.studio.message.resource.ResourceCreatedMessage;
+import com.svalyn.studio.message.resource.ResourceDeletedMessage;
+import com.svalyn.studio.message.resource.ResourceMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

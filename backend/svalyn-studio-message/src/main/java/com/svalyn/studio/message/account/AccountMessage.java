@@ -17,32 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka;
+package com.svalyn.studio.message.account;
 
-import com.svalyn.studio.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.kafka.support.SendResult;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.function.BiConsumer;
+import java.time.Instant;
+import java.util.UUID;
 
 /**
- * Used to log Kafka send results.
+ * The public version of the account.
  *
  * @author sbegaudeau
  */
-public class KafkaListenableFutureCallback implements BiConsumer<SendResult<String, Message>, Throwable> {
-
-    private final Logger logger = LoggerFactory.getLogger(KafkaListenableFutureCallback.class);
-
-    @Override
-    public void accept(SendResult<String, Message> sendResult, Throwable throwable) {
-        if (throwable != null) {
-            this.logger.warn(throwable.getMessage(), throwable);
-        }
-        if (sendResult != null) {
-            this.logger.trace(sendResult.toString());
-        }
-    }
-
+public record AccountMessage(
+        @NotNull UUID id,
+        @NotNull String imageUrl,
+        @NotNull Instant createdOn,
+        @NotNull Instant lastModifiedOn) {
 }

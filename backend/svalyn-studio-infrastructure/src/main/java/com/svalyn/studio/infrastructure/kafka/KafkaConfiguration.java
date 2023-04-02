@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.infrastructure.kafka;
 
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
+import com.svalyn.studio.message.Message;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,32 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka;
+package com.svalyn.studio.message.resource;
 
-import com.svalyn.studio.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.kafka.support.SendResult;
+import com.svalyn.studio.message.IMessageContent;
+import com.svalyn.studio.message.account.AccountSummaryMessage;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.function.BiConsumer;
+import java.time.Instant;
 
 /**
- * Used to log Kafka send results.
+ * Used to indicate that a resource has been deleted.
  *
  * @author sbegaudeau
  */
-public class KafkaListenableFutureCallback implements BiConsumer<SendResult<String, Message>, Throwable> {
-
-    private final Logger logger = LoggerFactory.getLogger(KafkaListenableFutureCallback.class);
-
-    @Override
-    public void accept(SendResult<String, Message> sendResult, Throwable throwable) {
-        if (throwable != null) {
-            this.logger.warn(throwable.getMessage(), throwable);
-        }
-        if (sendResult != null) {
-            this.logger.trace(sendResult.toString());
-        }
-    }
-
+public record ResourceDeletedMessage(
+        @NotNull Instant createdOn,
+        @NotNull AccountSummaryMessage createdBy,
+        @NotNull ResourceMessage resource) implements IMessageContent {
 }

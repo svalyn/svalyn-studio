@@ -30,12 +30,12 @@ import com.svalyn.studio.domain.organization.events.OrganizationModifiedEvent;
 import com.svalyn.studio.domain.tag.Tag;
 import com.svalyn.studio.domain.tag.repositories.ITagRepository;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationCreatedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationDeletedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationModifiedMessage;
+import com.svalyn.studio.message.Message;
+import com.svalyn.studio.message.account.AccountSummaryMessage;
+import com.svalyn.studio.message.organization.OrganizationCreatedMessage;
+import com.svalyn.studio.message.organization.OrganizationDeletedMessage;
+import com.svalyn.studio.message.organization.OrganizationMessage;
+import com.svalyn.studio.message.organization.OrganizationModifiedMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
