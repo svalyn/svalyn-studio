@@ -29,15 +29,14 @@ import com.svalyn.studio.domain.business.Entity;
 import com.svalyn.studio.domain.business.Enumeration;
 import com.svalyn.studio.domain.business.EnumerationLiteral;
 import com.svalyn.studio.domain.business.Relation;
+import com.svalyn.studio.domain.business.invariants.IsValidNewDomain;
 import com.svalyn.studio.domain.business.repositories.IDomainRepository;
 import com.svalyn.studio.domain.business.services.api.IDomainCreationService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Used to create domains.
@@ -56,147 +55,22 @@ public class DomainCreationService implements IDomainCreationService {
     @Override
     public IResult<Domain> createDomain(NewDomain newDomain) {
         IResult<Domain> result;
-        if (this.isValid(newDomain)) {
+
+        var observer = new DomainCreationObserver();
+        var isValidNewDomainInvariant = new IsValidNewDomain(this.domainRepository);
+        isValidNewDomainInvariant.observers().add(observer);
+        var isValidNewDomain = isValidNewDomainInvariant.isSatisfiedBy(newDomain);
+
+        if (isValidNewDomain && !observer.hasObservation()) {
             var domain = this.toDomain(newDomain);
             domain = this.domainRepository.save(domain);
 
             result = new Success<>(domain);
         } else {
-            result = new Failure<>("The domain is not valid");
+            var observation = observer.getObservation();
+            result = new Failure<>(observation.message());
         }
         return result;
-    }
-
-    private boolean isValid(NewDomain newDomain) {
-        boolean isValid = true;
-        isValid = isValid && this.isValidIdentifier(newDomain.identifier());
-        isValid = isValid && !this.domainRepository.existsByIdentifier(newDomain.identifier());
-        isValid = isValid && this.hasNoDuplicateNamedElements(newDomain);
-        isValid = isValid && newDomain.entities().stream().allMatch(newEntity -> this.isValid(newDomain, newEntity));
-        isValid = isValid && newDomain.dataTypes().stream().allMatch(this::isValid);
-        isValid = isValid && newDomain.enumerations().stream().allMatch(this::isValid);
-        return isValid;
-    }
-
-    private boolean hasNoDuplicateNamedElements(NewDomain newDomain) {
-        var entityNameStream = newDomain.entities().stream().map(NewEntity::name);
-        var dataTypeNameStream = newDomain.dataTypes().stream().map(NewDataType::name);
-        var enumerationNameStream = newDomain.enumerations().stream().map(NewEnumeration::name);
-
-        var distinctElementCount = Stream.concat(Stream.concat(entityNameStream, dataTypeNameStream), enumerationNameStream).distinct().count();
-        var elementCount = newDomain.entities().size() + newDomain.dataTypes().size() + newDomain.enumerations().size();
-        return distinctElementCount == elementCount;
-    }
-
-    private boolean isValid(NewDomain newDomain, NewEntity newEntity) {
-        boolean isValid = true;
-        isValid = isValid && this.isValidName(newEntity.name());
-        isValid = isValid && Optional.ofNullable(newEntity.extendedEntity()).map(type -> this.isValidRelationTypeReference(newDomain, type)).orElse(true);
-        isValid = isValid && newEntity.attributes().stream().allMatch(newAttribute -> this.isValid(newDomain, newAttribute));
-        isValid = isValid && newEntity.relations().stream().allMatch(newRelation -> this.isValid(newDomain, newRelation));
-        isValid = isValid && newEntity.attributes().stream().filter(NewAttribute::isId).count() <= 1;
-
-        var featureNameStream = Stream.concat(
-                newEntity.attributes().stream().map(NewAttribute::name),
-                newEntity.relations().stream().map(NewRelation::name)
-        );
-        isValid = isValid && featureNameStream.distinct().count() == (newEntity.attributes().size() + newEntity.relations().size());
-
-        return isValid;
-    }
-
-    private boolean isValid(NewDomain newDomain, NewAttribute newAttribute) {
-        boolean isValid = true;
-        isValid = isValid && this.isValidName(newAttribute.name());
-        isValid = isValid && Optional.ofNullable(newAttribute.type()).map(type -> this.isValidAttributeTypeReference(newDomain, type)).orElse(true);
-        return isValid;
-    }
-
-    private boolean isValid(NewDomain newDomain, NewRelation newRelation) {
-        boolean isValid = true;
-        isValid = isValid && this.isValidName(newRelation.name());
-        isValid = isValid && Optional.ofNullable(newRelation.type()).map(type -> this.isValidRelationTypeReference(newDomain, type)).orElse(true);
-        return isValid;
-    }
-
-    private boolean isValid(NewDataType newDataType) {
-        boolean isValid = true;
-        isValid = isValid && this.isValidName(newDataType.name());
-        return isValid;
-    }
-
-    private boolean isValid(NewEnumeration newEnumeration) {
-        boolean isValid = true;
-        isValid = isValid && this.isValidName(newEnumeration.name());
-        isValid = isValid && newEnumeration.literals().stream().map(NewEnumerationLiteral::name).allMatch(this::isValidName);
-        isValid = isValid && newEnumeration.literals().stream().map(NewEnumerationLiteral::name).distinct().count() == newEnumeration.literals().size();
-        return isValid;
-    }
-
-    private boolean isValidIdentifier(String identifier) {
-        return identifier.chars().mapToObj(c -> (char) c).allMatch(Character::isLetterOrDigit);
-    }
-
-    private boolean isValidName(String name) {
-        return name.chars().mapToObj(c -> (char) c).allMatch(Character::isLetterOrDigit);
-    }
-
-    private boolean isValidAttributeTypeReference(NewDomain newDomain, String type) {
-        boolean isValid = true;
-        var index = type.indexOf("::");
-        isValid = isValid && index != -1;
-
-        if (isValid) {
-            var domainIdentifier = type.substring(0, index);
-            var typeName = type.substring(index + "::".length());
-
-            isValid = isValid && this.isValidIdentifier(domainIdentifier);
-            isValid = isValid && this.isValidName(typeName);
-
-            if (isValid) {
-                if (domainIdentifier.equals(newDomain.identifier())) {
-                    var hasMatchingDataType = newDomain.dataTypes().stream().map(NewDataType::name).anyMatch(typeName::equals);
-                    var hasMatchingEnumeration = newDomain.enumerations().stream().map(NewEnumeration::name).anyMatch(typeName::equals);
-                    isValid = isValid && (hasMatchingDataType || hasMatchingEnumeration);
-                } else {
-                    isValid = isValid && this.domainRepository.findByIdentifier(domainIdentifier).map(domain -> {
-                        var hasMatchingDataType = domain.getDataTypes().stream().map(DataType::getName).anyMatch(typeName::equals);
-                        var hasMatchingEnumeration = domain.getEnumerations().stream().map(Enumeration::getName).anyMatch(typeName::equals);
-                        return hasMatchingDataType || hasMatchingEnumeration;
-                    }).orElse(false);
-                }
-            }
-        }
-
-        return isValid;
-    }
-
-    private boolean isValidRelationTypeReference(NewDomain newDomain, String type) {
-        boolean isValid = true;
-        var index = type.indexOf("::");
-        isValid = isValid && index != -1;
-
-        if (isValid) {
-            var domainIdentifier = type.substring(0, index);
-            var typeName = type.substring(index + "::".length());
-
-            isValid = isValid && this.isValidIdentifier(domainIdentifier);
-            isValid = isValid && this.isValidName(typeName);
-
-            if (isValid) {
-                if (domainIdentifier.equals(newDomain.identifier())) {
-                    isValid = isValid && newDomain.entities().stream().map(NewEntity::name).anyMatch(typeName::equals);
-                } else {
-                    isValid = isValid && this.domainRepository.findByIdentifier(domainIdentifier)
-                            .map(domain -> domain.getEntities().stream()
-                                    .map(Entity::getName)
-                                    .anyMatch(typeName::equals))
-                            .orElse(false);
-                }
-            }
-        }
-
-        return isValid;
     }
 
     private Domain toDomain(NewDomain newDomain) {
