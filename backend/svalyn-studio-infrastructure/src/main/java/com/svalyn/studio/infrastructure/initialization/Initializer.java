@@ -35,11 +35,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * Used to register the default domains.
@@ -48,8 +46,6 @@ import java.util.UUID;
  */
 @Service
 public class Initializer implements CommandLineRunner {
-
-    public static final UUID SYSTEM_ACCOUNT_ID = UUID.nameUUIDFromBytes("system".getBytes(StandardCharsets.UTF_8));
 
     private final IAccountRepository accountRepository;
 
