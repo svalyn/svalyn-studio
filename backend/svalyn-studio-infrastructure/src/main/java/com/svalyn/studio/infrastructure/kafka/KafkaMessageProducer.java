@@ -26,7 +26,7 @@ import com.svalyn.studio.domain.organization.events.IOrganizationEvent;
 import com.svalyn.studio.domain.project.events.IProjectEvent;
 import com.svalyn.studio.domain.resource.events.IResourceEvent;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
+import com.svalyn.studio.message.Message;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;

@@ -30,6 +30,7 @@
 
     <modules>
         <module>svalyn-studio-domain</module>
+        <module>svalyn-studio-message</module>
         <module>svalyn-studio-application</module>
         <module>svalyn-studio-infrastructure</module>
         <module>svalyn-studio</module>

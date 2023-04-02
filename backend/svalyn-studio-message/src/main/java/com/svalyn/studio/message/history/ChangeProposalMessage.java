@@ -17,32 +17,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.infrastructure.kafka;
+package com.svalyn.studio.message.history;
 
-import com.svalyn.studio.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.kafka.support.SendResult;
+import com.svalyn.studio.message.account.AccountSummaryMessage;
+import com.svalyn.studio.message.project.ProjectSummaryMessage;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.function.BiConsumer;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * Used to log Kafka send results.
+ * The public version of a change proposal.
  *
  * @author sbegaudeau
  */
-public class KafkaListenableFutureCallback implements BiConsumer<SendResult<String, Message>, Throwable> {
-
-    private final Logger logger = LoggerFactory.getLogger(KafkaListenableFutureCallback.class);
-
-    @Override
-    public void accept(SendResult<String, Message> sendResult, Throwable throwable) {
-        if (throwable != null) {
-            this.logger.warn(throwable.getMessage(), throwable);
-        }
-        if (sendResult != null) {
-            this.logger.trace(sendResult.toString());
-        }
-    }
-
+public record ChangeProposalMessage(
+        @NotNull UUID id,
+        @NotNull String name,
+        @NotNull String readMe,
+        @NotNull ProjectSummaryMessage project,
+        @NotNull ChangeMessage change,
+        @NotNull List<ReviewMessage> reviews,
+        @NotNull ChangeProposalStatus status,
+        @NotNull AccountSummaryMessage createdBy,
+        @NotNull Instant createdOn,
+        @NotNull AccountSummaryMessage lastModifiedBy,
+        @NotNull Instant lastModifiedOn) {
 }

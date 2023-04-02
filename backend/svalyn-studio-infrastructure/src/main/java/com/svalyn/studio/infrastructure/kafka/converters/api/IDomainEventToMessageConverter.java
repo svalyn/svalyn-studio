@@ -20,7 +20,7 @@
 package com.svalyn.studio.infrastructure.kafka.converters.api;
 
 import com.svalyn.studio.domain.IDomainEvent;
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
+import com.svalyn.studio.message.Message;
 
 import java.util.Optional;
 

@@ -43,21 +43,23 @@ import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
 import com.svalyn.studio.domain.tag.Tag;
 import com.svalyn.studio.domain.tag.repositories.ITagRepository;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ChangeMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ChangeProposalCreatedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ChangeProposalDeletedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ChangeProposalMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ChangeProposalModifiedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ChangeResourceMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ResourcesAddedToChangeMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ResourcesRemovedFromChangeMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ReviewMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ReviewModifiedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.history.ReviewPerformedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.organization.OrganizationSummaryMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.project.ProjectSummaryMessage;
+import com.svalyn.studio.message.Message;
+import com.svalyn.studio.message.account.AccountSummaryMessage;
+import com.svalyn.studio.message.history.ChangeMessage;
+import com.svalyn.studio.message.history.ChangeProposalCreatedMessage;
+import com.svalyn.studio.message.history.ChangeProposalDeletedMessage;
+import com.svalyn.studio.message.history.ChangeProposalMessage;
+import com.svalyn.studio.message.history.ChangeProposalModifiedMessage;
+import com.svalyn.studio.message.history.ChangeProposalStatus;
+import com.svalyn.studio.message.history.ChangeResourceMessage;
+import com.svalyn.studio.message.history.ResourcesAddedToChangeMessage;
+import com.svalyn.studio.message.history.ResourcesRemovedFromChangeMessage;
+import com.svalyn.studio.message.history.ReviewMessage;
+import com.svalyn.studio.message.history.ReviewModifiedMessage;
+import com.svalyn.studio.message.history.ReviewPerformedMessage;
+import com.svalyn.studio.message.history.ReviewStatus;
+import com.svalyn.studio.message.organization.OrganizationSummaryMessage;
+import com.svalyn.studio.message.project.ProjectSummaryMessage;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -231,7 +233,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                                                         projectSummary,
                                                         change,
                                                         reviews,
-                                                        changeProposal.getStatus(),
+                                                        ChangeProposalStatus.valueOf(changeProposal.getStatus().name()),
                                                         createdBySummary,
                                                         changeProposal.getCreatedOn(),
                                                         lastModifiedBySummary,
@@ -265,7 +267,7 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
                         new ReviewMessage(
                                 review.getId(),
                                 review.getMessage(),
-                                review.getStatus(),
+                                ReviewStatus.valueOf(review.getStatus().name()),
                                 createdBySummary,
                                 review.getCreatedOn(),
                                 lastModifiedBySummary,

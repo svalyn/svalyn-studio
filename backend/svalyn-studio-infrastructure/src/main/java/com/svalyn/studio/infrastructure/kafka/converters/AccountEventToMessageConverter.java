@@ -25,11 +25,11 @@ import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.events.AccountCreatedEvent;
 import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
 import com.svalyn.studio.infrastructure.kafka.converters.api.IDomainEventToMessageConverter;
-import com.svalyn.studio.infrastructure.kafka.messages.Message;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountCreatedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountModifiedMessage;
-import com.svalyn.studio.infrastructure.kafka.messages.account.AccountSummaryMessage;
+import com.svalyn.studio.message.Message;
+import com.svalyn.studio.message.account.AccountCreatedMessage;
+import com.svalyn.studio.message.account.AccountMessage;
+import com.svalyn.studio.message.account.AccountModifiedMessage;
+import com.svalyn.studio.message.account.AccountSummaryMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
