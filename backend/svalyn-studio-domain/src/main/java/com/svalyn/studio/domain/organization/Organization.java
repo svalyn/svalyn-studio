@@ -31,11 +31,7 @@ import com.svalyn.studio.domain.organization.events.MembershipRevokedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationCreatedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationDeletedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationModifiedEvent;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -77,18 +73,14 @@ public class Organization extends AbstractValidatingAggregateRoot<Organization> 
     @MappedCollection(idColumn = "organization_id")
     private Set<Membership> memberships = new LinkedHashSet<>();
 
-    @CreatedBy
     @Column("created_by")
     private AggregateReference<Account, UUID> createdBy;
 
-    @CreatedDate
     private Instant createdOn;
 
-    @LastModifiedBy
     @Column("last_modified_by")
     private AggregateReference<Account, UUID> lastModifiedBy;
 
-    @LastModifiedDate
     private Instant lastModifiedOn;
 
     public UUID getId() {
