@@ -34,6 +34,8 @@
         <module>svalyn-studio-application</module>
         <module>svalyn-studio-infrastructure</module>
         <module>svalyn-studio</module>
+
+        <module>svalyn-studio-test-coverage</module>
     </modules>
 
 </project>

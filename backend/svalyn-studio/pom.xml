@@ -24,10 +24,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.5</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <groupId>svalyn</groupId>
+        <artifactId>svalyn-studio-parent</artifactId>
+        <version>2023.5.0-SNAPSHOT</version>
+        <relativePath>../svalyn-studio-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>svalyn</groupId>
@@ -35,8 +35,8 @@
     <version>2023.5.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -106,32 +106,6 @@
                     <execution>
                         <goals>
                             <goal>build-info</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.2.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>10.3.2</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <configLocation>../resources/CheckstyleConfiguration.xml</configLocation>
-                    <failsOnError>true</failsOnError>
-                    <consoleOutput>true</consoleOutput>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
