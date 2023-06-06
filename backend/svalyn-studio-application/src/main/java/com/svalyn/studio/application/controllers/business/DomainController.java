@@ -19,9 +19,7 @@
 
 package com.svalyn.studio.application.controllers.business;
 
-import com.svalyn.studio.application.controllers.business.dto.CreateDomainInput;
 import com.svalyn.studio.application.controllers.business.dto.DomainDTO;
-import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.services.business.api.IDomainService;
 import graphql.relay.Connection;
@@ -30,9 +28,7 @@ import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultEdge;
 import graphql.relay.Edge;
 import graphql.relay.Relay;
-import jakarta.validation.Valid;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
@@ -67,10 +63,5 @@ public class DomainController {
         }).toList();
         var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
-    }
-
-    @MutationMapping
-    public IPayload createDomain(@Argument @Valid CreateDomainInput input) {
-        return this.domainService.createDomain(input);
     }
 }

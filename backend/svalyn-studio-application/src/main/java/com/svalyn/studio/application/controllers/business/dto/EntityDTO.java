@@ -31,7 +31,7 @@ import java.util.List;
 public record EntityDTO(
         @NotNull String name,
         @NotNull String documentation,
-        String extendedEntity,
+        @NotNull List<String> extendedEntities,
         boolean isAbstract,
         @NotNull List<AttributeDTO> attributes,
         @NotNull List<RelationDTO> relations) {
