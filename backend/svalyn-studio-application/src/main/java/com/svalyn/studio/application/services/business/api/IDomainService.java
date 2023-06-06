@@ -19,9 +19,7 @@
 
 package com.svalyn.studio.application.services.business.api;
 
-import com.svalyn.studio.application.controllers.business.dto.CreateDomainInput;
 import com.svalyn.studio.application.controllers.business.dto.DomainDTO;
-import com.svalyn.studio.application.controllers.dto.IPayload;
 import org.springframework.data.domain.Page;
 
 import java.util.Optional;
@@ -35,6 +33,4 @@ public interface IDomainService {
     Optional<DomainDTO> findByIdentifier(String identifier);
 
     Page<DomainDTO> findAll(int page, int rowsPerPage);
-
-    IPayload createDomain(CreateDomainInput input);
 }

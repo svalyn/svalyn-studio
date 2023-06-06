@@ -17,17 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.business.dto;
+package com.svalyn.studio.domain.business.services;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import org.eclipse.emf.ecore.EPackage;
+
+import java.util.Objects;
 
 /**
- * Used to create a new enumeration literal.
+ * Used to register EPackages as domains.
  *
  * @author sbegaudeau
  */
-public record EnumerationLiteralInput(
-        @NotNull @NotEmpty String name,
-        @NotNull String documentation) {
+public record EPackageRegistration(EPackage ePackage, String label, String version, String documentation) {
+    public EPackageRegistration {
+        Objects.requireNonNull(ePackage);
+        Objects.requireNonNull(label);
+        Objects.requireNonNull(version);
+        Objects.requireNonNull(documentation);
+    }
 }

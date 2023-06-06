@@ -17,24 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.business.dto;
+package com.svalyn.studio.infrastructure.emf;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-
-import java.util.List;
+import com.svalyn.studio.domain.business.services.EPackageRegistration;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Used to create a new domain.
+ * Used to configure the Ecore metamodel.
  *
  * @author sbegaudeau
  */
-public record DomainInput(
-        @NotNull @NotEmpty String identifier,
-        @NotNull @NotEmpty String version,
-        @NotNull @NotEmpty String label,
-        @NotNull String documentation,
-        @NotNull List<@NotNull EntityInput> entities,
-        @NotNull List<@NotNull DataTypeInput> dataTypes,
-        @NotNull List<@NotNull EnumerationInput> enumerations) {
+@Configuration
+public class EcoreConfiguration {
+    @Bean
+    public EPackageRegistration ecorePackageRegistration() {
+        return new EPackageRegistration(EcorePackage.eINSTANCE, "Ecore", "2002", "");
+    }
 }

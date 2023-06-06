@@ -28,13 +28,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -57,15 +54,6 @@ public class Domain extends AbstractValidatingAggregateRoot<Domain> implements P
     private String label;
 
     private String documentation;
-
-    @MappedCollection(idColumn = "domain_id")
-    private Set<Entity> entities = new LinkedHashSet<>();
-
-    @MappedCollection(idColumn = "domain_id")
-    private Set<DataType> dataTypes = new LinkedHashSet<>();
-
-    @MappedCollection(idColumn = "domain_id")
-    private Set<Enumeration> enumerations = new LinkedHashSet<>();
 
     private AggregateReference<Account, UUID> createdBy;
 
@@ -94,18 +82,6 @@ public class Domain extends AbstractValidatingAggregateRoot<Domain> implements P
 
     public String getDocumentation() {
         return this.documentation;
-    }
-
-    public Set<Entity> getEntities() {
-        return this.entities;
-    }
-
-    public Set<DataType> getDataTypes() {
-        return this.dataTypes;
-    }
-
-    public Set<Enumeration> getEnumerations() {
-        return this.enumerations;
     }
 
     public AggregateReference<Account, UUID> getCreatedBy() {
@@ -148,12 +124,6 @@ public class Domain extends AbstractValidatingAggregateRoot<Domain> implements P
 
         private String documentation;
 
-        private Set<Entity> entities = new LinkedHashSet<>();
-
-        private Set<DataType> dataTypes = new LinkedHashSet<>();
-
-        private Set<Enumeration> enumerations = new LinkedHashSet<>();
-
         private Builder() {
             // Prevent instantiation
         }
@@ -178,21 +148,6 @@ public class Domain extends AbstractValidatingAggregateRoot<Domain> implements P
             return this;
         }
 
-        public Builder entities(Set<Entity> entities) {
-            this.entities = Objects.requireNonNull(entities);
-            return this;
-        }
-
-        public Builder dataTypes(Set<DataType> dataTypes) {
-            this.dataTypes = Objects.requireNonNull(dataTypes);
-            return this;
-        }
-
-        public Builder enumeration(Set<Enumeration> enumerations) {
-            this.enumerations = Objects.requireNonNull(enumerations);
-            return this;
-        }
-
         public Domain build() {
             var domain = new Domain();
             domain.isNew = true;
@@ -201,10 +156,7 @@ public class Domain extends AbstractValidatingAggregateRoot<Domain> implements P
             domain.version = Objects.requireNonNull(this.version);
             domain.label = Objects.requireNonNull(this.label);
             domain.documentation = Objects.requireNonNull(this.documentation);
-            domain.entities = Objects.requireNonNull(this.entities);
-            domain.dataTypes = Objects.requireNonNull(this.dataTypes);
-            domain.enumerations = Objects.requireNonNull(this.enumerations);
-
+         
             var now = Instant.now();
             var userId = UserIdProvider.get();
             domain.createdBy = userId;

@@ -393,7 +393,7 @@ type Domain {
 type Entity {
   name: String!
   documentation: String!
-  extendedEntity: String
+  extendedEntities: [String]
   isAbstract: Boolean!
   attributes: [Attribute!]!
   relations: [Relation!]!
@@ -458,7 +458,6 @@ type Mutation {
   deleteChangeProposals(input: DeleteChangeProposalsInput!): DeleteChangeProposalsPayload! @validated
   performReview(input: PerformReviewInput!): PerformReviewPayload! @validated
   updateNotificationsStatus(input: UpdateNotificationsStatusInput!): UpdateNotificationsStatusPayload! @validated
-  createDomain(input: CreateDomainInput!): CreateDomainPayload!
 }
 
 type ErrorPayload {
@@ -701,66 +700,3 @@ input UpdateNotificationsStatusInput {
 }
 
 union UpdateNotificationsStatusPayload = ErrorPayload | SuccessPayload
-
-input CreateDomainInput {
-  id: ID!
-  domain: DomainInput!
-}
-
-input DomainInput {
-  identifier: ID!
-  version: ID!
-  label: String!
-  documentation: String!
-  entities: [EntityInput!]!
-  dataTypes: [DataTypeInput!]!
-  enumerations: [EnumerationInput!]!
-}
-
-input EntityInput {
-  name: String!
-  documentation: String!
-  extendedEntity: String
-  isAbstract: Boolean!
-  attributes: [AttributeInput!]!
-  relations: [RelationInput!]!
-}
-
-input AttributeInput {
-  name: String!
-  documentation: String!
-  type: String!
-  isId: Boolean!
-  isMany: Boolean!
-}
-
-input RelationInput {
-  name: String!
-  documentation: String!
-  type: String!
-  isContainment: Boolean!
-  isMany: Boolean!
-}
-
-input DataTypeInput {
-  name: String!
-  documentation: String!
-}
-
-input EnumerationInput {
-  name: String!
-  documentation: String!
-  literals: [EnumerationLiteralInput!]!
-}
-
-input EnumerationLiteralInput {
-  name: String!
-  documentation: String!
-}
-
-union CreateDomainPayload = ErrorPayload | CreatedDomainSuccessPayload
-
-type CreatedDomainSuccessPayload {
-  id: ID!
-  domain: Domain!
-}

@@ -17,20 +17,21 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.controllers.business.dto;
+package com.svalyn.studio.infrastructure.emf;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import org.eclipse.emf.ecore.util.Diagnostician;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Used to create a new attribute.
+ * Used to configure the EMF validation.
  *
  * @author sbegaudeau
  */
-public record AttributeInput(
-        @NotNull @NotEmpty String name,
-        @NotNull String documentation,
-        @NotNull @NotEmpty String type,
-        boolean isId,
-        boolean isMany) {
+@Configuration
+public class ValidationConfiguration {
+    @Bean
+    public Diagnostician diagnostician() {
+        return Diagnostician.INSTANCE;
+    }
 }

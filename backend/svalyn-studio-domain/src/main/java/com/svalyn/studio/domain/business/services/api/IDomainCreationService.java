@@ -21,7 +21,7 @@ package com.svalyn.studio.domain.business.services.api;
 
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.business.Domain;
-import com.svalyn.studio.domain.business.services.NewDomain;
+import com.svalyn.studio.domain.business.services.EPackageRegistration;
 
 /**
  * Used to create domains.
@@ -29,5 +29,5 @@ import com.svalyn.studio.domain.business.services.NewDomain;
  * @author sbegaudeau
  */
 public interface IDomainCreationService {
-    IResult<Domain> createDomain(NewDomain newDomain);
+    IResult<Domain> createDomain(EPackageRegistration ePackageRegistration);
 }
