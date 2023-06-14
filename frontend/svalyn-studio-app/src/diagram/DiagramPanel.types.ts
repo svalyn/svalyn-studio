@@ -17,30 +17,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Root } from 'react-dom/client';
-import { Edge, Node } from 'reactflow';
-
-export interface DiagramEditorProps {
-  diagram: Diagram;
-}
-
-export interface DiagramEditorState {
-  currentStep: Step;
-  root: Root | null;
-  diagram: Diagram;
-}
-
-export type Step = 'BEFORE_LAYOUT' | 'LAYOUT' | 'AFTER_LAYOUT' | 'RENDERING';
-
-export interface Diagram {
-  nodes: Node[];
-  edges: Edge[];
-}
-
-export interface DiagramEditorRendererProps {
-  diagram: Diagram;
-}
-
-export interface DiagramEditorRendererState {
+export interface DiagramPanelProps {
   fullscreen: boolean;
+  onFullscreen: (active: boolean) => void;
+  onFitToScreen: () => void;
 }

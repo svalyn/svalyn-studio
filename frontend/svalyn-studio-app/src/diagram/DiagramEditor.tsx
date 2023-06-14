@@ -18,13 +18,22 @@
  */
 
 import { LayoutOptions } from 'elkjs/lib/elk.bundled.js';
-import { useCallback, useEffect } from 'react';
-import { NodeTypes, ReactFlow, ReactFlowProvider, useEdgesState, useNodesInitialized, useNodesState } from 'reactflow';
-import { DiagramEditorProps, DiagramEditorRendererProps } from './DiagramEditor.types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  NodeTypes,
+  ReactFlow,
+  ReactFlowProvider,
+  useEdgesState,
+  useNodesInitialized,
+  useNodesState,
+  useReactFlow,
+} from 'reactflow';
+import { DiagramEditorProps, DiagramEditorRendererProps, DiagramEditorRendererState } from './DiagramEditor.types';
 import { performLayout } from './layout';
 import { ListNode } from './nodes/ListNode';
 
 import 'reactflow/dist/style.css';
+import { DiagramPanel } from './DiagramPanel';
 
 const nodeTypes: NodeTypes = {
   listNode: ListNode,
@@ -41,6 +50,11 @@ export const DiagramEditor = ({ diagram }: DiagramEditorProps) => {
 };
 
 const DiagramEditorRenderer = ({ diagram }: DiagramEditorRendererProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [state, setState] = useState<DiagramEditorRendererState>({
+    fullscreen: false,
+  });
+  const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(diagram.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(diagram.edges);
 
@@ -64,6 +78,31 @@ const DiagramEditorRenderer = ({ diagram }: DiagramEditorRendererProps) => {
     }
   }, [nodesInitialized]);
 
+  useEffect(() => {
+    const onFullscreenChange = () =>
+      setState((prevState) => ({ ...prevState, fullscreen: Boolean(document.fullscreenElement) }));
+
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+  }, []);
+
+  const handleFullscreen = (active: boolean) => {
+    if (ref.current) {
+      if (active) {
+        ref.current.requestFullscreen().then(() => {
+          setState((prevState) => ({ ...prevState, fullscreen: true }));
+        });
+      } else {
+        document.exitFullscreen().then(() => {
+          setState((prevState) => ({ ...prevState, fullscreen: false }));
+        });
+      }
+    }
+  };
+
+  const handleFitToScreen = () => fitView({ duration: 1000 });
+
   const style = {
     backgroundColor: 'white',
     border: 'black',
@@ -79,6 +118,9 @@ const DiagramEditorRenderer = ({ diagram }: DiagramEditorRendererProps) => {
       style={style}
       minZoom={0.05}
       maxZoom={10}
-    />
+      ref={ref}
+    >
+      <DiagramPanel fullscreen={state.fullscreen} onFullscreen={handleFullscreen} onFitToScreen={handleFitToScreen} />
+    </ReactFlow>
   );
 };
