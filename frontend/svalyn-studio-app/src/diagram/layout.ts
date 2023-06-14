@@ -17,84 +17,72 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import dagre from 'dagre';
-import React from 'react';
-import { Root, createRoot } from 'react-dom/client';
-import { Position } from 'reactflow';
-import { Diagram } from './DiagramEditor.types';
-import { RawListNode } from './nodes/ListNode';
-import { ListNodeData } from './nodes/ListNode.types';
+import ELK, { ElkExtendedEdge, ElkNode, LayoutOptions } from 'elkjs/lib/elk.bundled.js';
+import { Edge, Node } from 'reactflow';
 
-export const beforeLayout = (diagram: Diagram): Root => {
-  const hiddenContainer = document.createElement('div');
-  hiddenContainer.id = 'hidden-container';
-  hiddenContainer.style.display = 'inline-block';
-  hiddenContainer.style.position = 'absolute';
-  hiddenContainer.style.visibility = 'hidden';
-  hiddenContainer.style.zIndex = '-1';
-  document.body.appendChild(hiddenContainer);
-  const root = createRoot(hiddenContainer);
+const elk = new ELK();
 
-  const elements: JSX.Element[] = [];
-  diagram.nodes.forEach((node, index) => {
-    if (hiddenContainer && node.type === 'listNode') {
-      const data = node.data as ListNodeData;
-      const children: JSX.Element[] = [React.createElement(RawListNode, { data })];
-      const element: JSX.Element = React.createElement('div', {
-        id: `${node.id}-${index}`,
-        key: node.id,
-        children,
-      });
-      elements.push(element);
-    }
-  });
-  root.render(React.createElement(React.Fragment, { children: elements }));
+export const performLayout = (
+  nodes: Node[],
+  edges: Edge[],
+  layoutOptions: LayoutOptions
+): Promise<{ nodes: Node[] }> => {
+  const graph: ElkNode = {
+    id: 'root',
+    layoutOptions,
+    children: [],
+    edges: [],
+  };
 
-  return root;
-};
+  const nodeId2Node = new Map<string, Node>();
+  nodes.forEach((node) => nodeId2Node.set(node.id, node));
 
-const nodeWidth = 170;
-const nodeHeight = 50;
+  nodes.forEach((node) => {
+    if (graph.children) {
+      const elkNode: ElkNode = {
+        id: node.id,
+      };
 
-export const performLayout = (diagram: Diagram): Diagram => {
-  const dagreGraph = new dagre.graphlib.Graph();
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
-  dagreGraph.setGraph({ rankdir: 'TB' });
+      if (node.type === 'listNode') {
+        const element = document.querySelector(`[data-id="${node.id}"]`);
+        if (element) {
+          elkNode.width = element.clientWidth;
+          elkNode.height = element.clientHeight;
+        }
+      } else {
+        elkNode.width = 170;
+        elkNode.height = 50;
+      }
 
-  diagram.nodes.forEach((node, index) => {
-    var hiddenContainer = document.getElementById(`${node.id}-${index}`);
-    if (hiddenContainer && node.type === 'listNode') {
-      dagreGraph.setNode(node.id, { width: hiddenContainer.clientWidth, height: hiddenContainer.clientHeight });
-    } else {
-      dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+      graph.children.push(elkNode);
     }
   });
 
-  diagram.edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
+  edges.forEach((edge) => {
+    if (graph.edges) {
+      const elkEdge: ElkExtendedEdge = {
+        id: edge.id,
+        sources: [edge.source],
+        targets: [edge.target],
+      };
+      graph.edges.push(elkEdge);
+    }
   });
 
-  dagre.layout(dagreGraph);
+  return elk.layout(graph).then((layoutedGraph) => {
+    const nodes: Node[] = [];
 
-  diagram.nodes.forEach((node) => {
-    const nodeWithPosition = dagreGraph.node(node.id);
+    (layoutedGraph.children ?? []).map((elkNode) => {
+      const node = nodeId2Node.get(elkNode.id);
+      if (node) {
+        node.position.x = elkNode.x ?? 0;
+        node.position.y = elkNode.y ?? 0;
+        nodes.push(node);
+      }
+    });
 
-    node.targetPosition = Position.Top;
-    node.sourcePosition = Position.Bottom;
-
-    node.position = {
-      x: nodeWithPosition.x - nodeWidth / 2,
-      y: nodeWithPosition.y - nodeHeight / 2,
+    return {
+      nodes,
     };
   });
-
-  return diagram;
-};
-
-export const afterLayout = (root: Root) => {
-  setTimeout(() => root.unmount());
-  var hiddenContainer = document.getElementById('hidden-container');
-  if (hiddenContainer?.parentNode) {
-    hiddenContainer.parentNode.removeChild(hiddenContainer);
-  }
 };

@@ -42,6 +42,7 @@ export interface Entity {
   name: string;
   attributes: Attribute[];
   relations: Relation[];
+  extendedEntities: string[];
 }
 
 export interface Attribute {
@@ -52,6 +53,7 @@ export interface Attribute {
 export interface Relation {
   name: string;
   type: string;
+  isContainment: boolean;
 }
 
 export interface DataType {

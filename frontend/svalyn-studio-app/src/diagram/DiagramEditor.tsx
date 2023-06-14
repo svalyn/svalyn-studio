@@ -17,63 +17,68 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NodeTypes, ReactFlow, useEdgesState, useNodesState } from 'reactflow';
-import { DiagramEditorProps, DiagramEditorRendererProps, DiagramEditorState } from './DiagramEditor.types';
+import { LayoutOptions } from 'elkjs/lib/elk.bundled.js';
+import { useCallback, useEffect } from 'react';
+import { NodeTypes, ReactFlow, ReactFlowProvider, useEdgesState, useNodesInitialized, useNodesState } from 'reactflow';
+import { DiagramEditorProps, DiagramEditorRendererProps } from './DiagramEditor.types';
+import { performLayout } from './layout';
 import { ListNode } from './nodes/ListNode';
 
-import { useEffect, useState } from 'react';
 import 'reactflow/dist/style.css';
-import { afterLayout, beforeLayout, performLayout } from './layout';
 
 const nodeTypes: NodeTypes = {
   listNode: ListNode,
 };
 
 export const DiagramEditor = ({ diagram }: DiagramEditorProps) => {
-  const [state, setState] = useState<DiagramEditorState>({
-    currentStep: 'BEFORE_LAYOUT',
-    root: null,
-    diagram,
-  });
-
-  useEffect(() => {
-    if (state.currentStep === 'BEFORE_LAYOUT') {
-      const root = beforeLayout(state.diagram);
-      const currentStep = 'LAYOUT';
-      setState((prevState) => ({ ...prevState, currentStep, root }));
-    }
-  }, [state.currentStep]);
-
-  useEffect(() => {
-    if (state.currentStep === 'LAYOUT' && state.root) {
-      const layoutedDiagram = performLayout(state.diagram);
-      const currentStep = 'AFTER_LAYOUT';
-      setState((prevState) => ({ ...prevState, currentStep, diagram: layoutedDiagram }));
-    }
-    return () => {
-      if (state.root) {
-        afterLayout(state.root);
-        const currentStep = 'RENDERING';
-        setState((prevState) => ({ ...prevState, currentStep, root: null }));
-      }
-    };
-  }, [state.currentStep]);
-
   return (
     <div style={{ height: 800 }}>
-      {state.currentStep === 'RENDERING' ? <DiagramEditorRenderer diagram={state.diagram} /> : null}
+      <ReactFlowProvider>
+        <DiagramEditorRenderer diagram={diagram} />
+      </ReactFlowProvider>
     </div>
   );
 };
 
 const DiagramEditorRenderer = ({ diagram }: DiagramEditorRendererProps) => {
-  const [nodes] = useNodesState(diagram.nodes);
-  const [edges] = useEdgesState(diagram.edges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(diagram.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(diagram.edges);
+
+  const nodesInitialized = useNodesInitialized({ includeHiddenNodes: true });
+
+  const layout = useCallback(() => {
+    const layoutOptions: LayoutOptions = {
+      'elk.algorithm': 'layered',
+      'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+      'elk.spacing.nodeNode': '80',
+      'elk.direction': 'DOWN',
+    };
+    performLayout(nodes, edges, layoutOptions).then(({ nodes }) => {
+      setNodes(nodes);
+    });
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    if (nodesInitialized) {
+      layout();
+    }
+  }, [nodesInitialized]);
 
   const style = {
     backgroundColor: 'white',
     border: 'black',
   };
 
-  return <ReactFlow nodeTypes={nodeTypes} nodes={nodes} edges={edges} style={style} fitView />;
+  return (
+    <ReactFlow
+      nodeTypes={nodeTypes}
+      nodes={nodes}
+      onNodesChange={onNodesChange}
+      edges={edges}
+      onEdgesChange={onEdgesChange}
+      style={style}
+      minZoom={0.05}
+      maxZoom={10}
+    />
+  );
 };
