@@ -31,16 +31,31 @@ export const convertDomain = (domain: Domain): Diagram => {
 
   const edges: Edge[] = [];
   domain.entities.forEach((entity) => {
-    entity.relations.forEach((relation) => {
+    entity.extendedEntities.forEach((extendedEntity, index) => {
       const edge: Edge = {
-        id: `${domain.identifier}::${entity.name} -> ${relation.type}`,
+        id: `${entity.name}#eSuperTypes.${index}`,
         source: `${domain.identifier}::${entity.name}`,
-        target: relation.type,
+        target: extendedEntity,
         type: 'smoothstep',
+        label: 'extends',
       };
 
       edges.push(edge);
     });
+
+    entity.relations
+      .filter((relation) => relation.isContainment)
+      .forEach((relation) => {
+        const edge: Edge = {
+          id: `${entity.name}#${relation.name}`,
+          source: `${domain.identifier}::${entity.name}`,
+          target: relation.type,
+          type: 'smoothstep',
+          label: relation.name,
+        };
+
+        edges.push(edge);
+      });
   });
 
   const diagram: Diagram = {

@@ -94,7 +94,7 @@ export const DomainsView = () => {
                   return (
                     <ListItem key={domain.identifier}>
                       <ListItemButton component={RouterLink} to={`/domains/${domain.identifier}`}>
-                        <ListItemText primary={`${domain.label} @${domain.version}`} />
+                        <ListItemText primary={`${domain.label}`} />
                       </ListItemButton>
                     </ListItem>
                   );

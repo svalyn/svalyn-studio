@@ -18,7 +18,7 @@
     "@mui/icons-material": "5.11.11",
     "@mui/lab": "5.0.0-alpha.124",
     "@mui/material": "5.11.15",
-    "dagre": "^0.8.5",
+    "elkjs": "0.8.2",
     "graphql": "16.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

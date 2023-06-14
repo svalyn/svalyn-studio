@@ -37,6 +37,7 @@ const getDomainQuery = gql`
         version
         entities {
           name
+          extendedEntities
           attributes {
             name
             type
@@ -44,6 +45,7 @@ const getDomainQuery = gql`
           relations {
             name
             type
+            isContainment
           }
         }
         dataTypes {
@@ -77,7 +79,7 @@ export const DomainView = () => {
           <>
             <Toolbar />
             <Typography variant="h4" gutterBottom>
-              {data.viewer.domain.label}@{data.viewer.domain.version}
+              {data.viewer.domain.label}
             </Typography>
             <DiagramEditor diagram={diagram} />
           </>
