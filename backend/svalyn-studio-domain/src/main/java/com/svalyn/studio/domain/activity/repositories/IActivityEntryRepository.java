@@ -35,6 +35,16 @@ import java.util.UUID;
  */
 @Repository
 public interface IActivityEntryRepository extends PagingAndSortingRepository<ActivityEntry, UUID>, ListCrudRepository<ActivityEntry, UUID> {
+
+    @Query(value = """
+    SELECT activityEntry.*
+    FROM activity activityEntry
+    ORDER BY activityEntry.created_on DESC
+    LIMIT :limit
+    OFFSET :offset
+    """)
+    List<ActivityEntry> findAllVisibleByUserId(UUID userId, long offset, int limit);
+
     @Query(value = """
     SELECT activityEntry.*
     FROM activity activityEntry

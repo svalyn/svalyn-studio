@@ -17,25 +17,4 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.services.activity.api;
-
-import com.svalyn.studio.application.controllers.activity.dto.ActivityEntryDTO;
-import org.springframework.data.domain.Page;
-
-import java.util.UUID;
-
-/**
- * Used to manipulate activity entries.
- *
- * @author sbegaudeau
- */
-public interface IActivityService {
-
-    Page<ActivityEntryDTO> findAllVisibleByUsername(String username, int page, int rowsPerPage);
-
-    Page<ActivityEntryDTO> findAllByUsername(String username, int page, int rowsPerPage);
-
-    Page<ActivityEntryDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage);
-
-    Page<ActivityEntryDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage);
-}
+export interface HomeViewCenterPanelProps {}

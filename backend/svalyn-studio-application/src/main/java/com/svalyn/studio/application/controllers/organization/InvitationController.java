@@ -61,10 +61,9 @@ public class InvitationController {
         var edges = pageData.stream().map(invitation -> {
             var value = new Relay().toGlobalId("Invitation", invitation.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<InvitationDTO> edge = new DefaultEdge<>(invitation, cursor);
-            return edge;
+            return (Edge<InvitationDTO>) new DefaultEdge<>(invitation, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
@@ -74,10 +73,9 @@ public class InvitationController {
         var edges = pageData.stream().map(invitation -> {
             var value = new Relay().toGlobalId("Invitation", invitation.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<InvitationDTO> edge = new DefaultEdge<>(invitation, cursor);
-            return edge;
+            return (Edge<InvitationDTO>) new DefaultEdge<>(invitation, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

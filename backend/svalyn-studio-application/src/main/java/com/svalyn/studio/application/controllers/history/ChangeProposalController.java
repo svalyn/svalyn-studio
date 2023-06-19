@@ -67,10 +67,9 @@ public class ChangeProposalController {
         var edges = pageData.stream().map(changeProposal -> {
             var value = new Relay().toGlobalId("ChangeProposal", changeProposal.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<ChangeProposalDTO> edge = new DefaultEdge<>(changeProposal, cursor);
-            return edge;
+            return (Edge<ChangeProposalDTO>) new DefaultEdge<>(changeProposal, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
@@ -90,8 +89,7 @@ public class ChangeProposalController {
         var edges = pageData.stream().map(reviewDTO -> {
             var value = new Relay().toGlobalId("Review", reviewDTO.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<ReviewDTO> edge = new DefaultEdge<>(reviewDTO, cursor);
-            return edge;
+            return (Edge<ReviewDTO>) new DefaultEdge<>(reviewDTO, cursor);
         }).toList();
         var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.size());
         return new DefaultConnection<>(edges, pageInfo);

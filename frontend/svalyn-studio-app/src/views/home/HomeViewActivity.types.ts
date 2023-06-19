@@ -17,25 +17,61 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.services.activity.api;
+export interface HomeViewActivityProps {}
 
-import com.svalyn.studio.application.controllers.activity.dto.ActivityEntryDTO;
-import org.springframework.data.domain.Page;
+export interface HomeViewActivityState {
+  activityEntries: ActivityEntry[];
+  page: number;
+  rowsPerPage: number;
+  message: string | null;
+}
 
-import java.util.UUID;
+export interface GetActivityData {
+  viewer: Viewer;
+}
 
-/**
- * Used to manipulate activity entries.
- *
- * @author sbegaudeau
- */
-public interface IActivityService {
+export interface Viewer {
+  activityEntries: ViewerActivityEntriesConnection;
+}
 
-    Page<ActivityEntryDTO> findAllVisibleByUsername(String username, int page, int rowsPerPage);
+export interface ViewerActivityEntriesConnection {
+  edges: ViewerActivityEntriesEdge[];
+  pageInfo: PageInfo;
+}
 
-    Page<ActivityEntryDTO> findAllByUsername(String username, int page, int rowsPerPage);
+export interface PageInfo {
+  hasNextPage: boolean;
+}
 
-    Page<ActivityEntryDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage);
+export interface ViewerActivityEntriesEdge {
+  node: ActivityEntry;
+}
 
-    Page<ActivityEntryDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage);
+export interface ActivityEntry {
+  id: string;
+  kind: ActivityKind;
+  title: string;
+  description: string;
+  createdOn: string;
+  createdBy: ActivityEntryProfile;
+}
+
+type ActivityKind =
+  | 'ACCOUNT_CREATED'
+  | 'ORGANIZATION_CREATED'
+  | 'PROJECT_CREATED'
+  | 'PROJECT_DELETED'
+  | 'CHANGE_PROPOSAL_CREATED'
+  | 'CHANGE_PROPOSAL_REVIEWED'
+  | 'CHANGE_PROPOSAL_INTEGRATED';
+
+export interface ActivityEntryProfile {
+  name: string;
+  username: string;
+  imageUrl: string;
+}
+
+export interface GetActivityVariables {
+  page: number;
+  rowsPerPage: number;
 }

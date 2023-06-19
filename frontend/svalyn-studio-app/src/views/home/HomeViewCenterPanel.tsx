@@ -17,25 +17,27 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.services.activity.api;
+import Box from '@mui/material/Box';
+import { HomeViewActivity } from './HomeViewActivity';
+import { HomeViewCenterPanelProps } from './HomeViewCenterPanel.types';
+import { HomeViewSearch } from './HomeViewSearch';
 
-import com.svalyn.studio.application.controllers.activity.dto.ActivityEntryDTO;
-import org.springframework.data.domain.Page;
-
-import java.util.UUID;
-
-/**
- * Used to manipulate activity entries.
- *
- * @author sbegaudeau
- */
-public interface IActivityService {
-
-    Page<ActivityEntryDTO> findAllVisibleByUsername(String username, int page, int rowsPerPage);
-
-    Page<ActivityEntryDTO> findAllByUsername(String username, int page, int rowsPerPage);
-
-    Page<ActivityEntryDTO> findAllByOrganizationId(UUID organizationId, int page, int rowsPerPage);
-
-    Page<ActivityEntryDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage);
-}
+export const HomeViewCenterPanel = ({}: HomeViewCenterPanelProps) => {
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: (theme) => theme.spacing(10),
+          paddingX: (theme) => theme.spacing(4),
+          paddingTop: (theme) => theme.spacing(10),
+          paddingBottom: (theme) => theme.spacing(4),
+        }}
+      >
+        <HomeViewSearch />
+        <HomeViewActivity />
+      </Box>
+    </>
+  );
+};

@@ -24,6 +24,7 @@ import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
+import com.svalyn.studio.application.controllers.viewer.Viewer;
 import com.svalyn.studio.application.services.activity.api.IActivityService;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
@@ -60,7 +61,7 @@ public class ActivityEntryController {
             Edge<ActivityEntryDTO> edge = new DefaultEdge<>(activityEntry, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
@@ -73,7 +74,7 @@ public class ActivityEntryController {
             Edge<ActivityEntryDTO> edge = new DefaultEdge<>(activityEntry, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
@@ -86,7 +87,20 @@ public class ActivityEntryController {
             Edge<ActivityEntryDTO> edge = new DefaultEdge<>(activityEntry, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
+        return new DefaultConnection<>(edges, pageInfo);
+    }
+
+    @SchemaMapping(typeName = "Viewer")
+    public Connection<ActivityEntryDTO> activityEntries(Viewer viewer, @Argument int page, @Argument int rowsPerPage) {
+        var pageData = this.activityService.findAllVisibleByUsername(viewer.username(), page, rowsPerPage);
+        var edges = pageData.stream().map(activityEntry -> {
+            var value = new Relay().toGlobalId("ActivityEntry", activityEntry.id().toString());
+            var cursor = new DefaultConnectionCursor(value);
+            Edge<ActivityEntryDTO> edge = new DefaultEdge<>(activityEntry, cursor);
+            return edge;
+        }).toList();
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 }

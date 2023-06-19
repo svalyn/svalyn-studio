@@ -68,6 +68,7 @@ export interface ActivityEntryProfile {
   username: string;
   imageUrl: string;
 }
+
 export interface GetViewerVariables {
   username: string;
 }

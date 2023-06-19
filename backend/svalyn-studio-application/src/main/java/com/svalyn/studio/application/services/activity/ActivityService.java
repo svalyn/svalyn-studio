@@ -70,6 +70,18 @@ public class ActivityService implements IActivityService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ActivityEntryDTO> findAllVisibleByUsername(String username, int page, int rowsPerPage) {
+        return this.accountRepository.findByUsername(username).map(Account::getId).map(userId -> {
+            var activityEntries = this.activityEntryRepository.findAllVisibleByUserId(userId, page * rowsPerPage, rowsPerPage).stream()
+                    .flatMap(entry -> this.toDTO(entry).stream())
+                    .toList();
+            var count = this.activityEntryRepository.countAllByUserId(userId);
+            return new PageImpl<>(activityEntries, PageRequest.of(page, rowsPerPage), count);
+        }).orElse(new PageImpl<>(List.of()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<ActivityEntryDTO> findAllByUsername(String username, int page, int rowsPerPage) {
         return this.accountRepository.findByUsername(username).map(Account::getId).map(userId -> {
             var activityEntries = this.activityEntryRepository.findAllByUserId(userId, page * rowsPerPage, rowsPerPage).stream()

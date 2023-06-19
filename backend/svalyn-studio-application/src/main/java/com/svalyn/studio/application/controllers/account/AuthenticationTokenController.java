@@ -47,7 +47,7 @@ import java.util.Objects;
 @Controller
 public class AuthenticationTokenController {
 
-    private IAuthenticationTokenService authenticationTokenService;
+    private final IAuthenticationTokenService authenticationTokenService;
 
     public AuthenticationTokenController(IAuthenticationTokenService authenticationTokenService) {
         this.authenticationTokenService = Objects.requireNonNull(authenticationTokenService);
@@ -59,10 +59,9 @@ public class AuthenticationTokenController {
         var edges = pageData.stream().map(authenticationToken -> {
             var value = new Relay().toGlobalId("AuthenticationToken", authenticationToken.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<AuthenticationTokenDTO> edge = new DefaultEdge<>(authenticationToken, cursor);
-            return edge;
+            return (Edge<AuthenticationTokenDTO>) new DefaultEdge<>(authenticationToken, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

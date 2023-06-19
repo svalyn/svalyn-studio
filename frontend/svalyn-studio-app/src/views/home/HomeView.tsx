@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,50 +17,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { GetOrganizationsData, GetOrganizationsVariables, HomeViewState } from './HomeView.types';
-
-const getOrganizationsQuery = gql`
-  query getOrganizations {
-    viewer {
-      organizations {
-        edges {
-          node {
-            identifier
-          }
-        }
-      }
-    }
-  }
-`;
+import Box from '@mui/material/Box';
+import { Navbar } from '../../navbars/Navbar';
+import { HomeViewCenterPanel } from './HomeViewCenterPanel';
+import { HomeViewLeftPanel } from './HomeViewLeftPanel';
+import { HomeViewRightPanel } from './HomeViewRightPanel';
 
 export const HomeView = () => {
-  const [state, setState] = useState<HomeViewState>({
-    organizations: null,
-  });
-
-  const { loading, data } = useQuery<GetOrganizationsData, GetOrganizationsVariables>(getOrganizationsQuery);
-  useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const {
-          viewer: { organizations },
-        } = data;
-        setState((prevState) => ({ ...prevState, organizations: organizations.edges.map((edge) => edge.node) }));
-      }
-    }
-  }, [loading, data]);
-
-  if (state.organizations) {
-    if (state.organizations.length > 0) {
-      const organization = state.organizations[0];
-      return <Navigate to={`/orgs/${organization.identifier}`} />;
-    } else {
-      return <Navigate to="/new/organization" />;
-    }
-  }
-
-  return null;
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navbar />
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateRows: '1fr',
+          gridTemplateColumns: '1fr 70% 1fr',
+          alignItems: 'stretch',
+          flexGrow: 1,
+        }}
+      >
+        <HomeViewLeftPanel />
+        <HomeViewCenterPanel />
+        <HomeViewRightPanel />
+      </Box>
+    </Box>
+  );
 };
