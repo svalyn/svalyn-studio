@@ -46,6 +46,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -113,15 +114,21 @@ public class OrganizationService implements IOrganizationService {
     @Override
     @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findById(UUID id) {
-        var userId = UserIdProvider.get().getId();
         return this.organizationRepository.findById(id).flatMap(this::toDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<OrganizationDTO> findByIdentifier(String identifier) {
-        var userId = UserIdProvider.get().getId();
         return this.organizationRepository.findByIdentifier(identifier).flatMap(this::toDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrganizationDTO> searchAllMatching(String query) {
+        return this.organizationRepository.searchAllMatching(query, 0, 20).stream()
+                .flatMap(organization -> this.toDTO(organization).stream())
+                .toList();
     }
 
     @Override
@@ -133,7 +140,6 @@ public class OrganizationService implements IOrganizationService {
         if (result instanceof Failure<Organization> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Organization> success) {
-            var userId = UserIdProvider.get().getId();
             payload = new CreateOrganizationSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
         }
         return payload;
@@ -147,7 +153,7 @@ public class OrganizationService implements IOrganizationService {
         var result = this.organizationUpdateService.renameOrganization(input.organizationIdentifier(), input.name());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
+        } else if (result instanceof Success<Void>) {
             payload = new SuccessPayload(input.id());
         }
 
@@ -162,7 +168,7 @@ public class OrganizationService implements IOrganizationService {
         var result = this.organizationUpdateService.leaveOrganization(input.organizationIdentifier());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
+        } else if (result instanceof Success<Void>) {
             payload = new SuccessPayload(input.id());
         }
 
@@ -177,7 +183,7 @@ public class OrganizationService implements IOrganizationService {
         var result = this.organizationDeletionService.deleteOrganization(input.organizationIdentifier());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
+        } else if (result instanceof Success<Void>) {
             payload = new SuccessPayload(input.id());
         }
 

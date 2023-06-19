@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,41 +16,22 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.svalyn.studio.application.controllers.search.dto;
 
-package com.svalyn.studio.application.services.organization.api;
-
-import com.svalyn.studio.application.controllers.dto.IPayload;
-import com.svalyn.studio.application.controllers.organization.dto.CreateOrganizationInput;
-import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganizationInput;
-import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
-import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameInput;
-import org.springframework.data.domain.Page;
+import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.Objects;
 
 /**
- * Used to manipulate organizations.
+ * The search results DTO for the GraphQL layer.
  *
  * @author sbegaudeau
  */
-public interface IOrganizationService {
-
-    Page<OrganizationDTO> findAll();
-
-    Optional<OrganizationDTO> findById(UUID id);
-
-    Optional<OrganizationDTO> findByIdentifier(String identifier);
-
-    IPayload createOrganization(CreateOrganizationInput input);
-
-    IPayload updateOrganizationName(UpdateOrganizationNameInput input);
-
-    IPayload leaveOrganization(LeaveOrganizationInput input);
-
-    IPayload deleteOrganization(DeleteOrganizationInput input);
-
-    List<OrganizationDTO> searchAllMatching(String query);
+public record SearchResultsDTO(List<OrganizationDTO> organizations, List<ProjectDTO> projects) {
+    public SearchResultsDTO {
+        Objects.requireNonNull(organizations);
+        Objects.requireNonNull(projects);
+    }
 }

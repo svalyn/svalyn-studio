@@ -23,12 +23,15 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import Paper from '@mui/material/Paper';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HomeViewSearchState } from './HomeViewSearch.types';
 
 export const HomeViewSearch = () => {
   const [state, setState] = useState<HomeViewSearchState>({
     query: '',
   });
+
+  const navigate = useNavigate();
 
   const handleQueryChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (event) => {
     const {
@@ -37,17 +40,23 @@ export const HomeViewSearch = () => {
     setState((prevState) => ({ ...prevState, query: value }));
   };
 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement | HTMLInputElement> = (event) => {
+    if (event.key === 'Enter') {
+      navigate(`/search?q=${encodeURIComponent(state.query)}`);
+    }
+  };
+
   return (
     <Paper variant="outlined" sx={{ paddingX: (theme) => theme.spacing(2) }}>
       <FormControl variant="standard" fullWidth>
         <Input
           value={state.query}
           onChange={handleQueryChange}
+          onKeyDown={handleKeyDown}
           placeholder="Search..."
           disableUnderline
           autoFocus
           fullWidth
-          disabled
           startAdornment={
             <InputAdornment position="start">
               <SearchIcon fontSize="large" />

@@ -28,6 +28,7 @@ import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameIn
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,4 +53,6 @@ public interface IProjectService {
     IPayload updateProjectReadMe(UpdateProjectReadMeInput input);
 
     IPayload deleteProject(DeleteProjectInput input);
+
+    List<ProjectDTO> searchAllMatching(String query);
 }

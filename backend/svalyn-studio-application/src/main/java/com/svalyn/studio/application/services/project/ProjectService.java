@@ -45,6 +45,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -119,6 +120,14 @@ public class ProjectService implements IProjectService {
     @Transactional(readOnly = true)
     public Optional<ProjectDTO> findByIdentifier(String identifier) {
         return this.projectRepository.findByIdentifier(identifier).flatMap(this::toDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProjectDTO> searchAllMatching(String query) {
+        return this.projectRepository.searchAllMatching(query, 0, 20).stream()
+                .flatMap(project -> this.toDTO(project).stream())
+                .toList();
     }
 
     @Override

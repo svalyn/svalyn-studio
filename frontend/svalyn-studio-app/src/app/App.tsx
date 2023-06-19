@@ -37,6 +37,7 @@ import { OrganizationView } from '../views/organization/OrganizationView';
 import { ProfileView } from '../views/profile/ProfileView';
 import { ProjectView } from '../views/project/ProjectView';
 import { ResourceView } from '../views/resource/ResourceView';
+import { SearchView } from '../views/search/SearchView';
 import { SettingsView } from '../views/settings/SettingsView';
 import { WorkspaceView } from '../views/workspace/WorkspaceView';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
@@ -67,6 +68,7 @@ export const App = () => {
             <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
             <Route path="/domains" element={<DomainsView />} />
             <Route path="/domains/:domainIdentifier" element={<DomainView />} />
+            <Route path="/search" element={<SearchView />} />
             <Route path="/settings" element={<SettingsView />} />
             <Route path="/settings/authentication-tokens" element={<SettingsView />} />
             <Route path="/login" element={<LoginView />} />
