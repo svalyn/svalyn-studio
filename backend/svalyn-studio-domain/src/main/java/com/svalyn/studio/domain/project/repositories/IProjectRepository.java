@@ -53,4 +53,21 @@ public interface IProjectRepository extends PagingAndSortingRepository<Project, 
     WHERE project.organization_id = :organizationId
     """)
     long countAllByOrganizationId(UUID organizationId);
+
+    @Query("""
+    SELECT *, ts_rank_cd(textsearchable_generated, query) AS rank
+    FROM project project, plainto_tsquery(:query) query
+    WHERE textsearchable_generated @@ query
+    ORDER BY rank
+    LIMIT :limit
+    OFFSET :offset
+    """)
+    List<Project> searchAllMatching(String query, long offset, int limit);
+
+    @Query("""
+    SELECT count(*)
+    FROM project project, plainto_tsquery(:query) query
+    WHERE textsearchable_generated @@ query
+    """)
+    long countAllMatching(String query);
 }

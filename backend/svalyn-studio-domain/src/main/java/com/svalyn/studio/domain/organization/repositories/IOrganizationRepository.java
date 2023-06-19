@@ -62,4 +62,21 @@ public interface IOrganizationRepository extends PagingAndSortingRepository<Orga
     WHERE organization.id = :organizationId AND membership.member_id = :userId
     """)
     Optional<MembershipRole> findMembershipRole(UUID userId, UUID organizationId);
+
+    @Query("""
+    SELECT *, ts_rank_cd(textsearchable_generated, query) AS rank
+    FROM organization organization, plainto_tsquery(:query) query
+    WHERE textsearchable_generated @@ query
+    ORDER BY rank
+    LIMIT :limit
+    OFFSET :offset
+    """)
+    List<Organization> searchAllMatching(String query, long offset, int limit);
+
+    @Query("""
+    SELECT count(*)
+    FROM organization organization, plainto_tsquery(:query) query
+    WHERE textsearchable_generated @@ query
+    """)
+    long countAllMatching(String query);
 }

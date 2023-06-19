@@ -29,5 +29,11 @@
         <dropTable tableName="relation" />
         <dropTable tableName="attribute" />
         <dropTable tableName="entity" />
+
+        <sql>ALTER TABLE organization ADD COLUMN textsearchable_generated tsvector GENERATED ALWAYS AS ( to_tsvector('english', identifier || '' || name) ) STORED</sql>
+        <sql>CREATE INDEX organization_search_index ON organization USING GIN(textsearchable_generated)</sql>
+
+        <sql>ALTER TABLE project ADD COLUMN textsearchable_generated tsvector GENERATED ALWAYS AS ( to_tsvector('english', identifier || '' || name || '' || description) ) STORED</sql>
+        <sql>CREATE INDEX project_search_index ON project USING GIN(textsearchable_generated)</sql>
     </changeSet>
 </databaseChangeLog>

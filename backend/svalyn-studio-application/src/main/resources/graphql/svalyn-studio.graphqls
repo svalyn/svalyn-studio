@@ -29,6 +29,7 @@ type Viewer {
   domains(page: Int!, rowsPerPage: Int!): ViewerDomainsConnection!
   domain(identifier: ID!): Domain
   activityEntries(page: Int!, rowsPerPage: Int!): ViewerActivityEntriesConnection!
+  search(query: String!): SearchResults!
 }
 
 type ViewerInvitationsConnection {
@@ -55,6 +56,11 @@ type ViewerActivityEntriesConnection {
 
 type ViewerActivityEntriesEdge {
   node: ActivityEntry!
+}
+
+type SearchResults {
+  organizations: [Organization!]!
+  projects: [Project!]!
 }
 
 type Profile {
