@@ -24,12 +24,11 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import { Theme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { Theme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   CreateProjectData,
@@ -120,7 +119,7 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
     const { identifier, name, description } = state;
     const variables: CreateProjectVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         organizationIdentifier,
         identifier: identifier,
         name,

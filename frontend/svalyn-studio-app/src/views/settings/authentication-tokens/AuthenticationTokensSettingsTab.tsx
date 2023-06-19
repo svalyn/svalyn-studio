@@ -30,14 +30,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { formatTime } from '../../../utils/formatTime';
 import {
   AuthenticationToken,
+  AuthenticationTokenStatus,
   AuthenticationTokensSettingsTabProps,
   AuthenticationTokensSettingsTabState,
-  AuthenticationTokenStatus,
   ErrorPayload,
   GetAuthenticationTokensData,
   GetAuthenticationTokensVariables,
@@ -172,7 +171,7 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
   const handleUpdateStatus = (status: AuthenticationTokenStatus) => {
     const variables: UpdateAuthenticationTokensStatusVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         authenticationTokenIds: state.selectedAuthenticationTokenIds,
         status,
       },

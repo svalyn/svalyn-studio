@@ -33,7 +33,6 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   AddTagToOrganizationData,
@@ -139,7 +138,7 @@ export const OrganizationTags = ({ organizationIdentifier, role }: OrganizationT
   const handleAddTag: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: AddTagToOrganizationVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         organizationIdentifier,
         key: state.key,
         value: state.value,

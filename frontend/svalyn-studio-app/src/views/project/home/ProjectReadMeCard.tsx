@@ -27,7 +27,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { v4 as uuid } from 'uuid';
 import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
@@ -91,7 +90,7 @@ export const ProjectReadMeCard = ({ projectIdentifier, readMe, role, onReadMeUpd
   const handleReadMeUpdate = (value: string) => {
     const variables: UpdateProjectReadMeVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         projectIdentifier,
         content: value,
       },

@@ -24,13 +24,12 @@ import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Paper, { PaperProps } from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink, Navigate } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
+import { Navigate, Link as RouterLink } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
@@ -121,7 +120,7 @@ export const NewOrganizationView = () => {
 
   const handleCreateOrganization: React.MouseEventHandler<HTMLButtonElement> = () => {
     const input: CreateOrganizationInput = {
-      id: uuid(),
+      id: crypto.randomUUID(),
       identifier: state.organizationId,
       name: state.name,
     };

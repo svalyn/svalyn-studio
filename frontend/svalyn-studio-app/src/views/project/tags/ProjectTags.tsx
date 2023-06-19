@@ -35,7 +35,6 @@ import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   AddTagToProjectData,
@@ -138,7 +137,7 @@ export const ProjectTags = ({ projectIdentifier, role }: ProjectTagsProps) => {
   const handleAddTag: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: AddTagToProjectVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         projectIdentifier,
         key: state.key,
         value: state.value,
