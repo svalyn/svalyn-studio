@@ -35,7 +35,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { ChangeProposalsTableHead } from './ChangeProposalsTableHead';
 import { ChangeProposalsTableToolbar } from './ChangeProposalsTableToolbar';
@@ -138,7 +137,7 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
   const handleDelete = () => {
     const variables: DeleteChangeProposalsVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         changeProposalIds: state.selectedChangeProposalIds,
       },
     };

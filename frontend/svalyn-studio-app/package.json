@@ -26,8 +26,7 @@
     "react-markdown": "8.0.6",
     "react-resizable-panels": "0.0.37",
     "react-router-dom": "6.9.0",
-    "reactflow": "11.7.0",
-    "uuid": "9.0.0"
+    "reactflow": "11.7.0"
   },
   "devDependencies": {
     "@playwright/test": "1.32.1",

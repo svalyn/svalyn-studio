@@ -27,7 +27,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { CopyButton } from '../../../widgets/CopyButton';
 import {
@@ -78,7 +77,7 @@ export const NewAuthenticationTokenDialog = ({ open, onClose }: NewAuthenticatio
   const handleCreateAuthenticationToken: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: CreateAuthenticationTokenVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         name: state.name,
       },
     };

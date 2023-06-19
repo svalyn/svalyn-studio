@@ -26,7 +26,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
@@ -81,7 +80,7 @@ export const InviteMemberDialog = ({ organizationIdentifier, open, onClose }: In
   const sendInvitation: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: InviteMemberVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         organizationIdentifier,
         email: state.email,
       },

@@ -39,7 +39,6 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { formatTime } from '../../utils/formatTime';
@@ -232,21 +231,33 @@ export const NotificationsView = () => {
                     onMarkAsDone={() =>
                       updateNotificationsStatus({
                         variables: {
-                          input: { id: uuid(), notificationIds: state.selectedNotifications, status: 'DONE' },
+                          input: {
+                            id: crypto.randomUUID(),
+                            notificationIds: state.selectedNotifications,
+                            status: 'DONE',
+                          },
                         },
                       })
                     }
                     onMarkAsRead={() =>
                       updateNotificationsStatus({
                         variables: {
-                          input: { id: uuid(), notificationIds: state.selectedNotifications, status: 'READ' },
+                          input: {
+                            id: crypto.randomUUID(),
+                            notificationIds: state.selectedNotifications,
+                            status: 'READ',
+                          },
                         },
                       })
                     }
                     onMarkAsUnread={() =>
                       updateNotificationsStatus({
                         variables: {
-                          input: { id: uuid(), notificationIds: state.selectedNotifications, status: 'UNREAD' },
+                          input: {
+                            id: crypto.randomUUID(),
+                            notificationIds: state.selectedNotifications,
+                            status: 'UNREAD',
+                          },
                         },
                       })
                     }

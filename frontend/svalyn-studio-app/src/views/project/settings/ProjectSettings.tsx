@@ -28,7 +28,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { DeleteProjectDialog } from './DeleteProjectDialog';
 import {
@@ -109,7 +108,7 @@ export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProp
   const handleUpdateProjectName: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: UpdateProjectNameVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         projectIdentifier,
         name: state.name,
       },
@@ -145,7 +144,7 @@ export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProp
   const handleUpdateProjectDescription: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: UpdateProjectDescriptionVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         projectIdentifier,
         description: state.description,
       },

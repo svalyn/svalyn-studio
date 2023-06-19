@@ -26,7 +26,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
 import { DeleteOrganizationDialog } from './DeleteOrganizationDialog';
 import {
@@ -86,7 +85,7 @@ export const OrganizationSettings = ({ organizationIdentifier, role }: Organizat
   const handleRename: React.MouseEventHandler<HTMLButtonElement> = () => {
     const variables: UpdateOrganizationNameVariables = {
       input: {
-        id: uuid(),
+        id: crypto.randomUUID(),
         organizationIdentifier,
         name: state.name,
       },
