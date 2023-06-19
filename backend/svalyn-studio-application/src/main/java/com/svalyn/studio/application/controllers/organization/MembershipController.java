@@ -59,10 +59,9 @@ public class MembershipController {
         var edges = pageData.stream().map(membership -> {
             var value = new Relay().toGlobalId("Membership", membership.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<MembershipDTO> edge = new DefaultEdge<>(membership, cursor);
-            return edge;
+            return (Edge<MembershipDTO>) new DefaultEdge<>(membership, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

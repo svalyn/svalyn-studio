@@ -61,8 +61,7 @@ public class ChangeResourceController {
         var edges = pageData.stream().map(changeResourceDTO -> {
             var value = new Relay().toGlobalId("ChangeResource", changeResourceDTO.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<ChangeResourceMetadataDTO> edge = new DefaultEdge<>(changeResourceDTO, cursor);
-            return edge;
+            return (Edge<ChangeResourceMetadataDTO>) new DefaultEdge<>(changeResourceDTO, cursor);
         }).toList();
         var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.size());
         return new DefaultConnection<>(edges, pageInfo);

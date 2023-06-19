@@ -61,10 +61,9 @@ public class TagController {
         var edges = pageData.stream().map(tag -> {
             var value = new Relay().toGlobalId("Tag", tag.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<TagDTO> edge = new DefaultEdge<>(tag, cursor);
-            return edge;
+            return (Edge<TagDTO>) new DefaultEdge<>(tag, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
@@ -79,10 +78,9 @@ public class TagController {
         var edges = pageData.stream().map(tag -> {
             var value = new Relay().toGlobalId("Tag", tag.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<TagDTO> edge = new DefaultEdge<>(tag, cursor);
-            return edge;
+            return (Edge<TagDTO>) new DefaultEdge<>(tag, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

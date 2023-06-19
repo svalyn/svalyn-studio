@@ -78,8 +78,7 @@ public class ChangeController {
         var edges = pageData.stream().map(change -> {
             var value = new Relay().toGlobalId("Change", change.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<ChangeDTO> edge = new DefaultEdge<>(change, cursor);
-            return edge;
+            return (Edge<ChangeDTO>) new DefaultEdge<>(change, cursor);
         }).toList();
         var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.size());
         return new DefaultConnection<>(edges, pageInfo);

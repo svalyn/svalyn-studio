@@ -8,6 +8,8 @@ type Query {
 
 type PageInfo {
   count: Int!
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
 }
 
 type Viewer {
@@ -26,6 +28,7 @@ type Viewer {
   authenticationTokens(page: Int!, rowsPerPage: Int!): ViewerAuthenticationTokensConnection!
   domains(page: Int!, rowsPerPage: Int!): ViewerDomainsConnection!
   domain(identifier: ID!): Domain
+  activityEntries(page: Int!, rowsPerPage: Int!): ViewerActivityEntriesConnection!
 }
 
 type ViewerInvitationsConnection {
@@ -43,6 +46,15 @@ type ViewerOrganizationsConnection {
 
 type ViewerOrganizationsEdge {
   node: Organization!
+}
+
+type ViewerActivityEntriesConnection {
+  edges: [ViewerActivityEntriesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ViewerActivityEntriesEdge {
+  node: ActivityEntry!
 }
 
 type Profile {

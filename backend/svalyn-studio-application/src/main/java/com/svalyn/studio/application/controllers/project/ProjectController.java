@@ -73,10 +73,9 @@ public class ProjectController {
         var edges = pageData.stream().map(project -> {
             var value = new Relay().toGlobalId("Project", project.identifier());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<ProjectDTO> edge = new DefaultEdge<>(project, cursor);
-            return edge;
+            return (Edge<ProjectDTO>) new DefaultEdge<>(project, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

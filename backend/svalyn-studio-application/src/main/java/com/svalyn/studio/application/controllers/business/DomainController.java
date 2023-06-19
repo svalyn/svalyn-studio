@@ -61,7 +61,7 @@ public class DomainController {
             Edge<DomainDTO> edge = new DefaultEdge<>(domain, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 }

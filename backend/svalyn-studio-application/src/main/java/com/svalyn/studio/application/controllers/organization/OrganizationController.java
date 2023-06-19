@@ -61,10 +61,9 @@ public class OrganizationController {
         var edges = page.stream().map(organization -> {
             var value = new Relay().toGlobalId("Organization", organization.identifier());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<OrganizationDTO> edge = new DefaultEdge<>(organization, cursor);
-            return edge;
+            return (Edge<OrganizationDTO>) new DefaultEdge<>(organization, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, page.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, page.hasPrevious(), page.hasNext(), page.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

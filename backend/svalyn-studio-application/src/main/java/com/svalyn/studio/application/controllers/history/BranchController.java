@@ -58,7 +58,7 @@ public class BranchController {
             Edge<BranchDTO> edge = new DefaultEdge<>(branch, cursor);
             return edge;
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 

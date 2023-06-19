@@ -64,10 +64,9 @@ public class NotificationController {
         var edges = pageData.stream().map(notification -> {
             var value = new Relay().toGlobalId("Notification", notification.id().toString());
             var cursor = new DefaultConnectionCursor(value);
-            Edge<NotificationDTO> edge = new DefaultEdge<>(notification, cursor);
-            return edge;
+            return (Edge<NotificationDTO>) new DefaultEdge<>(notification, cursor);
         }).toList();
-        var pageInfo = new PageInfoWithCount(null, null, false, false, pageData.getTotalElements());
+        var pageInfo = new PageInfoWithCount(null, null, pageData.hasPrevious(), pageData.hasNext(), pageData.getTotalElements());
         return new DefaultConnection<>(edges, pageInfo);
     }
 
