@@ -20,6 +20,7 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { PaletteProvider } from '../palette/PaletteProvider';
 import { ChangeProposalView } from '../views/changeproposal/ChangeProposalView';
 import { DomainView } from '../views/domain/DomainView';
 import { DomainsView } from '../views/domains/DomainsView';
@@ -49,37 +50,39 @@ export const App = () => {
       <CssBaseline />
       <BrowserRouter>
         <AuthenticationRedirectionBoundary>
-          <Routes>
-            <Route path="/" element={<HomeView />} />
-            <Route path="/new/organization" element={<NewOrganizationView />} />
-            <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
-            <Route path="/orgs/:organizationIdentifier/tags" element={<OrganizationView />} />
-            <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
-            <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
-            <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
-            <Route path="/projects/:projectIdentifier/activity" element={<ProjectView />} />
-            <Route path="/projects/:projectIdentifier/changeproposals" element={<ProjectView />} />
-            <Route path="/projects/:projectIdentifier/tags" element={<ProjectView />} />
-            <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
-            <Route path="/projects/:projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
-            <Route path="/projects/:projectIdentifier/changes/:changeId/resources/*" element={<ResourceView />} />
-            <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
-            <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />
-            <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
-            <Route path="/domains" element={<DomainsView />} />
-            <Route path="/domains/:domainIdentifier" element={<DomainView />} />
-            <Route path="/search" element={<SearchView />} />
-            <Route path="/settings" element={<SettingsView />} />
-            <Route path="/settings/authentication-tokens" element={<SettingsView />} />
-            <Route path="/login" element={<LoginView />} />
-            <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
-            <Route path="/profile/:username" element={<ProfileView />} />
-            <Route path="/invitations" element={<InvitationsView />} />
-            <Route path="/notifications" element={<NotificationsView />} />
-            <Route path="/error" element={<ErrorView />} />
-            <Route path="help" element={<HelpView />} />
-            <Route path="*" element={<NotFoundView />} />
-          </Routes>
+          <PaletteProvider>
+            <Routes>
+              <Route path="/" element={<HomeView />} />
+              <Route path="/new/organization" element={<NewOrganizationView />} />
+              <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
+              <Route path="/orgs/:organizationIdentifier/tags" element={<OrganizationView />} />
+              <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
+              <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
+              <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
+              <Route path="/projects/:projectIdentifier/activity" element={<ProjectView />} />
+              <Route path="/projects/:projectIdentifier/changeproposals" element={<ProjectView />} />
+              <Route path="/projects/:projectIdentifier/tags" element={<ProjectView />} />
+              <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
+              <Route path="/projects/:projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
+              <Route path="/projects/:projectIdentifier/changes/:changeId/resources/*" element={<ResourceView />} />
+              <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
+              <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />
+              <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
+              <Route path="/domains" element={<DomainsView />} />
+              <Route path="/domains/:domainIdentifier" element={<DomainView />} />
+              <Route path="/search" element={<SearchView />} />
+              <Route path="/settings" element={<SettingsView />} />
+              <Route path="/settings/authentication-tokens" element={<SettingsView />} />
+              <Route path="/login" element={<LoginView />} />
+              <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
+              <Route path="/profile/:username" element={<ProfileView />} />
+              <Route path="/invitations" element={<InvitationsView />} />
+              <Route path="/notifications" element={<NotificationsView />} />
+              <Route path="/error" element={<ErrorView />} />
+              <Route path="help" element={<HelpView />} />
+              <Route path="*" element={<NotFoundView />} />
+            </Routes>
+          </PaletteProvider>
         </AuthenticationRedirectionBoundary>
       </BrowserRouter>
     </ThemeProvider>
