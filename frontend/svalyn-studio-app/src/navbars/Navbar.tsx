@@ -24,11 +24,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import PersonIcon from '@mui/icons-material/Person';
+import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
@@ -37,10 +39,12 @@ import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Navigate, Link as RouterLink } from 'react-router-dom';
 import { getCookie } from '../cookies/getCookie';
 import { Svalyn } from '../icons/Svalyn';
+import { PaletteContext } from '../palette/PaletteContext';
+import { PaletteContextValue } from '../palette/PaletteContext.types';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { GetViewerData, GetViewerVariables, NavbarProps, NavbarState } from './Navbar.types';
 const { VITE_BACKEND_URL } = import.meta.env;
@@ -79,6 +83,10 @@ export const Navbar = ({ children }: NavbarProps) => {
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
+  const { openPalette }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
+
+  const handleOnSearchClick: React.MouseEventHandler<HTMLButtonElement> = () => openPalette();
+
   const handleOpenUserMenu: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     const { currentTarget } = event;
     setState((prevState) => ({ ...prevState, anchorElement: currentTarget }));
@@ -104,6 +112,8 @@ export const Navbar = ({ children }: NavbarProps) => {
     return <Navigate to="/login" />;
   }
 
+  var isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+
   return (
     <>
       <AppBar position="static">
@@ -123,6 +133,32 @@ export const Navbar = ({ children }: NavbarProps) => {
                   marginLeft: 'auto',
                 }}
               >
+                <Button
+                  sx={{ color: 'inherit', border: (theme) => `1px solid ${theme.palette.background.paper}` }}
+                  startIcon={<SearchIcon fontSize="small" color="inherit" />}
+                  onClick={handleOnSearchClick}
+                  size="small"
+                >
+                  Search...
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      border: (theme) => `1px solid ${theme.palette.background.paper}`,
+                      borderRadius: '3px',
+                      marginLeft: (theme) => theme.spacing(4),
+                      fontSize: '0.75rem',
+                      fontWeight: '700',
+                      lineHeight: '20px',
+                      padding: '0px 4px',
+                      fontFamily: 'sans-serif',
+                      opacity: 0.7,
+                    }}
+                  >
+                    {isApple ? '⌘ ' : 'Ctrl '}+ K
+                  </Box>
+                </Button>
                 <IconButton component={RouterLink} to="/notifications" size="small" color="inherit">
                   <Badge badgeContent={state.viewer.unreadNotificationsCount} color="secondary">
                     <NotificationsNoneIcon />
