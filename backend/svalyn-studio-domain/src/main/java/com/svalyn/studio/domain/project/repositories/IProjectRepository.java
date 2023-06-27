@@ -56,7 +56,7 @@ public interface IProjectRepository extends PagingAndSortingRepository<Project, 
 
     @Query("""
     SELECT *, ts_rank_cd(textsearchable_generated, query) AS rank
-    FROM project project, plainto_tsquery(:query) query
+    FROM project project, plainto_tsquery('english', :query) query
     WHERE textsearchable_generated @@ query
     ORDER BY rank
     LIMIT :limit
@@ -66,7 +66,7 @@ public interface IProjectRepository extends PagingAndSortingRepository<Project, 
 
     @Query("""
     SELECT count(*)
-    FROM project project, plainto_tsquery(:query) query
+    FROM project project, plainto_tsquery('english', :query) query
     WHERE textsearchable_generated @@ query
     """)
     long countAllMatching(String query);

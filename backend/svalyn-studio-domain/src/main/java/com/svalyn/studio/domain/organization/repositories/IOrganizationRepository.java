@@ -65,7 +65,7 @@ public interface IOrganizationRepository extends PagingAndSortingRepository<Orga
 
     @Query("""
     SELECT *, ts_rank_cd(textsearchable_generated, query) AS rank
-    FROM organization organization, plainto_tsquery(:query) query
+    FROM organization organization, plainto_tsquery('english', :query) query
     WHERE textsearchable_generated @@ query
     ORDER BY rank
     LIMIT :limit
@@ -75,7 +75,7 @@ public interface IOrganizationRepository extends PagingAndSortingRepository<Orga
 
     @Query("""
     SELECT count(*)
-    FROM organization organization, plainto_tsquery(:query) query
+    FROM organization organization, plainto_tsquery('english', :query) query
     WHERE textsearchable_generated @@ query
     """)
     long countAllMatching(String query);
