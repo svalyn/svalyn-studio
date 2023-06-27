@@ -17,6 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { PaletteAction } from './Palette.types';
+
 export interface PaletteContextValue {
   openPalette: () => void;
+  setActions: (actions: PaletteAction[]) => void;
 }

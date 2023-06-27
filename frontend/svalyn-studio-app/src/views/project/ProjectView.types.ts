@@ -41,6 +41,8 @@ export interface Project {
 }
 
 export interface Organization {
+  identifier: string;
+  name: string;
   role: MembershipRole;
 }
 

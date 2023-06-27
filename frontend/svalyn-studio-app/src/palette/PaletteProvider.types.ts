@@ -17,10 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { PaletteAction } from './Palette.types';
+
 export interface PaletteProviderProps {
   children?: React.ReactNode;
 }
 
 export interface PaletteProviderState {
+  actions: PaletteAction[];
   open: boolean;
 }

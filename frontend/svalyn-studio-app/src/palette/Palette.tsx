@@ -17,9 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import HomeIcon from '@mui/icons-material/Home';
-import HubIcon from '@mui/icons-material/Hub';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
@@ -36,36 +33,14 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PaletteAction, PaletteProps, PaletteState } from './Palette.types';
 
-export const Palette = ({ open, onClose }: PaletteProps) => {
+export const Palette = ({ actions, open, onClose }: PaletteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
   const navigate = useNavigate();
-
-  const goToHome: PaletteAction = {
-    id: 'go-to-home',
-    icon: <HomeIcon fontSize="small" />,
-    label: 'Home',
-    handle: () => navigate(`/`),
-  };
-  const goToDomains: PaletteAction = {
-    id: 'go-to-domains',
-    icon: <HubIcon fontSize="small" />,
-    label: 'Domains',
-    handle: () => navigate(`/domains`),
-  };
-  const goToNewOrganization: PaletteAction = {
-    id: 'go-to-new-organization',
-    icon: <CorporateFareIcon fontSize="small" />,
-    label: 'New organization',
-    handle: () => navigate(`/new/organization`),
-  };
-
-  const defaultPaletteActions: PaletteAction[] = [goToHome, goToDomains, goToNewOrganization];
-
   const [state, setState] = useState<PaletteState>({
     query: '',
-    actions: defaultPaletteActions,
+    actions,
     selectedActionId: null,
   });
 
@@ -111,7 +86,11 @@ export const Palette = ({ open, onClose }: PaletteProps) => {
   };
 
   const handleOnActionClick = (action: PaletteAction) => {
-    action.handle();
+    if (action.type === 'simple-action') {
+      action.handle();
+    } else if (action.type === 'navigation-action') {
+      navigate(action.to);
+    }
     onClose();
   };
 

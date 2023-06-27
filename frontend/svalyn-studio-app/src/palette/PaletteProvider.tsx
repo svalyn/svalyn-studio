@@ -18,13 +18,17 @@
  */
 
 import { useEffect, useState } from 'react';
+import { goToDomains, goToHome, goToNewOrganization } from './DefaultPaletteActions';
 import { Palette } from './Palette';
+import { PaletteAction } from './Palette.types';
 import { PaletteContext } from './PaletteContext';
 import { PaletteContextValue } from './PaletteContext.types';
 import { PaletteProviderProps, PaletteProviderState } from './PaletteProvider.types';
 
 export const PaletteProvider = ({ children }: PaletteProviderProps) => {
-  const [state, setState] = useState<PaletteProviderState>({ open: false });
+  const actions: PaletteAction[] = [goToHome, goToDomains, goToNewOrganization];
+
+  const [state, setState] = useState<PaletteProviderState>({ actions, open: false });
 
   useEffect(() => {
     const keyDownEventListener = (event: KeyboardEvent) => {
@@ -43,12 +47,13 @@ export const PaletteProvider = ({ children }: PaletteProviderProps) => {
 
   const paletteContextValue: PaletteContextValue = {
     openPalette: () => setState((prevState) => ({ ...prevState, open: true })),
+    setActions: (actions: PaletteAction[]) => setState((prevState) => ({ ...prevState, actions })),
   };
 
   return (
     <PaletteContext.Provider value={paletteContextValue}>
       {children}
-      {state.open ? <Palette open={state.open} onClose={handleClose} /> : null}
+      {state.open ? <Palette actions={state.actions} open={state.open} onClose={handleClose} /> : null}
     </PaletteContext.Provider>
   );
 };
