@@ -17,32 +17,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface PaletteProps {
-  actions: PaletteAction[];
-  open: boolean;
-  onClose: () => void;
-}
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import HomeIcon from '@mui/icons-material/Home';
+import HubIcon from '@mui/icons-material/Hub';
+import { PaletteNavigationAction } from './Palette.types';
 
-export interface PaletteState {
-  query: string;
-  actions: PaletteAction[];
-  selectedActionId: string | null;
-}
+export const goToHome: PaletteNavigationAction = {
+  type: 'navigation-action',
+  id: 'go-to-home',
+  icon: <HomeIcon fontSize="small" />,
+  label: 'Home',
+  to: '/',
+};
 
-export interface PaletteNavigationAction {
-  type: 'navigation-action';
-  id: string;
-  icon: JSX.Element;
-  label: string;
-  to: string;
-}
+export const goToDomains: PaletteNavigationAction = {
+  type: 'navigation-action',
+  id: 'go-to-domains',
+  icon: <HubIcon fontSize="small" />,
+  label: 'Domains',
+  to: '/domains',
+};
 
-export interface PaletteSimpleAction {
-  type: 'simple-action';
-  id: string;
-  icon: JSX.Element;
-  label: string;
-  handle: () => void;
-}
-
-export type PaletteAction = PaletteNavigationAction | PaletteSimpleAction;
+export const goToNewOrganization: PaletteNavigationAction = {
+  type: 'navigation-action',
+  id: 'go-to-new-organization',
+  icon: <CorporateFareIcon fontSize="small" />,
+  label: 'New organization',
+  to: '/new/organization',
+};

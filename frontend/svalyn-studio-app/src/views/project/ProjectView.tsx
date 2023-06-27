@@ -18,11 +18,16 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink, matchPath, useLocation, useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
+import { goToDomains, goToHome, goToNewOrganization } from '../../palette/DefaultPaletteActions';
+import { PaletteNavigationAction } from '../../palette/Palette.types';
+import { PaletteContext } from '../../palette/PaletteContext';
+import { PaletteContextValue } from '../../palette/PaletteContext.types';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { ProjectDrawer } from './ProjectDrawer';
@@ -42,6 +47,8 @@ const getProjectQuery = gql`
         name
         description
         organization {
+          identifier
+          name
           role
         }
       }
@@ -80,6 +87,9 @@ export const ProjectView = () => {
   const { projectIdentifier } = useParams();
   const variables: GetProjectVariables = { identifier: projectIdentifier ?? '' };
   const { loading, data, error } = useQuery<GetProjectData, GetProjectVariables>(getProjectQuery, { variables });
+
+  const { setActions }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
+
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -88,13 +98,26 @@ export const ProjectView = () => {
         } = data;
         if (project) {
           setState((prevState) => ({ ...prevState, project }));
+
+          const goToOrganization: PaletteNavigationAction = {
+            type: 'navigation-action',
+            id: 'go-to-organization',
+            icon: <CorporateFareIcon fontSize="small" />,
+            label: project.organization.name,
+            to: `/orgs/${project.organization.identifier}`,
+          };
+          setActions([goToHome, goToDomains, goToOrganization]);
         }
       }
       if (error) {
         setState((prevState) => ({ ...prevState, message: error.message }));
       }
     }
+
+    return () => setActions([goToHome, goToDomains, goToNewOrganization]);
   }, [loading, data, error]);
+
+  useEffect(() => {}, []);
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 

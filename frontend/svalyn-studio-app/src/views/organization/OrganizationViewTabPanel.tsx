@@ -29,12 +29,16 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { generatePath, matchPath, useLocation, useNavigate } from 'react-router-dom';
-import { OrganizationDashboard } from './dashboard/OrganizationDashboard';
-import { OrganizationMembers } from './members/OrganizationMembers';
+import { goToDomains, goToHome, goToNewOrganization } from '../../palette/DefaultPaletteActions';
+import { PaletteSimpleAction } from '../../palette/Palette.types';
+import { PaletteContext } from '../../palette/PaletteContext';
+import { PaletteContextValue } from '../../palette/PaletteContext.types';
 import { NewProjectDialog } from './NewProjectDialog';
 import { OrganizationViewTabPanelProps, OrganizationViewTabPanelState } from './OrganizationViewTabPanel.types';
+import { OrganizationDashboard } from './dashboard/OrganizationDashboard';
+import { OrganizationMembers } from './members/OrganizationMembers';
 import { OrganizationSettings } from './settings/OrganizationSettings';
 import { OrganizationTags } from './tags/OrganizationTags';
 
@@ -103,6 +107,20 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
   const openNewProjectDialog: React.MouseEventHandler<HTMLButtonElement> = () =>
     setState((prevState) => ({ ...prevState, newProjectDialogOpen: true }));
   const closeNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: false }));
+
+  const { setActions }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
+  useEffect(() => {
+    const goToNewProject: PaletteSimpleAction = {
+      type: 'simple-action',
+      id: 'create-project',
+      icon: <ClassIcon fontSize="small" />,
+      label: 'New project',
+      handle: () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true })),
+    };
+    setActions([goToHome, goToDomains, goToNewProject]);
+
+    return () => setActions([goToHome, goToDomains, goToNewOrganization]);
+  }, []);
 
   return (
     <>

@@ -22,4 +22,5 @@ import { PaletteContextValue } from './PaletteContext.types';
 
 export const PaletteContext = React.createContext<PaletteContextValue>({
   openPalette: () => {},
+  setActions: () => {},
 });
