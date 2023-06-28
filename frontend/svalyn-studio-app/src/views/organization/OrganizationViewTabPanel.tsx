@@ -29,12 +29,18 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generatePath, matchPath, useLocation, useNavigate } from 'react-router-dom';
-import { goToDomains, goToHome, goToNewOrganization } from '../../palette/DefaultPaletteActions';
+import {
+  goToDomains,
+  goToHelp,
+  goToHome,
+  goToNewOrganization,
+  goToNotifications,
+  goToSettings,
+} from '../../palette/DefaultPaletteActions';
 import { PaletteSimpleAction } from '../../palette/Palette.types';
-import { PaletteContext } from '../../palette/PaletteContext';
-import { PaletteContextValue } from '../../palette/PaletteContext.types';
+import { usePalette } from '../../palette/usePalette';
 import { NewProjectDialog } from './NewProjectDialog';
 import { OrganizationViewTabPanelProps, OrganizationViewTabPanelState } from './OrganizationViewTabPanel.types';
 import { OrganizationDashboard } from './dashboard/OrganizationDashboard';
@@ -108,19 +114,14 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
     setState((prevState) => ({ ...prevState, newProjectDialogOpen: true }));
   const closeNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: false }));
 
-  const { setActions }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
-  useEffect(() => {
-    const goToNewProject: PaletteSimpleAction = {
-      type: 'simple-action',
-      id: 'create-project',
-      icon: <ClassIcon fontSize="small" />,
-      label: 'New project',
-      handle: () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true })),
-    };
-    setActions([goToHome, goToDomains, goToNewProject]);
-
-    return () => setActions([goToHome, goToDomains, goToNewOrganization]);
-  }, []);
+  const goToNewProject: PaletteSimpleAction = {
+    type: 'simple-action',
+    id: 'create-project',
+    icon: <ClassIcon fontSize="small" />,
+    label: 'New project',
+    handle: () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true })),
+  };
+  usePalette([goToHome, goToDomains, goToNewOrganization, goToNewProject, goToNotifications, goToSettings, goToHelp]);
 
   return (
     <>

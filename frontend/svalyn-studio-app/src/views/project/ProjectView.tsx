@@ -21,13 +21,12 @@ import { gql, useQuery } from '@apollo/client';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink, matchPath, useLocation, useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
-import { goToDomains, goToHome, goToNewOrganization } from '../../palette/DefaultPaletteActions';
+import { goToDomains, goToHelp, goToHome, goToNotifications, goToSettings } from '../../palette/DefaultPaletteActions';
 import { PaletteNavigationAction } from '../../palette/Palette.types';
-import { PaletteContext } from '../../palette/PaletteContext';
-import { PaletteContextValue } from '../../palette/PaletteContext.types';
+import { usePalette } from '../../palette/usePalette';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { ProjectDrawer } from './ProjectDrawer';
@@ -88,7 +87,7 @@ export const ProjectView = () => {
   const variables: GetProjectVariables = { identifier: projectIdentifier ?? '' };
   const { loading, data, error } = useQuery<GetProjectData, GetProjectVariables>(getProjectQuery, { variables });
 
-  const { setActions }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
+  const { setActions } = usePalette();
 
   useEffect(() => {
     if (!loading) {
@@ -99,22 +98,20 @@ export const ProjectView = () => {
         if (project) {
           setState((prevState) => ({ ...prevState, project }));
 
-          const goToOrganization: PaletteNavigationAction = {
+          const backToOrganization: PaletteNavigationAction = {
             type: 'navigation-action',
             id: 'go-to-organization',
             icon: <CorporateFareIcon fontSize="small" />,
             label: project.organization.name,
             to: `/orgs/${project.organization.identifier}`,
           };
-          setActions([goToHome, goToDomains, goToOrganization]);
+          setActions([goToHome, goToDomains, backToOrganization, goToNotifications, goToSettings, goToHelp]);
         }
       }
       if (error) {
         setState((prevState) => ({ ...prevState, message: error.message }));
       }
     }
-
-    return () => setActions([goToHome, goToDomains, goToNewOrganization]);
   }, [loading, data, error]);
 
   useEffect(() => {}, []);

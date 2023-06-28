@@ -18,9 +18,12 @@
  */
 
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import HelpIcon from '@mui/icons-material/Help';
 import HomeIcon from '@mui/icons-material/Home';
 import HubIcon from '@mui/icons-material/Hub';
-import { PaletteNavigationAction } from './Palette.types';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { PaletteAction, PaletteNavigationAction } from './Palette.types';
 
 export const goToHome: PaletteNavigationAction = {
   type: 'navigation-action',
@@ -45,3 +48,36 @@ export const goToNewOrganization: PaletteNavigationAction = {
   label: 'New organization',
   to: '/new/organization',
 };
+
+export const goToNotifications: PaletteNavigationAction = {
+  type: 'navigation-action',
+  id: 'go-to-notifications',
+  icon: <NotificationsNoneIcon fontSize="small" />,
+  label: 'Notifications',
+  to: '/notifications',
+};
+
+export const goToSettings: PaletteNavigationAction = {
+  type: 'navigation-action',
+  id: 'go-to-settings',
+  icon: <SettingsIcon fontSize="small" />,
+  label: 'Settings',
+  to: '/settings',
+};
+
+export const goToHelp: PaletteNavigationAction = {
+  type: 'navigation-action',
+  id: 'go-to-help',
+  icon: <HelpIcon fontSize="small" />,
+  label: 'Help',
+  to: '/help',
+};
+
+export const actions: PaletteAction[] = [
+  goToHome,
+  goToDomains,
+  goToNewOrganization,
+  goToNotifications,
+  goToSettings,
+  goToHelp,
+];
