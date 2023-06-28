@@ -18,6 +18,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { actions } from './DefaultPaletteActions';
 import { Palette } from './Palette';
 import { PaletteAction } from './Palette.types';
@@ -28,7 +29,12 @@ import { PaletteProviderProps, PaletteProviderState } from './PaletteProvider.ty
 export const PaletteProvider = ({ children }: PaletteProviderProps) => {
   const [state, setState] = useState<PaletteProviderState>({ actions, open: false });
 
+  const location = useLocation();
   useEffect(() => {
+    if (location.pathname === '/login' || location.pathname === '/help') {
+      return;
+    }
+
     const keyDownEventListener = (event: KeyboardEvent) => {
       if (event.key === 'k' && (event.ctrlKey || event.metaKey)) {
         setState((prevState) => ({ ...prevState, open: !prevState.open }));
@@ -39,7 +45,7 @@ export const PaletteProvider = ({ children }: PaletteProviderProps) => {
 
     document.addEventListener('keydown', keyDownEventListener);
     return () => document.removeEventListener('keydown', keyDownEventListener);
-  }, []);
+  }, [location]);
 
   const handleClose = () => setState((prevState) => ({ ...prevState, open: false }));
 
