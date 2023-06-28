@@ -17,41 +17,26 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { actions } from './DefaultPaletteActions';
-import { Palette } from './Palette';
 import { PaletteAction } from './Palette.types';
 import { PaletteContext } from './PaletteContext';
 import { PaletteContextValue } from './PaletteContext.types';
-import { PaletteProviderProps, PaletteProviderState } from './PaletteProvider.types';
+import { UsePalette, UsePaletteState } from './usePalette.types';
 
-export const PaletteProvider = ({ children }: PaletteProviderProps) => {
-  const [state, setState] = useState<PaletteProviderState>({ actions, open: false });
+export const usePalette = (initialActions: PaletteAction[] = actions): UsePalette => {
+  const [state, setState] = useState<UsePaletteState>({
+    actions: initialActions,
+  });
 
+  const { setActions }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
   useEffect(() => {
-    const keyDownEventListener = (event: KeyboardEvent) => {
-      if (event.key === 'k' && (event.ctrlKey || event.metaKey)) {
-        setState((prevState) => ({ ...prevState, open: !prevState.open }));
-      } else if (event.key === 'Esc') {
-        setState((prevState) => ({ ...prevState, open: false }));
-      }
-    };
+    setActions(state.actions);
 
-    document.addEventListener('keydown', keyDownEventListener);
-    return () => document.removeEventListener('keydown', keyDownEventListener);
-  }, []);
+    return () => setActions(actions);
+  }, [state.actions]);
 
-  const handleClose = () => setState((prevState) => ({ ...prevState, open: false }));
-
-  const paletteContextValue: PaletteContextValue = {
-    openPalette: () => setState((prevState) => ({ ...prevState, open: true })),
+  return {
     setActions: (actions: PaletteAction[]) => setState((prevState) => ({ ...prevState, actions })),
   };
-
-  return (
-    <PaletteContext.Provider value={paletteContextValue}>
-      {children}
-      {state.open ? <Palette actions={state.actions} open={state.open} onClose={handleClose} /> : null}
-    </PaletteContext.Provider>
-  );
 };
