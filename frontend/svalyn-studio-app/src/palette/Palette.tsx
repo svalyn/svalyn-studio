@@ -124,7 +124,7 @@ export const Palette = ({ actions, open, onClose }: PaletteProps) => {
           />
         </FormControl>
         <Divider />
-        <List ref={listRef} disablePadding>
+        <List ref={listRef} dense disablePadding>
           {state.actions.map((action) => (
             <ListItem key={action.id} disablePadding>
               <ListItemButton onClick={() => handleOnActionClick(action)} onKeyDown={handleListItemKeyDown}>

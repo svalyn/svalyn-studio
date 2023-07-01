@@ -105,7 +105,7 @@ export const ProjectView = () => {
             label: project.organization.name,
             to: `/orgs/${project.organization.identifier}`,
           };
-          setActions([goToHome, goToDomains, backToOrganization, goToNotifications, goToSettings, goToHelp]);
+          setActions([goToHome, backToOrganization, goToDomains, goToNotifications, goToSettings, goToHelp]);
         }
       }
       if (error) {

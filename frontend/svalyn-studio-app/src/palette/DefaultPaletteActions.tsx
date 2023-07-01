@@ -75,8 +75,8 @@ export const goToHelp: PaletteNavigationAction = {
 
 export const actions: PaletteAction[] = [
   goToHome,
-  goToDomains,
   goToNewOrganization,
+  goToDomains,
   goToNotifications,
   goToSettings,
   goToHelp,

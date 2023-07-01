@@ -33,11 +33,8 @@ export interface Viewer {
 export interface ChangeProposal {
   id: string;
   name: string;
-  status: ChangeProposalStatus;
   project: Project;
 }
-
-export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
 
 export interface Project {
   identifier: string;

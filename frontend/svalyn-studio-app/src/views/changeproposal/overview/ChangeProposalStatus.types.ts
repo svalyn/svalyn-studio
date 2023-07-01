@@ -27,6 +27,10 @@ export interface ChangeProposal {
   readMe: string;
   status: ChangeProposalStatus;
   reviews: ChangeProposalReviewsConnection;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
 }
 
 export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
@@ -43,6 +47,16 @@ export interface Review {
   id: string;
   message: string;
   status: ReviewStatus;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
+}
+
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
 }
 
 export type ReviewStatus = 'APPROVED' | 'REQUESTED_CHANGES';
@@ -74,4 +88,26 @@ export interface UpdateChangeProposalStatusInput {
   id: string;
   changeProposalId: string;
   status: ChangeProposalStatus;
+}
+
+export interface ChangeProposalStatusHeaderProps {
+  changeProposal: ChangeProposal;
+}
+
+export interface ChangeProposalReviewsProps {
+  changeProposal: ChangeProposal;
+}
+
+export interface ReviewAccordionProps {
+  children: NonNullable<React.ReactNode>;
+}
+
+export interface ReviewAccordionSummaryProps {
+  status: string;
+  expandIcon?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+export interface ReviewAccordionDetailsProps {
+  children?: React.ReactNode;
 }
