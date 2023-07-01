@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -30,6 +30,7 @@ import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
 import { ErrorSnackbar } from '../../../snackbar/ErrorSnackbar';
+import { ChangeProposalHeader } from './ChangeProposalHeader';
 import {
   ChangeProposalOverviewProps,
   ChangeProposalOverviewState,
@@ -54,8 +55,32 @@ const getChangeProposalQuery = gql`
               id
               message
               status
+              createdOn
+              createdBy {
+                name
+                username
+                imageUrl
+              }
+              lastModifiedOn
+              lastModifiedBy {
+                name
+                username
+                imageUrl
+              }
             }
           }
+        }
+        createdOn
+        createdBy {
+          name
+          username
+          imageUrl
+        }
+        lastModifiedOn
+        lastModifiedBy {
+          name
+          username
+          imageUrl
         }
       }
     }
@@ -166,6 +191,8 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
         <Box sx={{ py: (theme) => theme.spacing(4) }}>
           <Container maxWidth="lg">
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+              <ChangeProposalHeader changeProposal={state.changeProposal} />
+
               <>
                 <Paper variant="outlined">
                   <Box

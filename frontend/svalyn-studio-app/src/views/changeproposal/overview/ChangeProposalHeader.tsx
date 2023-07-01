@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,14 +20,27 @@
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
-import { ChangeProposalIconProps } from './ChangeProposalIcon.types';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import { CreatedOn } from '../../../widgets/CreatedOn';
+import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
+import { ChangeProposalHeaderProps } from './ChangeProposalHeader.types';
 
-export const ChangeProposalIcon = ({ status, fontSize }: ChangeProposalIconProps) => {
-  if (status === 'OPEN') {
-    return <PanoramaFishEyeIcon fontSize={fontSize} color="disabled" />;
-  } else if (status === 'CLOSED') {
-    return <NotInterestedIcon fontSize={fontSize} color="error" />;
-  } else {
-    return <CheckCircleOutlineIcon fontSize={fontSize} color="success" />;
+export const ChangeProposalHeader = ({ changeProposal }: ChangeProposalHeaderProps) => {
+  let chip = <Chip icon={<PanoramaFishEyeIcon />} label="Open" size="small" variant="outlined" color="primary" />;
+  if (changeProposal.status === 'CLOSED') {
+    chip = <Chip icon={<NotInterestedIcon />} label="Closed" size="small" variant="outlined" color="error" />;
+  } else if (changeProposal.status === 'INTEGRATED') {
+    chip = (
+      <Chip icon={<CheckCircleOutlineIcon />} label="Integrated" size="small" variant="outlined" color="success" />
+    );
   }
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+      {chip}
+
+      <CreatedOn date={new Date(changeProposal.createdOn)} profile={changeProposal.createdBy} />
+      <LastModifiedOn date={new Date(changeProposal.lastModifiedOn)} profile={changeProposal.lastModifiedBy} />
+    </Box>
+  );
 };

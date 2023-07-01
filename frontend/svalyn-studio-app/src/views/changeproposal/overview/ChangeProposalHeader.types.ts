@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,11 +17,45 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ChangeProposalIconProps {
+export interface ChangeProposalHeaderProps {
+  changeProposal: ChangeProposal;
+}
+
+export interface ChangeProposal {
+  id: string;
+  readMe: string;
   status: ChangeProposalStatus;
-  fontSize: FontSize;
+  reviews: ChangeProposalReviewsConnection;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
 }
 
 export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
 
-export type FontSize = 'small' | 'medium' | 'large';
+export interface ChangeProposalReviewsConnection {
+  edges: ChangeProposalReviewsEdge[];
+}
+
+export interface ChangeProposalReviewsEdge {
+  node: Review;
+}
+
+export interface Review {
+  id: string;
+  message: string;
+  status: ReviewStatus;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
+}
+
+export type ReviewStatus = 'APPROVED' | 'REQUESTED_CHANGES';
+
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
+}

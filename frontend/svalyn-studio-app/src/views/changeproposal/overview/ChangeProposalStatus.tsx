@@ -19,29 +19,40 @@
 
 import { gql, useMutation } from '@apollo/client';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import BlockIcon from '@mui/icons-material/Block';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommentIcon from '@mui/icons-material/Comment';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Divider from '@mui/material/Divider';
 import Grow from '@mui/material/Grow';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import Link from '@mui/material/Link';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useEffect, useRef, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { ReviewDialog } from '../ReviewDialog';
 import {
+  ChangeProposalReviewsProps,
+  ChangeProposalStatusHeaderProps,
   ChangeProposalStatusProps,
   ChangeProposalStatusState,
   ErrorPayload,
+  ReviewAccordionDetailsProps,
+  ReviewAccordionProps,
+  ReviewAccordionSummaryProps,
   UpdateChangeProposalStatusData,
   UpdateChangeProposalStatusVariables,
 } from './ChangeProposalStatus.types';
@@ -147,32 +158,10 @@ export const ChangeProposalStatus = ({ changeProposal, onStatusUpdated }: Change
           <Typography variant="subtitle1">Status</Typography>
         </Box>
         <Divider />
-        <Box sx={{ padding: (theme) => theme.spacing(2) }}>
-          <Typography gutterBottom>
-            This change proposal is ready to be considered, have a look at its content and then add your review
-          </Typography>
-          {changeProposal.reviews.edges.length > 0 ? (
-            <List
-              dense
-              sx={{
-                marginBottom: (theme) => theme.spacing(2),
-                border: (theme) => `1px solid ${theme.palette.divider}`,
-              }}
-            >
-              {changeProposal.reviews.edges
-                .map((edge) => edge.node)
-                .map((review) => (
-                  <ListItem
-                    key={review.id}
-                    secondaryAction={review.status === 'APPROVED' ? <CheckCircleOutlineIcon /> : <BlockIcon />}
-                  >
-                    <ListItemText primary={review.message} />
-                  </ListItem>
-                ))}
-            </List>
-          ) : null}
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <ChangeProposalStatusHeader changeProposal={changeProposal} />
+          <ChangeProposalReviews changeProposal={changeProposal} />
         </Box>
-        <Divider />
         <Box
           sx={{
             padding: (theme) => theme.spacing(2),
@@ -184,7 +173,19 @@ export const ChangeProposalStatus = ({ changeProposal, onStatusUpdated }: Change
           <Button variant="outlined" startIcon={<CommentIcon />} onClick={openReviewDialog}>
             Review Change Proposal
           </Button>
-          <ButtonGroup variant="outlined" ref={anchorRef} aria-label="split button">
+          <ButtonGroup
+            variant="outlined"
+            ref={anchorRef}
+            disabled={
+              changeProposal.status !== 'OPEN' ||
+              changeProposal.reviews.edges
+                .map((edge) => edge.node)
+                .filter((review) => review.status === 'REQUESTED_CHANGES').length > 0 ||
+              changeProposal.reviews.edges.map((edge) => edge.node).filter((review) => review.status === 'APPROVED')
+                .length === 0
+            }
+            aria-label="split button"
+          >
             <Button onClick={handleClick}>{options[state.selectedOptionIndex]}</Button>
             <Button
               size="small"
@@ -234,5 +235,197 @@ export const ChangeProposalStatus = ({ changeProposal, onStatusUpdated }: Change
         onReviewed={handleReviewed}
       />
     </>
+  );
+};
+
+const ChangeProposalStatusHeader = ({ changeProposal }: ChangeProposalStatusHeaderProps) => {
+  let title = <Typography variant="h5">Waiting for review</Typography>;
+  let description = 'At least 1 approving review is required to integrate this change proposal';
+  let icon = <PanoramaFishEyeIcon fontSize="large" />;
+
+  const approvedReviewsCount = changeProposal.reviews.edges
+    .map((edge) => edge.node)
+    .filter((review) => review.status === 'APPROVED').length;
+  const requestedChangeReviewsCount = changeProposal.reviews.edges
+    .map((edge) => edge.node)
+    .filter((review) => review.status === 'REQUESTED_CHANGES').length;
+  if (requestedChangeReviewsCount > 0) {
+    title = (
+      <Typography variant="h5" color="error.main">
+        Update requested
+      </Typography>
+    );
+    description = `${requestedChangeReviewsCount} ${
+      requestedChangeReviewsCount === 1 ? 'review is' : 'reviews are'
+    } asking for an update to this change proposal.`;
+    icon = <NotInterestedIcon fontSize="large" color="error" />;
+  } else if (approvedReviewsCount > 0) {
+    title = (
+      <Typography variant="h5" color="success.main">
+        Approved
+      </Typography>
+    );
+    description = `${approvedReviewsCount} ${
+      approvedReviewsCount === 1 ? 'review has' : 'reviews have'
+    } approved this change proposal.`;
+    icon = <CheckCircleOutlineIcon fontSize="large" color="success" />;
+  }
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: (theme) => theme.spacing(2),
+        paddingX: (theme) => theme.spacing(2),
+        paddingY: (theme) => theme.spacing(1),
+      }}
+    >
+      {icon}
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        {title}
+        <Typography>{description}</Typography>
+      </Box>
+    </Box>
+  );
+};
+
+const ChangeProposalReviews = ({ changeProposal }: ChangeProposalReviewsProps) => {
+  const hasReviews = changeProposal.reviews.edges.length > 0;
+  if (!hasReviews) {
+    return <Typography>No reviews have been performed yet</Typography>;
+  }
+
+  const approvedReviews = changeProposal.reviews.edges
+    .map((edge) => edge.node)
+    .filter((review) => review.status === 'APPROVED');
+  const requestedChangesReviews = changeProposal.reviews.edges
+    .map((edge) => edge.node)
+    .filter((review) => review.status === 'REQUESTED_CHANGES');
+
+  const approvedReviewsAccordion =
+    approvedReviews.length > 0 ? (
+      <ReviewAccordion>
+        <ReviewAccordionSummary expandIcon={<ExpandMoreIcon />} status="approved">
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
+            <CheckCircleOutlineIcon fontSize="small" color="success" />
+            <Typography>{approvedReviews.length} approval(s)</Typography>
+          </Box>
+        </ReviewAccordionSummary>
+        <ReviewAccordionDetails>
+          {approvedReviews.map((review) => (
+            <Box
+              key={review.id}
+              sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(0.5) }}
+            >
+              <Tooltip title={review.createdBy.name}>
+                <Avatar
+                  component={RouterLink}
+                  to={`/profile/${review.createdBy.username}`}
+                  alt={review.createdBy.name}
+                  src={review.createdBy.imageUrl}
+                  sx={{ width: 24, height: 24 }}
+                />
+              </Tooltip>
+              <Link variant="body1" component={RouterLink} to={`/profile/${review.createdBy.username}`}>
+                {review.createdBy.username}
+              </Link>
+              <Typography> approved these changes</Typography>
+            </Box>
+          ))}
+        </ReviewAccordionDetails>
+      </ReviewAccordion>
+    ) : null;
+
+  const requestedChangesReviewsAccordion =
+    requestedChangesReviews.length > 0 ? (
+      <ReviewAccordion>
+        <ReviewAccordionSummary status="changes-requested" expandIcon={<ExpandMoreIcon />}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(1) }}>
+            <NotInterestedIcon fontSize="small" color="error" />
+            <Typography>{requestedChangesReviews.length} update(s) requested</Typography>
+          </Box>
+        </ReviewAccordionSummary>
+        <ReviewAccordionDetails>
+          {requestedChangesReviews.map((review) => (
+            <Box
+              key={review.id}
+              sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(0.5) }}
+            >
+              <Tooltip title={review.createdBy.name}>
+                <Avatar
+                  component={RouterLink}
+                  to={`/profile/${review.createdBy.username}`}
+                  alt={review.createdBy.name}
+                  src={review.createdBy.imageUrl}
+                  sx={{ width: 24, height: 24 }}
+                />
+              </Tooltip>
+              <Link variant="body1" component={RouterLink} to={`/profile/${review.createdBy.username}`}>
+                {review.createdBy.username}
+              </Link>
+              <Typography> requested updates</Typography>
+            </Box>
+          ))}
+        </ReviewAccordionDetails>
+      </ReviewAccordion>
+    ) : null;
+
+  return (
+    <Box
+      sx={{
+        borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      {approvedReviewsAccordion}
+      {requestedChangesReviewsAccordion}
+    </Box>
+  );
+};
+
+const ReviewAccordion = ({ children }: ReviewAccordionProps) => {
+  return (
+    <Accordion
+      elevation={0}
+      disableGutters
+      sx={{
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+        '&:last-child': { borderBottom: 0 },
+        '&:before': { display: 'none' },
+      }}
+    >
+      {children}
+    </Accordion>
+  );
+};
+
+const ReviewAccordionSummary = ({ status, expandIcon, children }: ReviewAccordionSummaryProps) => {
+  return (
+    <AccordionSummary
+      sx={{
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+        '&:not(:last-child)': { borderBottom: 0 },
+      }}
+      expandIcon={expandIcon}
+      aria-controls={`${status}-reviews-content`}
+      id={`${status}-reviews-header`}
+    >
+      {children}
+    </AccordionSummary>
+  );
+};
+
+const ReviewAccordionDetails = ({ children }: ReviewAccordionDetailsProps) => {
+  return (
+    <AccordionDetails
+      sx={{
+        paddingY: (theme) => theme.spacing(2),
+        paddingX: (theme) => theme.spacing(4),
+        borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      {children}
+    </AccordionDetails>
   );
 };

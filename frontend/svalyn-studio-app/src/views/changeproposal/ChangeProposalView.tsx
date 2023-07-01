@@ -18,9 +18,14 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
+import ClassIcon from '@mui/icons-material/Class';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navbar } from '../../navbars/Navbar';
+import { goToDomains, goToHelp, goToHome, goToNotifications, goToSettings } from '../../palette/DefaultPaletteActions';
+import { PaletteNavigationAction } from '../../palette/Palette.types';
+import { usePalette } from '../../palette/usePalette';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { ChangeProposalViewState, GetChangeProposalData, GetChangeProposalVariables } from './ChangeProposalView.types';
@@ -32,7 +37,6 @@ const getChangeProposalQuery = gql`
       changeProposal(id: $id) {
         id
         name
-        status
         project {
           identifier
           name
@@ -55,6 +59,9 @@ export const ChangeProposalView = () => {
   const { loading, data, error } = useQuery<GetChangeProposalData, GetChangeProposalVariables>(getChangeProposalQuery, {
     variables,
   });
+
+  const { setActions } = usePalette();
+
   useEffect(() => {
     if (!loading) {
       if (data) {
@@ -63,6 +70,31 @@ export const ChangeProposalView = () => {
         } = data;
         if (changeProposal) {
           setState((prevState) => ({ ...prevState, changeProposal }));
+
+          const backToProject: PaletteNavigationAction = {
+            type: 'navigation-action',
+            id: 'go-to-project',
+            icon: <ClassIcon fontSize="small" />,
+            label: changeProposal.project.name,
+            to: `/projects/${changeProposal.project.identifier}`,
+          };
+
+          const backToOrganization: PaletteNavigationAction = {
+            type: 'navigation-action',
+            id: 'go-to-organization',
+            icon: <CorporateFareIcon fontSize="small" />,
+            label: changeProposal.project.organization.name,
+            to: `/orgs/${changeProposal.project.organization.identifier}`,
+          };
+          setActions([
+            goToHome,
+            backToProject,
+            backToOrganization,
+            goToDomains,
+            goToNotifications,
+            goToSettings,
+            goToHelp,
+          ]);
         }
       }
       if (error) {

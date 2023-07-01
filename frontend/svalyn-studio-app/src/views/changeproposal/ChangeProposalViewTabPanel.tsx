@@ -24,8 +24,7 @@ import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { generatePath, Link as RouterLink, matchPath, useLocation, useNavigate } from 'react-router-dom';
-import { ChangeProposalIcon } from './ChangeProposalIcon';
+import { Link as RouterLink, generatePath, matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { ChangeProposalViewTabPanelProps, ChangeProposalViewTabPanelState } from './ChangeProposalViewTabPanel.types';
 import { ChangeProposalFiles } from './files/ChangeProposalFiles';
 import { ChangeProposalOverview } from './overview/ChangeProposalOverview';
@@ -64,6 +63,7 @@ export const ChangeProposalViewTabPanel = ({ changeProposal }: ChangeProposalVie
   return (
     <div>
       <Toolbar
+        variant="dense"
         sx={{
           backgroundColor: 'white',
           borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
@@ -102,7 +102,6 @@ export const ChangeProposalViewTabPanel = ({ changeProposal }: ChangeProposalVie
           >
             {changeProposal.name}
           </Typography>
-          <ChangeProposalIcon status={changeProposal.status} fontSize="medium" />
         </Box>
         <Tabs value={state.activeTab} onChange={handleTabChanged}>
           <Tab label="Overview" {...a11yProps(0)} />

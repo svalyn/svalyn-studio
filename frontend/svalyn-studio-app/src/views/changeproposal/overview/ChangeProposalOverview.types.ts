@@ -43,6 +43,10 @@ export interface ChangeProposal {
   readMe: string;
   status: ChangeProposalStatus;
   reviews: ChangeProposalReviewsConnection;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
 }
 
 export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
@@ -59,9 +63,19 @@ export interface Review {
   id: string;
   message: string;
   status: ReviewStatus;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
 }
 
 export type ReviewStatus = 'APPROVED' | 'REQUESTED_CHANGES';
+
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
+}
 
 export interface GetChangeProposalVariables {
   id: string;

@@ -121,7 +121,7 @@ export const OrganizationViewTabPanel = ({ organization }: OrganizationViewTabPa
     label: 'New project',
     handle: () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true })),
   };
-  usePalette([goToHome, goToDomains, goToNewOrganization, goToNewProject, goToNotifications, goToSettings, goToHelp]);
+  usePalette([goToHome, goToNewProject, goToNewOrganization, goToDomains, goToNotifications, goToSettings, goToHelp]);
 
   return (
     <>
