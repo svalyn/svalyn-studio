@@ -115,7 +115,9 @@ export const HomeViewLeftPanel = ({}: HomeViewLeftPanelProps) => {
             })}
           </List>
         ) : (
-          <Typography variant="body2">No organization found</Typography>
+          <Typography variant="body2" sx={{ paddingX: (theme) => theme.spacing(2) }}>
+            No organization found
+          </Typography>
         )}
       </Paper>
       <ErrorSnackbar open={!!state.message} message={state.message} onClose={handleCloseSnackbar} />

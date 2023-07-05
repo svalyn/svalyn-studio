@@ -26,11 +26,14 @@ export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface ProjectChangeProposalState {
   project: Project | null;
+  filter: ChangeProposalStatusFilter;
   selectedChangeProposalIds: string[];
   page: number;
   rowsPerPage: number;
   message: string | null;
 }
+
+export type ChangeProposalStatusFilter = 'OPEN' | 'CLOSED';
 
 export interface GetChangeProposalsData {
   viewer: Viewer;
@@ -64,9 +67,12 @@ export interface ChangeProposal {
 
 export interface GetChangeProposalsVariables {
   identifier: string;
+  status: ChangeProposalStatus[];
   page: number;
   rowsPerPage: number;
 }
+
+export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
 
 export interface DeleteChangeProposalsData {
   deleteChangeProposals: DeleteChangeProposalsPayload;

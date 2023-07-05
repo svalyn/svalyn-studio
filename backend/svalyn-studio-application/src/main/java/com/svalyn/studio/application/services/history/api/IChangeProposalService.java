@@ -29,6 +29,7 @@ import com.svalyn.studio.application.controllers.history.dto.ReviewDTO;
 import com.svalyn.studio.application.controllers.history.dto.UpdateChangeProposalReadMeInput;
 import com.svalyn.studio.application.controllers.history.dto.UpdateChangeProposalStatusInput;
 import com.svalyn.studio.application.controllers.dto.IPayload;
+import com.svalyn.studio.domain.history.ChangeProposalStatus;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -41,7 +42,7 @@ import java.util.UUID;
  * @author sbegaudeau
  */
 public interface IChangeProposalService {
-    Page<ChangeProposalDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage);
+    Page<ChangeProposalDTO> findAllByProjectIdAndStatus(UUID projectId, List<ChangeProposalStatus> status, int page, int rowsPerPage);
 
     IPayload createChangeProposal(CreateChangeProposalInput input);
 

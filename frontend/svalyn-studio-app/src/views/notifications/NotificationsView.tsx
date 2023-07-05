@@ -292,7 +292,12 @@ export const NotificationsView = () => {
                                   />
                                 </TableCell>
                                 <TableCell>
-                                  <Link variant="subtitle1" component={RouterLink} to={notification.relatedUrl}>
+                                  <Link
+                                    variant="subtitle1"
+                                    component={RouterLink}
+                                    to={notification.relatedUrl}
+                                    underline="hover"
+                                  >
                                     {notification.title}
                                   </Link>
                                 </TableCell>

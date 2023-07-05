@@ -22,13 +22,28 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ChangeProposalsTableHeadProps } from './ChangeProposalsTableHead.types';
 
 export const ChangeProposalsTableHead = ({
+  filter,
+  onFilterChange,
   changeProposalsCount,
   selectedChangeProposalsCount,
   onSelectAll,
 }: ChangeProposalsTableHeadProps) => {
+  const handleChange = (event: SelectChangeEvent<'OPEN' | 'CLOSED'>) => {
+    const {
+      target: { value },
+    } = event;
+    if (value === 'OPEN' || value === 'CLOSED') {
+      onFilterChange(value);
+    }
+  };
+
   return (
     <TableHead>
       <TableRow sx={{ borderLeft: '3px solid transparent' }}>
@@ -39,7 +54,15 @@ export const ChangeProposalsTableHead = ({
             indeterminate={selectedChangeProposalsCount > 0 && selectedChangeProposalsCount < changeProposalsCount}
           />
         </TableCell>
-        <TableCell>Name</TableCell>
+        <TableCell>
+          <FormControl sx={{ minWidth: (theme) => theme.spacing(15) }} size="small">
+            <InputLabel id="change-proposal-status-label">Status</InputLabel>
+            <Select labelId="change-proposal-status-label" value={filter} label="Status" onChange={handleChange}>
+              <MenuItem value="OPEN">Open</MenuItem>
+              <MenuItem value="CLOSED">Close</MenuItem>
+            </Select>
+          </FormControl>
+        </TableCell>
       </TableRow>
     </TableHead>
   );

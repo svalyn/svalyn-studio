@@ -18,7 +18,11 @@
  */
 
 export interface ChangeProposalsTableHeadProps {
+  filter: ChangeProposalStatusFilter;
+  onFilterChange: (filter: ChangeProposalStatusFilter) => void;
   changeProposalsCount: number;
   selectedChangeProposalsCount: number;
   onSelectAll: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }
+
+export type ChangeProposalStatusFilter = 'OPEN' | 'CLOSED';

@@ -40,6 +40,7 @@ import { ChangeProposalsTableHead } from './ChangeProposalsTableHead';
 import { ChangeProposalsTableToolbar } from './ChangeProposalsTableToolbar';
 import {
   ChangeProposal,
+  ChangeProposalStatusFilter,
   DeleteChangeProposalsData,
   DeleteChangeProposalsVariables,
   ErrorPayload,
@@ -50,10 +51,10 @@ import {
 } from './ProjectChangeProposal.types';
 
 const getChangeProposalsQuery = gql`
-  query getChangeProposals($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
+  query getChangeProposals($identifier: ID!, $status: [ChangeProposalStatus!]!, $page: Int!, $rowsPerPage: Int!) {
     viewer {
       project(identifier: $identifier) {
-        changeProposals(page: $page, rowsPerPage: $rowsPerPage) {
+        changeProposals(status: $status, page: $page, rowsPerPage: $rowsPerPage) {
           edges {
             node {
               id
@@ -83,6 +84,7 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
   const [state, setState] = useState<ProjectChangeProposalState>({
     project: null,
     selectedChangeProposalIds: [],
+    filter: 'OPEN',
     page: 0,
     rowsPerPage: 10,
     message: null,
@@ -90,6 +92,7 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
 
   const variables: GetChangeProposalsVariables = {
     identifier: projectIdentifier,
+    status: state.filter === 'OPEN' ? ['OPEN'] : ['INTEGRATED', 'CLOSED'],
     page: state.page,
     rowsPerPage: state.rowsPerPage,
   };
@@ -187,6 +190,9 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
     setState((prevState) => ({ ...prevState, page }));
   };
 
+  const handleFilterChange = (filter: ChangeProposalStatusFilter) =>
+    setState((prevState) => ({ ...prevState, filter }));
+
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const changeProposals = state.project?.changeProposals.edges.map((edge) => edge.node) ?? [];
@@ -214,42 +220,47 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
             New Change Proposal
           </Button>
         </Toolbar>
-        {state.project && changeProposals.length > 0 ? (
-          <Container maxWidth="lg" sx={{ py: (theme) => theme.spacing(4) }}>
-            <ChangeProposalsTableToolbar
-              onDelete={handleDelete}
-              selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
-              role={role}
-            />
-            <TableContainer component={Paper} variant="outlined">
-              <Table>
-                <ChangeProposalsTableHead
-                  changeProposalsCount={changeProposals.length}
-                  selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
-                  onSelectAll={selectAllChangeProposals}
-                />
-                <TableBody>
-                  {changeProposals.map((changeProposal) => {
-                    const isChangeProposalSelected = state.selectedChangeProposalIds.includes(changeProposal.id);
-                    return (
-                      <TableRow
-                        key={changeProposal.id}
-                        onClick={(event) => selectChangeProposal(event, changeProposal)}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isChangeProposalSelected} />
-                        </TableCell>
-                        <TableCell>
-                          <Link variant="subtitle1" component={RouterLink} to={`/changeproposals/${changeProposal.id}`}>
-                            {changeProposal.name}
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
+
+        <Container maxWidth="lg" sx={{ py: (theme) => theme.spacing(4) }}>
+          <ChangeProposalsTableToolbar
+            onDelete={handleDelete}
+            selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
+            role={role}
+          />
+          <TableContainer component={Paper} variant="outlined">
+            <Table>
+              <ChangeProposalsTableHead
+                filter={state.filter}
+                onFilterChange={handleFilterChange}
+                changeProposalsCount={changeProposals.length}
+                selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
+                onSelectAll={selectAllChangeProposals}
+              />
+              <TableBody>
+                {changeProposals.map((changeProposal) => {
+                  const isChangeProposalSelected = state.selectedChangeProposalIds.includes(changeProposal.id);
+                  return (
+                    <TableRow key={changeProposal.id} onClick={(event) => selectChangeProposal(event, changeProposal)}>
+                      <TableCell padding="checkbox">
+                        <Checkbox checked={isChangeProposalSelected} />
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          variant="subtitle1"
+                          component={RouterLink}
+                          to={`/changeproposals/${changeProposal.id}`}
+                          underline="hover"
+                        >
+                          {changeProposal.name}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {state.project && changeProposals.length > 0 ? (
             <TablePagination
               component="div"
               count={state.project.changeProposals.pageInfo.count}
@@ -258,14 +269,14 @@ export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChange
               rowsPerPage={state.rowsPerPage}
               rowsPerPageOptions={[state.rowsPerPage]}
             />
-          </Container>
-        ) : (
-          <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
-            <Typography variant="h6" align="center">
-              No change proposals found
-            </Typography>
-          </Box>
-        )}
+          ) : (
+            <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
+              <Typography variant="h6" align="center">
+                No change proposals found
+              </Typography>
+            </Box>
+          )}
+        </Container>
         <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
       </div>
     </>
