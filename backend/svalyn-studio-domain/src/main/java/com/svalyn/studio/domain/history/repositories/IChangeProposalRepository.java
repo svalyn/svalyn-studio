@@ -37,16 +37,16 @@ import java.util.UUID;
 public interface IChangeProposalRepository extends PagingAndSortingRepository<ChangeProposal, UUID>, ListCrudRepository<ChangeProposal, UUID> {
     @Query("""
     SELECT * FROM change_proposal changeProposal
-    WHERE changeProposal.project_id = :projectId
+    WHERE changeProposal.project_id = :projectId AND changeProposal.status IN (:status)
     ORDER BY changeProposal.created_on DESC
     LIMIT :limit
     OFFSET :offset
     """)
-    List<ChangeProposal> findAllByProjectId(UUID projectId, long offset, int limit);
+    List<ChangeProposal> findAllByProjectIdAndStatus(UUID projectId, List<String> status, long offset, int limit);
 
     @Query("""
     SELECT count(*) FROM change_proposal changeProposal
-    WHERE changeProposal.project_id = :projectId
+    WHERE changeProposal.project_id = :projectId AND changeProposal.status IN (:status)
     """)
-    long countAllByProjectId(UUID projectId);
+    long countAllByProjectIdAndStatus(UUID projectId, List<String> status);
 }

@@ -32,6 +32,7 @@ import com.svalyn.studio.application.controllers.history.dto.UpdateChangeProposa
 import com.svalyn.studio.application.controllers.history.dto.UpdateChangeProposalStatusInput;
 import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.services.history.api.IChangeProposalService;
+import com.svalyn.studio.domain.history.ChangeProposalStatus;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
 import graphql.relay.DefaultConnectionCursor;
@@ -44,6 +45,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -62,8 +64,8 @@ public class ChangeProposalController {
     }
 
     @SchemaMapping(typeName = "Project")
-    public Connection<ChangeProposalDTO> changeProposals(ProjectDTO project, @Argument int page, @Argument int rowsPerPage) {
-        var pageData = this.changeProposalService.findAllByProjectId(project.id(), page, rowsPerPage);
+    public Connection<ChangeProposalDTO> changeProposals(ProjectDTO project, @Argument List<ChangeProposalStatus> status, @Argument int page, @Argument int rowsPerPage) {
+        var pageData = this.changeProposalService.findAllByProjectIdAndStatus(project.id(), status, page, rowsPerPage);
         var edges = pageData.stream().map(changeProposal -> {
             var value = new Relay().toGlobalId("ChangeProposal", changeProposal.id().toString());
             var cursor = new DefaultConnectionCursor(value);

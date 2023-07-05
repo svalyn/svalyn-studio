@@ -203,7 +203,7 @@ type Project {
   activityEntries(page: Int!, rowsPerPage: Int!): ProjectActivityEntriesConnection!
   branch(name: String!): Branch
   branches(page: Int!, rowsPerPage: Int!): ProjectBranchesConnection!
-  changeProposals(page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
+  changeProposals(status: [ChangeProposalStatus!]!, page: Int!, rowsPerPage: Int!): ProjectChangeProposalsConnection!
 }
 
 type ProjectTagsConnection {

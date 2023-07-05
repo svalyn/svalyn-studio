@@ -38,6 +38,7 @@ import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.history.ChangeProposal;
+import com.svalyn.studio.domain.history.ChangeProposalStatus;
 import com.svalyn.studio.domain.history.Review;
 import com.svalyn.studio.domain.history.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.history.services.api.IChangeProposalCreationService;
@@ -116,12 +117,13 @@ public class ChangeProposalService implements IChangeProposalService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ChangeProposalDTO> findAllByProjectId(UUID projectId, int page, int rowsPerPage) {
-        var changesProposals = this.changeProposalRepository.findAllByProjectId(projectId, page * rowsPerPage, rowsPerPage)
+    public Page<ChangeProposalDTO> findAllByProjectIdAndStatus(UUID projectId, List<ChangeProposalStatus> status, int page, int rowsPerPage) {
+        var stringStatus = status.stream().map(Object::toString).toList();
+        var changesProposals = this.changeProposalRepository.findAllByProjectIdAndStatus(projectId, stringStatus, page * rowsPerPage, rowsPerPage)
                 .stream()
                 .flatMap(changeProposal -> this.toDTO(changeProposal).stream())
                 .toList();
-        var count = this.changeProposalRepository.countAllByProjectId(projectId);
+        var count = this.changeProposalRepository.countAllByProjectIdAndStatus(projectId, stringStatus);
         return new PageImpl<>(changesProposals, PageRequest.of(page, rowsPerPage), count);
     }
 

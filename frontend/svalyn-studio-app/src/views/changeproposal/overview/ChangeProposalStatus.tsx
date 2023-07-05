@@ -170,7 +170,12 @@ export const ChangeProposalStatus = ({ changeProposal, onStatusUpdated }: Change
             gap: (theme) => theme.spacing(2),
           }}
         >
-          <Button variant="outlined" startIcon={<CommentIcon />} onClick={openReviewDialog}>
+          <Button
+            variant="outlined"
+            startIcon={<CommentIcon />}
+            onClick={openReviewDialog}
+            disabled={changeProposal.status !== 'OPEN'}
+          >
             Review Change Proposal
           </Button>
           <ButtonGroup
@@ -293,7 +298,7 @@ const ChangeProposalStatusHeader = ({ changeProposal }: ChangeProposalStatusHead
 const ChangeProposalReviews = ({ changeProposal }: ChangeProposalReviewsProps) => {
   const hasReviews = changeProposal.reviews.edges.length > 0;
   if (!hasReviews) {
-    return <Typography>No reviews have been performed yet</Typography>;
+    return <Typography sx={{ paddingX: (theme) => theme.spacing(2) }}>No reviews have been performed yet</Typography>;
   }
 
   const approvedReviews = changeProposal.reviews.edges
