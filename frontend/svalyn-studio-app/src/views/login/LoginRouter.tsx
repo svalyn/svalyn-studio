@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,31 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
-import { formatTime } from '../utils/formatTime';
-import { CreatedOnProps } from './CreatedOn.types';
+import { Outlet, Route, Routes } from 'react-router-dom';
+import { LoginView } from './LoginView';
 
-export const CreatedOn = ({ profile, date }: CreatedOnProps) => {
+export const LoginRouter = () => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(0.5) }}>
-      <Tooltip title={profile.name}>
-        <Avatar
-          component={RouterLink}
-          to={`/profiles/${profile.username}`}
-          alt={profile.name}
-          src={profile.imageUrl}
-          sx={{ width: 24, height: 24 }}
-        />
-      </Tooltip>
-      <Link variant="body2" component={RouterLink} to={`/profiles/${profile.username}`}>
-        {profile.username}
-      </Link>
-      <Typography variant="body2">created this {formatTime(date)}</Typography>
-    </Box>
+    <>
+      <Routes>
+        <Route index element={<LoginView />} />
+      </Routes>
+
+      <Outlet />
+    </>
   );
 };

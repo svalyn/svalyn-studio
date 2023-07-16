@@ -326,13 +326,13 @@ const ChangeProposalReviews = ({ changeProposal }: ChangeProposalReviewsProps) =
               <Tooltip title={review.createdBy.name}>
                 <Avatar
                   component={RouterLink}
-                  to={`/profile/${review.createdBy.username}`}
+                  to={`/profiles/${review.createdBy.username}`}
                   alt={review.createdBy.name}
                   src={review.createdBy.imageUrl}
                   sx={{ width: 24, height: 24 }}
                 />
               </Tooltip>
-              <Link variant="body1" component={RouterLink} to={`/profile/${review.createdBy.username}`}>
+              <Link variant="body1" component={RouterLink} to={`/profiles/${review.createdBy.username}`}>
                 {review.createdBy.username}
               </Link>
               <Typography> approved these changes</Typography>
@@ -360,13 +360,13 @@ const ChangeProposalReviews = ({ changeProposal }: ChangeProposalReviewsProps) =
               <Tooltip title={review.createdBy.name}>
                 <Avatar
                   component={RouterLink}
-                  to={`/profile/${review.createdBy.username}`}
+                  to={`/profiles/${review.createdBy.username}`}
                   alt={review.createdBy.name}
                   src={review.createdBy.imageUrl}
                   sx={{ width: 24, height: 24 }}
                 />
               </Tooltip>
-              <Link variant="body1" component={RouterLink} to={`/profile/${review.createdBy.username}`}>
+              <Link variant="body1" component={RouterLink} to={`/profiles/${review.createdBy.username}`}>
                 {review.createdBy.username}
               </Link>
               <Typography> requested updates</Typography>

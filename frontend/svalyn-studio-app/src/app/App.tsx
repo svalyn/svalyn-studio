@@ -21,26 +21,22 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { PaletteProvider } from '../palette/PaletteProvider';
-import { ChangeProposalView } from '../views/changeproposal/ChangeProposalView';
-import { DomainView } from '../views/domain/DomainView';
-import { DomainsView } from '../views/domains/DomainsView';
-import { ErrorView } from '../views/error/ErrorView';
-import { HelpView } from '../views/help/HelpView';
+import { ChangeProposalRouter } from '../views/changeproposal/ChangeProposalRouter';
+import { DomainRouter } from '../views/domains/DomainRouter';
+import { ErrorRouter } from '../views/error/ErrorRouter';
+import { HelpRouter } from '../views/help/HelpRouter';
 import { HomeView } from '../views/home/HomeView';
-import { InvitationsView } from '../views/invitations/InvitationsView';
-import { LoginView } from '../views/login/LoginView';
-import { NewChangeProposalView } from '../views/new-changeproposal/NewChangeProposalView';
-import { NewOrganizationView } from '../views/new-organization/NewOrganizationView';
+import { InvitationRouter } from '../views/invitations/InvitationRouter';
+import { LoginRouter } from '../views/login/LoginRouter';
+import { NewRouter } from '../views/new-organization/NewRouter';
 import { NotFoundView } from '../views/notfound/NotFoundView';
-import { NotificationsView } from '../views/notifications/NotificationsView';
-import { OAuth2RedirectView } from '../views/oauth2redirect/OAuth2RedirectView';
-import { OrganizationView } from '../views/organization/OrganizationView';
-import { ProfileView } from '../views/profile/ProfileView';
-import { ProjectView } from '../views/project/ProjectView';
-import { ResourceView } from '../views/resource/ResourceView';
-import { SearchView } from '../views/search/SearchView';
-import { SettingsView } from '../views/settings/SettingsView';
-import { WorkspaceView } from '../views/workspace/WorkspaceView';
+import { NotificationRouter } from '../views/notifications/NotificationRouter';
+import { OAuth2Router } from '../views/oauth2redirect/OAuth2Router';
+import { OrganizationRouter } from '../views/organization/OrganizationRouter';
+import { ProfileRouter } from '../views/profile/ProfileRouter';
+import { ProjectRouter } from '../views/project/ProjectRouter';
+import { SearchRouter } from '../views/search/SearchRouter';
+import { SettingsRouter } from '../views/settings/SettingsRouter';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
 import { theme } from './theme';
 
@@ -53,33 +49,20 @@ export const App = () => {
           <PaletteProvider>
             <Routes>
               <Route path="/" element={<HomeView />} />
-              <Route path="/new/organization" element={<NewOrganizationView />} />
-              <Route path="/orgs/:organizationIdentifier" element={<OrganizationView />} />
-              <Route path="/orgs/:organizationIdentifier/tags" element={<OrganizationView />} />
-              <Route path="/orgs/:organizationIdentifier/members" element={<OrganizationView />} />
-              <Route path="/orgs/:organizationIdentifier/settings" element={<OrganizationView />} />
-              <Route path="/projects/:projectIdentifier" element={<ProjectView />} />
-              <Route path="/projects/:projectIdentifier/activity" element={<ProjectView />} />
-              <Route path="/projects/:projectIdentifier/changeproposals" element={<ProjectView />} />
-              <Route path="/projects/:projectIdentifier/tags" element={<ProjectView />} />
-              <Route path="/projects/:projectIdentifier/settings" element={<ProjectView />} />
-              <Route path="/projects/:projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
-              <Route path="/projects/:projectIdentifier/changes/:changeId/resources/*" element={<ResourceView />} />
-              <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
-              <Route path="/changeproposals/:changeProposalId" element={<ChangeProposalView />} />
-              <Route path="/changeproposals/:changeProposalId/files" element={<ChangeProposalView />} />
-              <Route path="/domains" element={<DomainsView />} />
-              <Route path="/domains/:domainIdentifier" element={<DomainView />} />
-              <Route path="/search" element={<SearchView />} />
-              <Route path="/settings" element={<SettingsView />} />
-              <Route path="/settings/authentication-tokens" element={<SettingsView />} />
-              <Route path="/login" element={<LoginView />} />
-              <Route path="/oauth2/redirect" element={<OAuth2RedirectView />} />
-              <Route path="/profile/:username" element={<ProfileView />} />
-              <Route path="/invitations" element={<InvitationsView />} />
-              <Route path="/notifications" element={<NotificationsView />} />
-              <Route path="/error" element={<ErrorView />} />
-              <Route path="help" element={<HelpView />} />
+              <Route path="/new/*" element={<NewRouter />} />
+              <Route path="/orgs/*" element={<OrganizationRouter />} />
+              <Route path="/projects/*" element={<ProjectRouter />} />
+              <Route path="/changeproposals/*" element={<ChangeProposalRouter />} />
+              <Route path="/domains/*" element={<DomainRouter />} />
+              <Route path="/search/*" element={<SearchRouter />} />
+              <Route path="/profiles/*" element={<ProfileRouter />} />
+              <Route path="/notifications/*" element={<NotificationRouter />} />
+              <Route path="/invitations/*" element={<InvitationRouter />} />
+              <Route path="/settings/*" element={<SettingsRouter />} />
+              <Route path="/help/*" element={<HelpRouter />} />
+              <Route path="/error/*" element={<ErrorRouter />} />
+              <Route path="/login/*" element={<LoginRouter />} />
+              <Route path="/oauth2/*" element={<OAuth2Router />} />
               <Route path="*" element={<NotFoundView />} />
             </Routes>
           </PaletteProvider>

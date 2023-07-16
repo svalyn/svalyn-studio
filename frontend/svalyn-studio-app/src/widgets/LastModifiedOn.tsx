@@ -32,13 +32,13 @@ export const LastModifiedOn = ({ profile, date }: LastModifiedOnProps) => {
       <Tooltip title={profile.name}>
         <Avatar
           component={RouterLink}
-          to={`/profile/${profile.username}`}
+          to={`/profiles/${profile.username}`}
           alt={profile.name}
           src={profile.imageUrl}
           sx={{ width: 24, height: 24 }}
         />
       </Tooltip>
-      <Link variant="body2" component={RouterLink} to={`/profile/${profile.username}`}>
+      <Link variant="body2" component={RouterLink} to={`/profiles/${profile.username}`}>
         {profile.username}
       </Link>
       <Typography variant="body2">modified this {formatTime(date)}</Typography>
