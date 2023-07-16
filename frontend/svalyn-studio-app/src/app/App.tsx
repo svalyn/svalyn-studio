@@ -20,23 +20,23 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ChangeProposalsRouter } from '../changeproposals/ChangeProposalsRouter';
+import { DomainsRouter } from '../domains/DomainsRouter';
+import { ErrorsRouter } from '../errors/ErrorsRouter';
+import { HelpRouter } from '../help/HelpRouter';
+import { HomeView } from '../home/HomeView';
+import { InvitationsRouter } from '../invitations/InvitationsRouter';
+import { LoginRouter } from '../login/LoginRouter';
+import { NewRouter } from '../new/NewRouter';
+import { NotFoundView } from '../notfound/NotFoundView';
+import { NotificationsRouter } from '../notifications/NotificationsRouter';
+import { OAuth2Router } from '../oauth2/OAuth2Router';
+import { OrganizationsRouter } from '../organizations/OrganizationsRouter';
 import { PaletteProvider } from '../palette/PaletteProvider';
-import { ChangeProposalRouter } from '../views/changeproposal/ChangeProposalRouter';
-import { DomainRouter } from '../views/domains/DomainRouter';
-import { ErrorRouter } from '../views/error/ErrorRouter';
-import { HelpRouter } from '../views/help/HelpRouter';
-import { HomeView } from '../views/home/HomeView';
-import { InvitationRouter } from '../views/invitations/InvitationRouter';
-import { LoginRouter } from '../views/login/LoginRouter';
-import { NewRouter } from '../views/new-organization/NewRouter';
-import { NotFoundView } from '../views/notfound/NotFoundView';
-import { NotificationRouter } from '../views/notifications/NotificationRouter';
-import { OAuth2Router } from '../views/oauth2redirect/OAuth2Router';
-import { OrganizationRouter } from '../views/organization/OrganizationRouter';
-import { ProfileRouter } from '../views/profile/ProfileRouter';
-import { ProjectRouter } from '../views/project/ProjectRouter';
-import { SearchRouter } from '../views/search/SearchRouter';
-import { SettingsRouter } from '../views/settings/SettingsRouter';
+import { ProfilesRouter } from '../profiles/ProfilesRouter';
+import { ProjectsRouter } from '../projects/ProjectsRouter';
+import { SearchRouter } from '../search/SearchRouter';
+import { SettingsRouter } from '../settings/SettingsRouter';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
 import { theme } from './theme';
 
@@ -50,17 +50,17 @@ export const App = () => {
             <Routes>
               <Route path="/" element={<HomeView />} />
               <Route path="/new/*" element={<NewRouter />} />
-              <Route path="/orgs/*" element={<OrganizationRouter />} />
-              <Route path="/projects/*" element={<ProjectRouter />} />
-              <Route path="/changeproposals/*" element={<ChangeProposalRouter />} />
-              <Route path="/domains/*" element={<DomainRouter />} />
+              <Route path="/orgs/*" element={<OrganizationsRouter />} />
+              <Route path="/projects/*" element={<ProjectsRouter />} />
+              <Route path="/changeproposals/*" element={<ChangeProposalsRouter />} />
+              <Route path="/domains/*" element={<DomainsRouter />} />
               <Route path="/search/*" element={<SearchRouter />} />
-              <Route path="/profiles/*" element={<ProfileRouter />} />
-              <Route path="/notifications/*" element={<NotificationRouter />} />
-              <Route path="/invitations/*" element={<InvitationRouter />} />
+              <Route path="/profiles/*" element={<ProfilesRouter />} />
+              <Route path="/notifications/*" element={<NotificationsRouter />} />
+              <Route path="/invitations/*" element={<InvitationsRouter />} />
               <Route path="/settings/*" element={<SettingsRouter />} />
               <Route path="/help/*" element={<HelpRouter />} />
-              <Route path="/error/*" element={<ErrorRouter />} />
+              <Route path="/errors/*" element={<ErrorsRouter />} />
               <Route path="/login/*" element={<LoginRouter />} />
               <Route path="/oauth2/*" element={<OAuth2Router />} />
               <Route path="*" element={<NotFoundView />} />
