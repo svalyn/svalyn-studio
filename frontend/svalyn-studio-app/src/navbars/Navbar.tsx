@@ -186,7 +186,7 @@ export const Navbar = ({ children }: NavbarProps) => {
                   </MenuItem>
                   <MenuItem
                     component={RouterLink}
-                    to={`/profile/${state.viewer.username}`}
+                    to={`/profiles/${state.viewer.username}`}
                     onClick={handleCloseUserMenu}
                   >
                     <ListItemIcon>

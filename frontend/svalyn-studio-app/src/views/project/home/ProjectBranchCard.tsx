@@ -55,13 +55,13 @@ export const ProjectBranchCard = ({ projectIdentifier, branch }: ProjectBranchCa
         <Tooltip title={branch.change.lastModifiedBy.name}>
           <Avatar
             component={RouterLink}
-            to={`/profile/${branch.change.lastModifiedBy.username}`}
+            to={`/profiles/${branch.change.lastModifiedBy.username}`}
             alt={branch.change.lastModifiedBy.name}
             src={branch.change.lastModifiedBy.imageUrl}
             sx={{ width: 24, height: 24 }}
           />
         </Tooltip>
-        <Link component={RouterLink} to={`/profile/${branch.change.lastModifiedBy.username}`}>
+        <Link component={RouterLink} to={`/profiles/${branch.change.lastModifiedBy.username}`}>
           {branch.change.lastModifiedBy.username}
         </Link>
         <Link
