@@ -19,18 +19,15 @@
 
 import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Navbar } from '../navbars/Navbar';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { Domain, DomainsViewState, GetDomainsData, GetDomainsVariables } from './DomainsView.types';
 
@@ -80,44 +77,38 @@ export const DomainsView = () => {
 
   return (
     <>
-      <div>
-        <Navbar />
-        <Container maxWidth="lg">
-          <Toolbar />
-          <Typography variant="h4" gutterBottom>
-            Domains
+      <Typography variant="h4" gutterBottom>
+        Domains
+      </Typography>
+      {domains.length > 0 ? (
+        <Paper>
+          <List>
+            {domains.map((domain) => {
+              return (
+                <ListItem key={domain.identifier}>
+                  <ListItemButton component={RouterLink} to={`/domains/${domain.identifier}`}>
+                    <ListItemText primary={`${domain.label}`} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+          <TablePagination
+            component="div"
+            count={count}
+            page={state.page}
+            onPageChange={handlePageChange}
+            rowsPerPage={state.rowsPerPage}
+            rowsPerPageOptions={[state.rowsPerPage]}
+          />
+        </Paper>
+      ) : (
+        <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
+          <Typography variant="h6" align="center">
+            No domains found
           </Typography>
-          {domains.length > 0 ? (
-            <Paper>
-              <List>
-                {domains.map((domain) => {
-                  return (
-                    <ListItem key={domain.identifier}>
-                      <ListItemButton component={RouterLink} to={`/domains/${domain.identifier}`}>
-                        <ListItemText primary={`${domain.label}`} />
-                      </ListItemButton>
-                    </ListItem>
-                  );
-                })}
-              </List>
-              <TablePagination
-                component="div"
-                count={count}
-                page={state.page}
-                onPageChange={handlePageChange}
-                rowsPerPage={state.rowsPerPage}
-                rowsPerPageOptions={[state.rowsPerPage]}
-              />
-            </Paper>
-          ) : (
-            <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
-              <Typography variant="h6" align="center">
-                No domains found
-              </Typography>
-            </Box>
-          )}
-        </Container>
-      </div>
+        </Box>
+      )}
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );

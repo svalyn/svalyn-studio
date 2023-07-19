@@ -17,19 +17,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Outlet, Route, Routes } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
+import Toolbar from '@mui/material/Toolbar';
+import { Route, Link as RouterLink, Routes } from 'react-router-dom';
+import { Navbar } from '../navbars/Navbar';
 import { DomainView } from './DomainView';
 import { DomainsView } from './DomainsView';
 
 export const DomainsRouter = () => {
   return (
     <>
-      <Routes>
-        <Route index element={<DomainsView />} />
-        <Route path=":domainIdentifier" element={<DomainView />} />
-      </Routes>
+      <div>
+        <Navbar>
+          <Link component={RouterLink} to="/domains" color="inherit" underline="hover" fontWeight={800}>
+            Domains
+          </Link>
+        </Navbar>
+        <Container maxWidth="lg">
+          <Toolbar />
 
-      <Outlet />
+          <Routes>
+            <Route index element={<DomainsView />} />
+            <Route path=":domainIdentifier" element={<DomainView />} />
+          </Routes>
+        </Container>
+      </div>
     </>
   );
 };
