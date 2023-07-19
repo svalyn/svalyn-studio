@@ -18,13 +18,10 @@
  */
 
 import { gql, useQuery } from '@apollo/client';
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router-dom';
 import { DiagramEditor } from '../diagram/DiagramEditor';
 import { Diagram } from '../diagram/DiagramEditor.types';
-import { Navbar } from '../navbars/Navbar';
 import { GetDomainData, GetDomainVariables } from './DomainView.types';
 import { convertDomain } from './converters';
 
@@ -71,20 +68,12 @@ export const DomainView = () => {
   const { data } = useQuery<GetDomainData, GetDomainVariables>(getDomainQuery, { variables });
   const diagram: Diagram | null = data ? convertDomain(data.viewer.domain) : null;
 
-  return (
-    <div>
-      <Navbar />
-      <Container maxWidth="lg">
-        {data && diagram ? (
-          <>
-            <Toolbar />
-            <Typography variant="h4" gutterBottom>
-              {data.viewer.domain.label}
-            </Typography>
-            <DiagramEditor diagram={diagram} />
-          </>
-        ) : null}
-      </Container>
-    </div>
-  );
+  return data && diagram ? (
+    <>
+      <Typography variant="h4" gutterBottom>
+        {data.viewer.domain.label}
+      </Typography>
+      <DiagramEditor diagram={diagram} />
+    </>
+  ) : null;
 };
