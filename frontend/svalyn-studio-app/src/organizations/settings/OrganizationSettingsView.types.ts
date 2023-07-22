@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,18 +17,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Route, Routes } from 'react-router-dom';
-import { DomainView } from './DomainView';
-import { DomainsShell } from './DomainsShell';
-import { DomainsView } from './DomainsView';
+export interface OrganizationSettingsViewState {
+  name: string;
+  message: string | null;
+  deleteOrganizationDialogOpen: boolean;
+}
 
-export const DomainsRouter = () => {
-  return (
-    <DomainsShell>
-      <Routes>
-        <Route index element={<DomainsView />} />
-        <Route path=":domainIdentifier" element={<DomainView />} />
-      </Routes>
-    </DomainsShell>
-  );
-};
+export interface UpdateOrganizationNameData {
+  updateOrganizationName: UpdateOrganizationNamePayload;
+}
+
+export interface UpdateOrganizationNamePayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends UpdateOrganizationNamePayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface UpdateOrganizationNameVariables {
+  input: UpdateOrganizationNameInput;
+}
+
+export interface UpdateOrganizationNameInput {
+  id: string;
+  organizationIdentifier: string;
+  name: string;
+}

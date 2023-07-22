@@ -30,14 +30,14 @@ import { ActivityTimeline } from '../../activity/ActivityTimeline';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../widgets/LastModifiedOn';
+import { useOrganization } from '../useOrganization';
 import {
   ActivityAreaProps,
   GetOrganizationDashboardData,
   GetOrganizationDashboardVariables,
-  OrganizationDashboardProps,
-  OrganizationDashboardState,
+  OrganizationDashboardViewState,
   ProjectsAreaProps,
-} from './OrganizationDashboard.types';
+} from './OrganizationDashboardView.types';
 import { ProjectCard } from './ProjectCard';
 
 const getOrganizationDashboardQuery = gql`
@@ -93,8 +93,9 @@ const Main = styled(Box)<BoxProps>(({ theme }) => ({
   padding: theme.spacing(3),
 }));
 
-export const OrganizationDashboard = ({ organizationIdentifier }: OrganizationDashboardProps) => {
-  const [state, setState] = useState<OrganizationDashboardState>({
+export const OrganizationDashboardView = () => {
+  const { identifier: organizationIdentifier } = useOrganization();
+  const [state, setState] = useState<OrganizationDashboardViewState>({
     organization: null,
     page: 0,
     rowsPerPage: 10,

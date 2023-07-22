@@ -17,18 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Route, Routes } from 'react-router-dom';
-import { DomainView } from './DomainView';
-import { DomainsShell } from './DomainsShell';
-import { DomainsView } from './DomainsView';
+import { PathMatch, matchPath, useLocation } from 'react-router-dom';
 
-export const DomainsRouter = () => {
-  return (
-    <DomainsShell>
-      <Routes>
-        <Route index element={<DomainsView />} />
-        <Route path=":domainIdentifier" element={<DomainView />} />
-      </Routes>
-    </DomainsShell>
-  );
+export const useRouteMatch = (patterns: readonly string[]): PathMatch<string> | null => {
+  const { pathname } = useLocation();
+
+  for (let index = 0; index < patterns.length; index += 1) {
+    const pattern = patterns[index];
+    const pathMatch = matchPath(pattern, pathname);
+    if (pathMatch) {
+      return pathMatch;
+    }
+  }
+
+  return null;
 };

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -34,15 +34,15 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
+import { useOrganization } from '../useOrganization';
 import {
   AddTagToOrganizationData,
   AddTagToOrganizationVariables,
   ErrorPayload,
   GetOrganizationTagsData,
   GetOrganizationTagsVariables,
-  OrganizationTagsProps,
-  OrganizationTagsState,
-} from './OrganizationTags.types';
+  OrganizationTagsViewState,
+} from './OrganizationTagsView.types';
 
 const getOrganizationTagsQuery = gql`
   query getOrganizationTags($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
@@ -76,8 +76,9 @@ const addTagToOrganizationMutation = gql`
   }
 `;
 
-export const OrganizationTags = ({ organizationIdentifier, role }: OrganizationTagsProps) => {
-  const [state, setState] = useState<OrganizationTagsState>({
+export const OrganizationTagsView = () => {
+  const { identifier: organizationIdentifier, role } = useOrganization();
+  const [state, setState] = useState<OrganizationTagsViewState>({
     key: '',
     value: '',
     page: 0,
@@ -153,6 +154,7 @@ export const OrganizationTags = ({ organizationIdentifier, role }: OrganizationT
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const isValidNewTag = state.key.trim().length > 0 && state.value.trim().length > 0;
+
   return (
     <>
       <Container

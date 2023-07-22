@@ -17,18 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Route, Routes } from 'react-router-dom';
-import { DomainView } from './DomainView';
-import { DomainsShell } from './DomainsShell';
-import { DomainsView } from './DomainsView';
+import React, { useContext } from 'react';
+import { Organization, OrganizationContextValue } from './useOrganization.types';
 
-export const DomainsRouter = () => {
-  return (
-    <DomainsShell>
-      <Routes>
-        <Route index element={<DomainsView />} />
-        <Route path=":domainIdentifier" element={<DomainView />} />
-      </Routes>
-    </DomainsShell>
-  );
+export const OrganizationContext = React.createContext<OrganizationContextValue>({
+  organization: {
+    identifier: '',
+    name: '',
+    role: 'NONE',
+  },
+});
+
+export const useOrganization = (): Organization => {
+  const { organization } = useContext<OrganizationContextValue>(OrganizationContext);
+  return organization;
 };

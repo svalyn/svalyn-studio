@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -27,14 +27,14 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
+import { useOrganization } from '../useOrganization';
 import { DeleteOrganizationDialog } from './DeleteOrganizationDialog';
 import {
   ErrorPayload,
-  OrganizationSettingsProps,
-  OrganizationSettingsState,
+  OrganizationSettingsViewState,
   UpdateOrganizationNameData,
   UpdateOrganizationNameVariables,
-} from './OrganizationSettings.types';
+} from './OrganizationSettingsView.types';
 
 const updateOrganizationNameMutation = gql`
   mutation updateOrganizationName($input: UpdateOrganizationNameInput!) {
@@ -46,8 +46,9 @@ const updateOrganizationNameMutation = gql`
   }
 `;
 
-export const OrganizationSettings = ({ organizationIdentifier, role }: OrganizationSettingsProps) => {
-  const [state, setState] = useState<OrganizationSettingsState>({
+export const OrganizationSettingsView = () => {
+  const { identifier: organizationIdentifier, role } = useOrganization();
+  const [state, setState] = useState<OrganizationSettingsViewState>({
     name: '',
     message: null,
     deleteOrganizationDialogOpen: false,
