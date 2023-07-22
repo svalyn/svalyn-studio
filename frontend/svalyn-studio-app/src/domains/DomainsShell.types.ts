@@ -17,18 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Route, Routes } from 'react-router-dom';
-import { DomainView } from './DomainView';
-import { DomainsShell } from './DomainsShell';
-import { DomainsView } from './DomainsView';
-
-export const DomainsRouter = () => {
-  return (
-    <DomainsShell>
-      <Routes>
-        <Route index element={<DomainsView />} />
-        <Route path=":domainIdentifier" element={<DomainView />} />
-      </Routes>
-    </DomainsShell>
-  );
-};
+export interface DomainsShellProps {
+  children?: React.ReactNode;
+}

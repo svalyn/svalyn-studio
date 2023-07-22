@@ -17,20 +17,14 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Outlet, Route, Routes } from 'react-router-dom';
-import { OrganizationView } from './OrganizationView';
+export interface OrganizationContextValue {
+  organization: Organization;
+}
 
-export const OrganizationsRouter = () => {
-  return (
-    <>
-      <Routes>
-        <Route path=":organizationIdentifier" element={<OrganizationView />} />
-        <Route path=":organizationIdentifier/tags" element={<OrganizationView />} />
-        <Route path=":organizationIdentifier/members" element={<OrganizationView />} />
-        <Route path=":organizationIdentifier/settings" element={<OrganizationView />} />
-      </Routes>
+export interface Organization {
+  identifier: string;
+  name: string;
+  role: MembershipRole;
+}
 
-      <Outlet />
-    </>
-  );
-};
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';

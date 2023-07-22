@@ -17,10 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface OrganizationDashboardProps {
-  organizationIdentifier: string;
-}
-
 export interface ProjectsAreaProps {
   projects: Project[];
   pageInfo: PageInfo;
@@ -33,7 +29,7 @@ export interface ActivityAreaProps {
   activityEntries: ActivityEntry[];
 }
 
-export interface OrganizationDashboardState {
+export interface OrganizationDashboardViewState {
   organization: Organization | null;
   page: number;
   rowsPerPage: number;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,38 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface OrganizationSettingsProps {
+import { SxProps, Theme } from '@mui/material/styles';
+
+export interface OrganizationTabsProps {
   organizationIdentifier: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface OrganizationSettingsState {
-  name: string;
-  message: string | null;
-  deleteOrganizationDialogOpen: boolean;
-}
-
-export interface UpdateOrganizationNameData {
-  updateOrganizationName: UpdateOrganizationNamePayload;
-}
-
-export interface UpdateOrganizationNamePayload {
-  __typename: string;
-}
-
-export interface ErrorPayload extends UpdateOrganizationNamePayload {
-  __typename: 'ErrorPayload';
-  message: string;
-}
-
-export interface UpdateOrganizationNameVariables {
-  input: UpdateOrganizationNameInput;
-}
-
-export interface UpdateOrganizationNameInput {
-  id: string;
-  organizationIdentifier: string;
-  name: string;
+  sx?: SxProps<Theme> | undefined;
 }

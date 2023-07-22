@@ -31,7 +31,7 @@ import { NewRouter } from '../new/NewRouter';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { NotificationsRouter } from '../notifications/NotificationsRouter';
 import { OAuth2Router } from '../oauth2/OAuth2Router';
-import { OrganizationsRouter } from '../organizations/OrganizationsRouter';
+import { OrganizationRouter } from '../organizations/OrganizationRouter';
 import { PaletteProvider } from '../palette/PaletteProvider';
 import { ProfilesRouter } from '../profiles/ProfilesRouter';
 import { ProjectsRouter } from '../projects/ProjectsRouter';
@@ -50,7 +50,7 @@ export const App = () => {
             <Routes>
               <Route path="/" element={<HomeView />} />
               <Route path="/new/*" element={<NewRouter />} />
-              <Route path="/orgs/*" element={<OrganizationsRouter />} />
+              <Route path="/orgs/:organizationIdentifier/*" element={<OrganizationRouter />} />
               <Route path="/projects/*" element={<ProjectsRouter />} />
               <Route path="/changeproposals/*" element={<ChangeProposalsRouter />} />
               <Route path="/domains/*" element={<DomainsRouter />} />

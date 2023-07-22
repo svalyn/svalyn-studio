@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,18 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface OrganizationMembersProps {
-  organizationIdentifier: string;
-  role: MembershipRole;
-}
+import { Route, Routes } from 'react-router-dom';
+import { OrganizationShell } from './OrganizationShell';
+import { OrganizationDashboardView } from './dashboard/OrganizationDashboardView';
+import { OrganizationMembersView } from './members/OrganizationMembersView';
+import { OrganizationSettingsView } from './settings/OrganizationSettingsView';
+import { OrganizationTagsView } from './tags/OrganizationTagsView';
 
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface OrganizationMembersState {
-  tab: OrganizationMemberTab;
-  inviteMemberDialogOpen: boolean;
-  leaveOrganizationDialogOpen: boolean;
-  timestamp: number;
-}
-
-export type OrganizationMemberTab = 'Memberships' | 'Invitations';
+export const OrganizationRouter = () => {
+  return (
+    <OrganizationShell>
+      <Routes>
+        <Route index element={<OrganizationDashboardView />} />
+        <Route path="tags" element={<OrganizationTagsView />} />
+        <Route path="members" element={<OrganizationMembersView />} />
+        <Route path="settings" element={<OrganizationSettingsView />} />
+      </Routes>
+    </OrganizationShell>
+  );
+};
