@@ -17,22 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import { Navbar } from '../navbars/Navbar';
-import { DomainsShellProps } from './DomainsShell.types';
+import { MenuProps } from '@mui/material/Menu';
 
-export const DomainsShell = ({ children }: DomainsShellProps) => {
-  return (
-    <>
-      <div>
-        <Navbar />
-        <Container maxWidth="lg">
-          <Toolbar />
+export interface UserMenuProps extends MenuProps {
+  name: string;
+  username: string;
+}
 
-          {children}
-        </Container>
-      </div>
-    </>
-  );
-};
+export interface UserMenuState {
+  redirectToLogin: boolean;
+}

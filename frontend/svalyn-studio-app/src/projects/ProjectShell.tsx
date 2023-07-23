@@ -20,15 +20,15 @@
 import { gql, useQuery } from '@apollo/client';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import { useEffect, useState } from 'react';
-import { Link as RouterLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { goToDomains, goToHelp, goToHome, goToNotifications, goToSettings } from '../palette/DefaultPaletteActions';
 import { PaletteNavigationAction } from '../palette/Palette.types';
 import { usePalette } from '../palette/usePalette';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
+import { ProjectBreadcrumbs } from './ProjectBreadcrumbs';
 import { ProjectDrawer } from './ProjectDrawer';
 import { GetProjectData, GetProjectVariables, ProjectShellProps, ProjectShellState } from './ProjectShell.types';
 import { ProjectContext } from './useProject';
@@ -93,12 +93,10 @@ export const ProjectShell = ({ children }: ProjectShellProps) => {
   }
 
   return (
-    <>
+    <ProjectContext.Provider value={{ project: data.viewer.project }}>
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navbar>
-          <Link component={RouterLink} to="/domains" color="inherit" underline="hover" fontWeight={800}>
-            Domains
-          </Link>
+          <ProjectBreadcrumbs />
         </Navbar>
         <Box
           sx={{
@@ -108,13 +106,11 @@ export const ProjectShell = ({ children }: ProjectShellProps) => {
             flexGrow: '1',
           }}
         >
-          <ProjectContext.Provider value={{ project: data.viewer.project }}>
-            <ProjectDrawer />
-            {children}
-          </ProjectContext.Provider>
+          <ProjectDrawer />
+          {children}
         </Box>
       </Box>
       <ErrorSnackbar open={state.errorSnackbarOpen} message={error?.message ?? null} onClose={handleCloseSnackbar} />
-    </>
+    </ProjectContext.Provider>
   );
 };

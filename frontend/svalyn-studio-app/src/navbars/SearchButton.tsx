@@ -17,22 +17,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import { Navbar } from '../navbars/Navbar';
-import { DomainsShellProps } from './DomainsShell.types';
+import SearchIcon from '@mui/icons-material/Search';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { SearchButtonProps } from './SearchButton.types';
 
-export const DomainsShell = ({ children }: DomainsShellProps) => {
+export const SearchButton = ({ onClick }: SearchButtonProps) => {
+  var isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
   return (
-    <>
-      <div>
-        <Navbar />
-        <Container maxWidth="lg">
-          <Toolbar />
-
-          {children}
-        </Container>
-      </div>
-    </>
+    <Button
+      sx={{ color: 'inherit', border: (theme) => `1px solid ${theme.palette.background.paper}` }}
+      startIcon={<SearchIcon fontSize="small" color="inherit" />}
+      onClick={onClick}
+      size="small"
+    >
+      Search...
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          border: (theme) => `1px solid ${theme.palette.background.paper}`,
+          borderRadius: '3px',
+          marginLeft: (theme) => theme.spacing(4),
+          fontSize: '0.75rem',
+          fontWeight: '700',
+          lineHeight: '20px',
+          padding: '0px 4px',
+          fontFamily: 'sans-serif',
+          opacity: 0.7,
+        }}
+      >
+        {isApple ? '⌘ ' : 'Ctrl '}+ K
+      </Box>
+    </Button>
   );
 };

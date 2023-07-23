@@ -24,7 +24,6 @@ export interface NavbarProps {
 export interface NavbarState {
   viewer: Viewer | null;
   anchorElement: HTMLElement | null;
-  redirectToLogin: boolean;
   message: string | null;
 }
 

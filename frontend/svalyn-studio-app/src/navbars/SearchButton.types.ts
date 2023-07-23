@@ -17,22 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
-import { Navbar } from '../navbars/Navbar';
-import { DomainsShellProps } from './DomainsShell.types';
-
-export const DomainsShell = ({ children }: DomainsShellProps) => {
-  return (
-    <>
-      <div>
-        <Navbar />
-        <Container maxWidth="lg">
-          <Toolbar />
-
-          {children}
-        </Container>
-      </div>
-    </>
-  );
-};
+export interface SearchButtonProps {
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+}
