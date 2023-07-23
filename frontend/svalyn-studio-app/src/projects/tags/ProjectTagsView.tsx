@@ -36,15 +36,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
+import { useProject } from '../useProject';
 import {
   AddTagToProjectData,
   AddTagToProjectVariables,
   ErrorPayload,
   GetProjectTagsData,
   GetProjectTagsVariables,
-  ProjectTagsProps,
-  ProjectTagsState,
-} from './ProjectTags.types';
+  ProjectTagsViewState,
+} from './ProjectTagsView.types';
 
 const getProjectTagsQuery = gql`
   query getProjectTags($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
@@ -78,8 +78,12 @@ const addTagToProjectMutation = gql`
   }
 `;
 
-export const ProjectTags = ({ projectIdentifier, role }: ProjectTagsProps) => {
-  const [state, setState] = useState<ProjectTagsState>({
+export const ProjectTagsView = () => {
+  const {
+    identifier: projectIdentifier,
+    organization: { role },
+  } = useProject();
+  const [state, setState] = useState<ProjectTagsViewState>({
     key: '',
     value: '',
     page: 0,

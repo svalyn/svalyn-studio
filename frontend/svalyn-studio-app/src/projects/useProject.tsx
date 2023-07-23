@@ -17,27 +17,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Outlet, Route, Routes } from 'react-router-dom';
-import { ProjectView } from './ProjectView';
-import { NewChangeProposalView } from './new-changeproposal/NewChangeProposalView';
-import { ResourceView } from './resource/ResourceView';
-import { WorkspaceView } from './workspace/WorkspaceView';
+import React, { useContext } from 'react';
+import { Project, ProjectContextValue } from './useProject.types';
 
-export const ProjectsRouter = () => {
-  return (
-    <>
-      <Routes>
-        <Route path=":projectIdentifier" element={<ProjectView />} />
-        <Route path=":projectIdentifier/activity" element={<ProjectView />} />
-        <Route path=":projectIdentifier/changeproposals" element={<ProjectView />} />
-        <Route path=":projectIdentifier/tags" element={<ProjectView />} />
-        <Route path=":projectIdentifier/settings" element={<ProjectView />} />
-        <Route path=":projectIdentifier/new/changeproposal" element={<NewChangeProposalView />} />
-        <Route path=":projectIdentifier/changes/:changeId/resources/*" element={<ResourceView />} />
-        <Route path=":projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
-      </Routes>
+export const ProjectContext = React.createContext<ProjectContextValue>({
+  project: {
+    identifier: '',
+    name: '',
+    description: '',
+    organization: {
+      identifier: '',
+      name: '',
+      role: 'NONE',
+    },
+  },
+});
 
-      <Outlet />
-    </>
-  );
+export const useProject = (): Project => {
+  const { project } = useContext(ProjectContext);
+  return project;
 };

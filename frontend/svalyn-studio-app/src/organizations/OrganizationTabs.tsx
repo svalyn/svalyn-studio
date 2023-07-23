@@ -24,14 +24,14 @@ import TagIcon from '@mui/icons-material/Tag';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { Link as RouterLink } from 'react-router-dom';
+import { useRouteMatch } from '../hooks/useRouteMatch';
 import { OrganizationTabsProps } from './OrganizationTabs.types';
-import { useRouteMatch } from './useRouteMatch';
 
 const patterns = [
-  '/orgs/:organizationId',
-  '/orgs/:organizationId/tags',
-  '/orgs/:organizationId/members',
-  '/orgs/:organizationId/settings',
+  '/orgs/:organizationIdentifier',
+  '/orgs/:organizationIdentifier/tags',
+  '/orgs/:organizationIdentifier/members',
+  '/orgs/:organizationIdentifier/settings',
 ];
 
 export const OrganizationTabs = ({ organizationIdentifier, sx }: OrganizationTabsProps) => {
@@ -43,7 +43,7 @@ export const OrganizationTabs = ({ organizationIdentifier, sx }: OrganizationTab
       <Tab
         label="Dashboard"
         icon={<HomeIcon />}
-        value="/orgs/:organizationId"
+        value="/orgs/:organizationIdentifier"
         to={`/orgs/${organizationIdentifier}`}
         component={RouterLink}
         iconPosition="start"
@@ -52,7 +52,7 @@ export const OrganizationTabs = ({ organizationIdentifier, sx }: OrganizationTab
       <Tab
         label="Tags"
         icon={<TagIcon />}
-        value="/orgs/:organizationId/tags"
+        value="/orgs/:organizationIdentifier/tags"
         to={`/orgs/${organizationIdentifier}/tags`}
         component={RouterLink}
         iconPosition="start"
@@ -61,7 +61,7 @@ export const OrganizationTabs = ({ organizationIdentifier, sx }: OrganizationTab
       <Tab
         label="Members"
         icon={<PersonIcon />}
-        value="/orgs/:organizationId/members"
+        value="/orgs/:organizationIdentifier/members"
         to={`/orgs/${organizationIdentifier}/members`}
         component={RouterLink}
         iconPosition="start"
@@ -70,7 +70,7 @@ export const OrganizationTabs = ({ organizationIdentifier, sx }: OrganizationTab
       <Tab
         label="Settings"
         icon={<SettingsIcon />}
-        value="/orgs/:organizationId/settings"
+        value="/orgs/:organizationIdentifier/settings"
         to={`/orgs/${organizationIdentifier}/settings`}
         component={RouterLink}
         iconPosition="start"

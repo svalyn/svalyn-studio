@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,57 +17,71 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectSettingsProps {
-  projectIdentifier: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface ProjectSettingsState {
-  name: string;
-  description: string;
-  deleteProjectDialogOpen: boolean;
+export interface ProjectTagsViewState {
+  key: string;
+  value: string;
+  page: number;
+  rowsPerPage: number;
   message: string | null;
 }
 
-export interface UpdateProjectNameData {
-  updateProjectName: UpdateProjectNamePayload;
+export interface GetProjectTagsVariables {
+  identifier: string;
+  page: number;
+  rowsPerPage: number;
 }
 
-export interface UpdateProjectNamePayload {
+export interface GetProjectTagsData {
+  viewer: Viewer | null;
+}
+
+export interface Viewer {
+  project: Project | null;
+}
+
+export interface Project {
+  tags: ProjectTagsConnection;
+}
+
+export interface ProjectTagsConnection {
+  edges: ProjectTagsEdge[];
+  pageInfo: PageInfo;
+}
+
+export interface ProjectTagsEdge {
+  node: Tag;
+}
+
+export interface Tag {
+  id: string;
+  key: string;
+  value: string;
+}
+
+export interface PageInfo {
+  count: number;
+}
+
+export interface AddTagToProjectVariables {
+  input: AddTagToProjectInput;
+}
+
+export interface AddTagToProjectInput {
+  id: string;
+  projectIdentifier: string;
+  key: string;
+  value: string;
+}
+
+export interface AddTagToProjectData {
+  addTagToProject: AddTagToProjectPayload;
+}
+
+export interface AddTagToProjectPayload {
   __typename: string;
 }
 
-export interface UpdateProjectNameVariables {
-  input: UpdateProjectNameInput;
-}
-
-export interface UpdateProjectNameInput {
-  id: string;
-  projectIdentifier: string;
-  name: string;
-}
-
-export interface UpdateProjectDescriptionData {
-  updateProjectDescription: UpdateProjectDescriptionPayload;
-}
-
-export interface UpdateProjectDescriptionPayload {
-  __typename: string;
-}
-
-export interface UpdateProjectDescriptionVariables {
-  input: UpdateProjectDescriptionInput;
-}
-
-export interface UpdateProjectDescriptionInput {
-  id: string;
-  projectIdentifier: string;
-  description: string;
-}
-
-export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
+export interface ErrorPayload extends AddTagToProjectPayload {
   __typename: 'ErrorPayload';
   message: string;
 }

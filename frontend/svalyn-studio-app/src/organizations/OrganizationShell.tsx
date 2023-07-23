@@ -25,7 +25,7 @@ import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
@@ -60,17 +60,10 @@ export const OrganizationShell = ({ children }: OrganizationShellProps) => {
 
   const { organizationIdentifier } = useParams();
   const variables: GetOrganizationVariables = { identifier: organizationIdentifier ?? '' };
-  const { data, error, refetch } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
+  const { data, error } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
     variables,
   });
   useEffect(() => setState((prevState) => ({ ...prevState, errorSnackbarOpen: !!error })), [error]);
-
-  const location = useLocation();
-  useEffect(() => {
-    if (data) {
-      refetch(variables);
-    }
-  }, [location.pathname]);
 
   const openNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true }));
   const closeNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: false }));

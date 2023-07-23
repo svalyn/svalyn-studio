@@ -17,9 +17,50 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export type ProjectViewPanel = 'Home' | 'Activity' | 'ChangeProposals' | 'Tags' | 'Settings';
+export interface ProjectSettingsViewState {
+  name: string;
+  description: string;
+  deleteProjectDialogOpen: boolean;
+  message: string | null;
+}
 
-export interface ProjectDrawerProps {
+export interface UpdateProjectNameData {
+  updateProjectName: UpdateProjectNamePayload;
+}
+
+export interface UpdateProjectNamePayload {
+  __typename: string;
+}
+
+export interface UpdateProjectNameVariables {
+  input: UpdateProjectNameInput;
+}
+
+export interface UpdateProjectNameInput {
+  id: string;
   projectIdentifier: string;
-  selectedPanel: ProjectViewPanel;
+  name: string;
+}
+
+export interface UpdateProjectDescriptionData {
+  updateProjectDescription: UpdateProjectDescriptionPayload;
+}
+
+export interface UpdateProjectDescriptionPayload {
+  __typename: string;
+}
+
+export interface UpdateProjectDescriptionVariables {
+  input: UpdateProjectDescriptionInput;
+}
+
+export interface UpdateProjectDescriptionInput {
+  id: string;
+  projectIdentifier: string;
+  description: string;
+}
+
+export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
+  __typename: 'ErrorPayload';
+  message: string;
 }

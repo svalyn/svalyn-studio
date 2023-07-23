@@ -25,7 +25,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { Navbar } from '../../navbars/Navbar';
 import { NotFoundView } from '../../notfound/NotFoundView';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { ViewerCard } from '../../viewers/ViewerCard';
@@ -78,39 +77,36 @@ export const ResourceView = () => {
   }
   return (
     <>
-      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Navbar />
-        {data && data.viewer.project ? (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: (theme) => theme.spacing(2),
-              padding: (theme) => theme.spacing(4),
-            }}
-          >
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
-              <Link
-                variant="h4"
-                underline="hover"
-                component={RouterLink}
-                to={`/orgs/${data.viewer.project.organization.identifier}`}
-              >
-                {data.viewer.project.organization.name}
-              </Link>
-              <Typography variant="h4">/</Typography>
-              <Link variant="h4" underline="hover" component={RouterLink} to={`/projects/${projectIdentifier}`}>
-                {data.viewer.project.name}
-              </Link>
-            </Box>
-            <Container maxWidth="lg">
-              <Paper variant="outlined">
-                <ViewerCard changeId={changeId ?? ''} path={path} name={name} />
-              </Paper>
-            </Container>
+      {data && data.viewer.project ? (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: (theme) => theme.spacing(2),
+            padding: (theme) => theme.spacing(4),
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
+            <Link
+              variant="h4"
+              underline="hover"
+              component={RouterLink}
+              to={`/orgs/${data.viewer.project.organization.identifier}`}
+            >
+              {data.viewer.project.organization.name}
+            </Link>
+            <Typography variant="h4">/</Typography>
+            <Link variant="h4" underline="hover" component={RouterLink} to={`/projects/${projectIdentifier}`}>
+              {data.viewer.project.name}
+            </Link>
           </Box>
-        ) : null}
-      </Box>
+          <Container maxWidth="lg">
+            <Paper variant="outlined">
+              <ViewerCard changeId={changeId ?? ''} path={path} name={name} />
+            </Paper>
+          </Container>
+        </Box>
+      ) : null}
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
