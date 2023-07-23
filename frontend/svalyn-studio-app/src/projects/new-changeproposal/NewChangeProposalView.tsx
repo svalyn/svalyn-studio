@@ -37,7 +37,6 @@ import { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Navigate, Link as RouterLink, useParams } from 'react-router-dom';
 import { getCookie } from '../../cookies/getCookie';
-import { Navbar } from '../../navbars/Navbar';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   CreateChangeProposalData,
@@ -171,70 +170,65 @@ export const NewChangeProposalView = () => {
 
   return (
     <>
-      <div>
-        <Navbar />
-        <div>
-          <Container maxWidth="sm">
-            <Toolbar />
-            <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
-              <Stack spacing={3}>
-                <Typography variant="h4">Let's create a change proposal</Typography>
-                <TextField
-                  label="Name"
-                  helperText="The change that you want to perform"
-                  value={state.name}
-                  onChange={handleNameChanged}
-                />
-                {acceptedFiles.length === 0 ? (
-                  <Box
-                    {...getRootProps()}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      border: (theme) => `2px dashed ${theme.palette.divider}`,
-                      backgroundColor: (theme) => (isDragActive ? '#ffffff' : theme.palette.grey[100]),
-                      minHeight: (theme) => theme.spacing(18),
-                    }}
-                  >
-                    <input {...getInputProps()} />
-                    <Typography align="center">Drag and drop files here or click to select files</Typography>
-                  </Box>
-                ) : null}
-                {acceptedFiles.length > 0 ? (
-                  <List>
-                    {acceptedFiles.map((file) => (
-                      <ListItem key={file.name}>
-                        <ListItemIcon>
-                          <FolderIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={file.name} secondary={humanReadable(file.size)} />
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : null}
-                <Button
-                  variant="contained"
-                  startIcon={<DifferenceIcon />}
-                  onClick={handleCreateChangeProposal}
-                  disabled={acceptedFiles.length === 0}
-                >
-                  Create change proposal
-                </Button>
-                <Link
-                  component={RouterLink}
-                  to={`/projects/${projectIdentifier}`}
-                  variant="body2"
-                  underline="hover"
-                  align="center"
-                >
-                  Back to the project
-                </Link>
-              </Stack>
-            </Paper>
-          </Container>
-        </div>
-      </div>
+      <Container maxWidth="sm">
+        <Toolbar />
+        <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
+          <Stack spacing={3}>
+            <Typography variant="h4">Let's create a change proposal</Typography>
+            <TextField
+              label="Name"
+              helperText="The change that you want to perform"
+              value={state.name}
+              onChange={handleNameChanged}
+            />
+            {acceptedFiles.length === 0 ? (
+              <Box
+                {...getRootProps()}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  border: (theme) => `2px dashed ${theme.palette.divider}`,
+                  backgroundColor: (theme) => (isDragActive ? '#ffffff' : theme.palette.grey[100]),
+                  minHeight: (theme) => theme.spacing(18),
+                }}
+              >
+                <input {...getInputProps()} />
+                <Typography align="center">Drag and drop files here or click to select files</Typography>
+              </Box>
+            ) : null}
+            {acceptedFiles.length > 0 ? (
+              <List>
+                {acceptedFiles.map((file) => (
+                  <ListItem key={file.name}>
+                    <ListItemIcon>
+                      <FolderIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={file.name} secondary={humanReadable(file.size)} />
+                  </ListItem>
+                ))}
+              </List>
+            ) : null}
+            <Button
+              variant="contained"
+              startIcon={<DifferenceIcon />}
+              onClick={handleCreateChangeProposal}
+              disabled={acceptedFiles.length === 0}
+            >
+              Create change proposal
+            </Button>
+            <Link
+              component={RouterLink}
+              to={`/projects/${projectIdentifier}`}
+              variant="body2"
+              underline="hover"
+              align="center"
+            >
+              Back to the project
+            </Link>
+          </Stack>
+        </Paper>
+      </Container>
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );

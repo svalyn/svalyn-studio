@@ -34,9 +34,10 @@ import { OAuth2Router } from '../oauth2/OAuth2Router';
 import { OrganizationRouter } from '../organizations/OrganizationRouter';
 import { PaletteProvider } from '../palette/PaletteProvider';
 import { ProfilesRouter } from '../profiles/ProfilesRouter';
-import { ProjectsRouter } from '../projects/ProjectsRouter';
+import { ProjectRouter } from '../projects/ProjectRouter';
 import { SearchRouter } from '../search/SearchRouter';
 import { SettingsRouter } from '../settings/SettingsRouter';
+import { WorkspaceView } from '../workspace/WorkspaceView';
 import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
 import { theme } from './theme';
 
@@ -51,7 +52,8 @@ export const App = () => {
               <Route path="/" element={<HomeView />} />
               <Route path="/new/*" element={<NewRouter />} />
               <Route path="/orgs/:organizationIdentifier/*" element={<OrganizationRouter />} />
-              <Route path="/projects/*" element={<ProjectsRouter />} />
+              <Route path="/projects/:projectIdentifier/*" element={<ProjectRouter />} />
+              <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
               <Route path="/changeproposals/*" element={<ChangeProposalsRouter />} />
               <Route path="/domains/*" element={<DomainsRouter />} />
               <Route path="/search/*" element={<SearchRouter />} />

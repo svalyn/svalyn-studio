@@ -17,29 +17,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectTagsProps {
-  projectIdentifier: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface ProjectTagsState {
-  key: string;
-  value: string;
-  page: number;
-  rowsPerPage: number;
+export interface ProjectActivityViewState {
   message: string | null;
 }
 
-export interface GetProjectTagsVariables {
+export interface GetProjectActivityVariables {
   identifier: string;
-  page: number;
-  rowsPerPage: number;
 }
 
-export interface GetProjectTagsData {
-  viewer: Viewer | null;
+export interface GetProjectActivityData {
+  viewer: Viewer;
 }
 
 export interface Viewer {
@@ -47,48 +34,37 @@ export interface Viewer {
 }
 
 export interface Project {
-  tags: ProjectTagsConnection;
+  activityEntries: ProjectActivityEntriesConnection;
 }
 
-export interface ProjectTagsConnection {
-  edges: ProjectTagsEdge[];
-  pageInfo: PageInfo;
+export interface ProjectActivityEntriesConnection {
+  edges: ProjectActivityEntriesEdge[];
 }
 
-export interface ProjectTagsEdge {
-  node: Tag;
+export interface ProjectActivityEntriesEdge {
+  node: ActivityEntry;
 }
 
-export interface Tag {
+export interface ActivityEntry {
   id: string;
-  key: string;
-  value: string;
+  kind: ActivityKind;
+  title: string;
+  description: string;
+  createdOn: string;
+  createdBy: Profile;
 }
 
-export interface PageInfo {
-  count: number;
-}
+type ActivityKind =
+  | 'ACCOUNT_CREATED'
+  | 'ORGANIZATION_CREATED'
+  | 'PROJECT_CREATED'
+  | 'PROJECT_DELETED'
+  | 'CHANGE_PROPOSAL_CREATED'
+  | 'CHANGE_PROPOSAL_REVIEWED'
+  | 'CHANGE_PROPOSAL_INTEGRATED';
 
-export interface AddTagToProjectVariables {
-  input: AddTagToProjectInput;
-}
-
-export interface AddTagToProjectInput {
-  id: string;
-  projectIdentifier: string;
-  key: string;
-  value: string;
-}
-
-export interface AddTagToProjectData {
-  addTagToProject: AddTagToProjectPayload;
-}
-
-export interface AddTagToProjectPayload {
-  __typename: string;
-}
-
-export interface ErrorPayload extends AddTagToProjectPayload {
-  __typename: 'ErrorPayload';
-  message: string;
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
 }

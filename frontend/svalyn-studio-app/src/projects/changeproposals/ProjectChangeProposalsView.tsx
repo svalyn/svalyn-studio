@@ -36,6 +36,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
+import { useProject } from '../useProject';
 import { ChangeProposalsTableHead } from './ChangeProposalsTableHead';
 import { ChangeProposalsTableToolbar } from './ChangeProposalsTableToolbar';
 import {
@@ -46,9 +47,8 @@ import {
   ErrorPayload,
   GetChangeProposalsData,
   GetChangeProposalsVariables,
-  ProjectChangeProposalProps,
-  ProjectChangeProposalState,
-} from './ProjectChangeProposal.types';
+  ProjectChangeProposalsViewState,
+} from './ProjectChangeProposalsView.types';
 
 const getChangeProposalsQuery = gql`
   query getChangeProposals($identifier: ID!, $status: [ChangeProposalStatus!]!, $page: Int!, $rowsPerPage: Int!) {
@@ -80,8 +80,12 @@ const deleteChangeProposalsMutation = gql`
   }
 `;
 
-export const ProjectChangeProposal = ({ projectIdentifier, role }: ProjectChangeProposalProps) => {
-  const [state, setState] = useState<ProjectChangeProposalState>({
+export const ProjectChangeProposalsView = () => {
+  const {
+    identifier: projectIdentifier,
+    organization: { role },
+  } = useProject();
+  const [state, setState] = useState<ProjectChangeProposalsViewState>({
     project: null,
     selectedChangeProposalIds: [],
     filter: 'OPEN',

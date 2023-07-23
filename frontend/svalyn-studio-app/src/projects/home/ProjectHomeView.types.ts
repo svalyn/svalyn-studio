@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,15 +17,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { ProjectViewPanel } from './ProjectDrawer.types';
-
-export interface ProjectViewState {
-  panel: ProjectViewPanel;
+export interface ProjectHomeViewState {
   project: Project | null;
   message: string | null;
 }
 
-export interface GetProjectData {
+export interface GetProjectHomeData {
   viewer: Viewer;
 }
 
@@ -34,20 +31,54 @@ export interface Viewer {
 }
 
 export interface Project {
-  identifier: string;
   name: string;
   description: string;
+  readMe: string;
   organization: Organization;
+  branch: Branch;
+  createdOn: string;
+  createdBy: Profile;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
+}
+
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
 }
 
 export interface Organization {
   identifier: string;
   name: string;
-  role: MembershipRole;
 }
 
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
+export interface Branch {
+  name: string;
+  change: Change | null;
+}
 
-export interface GetProjectVariables {
+export interface Change {
+  id: string;
+  name: string;
+  resources: ChangeResourcesConnection;
+  lastModifiedOn: string;
+  lastModifiedBy: Profile;
+}
+
+export interface ChangeResourcesConnection {
+  edges: [ChangeResourcesEdge];
+}
+
+export interface ChangeResourcesEdge {
+  node: ChangeResource;
+}
+
+export interface ChangeResource {
+  path: string;
+  name: string;
+}
+
+export interface GetProjectHomeVariables {
   identifier: string;
 }

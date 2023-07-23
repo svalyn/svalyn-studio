@@ -29,16 +29,16 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
+import { useProject } from '../useProject';
 import { DeleteProjectDialog } from './DeleteProjectDialog';
 import {
   ErrorPayload,
-  ProjectSettingsProps,
-  ProjectSettingsState,
+  ProjectSettingsViewState,
   UpdateProjectDescriptionData,
   UpdateProjectDescriptionVariables,
   UpdateProjectNameData,
   UpdateProjectNameVariables,
-} from './ProjectSettings.types';
+} from './ProjectSettingsView.types';
 
 const updateProjectNameMutation = gql`
   mutation updateProjectName($input: UpdateProjectNameInput!) {
@@ -60,8 +60,12 @@ const updateProjectDescriptionMutation = gql`
   }
 `;
 
-export const ProjectSettings = ({ projectIdentifier, role }: ProjectSettingsProps) => {
-  const [state, setState] = useState<ProjectSettingsState>({
+export const ProjectSettingsView = () => {
+  const {
+    identifier: projectIdentifier,
+    organization: { role },
+  } = useProject();
+  const [state, setState] = useState<ProjectSettingsViewState>({
     name: '',
     description: '',
     deleteProjectDialogOpen: false,

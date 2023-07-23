@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -27,8 +27,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../widgets/LastModifiedOn';
+import { useProject } from '../useProject';
 import { ProjectBranchCard } from './ProjectBranchCard';
-import { GetProjectHomeData, GetProjectHomeVariables, ProjectHomeProps, ProjectHomeState } from './ProjectHome.types';
+import { GetProjectHomeData, GetProjectHomeVariables, ProjectHomeViewState } from './ProjectHomeView.types';
 import { ProjectReadMeCard } from './ProjectReadMeCard';
 
 const getProjectHomeQuery = gql`
@@ -80,8 +81,12 @@ const getProjectHomeQuery = gql`
   }
 `;
 
-export const ProjectHome = ({ projectIdentifier, role }: ProjectHomeProps) => {
-  const [state, setState] = useState<ProjectHomeState>({
+export const ProjectHomeView = () => {
+  const {
+    identifier: projectIdentifier,
+    organization: { role },
+  } = useProject();
+  const [state, setState] = useState<ProjectHomeViewState>({
     project: null,
     message: null,
   });

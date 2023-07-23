@@ -26,12 +26,12 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { ActivityTimeline } from '../../activity/ActivityTimeline';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
+import { useProject } from '../useProject';
 import {
   GetProjectActivityData,
   GetProjectActivityVariables,
-  ProjectActivityProps,
-  ProjectActivityState,
-} from './ProjectActivity.types';
+  ProjectActivityViewState,
+} from './ProjectActivityView.types';
 
 const getProjectActivityQuery = gql`
   query getProjectActivity($identifier: ID!) {
@@ -58,8 +58,12 @@ const getProjectActivityQuery = gql`
   }
 `;
 
-export const ProjectActivity = ({ projectIdentifier }: ProjectActivityProps) => {
-  const [state, setState] = useState<ProjectActivityState>({
+export const ProjectActivityView = () => {
+  const {
+    identifier: projectIdentifier,
+    organization: { role },
+  } = useProject();
+  const [state, setState] = useState<ProjectActivityViewState>({
     message: null,
   });
 

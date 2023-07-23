@@ -17,19 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectActivityProps {
-  projectIdentifier: string;
+export interface ProjectShellProps {
+  children?: React.ReactNode;
 }
 
-export interface ProjectActivityState {
-  message: string | null;
+export interface ProjectShellState {
+  errorSnackbarOpen: boolean;
 }
 
-export interface GetProjectActivityVariables {
-  identifier: string;
-}
-
-export interface GetProjectActivityData {
+export interface GetProjectData {
   viewer: Viewer;
 }
 
@@ -38,37 +34,20 @@ export interface Viewer {
 }
 
 export interface Project {
-  activityEntries: ProjectActivityEntriesConnection;
-}
-
-export interface ProjectActivityEntriesConnection {
-  edges: ProjectActivityEntriesEdge[];
-}
-
-export interface ProjectActivityEntriesEdge {
-  node: ActivityEntry;
-}
-
-export interface ActivityEntry {
-  id: string;
-  kind: ActivityKind;
-  title: string;
-  description: string;
-  createdOn: string;
-  createdBy: Profile;
-}
-
-type ActivityKind =
-  | 'ACCOUNT_CREATED'
-  | 'ORGANIZATION_CREATED'
-  | 'PROJECT_CREATED'
-  | 'PROJECT_DELETED'
-  | 'CHANGE_PROPOSAL_CREATED'
-  | 'CHANGE_PROPOSAL_REVIEWED'
-  | 'CHANGE_PROPOSAL_INTEGRATED';
-
-export interface Profile {
+  identifier: string;
   name: string;
-  username: string;
-  imageUrl: string;
+  description: string;
+  organization: Organization;
+}
+
+export interface Organization {
+  identifier: string;
+  name: string;
+  role: MembershipRole;
+}
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
+
+export interface GetProjectVariables {
+  identifier: string;
 }

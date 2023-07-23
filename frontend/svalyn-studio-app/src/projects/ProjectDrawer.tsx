@@ -28,7 +28,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { styled } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import { ProjectDrawerProps } from './ProjectDrawer.types';
+import { useRouteMatch } from '../hooks/useRouteMatch';
+import { useProject } from './useProject';
 
 const CompactDrawer = styled('div')(({ theme }) => ({
   width: '64px',
@@ -36,14 +37,28 @@ const CompactDrawer = styled('div')(({ theme }) => ({
   borderRight: `1px solid ${theme.palette.divider}`,
 }));
 
-export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawerProps) => {
+const patterns = [
+  '/projects/:projectIdentifier',
+  '/projects/:projectIdentifier/activity',
+  '/projects/:projectIdentifier/changeproposals',
+  '/projects/:projectIdentifier/tags',
+  '/projects/:projectIdentifier/settings',
+];
+
+export const ProjectDrawer = () => {
+  const { identifier: projectIdentifier } = useProject();
+
+  const routeMatch = useRouteMatch(patterns);
+  const currentTab = routeMatch?.pattern?.path;
+
   return (
     <CompactDrawer>
       <List disablePadding>
-        <ListItem selected={selectedPanel === 'Home'} disablePadding sx={{ display: 'block' }}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
           <ListItemButton
             component={RouterLink}
             to={`/projects/${projectIdentifier}`}
+            selected={currentTab === '/projects/:projectIdentifier'}
             sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
@@ -51,10 +66,11 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
             </ListItemIcon>
           </ListItemButton>
         </ListItem>
-        <ListItem selected={selectedPanel === 'Activity'} disablePadding sx={{ display: 'block' }}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
           <ListItemButton
             component={RouterLink}
             to={`/projects/${projectIdentifier}/activity`}
+            selected={currentTab === '/projects/:projectIdentifier/activity'}
             sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
@@ -62,10 +78,11 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
             </ListItemIcon>
           </ListItemButton>
         </ListItem>
-        <ListItem selected={selectedPanel === 'ChangeProposals'} disablePadding sx={{ display: 'block' }}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
           <ListItemButton
             component={RouterLink}
             to={`/projects/${projectIdentifier}/changeproposals`}
+            selected={currentTab === '/projects/:projectIdentifier/changeproposals'}
             sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
@@ -73,10 +90,11 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
             </ListItemIcon>
           </ListItemButton>
         </ListItem>
-        <ListItem selected={selectedPanel === 'Tags'} disablePadding sx={{ display: 'block' }}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
           <ListItemButton
             component={RouterLink}
             to={`/projects/${projectIdentifier}/tags`}
+            selected={currentTab === '/projects/:projectIdentifier/tags'}
             sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
@@ -84,10 +102,11 @@ export const ProjectDrawer = ({ projectIdentifier, selectedPanel }: ProjectDrawe
             </ListItemIcon>
           </ListItemButton>
         </ListItem>
-        <ListItem selected={selectedPanel === 'Settings'} disablePadding sx={{ display: 'block' }}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
           <ListItemButton
             component={RouterLink}
             to={`/projects/${projectIdentifier}/settings`}
+            selected={currentTab === '/projects/:projectIdentifier/settings'}
             sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
           >
             <ListItemIcon sx={{ minWidth: 0, mr: 'auto', justifyContent: 'center' }}>
