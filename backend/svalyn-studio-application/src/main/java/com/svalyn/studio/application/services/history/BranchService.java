@@ -21,6 +21,7 @@ package com.svalyn.studio.application.services.history;
 
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.history.dto.BranchDTO;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.history.api.IBranchService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.history.Branch;
@@ -47,9 +48,12 @@ public class BranchService implements IBranchService {
     private final IAccountRepository accountRepository;
     private final IBranchRepository branchRepository;
 
-    public BranchService(IAccountRepository accountRepository, IBranchRepository branchRepository) {
+    private final IAvatarUrlService avatarUrlService;
+
+    public BranchService(IAccountRepository accountRepository, IBranchRepository branchRepository, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.branchRepository = Objects.requireNonNull(branchRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
     @Override
@@ -71,9 +75,9 @@ public class BranchService implements IBranchService {
 
     private Optional<BranchDTO> toDTO(Branch branch) {
         var optionalCreatedByProfile = this.accountRepository.findById(branch.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(branch.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var changeId = Optional.ofNullable(branch.getChange()).map(AggregateReference::getId).orElse(null);
 
         return optionalCreatedByProfile.flatMap(createdBy ->

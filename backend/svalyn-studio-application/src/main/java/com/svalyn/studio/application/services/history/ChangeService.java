@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.history.dto.ChangeDTO;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.history.api.IChangeService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.history.Change;
@@ -50,18 +51,21 @@ public class ChangeService implements IChangeService {
 
     private final IChangeRepository changeRepository;
 
+    private final IAvatarUrlService avatarUrlService;
+
     private final Logger logger = LoggerFactory.getLogger(ChangeService.class);
 
-    public ChangeService(IAccountRepository accountRepository, IChangeRepository changeRepository) {
+    public ChangeService(IAccountRepository accountRepository, IChangeRepository changeRepository, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.changeRepository = Objects.requireNonNull(changeRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
     private Optional<ChangeDTO> toDTO(Change change) {
         var optionalCreatedByProfile = this.accountRepository.findById(change.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(change.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

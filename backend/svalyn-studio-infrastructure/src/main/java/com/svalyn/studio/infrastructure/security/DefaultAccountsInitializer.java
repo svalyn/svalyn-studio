@@ -84,7 +84,6 @@ public class DefaultAccountsInitializer implements CommandLineRunner {
                     .passwordCredentials(Set.of(passwordCredentials))
                     .name("Admin")
                     .email("admin@svalyn.com")
-                    .imageUrl("")
                     .build();
 
             this.accountRepository.save(adminAccount);

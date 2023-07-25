@@ -63,11 +63,6 @@ public class WithMockPrincipalSecurityContextFactory implements WithSecurityCont
             public String getName() {
                 return account.getName();
             }
-
-            @Override
-            public String getImageUrl() {
-                return account.getImageUrl();
-            }
         };
 
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(user, "password", List.of()));

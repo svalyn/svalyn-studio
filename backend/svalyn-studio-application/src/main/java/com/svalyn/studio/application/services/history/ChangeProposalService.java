@@ -33,6 +33,7 @@ import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.history.api.IChangeProposalService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -44,7 +45,6 @@ import com.svalyn.studio.domain.history.repositories.IChangeProposalRepository;
 import com.svalyn.studio.domain.history.services.api.IChangeProposalCreationService;
 import com.svalyn.studio.domain.history.services.api.IChangeProposalDeletionService;
 import com.svalyn.studio.domain.history.services.api.IChangeProposalUpdateService;
-import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -74,22 +74,22 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private final IChangeProposalDeletionService changeProposalDeletionService;
 
-    private final IResourceRepository resourceRepository;
+    private final IAvatarUrlService avatarUrlService;
 
-    public ChangeProposalService(IAccountRepository accountRepository, IChangeProposalRepository changeProposalRepository, IChangeProposalCreationService changeProposalCreationService, IChangeProposalUpdateService changeProposalUpdateService, IChangeProposalDeletionService changeProposalDeletionService, IResourceRepository resourceRepository) {
+    public ChangeProposalService(IAccountRepository accountRepository, IChangeProposalRepository changeProposalRepository, IChangeProposalCreationService changeProposalCreationService, IChangeProposalUpdateService changeProposalUpdateService, IChangeProposalDeletionService changeProposalDeletionService, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.changeProposalRepository = Objects.requireNonNull(changeProposalRepository);
         this.changeProposalCreationService = Objects.requireNonNull(changeProposalCreationService);
         this.changeProposalUpdateService = Objects.requireNonNull(changeProposalUpdateService);
         this.changeProposalDeletionService = Objects.requireNonNull(changeProposalDeletionService);
-        this.resourceRepository = Objects.requireNonNull(resourceRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
     private Optional<ChangeProposalDTO> toDTO(ChangeProposal changeProposal) {
         var optionalCreatedByProfile = this.accountRepository.findById(changeProposal.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(changeProposal.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->
@@ -144,9 +144,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private Optional<ReviewDTO> toDTO(Review review) {
         var optionalCreatedByProfile = this.accountRepository.findById(review.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(review.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

@@ -29,6 +29,7 @@ import com.svalyn.studio.application.controllers.organization.dto.DeleteOrganiza
 import com.svalyn.studio.application.controllers.organization.dto.LeaveOrganizationInput;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.UpdateOrganizationNameInput;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.organization.api.IOrganizationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -61,6 +62,8 @@ public class OrganizationService implements IOrganizationService {
 
     private final IAccountRepository accountRepository;
 
+    private final IAvatarUrlService avatarUrlService;
+
     private final IOrganizationRepository organizationRepository;
 
     private final IOrganizationCreationService organizationCreationService;
@@ -71,8 +74,9 @@ public class OrganizationService implements IOrganizationService {
 
     private final IOrganizationPermissionService organizationPermissionService;
 
-    public OrganizationService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository, IOrganizationCreationService organizationCreationService, IOrganizationUpdateService organizationUpdateService, IOrganizationDeletionService organizationDeletionService, IOrganizationPermissionService organizationPermissionService) {
+    public OrganizationService(IAccountRepository accountRepository, IAvatarUrlService avatarUrlService, IOrganizationRepository organizationRepository, IOrganizationCreationService organizationCreationService, IOrganizationUpdateService organizationUpdateService, IOrganizationDeletionService organizationDeletionService, IOrganizationPermissionService organizationPermissionService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.organizationCreationService = Objects.requireNonNull(organizationCreationService);
         this.organizationUpdateService = Objects.requireNonNull(organizationUpdateService);
@@ -82,9 +86,9 @@ public class OrganizationService implements IOrganizationService {
 
     private Optional<OrganizationDTO> toDTO(Organization organization) {
         var optionalCreatedByProfile = this.accountRepository.findById(organization.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(organization.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         var userId = UserIdProvider.get().getId();
         return optionalCreatedByProfile.flatMap(createdBy ->

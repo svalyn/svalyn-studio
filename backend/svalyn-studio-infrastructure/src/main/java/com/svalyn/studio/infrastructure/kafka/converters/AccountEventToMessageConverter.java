@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.infrastructure.kafka.converters;
 
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.domain.IDomainEvent;
 import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
@@ -32,6 +33,7 @@ import com.svalyn.studio.message.account.AccountModifiedMessage;
 import com.svalyn.studio.message.account.AccountSummaryMessage;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,6 +44,13 @@ import java.util.UUID;
  */
 @Service
 public class AccountEventToMessageConverter implements IDomainEventToMessageConverter {
+
+    private final IAvatarUrlService avatarUrlService;
+
+    public AccountEventToMessageConverter(IAvatarUrlService avatarUrlService) {
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
+    }
+
     @Override
     public Optional<Message> convert(IDomainEvent event) {
         Optional<Message> optionalMessage = Optional.empty();
@@ -76,7 +85,7 @@ public class AccountEventToMessageConverter implements IDomainEventToMessageConv
     private AccountMessage toMessage(Account account) {
         return new AccountMessage(
                 account.getId(),
-                account.getImageUrl(),
+                this.avatarUrlService.imageUrl(account.getUsername()),
                 account.getCreatedOn(),
                 account.getLastModifiedOn()
         );

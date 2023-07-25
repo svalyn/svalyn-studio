@@ -60,7 +60,6 @@ public class AccountIntegrationTests extends AbstractIntegrationTests {
                 .username("username")
                 .name("John Doe")
                 .email("john.doe@example.org")
-                .imageUrl("https://www.example.org/image/avatar.png")
                 .build();
         var savedAccount = this.accountRepository.save(account);
         assertThat(savedAccount.getId()).isNotNull();
@@ -74,7 +73,6 @@ public class AccountIntegrationTests extends AbstractIntegrationTests {
                 .username("username")
                 .name("John Doe")
                 .email("john.doe@example.org")
-                .imageUrl("https://www.example.org/image/avatar.png")
                 .build();
         this.accountRepository.save(account);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(AccountCreatedEvent.class::isInstance).count()).isEqualTo(1);
@@ -88,12 +86,11 @@ public class AccountIntegrationTests extends AbstractIntegrationTests {
                 .username("username")
                 .name("John Doe")
                 .email("john.doe@example.org")
-                .imageUrl("https://www.example.org/image/avatar.png")
                 .build();
         this.accountRepository.save(account);
 
         account = this.accountRepository.findById(account.getId()).get();
-        account.updateDetails("John T. Doe", "https://www.example.org/image/avatar.png+v2");
+        account.updateName("John T. Doe");
         this.accountRepository.save(account);
         assertThat(this.domainEvents.getDomainEvents().stream().filter(AccountModifiedEvent.class::isInstance).count()).isEqualTo(1);
     }

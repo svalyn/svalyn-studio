@@ -64,7 +64,9 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
 
     private String email;
 
-    private String imageUrl;
+    private byte[] image;
+
+    private String imageContentType;
 
     @MappedCollection(idColumn = "account_id")
     private Set<PasswordCredentials> passwordCredentials = new LinkedHashSet<>();
@@ -99,8 +101,12 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
         return email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public byte[] getImage() {
+        return image;
+    }
+
+    public String getImageContentType() {
+        return imageContentType;
     }
 
     public Set<PasswordCredentials> getPasswordCredentials() {
@@ -128,9 +134,8 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
         return this.isNew;
     }
 
-    public void updateDetails(String name, String imageUrl) {
+    public void updateName(String name) {
         this.name = Objects.requireNonNull(name);
-        this.imageUrl = Objects.requireNonNull(imageUrl);
         this.lastModifiedOn = Instant.now();
 
         var createdBy = new Profile(this.id, this.name, this.username);
@@ -185,7 +190,9 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
 
         private String email;
 
-        private String imageUrl;
+        private byte[] image;
+
+        private String imageContentType;
 
         private Set<PasswordCredentials> passwordCredentials = new LinkedHashSet<>();
 
@@ -221,8 +228,13 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
             return this;
         }
 
-        public Builder imageUrl(String imageUrl) {
-            this.imageUrl = Objects.requireNonNull(imageUrl);
+        public Builder image(byte[] image) {
+            this.image = Objects.requireNonNull(image);
+            return this;
+        }
+
+        public Builder imageContentType(String imageContentType) {
+            this.imageContentType = Objects.requireNonNull(imageContentType);
             return this;
         }
 
@@ -234,7 +246,8 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
             account.username = Objects.requireNonNull(username);
             account.name = Objects.requireNonNull(name);
             account.email = Objects.requireNonNull(email);
-            account.imageUrl = Objects.requireNonNull(imageUrl);
+            account.image = image;
+            account.imageContentType = imageContentType;
 
             account.passwordCredentials = Objects.requireNonNull(passwordCredentials);
             account.oAuth2Metadata = Objects.requireNonNull(oAuth2Metadata);

@@ -25,6 +25,7 @@ import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.notification.dto.NotificationDTO;
 import com.svalyn.studio.application.controllers.notification.dto.UpdateNotificationsStatusInput;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.notification.api.INotificationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -56,21 +57,24 @@ public class NotificationService implements INotificationService {
 
     private final INotificationRepository notificationRepository;
 
+    private final IAvatarUrlService avatarUrlService;
+
     private final INotificationUpdateService notificationUpdateService;
 
-    public NotificationService(IAccountRepository accountRepository, INotificationRepository notificationRepository, INotificationUpdateService notificationUpdateService) {
+    public NotificationService(IAccountRepository accountRepository, INotificationRepository notificationRepository, IAvatarUrlService avatarUrlService, INotificationUpdateService notificationUpdateService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.notificationRepository = Objects.requireNonNull(notificationRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
         this.notificationUpdateService = Objects.requireNonNull(notificationUpdateService);
     }
 
     private Optional<NotificationDTO> toDTO(Notification notification) {
         var optionalOwnedByProfile = this.accountRepository.findById(notification.getOwnedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalCreatedByProfile = this.accountRepository.findById(notification.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(notification.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalOwnedByProfile.flatMap(ownedBy ->
                 optionalCreatedByProfile.flatMap(createdBy ->

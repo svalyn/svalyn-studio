@@ -30,6 +30,7 @@ import com.svalyn.studio.application.controllers.project.dto.ProjectDTO;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectDescriptionInput;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectNameInput;
 import com.svalyn.studio.application.controllers.project.dto.UpdateProjectReadMeInput;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.project.api.IProjectService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -68,19 +69,22 @@ public class ProjectService implements IProjectService {
 
     private final IProjectDeletionService projectDeletionService;
 
-    public ProjectService(IAccountRepository accountRepository, IProjectRepository projectRepository, IProjectCreationService projectCreationService, IProjectUpdateService projectUpdateService, IProjectDeletionService projectDeletionService) {
+    private final IAvatarUrlService avatarUrlService;
+
+    public ProjectService(IAccountRepository accountRepository, IProjectRepository projectRepository, IProjectCreationService projectCreationService, IProjectUpdateService projectUpdateService, IProjectDeletionService projectDeletionService, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.projectRepository = Objects.requireNonNull(projectRepository);
         this.projectCreationService = Objects.requireNonNull(projectCreationService);
         this.projectUpdateService = Objects.requireNonNull(projectUpdateService);
         this.projectDeletionService = Objects.requireNonNull(projectDeletionService);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
     private Optional<ProjectDTO> toDTO(Project project) {
         var optionalCreatedByProfile = this.accountRepository.findById(project.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(project.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

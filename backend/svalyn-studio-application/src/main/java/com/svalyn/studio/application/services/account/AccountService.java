@@ -22,6 +22,7 @@ package com.svalyn.studio.application.services.account;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.viewer.Viewer;
 import com.svalyn.studio.application.services.account.api.IAccountService;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,19 +41,22 @@ public class AccountService implements IAccountService {
 
     private final IAccountRepository accountRepository;
 
-    public AccountService(IAccountRepository accountRepository) {
+    private final IAvatarUrlService avatarUrlService;
+
+    public AccountService(IAccountRepository accountRepository, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Viewer> findViewerById(UUID id) {
-        return this.accountRepository.findById(id).map(account -> new Viewer(account.getName(), account.getUsername(), account.getImageUrl()));
+        return this.accountRepository.findById(id).map(account -> new Viewer(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<ProfileDTO> findProfileByUsername(String username) {
-        return this.accountRepository.findByUsername(username).map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+        return this.accountRepository.findByUsername(username).map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
     }
 }

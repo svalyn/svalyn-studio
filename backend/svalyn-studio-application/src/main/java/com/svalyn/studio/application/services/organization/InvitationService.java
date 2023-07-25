@@ -29,6 +29,7 @@ import com.svalyn.studio.application.controllers.organization.dto.InvitationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.InviteMemberInput;
 import com.svalyn.studio.application.controllers.organization.dto.OrganizationDTO;
 import com.svalyn.studio.application.controllers.organization.dto.RevokeInvitationInput;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.organization.api.IInvitationService;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
@@ -65,22 +66,25 @@ public class InvitationService implements IInvitationService {
 
     private final IOrganizationUpdateService organizationUpdateService;
 
+    private final IAvatarUrlService avatarUrlService;
+
     private final IMessageService messageService;
 
-    public InvitationService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository, IOrganizationUpdateService organizationUpdateService, IMessageService messageService) {
+    public InvitationService(IAccountRepository accountRepository, IOrganizationRepository organizationRepository, IOrganizationUpdateService organizationUpdateService, IAvatarUrlService avatarUrlService, IMessageService messageService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.organizationRepository = Objects.requireNonNull(organizationRepository);
         this.organizationUpdateService = Objects.requireNonNull(organizationUpdateService);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
         this.messageService = Objects.requireNonNull(messageService);
     }
 
     private Optional<InvitationDTO> toDTO(Invitation invitation, UUID organizationId) {
         var optionalCreatedByProfile = this.accountRepository.findById(invitation.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalLastModifiedByProfile = this.accountRepository.findById(invitation.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
         var optionalMemberProfile = this.accountRepository.findById(invitation.getMemberId().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalMemberProfile.flatMap(member ->
                 optionalCreatedByProfile.flatMap(createdBy ->
