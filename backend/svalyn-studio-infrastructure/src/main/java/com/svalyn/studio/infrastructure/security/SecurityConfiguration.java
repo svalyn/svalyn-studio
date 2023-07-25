@@ -70,6 +70,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authz) -> {
             authz.requestMatchers("/api/graphql").authenticated();
+            authz.requestMatchers("/api/avatars").authenticated();
             authz.requestMatchers("/**").permitAll();
         });
 

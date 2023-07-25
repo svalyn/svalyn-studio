@@ -78,7 +78,6 @@ public class SvalynUserDetailsService implements UserDetailsService {
         return new SvalynUserDetails(
                 account.getId(),
                 account.getName(),
-                account.getImageUrl(),
                 username,
                 password,
                 true,

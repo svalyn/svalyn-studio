@@ -51,9 +51,4 @@ public class SvalynSystemUser implements IUser {
     public String getName() {
         return "System";
     }
-
-    @Override
-    public String getImageUrl() {
-        return "";
-    }
 }

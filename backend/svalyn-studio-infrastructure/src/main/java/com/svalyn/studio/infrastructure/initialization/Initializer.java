@@ -69,7 +69,6 @@ public class Initializer implements CommandLineRunner {
                     .username("system")
                     .name("System")
                     .email("system@svalyn.com")
-                    .imageUrl("")
                     .build();
             return this.accountRepository.save(account);
         });

@@ -45,8 +45,6 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
 
     private final String email;
 
-    private final String imageUrl;
-
     private final Map<String, Object> attributes;
 
     private final Collection<? extends GrantedAuthority> authorities;
@@ -56,7 +54,6 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
         this.username = account.getUsername();
         this.name = account.getName();
         this.email = account.getEmail();
-        this.imageUrl = account.getImageUrl();
         this.attributes = oAuth2User.getAttributes();
 
         var authorities = new ArrayList<GrantedAuthority>();
@@ -86,11 +83,6 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
 
     public String getEmail() {
         return email;
-    }
-
-    @Override
-    public String getImageUrl() {
-        return imageUrl;
     }
 
     @Override

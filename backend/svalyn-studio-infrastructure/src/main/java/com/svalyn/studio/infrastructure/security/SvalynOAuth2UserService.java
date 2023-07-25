@@ -22,6 +22,8 @@ import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.AccountRole;
 import com.svalyn.studio.domain.account.OAuth2Metadata;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
+import com.svalyn.studio.infrastructure.avatar.api.AvatarData;
+import com.svalyn.studio.infrastructure.avatar.api.IAvatarRetrievalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -52,12 +54,15 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
 
     private final IAccountRepository accountRepository;
 
+    private final IAvatarRetrievalService avatarRetrievalService;
+
     private final WebClient webClient;
 
     private final Logger logger = LoggerFactory.getLogger(SvalynOAuth2UserService.class);
 
-    public SvalynOAuth2UserService(IAccountRepository accountRepository, WebClient webClient) {
+    public SvalynOAuth2UserService(IAccountRepository accountRepository, IAvatarRetrievalService avatarRetrievalService, WebClient webClient) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
+        this.avatarRetrievalService = Objects.requireNonNull(avatarRetrievalService);
         this.webClient = Objects.requireNonNull(webClient);
     }
 
@@ -119,8 +124,8 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
 
             account.addOAuth2Metadata(oAuth2Metadata);
-        } else if (!account.getName().equals(oAuth2UserInfo.getName()) || !account.getImageUrl().equals(oAuth2UserInfo.getImageUrl())) {
-            account.updateDetails(oAuth2UserInfo.getName(), oAuth2UserInfo.getImageUrl());
+        } else if (!account.getName().equals(oAuth2UserInfo.getName())) {
+            account.updateName(oAuth2UserInfo.getName());
         }
 
         return this.accountRepository.save(account);
@@ -134,12 +139,15 @@ public class SvalynOAuth2UserService extends DefaultOAuth2UserService {
                 .providerId(oAuth2UserInfo.getId())
                 .build();
 
+        var optionalImageData = this.avatarRetrievalService.getData(oAuth2UserInfo.getImageUrl());
+
         var account = Account.newAccount()
                 .role(AccountRole.USER)
                 .username(oAuth2UserInfo.getUsername())
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
-                .imageUrl(oAuth2UserInfo.getImageUrl())
+                .image(optionalImageData.map(AvatarData::content).orElse(null))
+                .imageContentType(optionalImageData.map(AvatarData::contentType).orElse(null))
                 .oAuth2Metadata(Set.of(oAuth2Metadata))
                 .build();
 

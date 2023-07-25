@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,29 +16,13 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.infrastructure.security;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.WebClient;
+package com.svalyn.studio.infrastructure.avatar.api;
 
 /**
- * Used to provide the HTTP client to perform the oauth2 requests.
+ * The data of the avatar.
  *
  * @author sbegaudeau
  */
-@Configuration
-public class OAuth2UserServiceConfiguration {
-
-    @Bean
-    public WebClient webClient(ClientRegistrationRepository clients, OAuth2AuthorizedClientRepository authz) {
-        var oauth2 = new ServletOAuth2AuthorizedClientExchangeFilterFunction(clients, authz);
-        return WebClient.builder()
-                .filter(oauth2)
-                .build();
-    }
-
+public record AvatarData(byte[] content, String contentType) {
 }

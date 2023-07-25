@@ -35,5 +35,16 @@
 
         <sql>ALTER TABLE project ADD COLUMN textsearchable_generated tsvector GENERATED ALWAYS AS ( to_tsvector('english', identifier || ' ' || name || '' || description) ) STORED</sql>
         <sql>CREATE INDEX project_search_index ON project USING GIN(textsearchable_generated)</sql>
+
+        <dropColumn tableName="account" columnName="image_url" />
+        <addColumn tableName="account">
+            <column name="image" type="BYTEA">
+                <constraints nullable="true"/>
+            </column>
+            <column name="image_content_type" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
     </changeSet>
 </databaseChangeLog>

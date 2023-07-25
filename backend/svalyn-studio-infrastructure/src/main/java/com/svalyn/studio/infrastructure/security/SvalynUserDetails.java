@@ -38,21 +38,17 @@ public class SvalynUserDetails extends User implements IUser {
 
     private final String name;
 
-    private final String imageUrl;
-
-    public SvalynUserDetails(UUID id, String name, String imageUrl, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public SvalynUserDetails(UUID id, String name, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
-        this.imageUrl = Objects.requireNonNull(imageUrl);
     }
 
     @SuppressWarnings("checkstyle:ParameterNumber")
-    public SvalynUserDetails(UUID id, String name, String imageUrl, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+    public SvalynUserDetails(UUID id, String name, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
-        this.imageUrl = Objects.requireNonNull(imageUrl);
     }
 
     @Override
@@ -63,10 +59,5 @@ public class SvalynUserDetails extends User implements IUser {
     @Override
     public String getName() {
         return this.name;
-    }
-
-    @Override
-    public String getImageUrl() {
-        return this.imageUrl;
     }
 }

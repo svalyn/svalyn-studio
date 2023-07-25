@@ -39,14 +39,14 @@ public interface IAccountRepository extends PagingAndSortingRepository<Account, 
     Optional<Account> findByEmail(String email);
 
     @Query("""
-    SELECT * FROM account account
+    SELECT account.* FROM account account
     JOIN oauth2_metadata oauth2 ON account.id = oauth2.account_id
     WHERE oauth2.provider = :provider AND oauth2.provider_id = :providerId
     """)
     Optional<Account> findByOAuth2Metadata(String provider, String providerId);
 
     @Query("""
-    SELECT * FROM account account
+    SELECT account.* FROM account account
     JOIN authentication_token authenticationToken ON account.id = authenticationToken.account_id
     WHERE authenticationToken.access_key = :accessKey AND authenticationToken.status = 'ACTIVE'
     """)

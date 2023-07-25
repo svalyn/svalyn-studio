@@ -21,6 +21,7 @@ package com.svalyn.studio.application.services.activity;
 
 import com.svalyn.studio.application.controllers.activity.dto.ActivityEntryDTO;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
+import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
 import com.svalyn.studio.application.services.activity.api.IActivityService;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
@@ -49,15 +50,18 @@ public class ActivityService implements IActivityService {
 
     private final IActivityEntryRepository activityEntryRepository;
 
+    private final IAvatarUrlService avatarUrlService;
 
-    public ActivityService(IAccountRepository accountRepository, IActivityEntryRepository activityEntryRepository) {
+
+    public ActivityService(IAccountRepository accountRepository, IActivityEntryRepository activityEntryRepository, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.activityEntryRepository = Objects.requireNonNull(activityEntryRepository);
+        this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
     private Optional<ActivityEntryDTO> toDTO(ActivityEntry activityEntry) {
         var optionalCreatedByProfile = this.accountRepository.findById(activityEntry.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), account.getImageUrl()));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
 
         return optionalCreatedByProfile.map(createdBy -> new ActivityEntryDTO(
                 activityEntry.getId(),
