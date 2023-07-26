@@ -61,7 +61,7 @@ public class ActivityService implements IActivityService {
 
     private Optional<ActivityEntryDTO> toDTO(ActivityEntry activityEntry) {
         var optionalCreatedByProfile = this.accountRepository.findById(activityEntry.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
 
         return optionalCreatedByProfile.map(createdBy -> new ActivityEntryDTO(
                 activityEntry.getId(),

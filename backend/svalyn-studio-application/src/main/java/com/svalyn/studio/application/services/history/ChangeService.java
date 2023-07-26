@@ -63,9 +63,9 @@ public class ChangeService implements IChangeService {
 
     private Optional<ChangeDTO> toDTO(Change change) {
         var optionalCreatedByProfile = this.accountRepository.findById(change.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(change.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

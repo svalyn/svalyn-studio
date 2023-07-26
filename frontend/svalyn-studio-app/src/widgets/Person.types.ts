@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,17 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { formatTime } from '../utils/formatTime';
-import { LastModifiedOnProps } from './LastModifiedOn.types';
-import { Person } from './Person';
+import { TypographyTypeMap } from '@mui/material/Typography';
 
-export const LastModifiedOn = ({ profile, date }: LastModifiedOnProps) => {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(0.5) }}>
-      <Person profile={profile} variant="body2" />
-      <Typography variant="body2">modified this {formatTime(date)}</Typography>
-    </Box>
-  );
-};
+export interface PersonProps {
+  profile: Profile;
+  variant?: TypographyTypeMap['props']['variant'];
+}
+
+export interface Profile {
+  name: string;
+  username: string;
+  imageUrl: string;
+}
