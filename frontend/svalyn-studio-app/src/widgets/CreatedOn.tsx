@@ -17,31 +17,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
 import { formatTime } from '../utils/formatTime';
 import { CreatedOnProps } from './CreatedOn.types';
+import { Person } from './Person';
 
 export const CreatedOn = ({ profile, date }: CreatedOnProps) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(0.5) }}>
-      <Tooltip title={profile.name}>
-        <Avatar
-          component={RouterLink}
-          to={`/profiles/${profile.username}`}
-          alt={profile.name}
-          src={profile.imageUrl}
-          sx={{ width: 24, height: 24 }}
-        />
-      </Tooltip>
-      <Link variant="body2" component={RouterLink} to={`/profiles/${profile.username}`}>
-        {profile.username}
-      </Link>
-      <Typography variant="body2">created this {formatTime(date)}</Typography>
-    </Box>
+    <>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(0.5) }}>
+        <Person profile={profile} variant="body2" />
+        <Typography variant="body2">created this {formatTime(date)}</Typography>
+      </Box>
+    </>
   );
 };

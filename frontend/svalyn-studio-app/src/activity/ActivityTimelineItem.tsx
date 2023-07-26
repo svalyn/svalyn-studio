@@ -28,14 +28,12 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
 import { formatTime } from '../utils/formatTime';
+import { Person } from '../widgets/Person';
 import { ActivityTimelineItemProps } from './ActivityTimelineItem.types';
 
 export const ActivityTimelineItem = ({ date, kind, createdBy, title, description }: ActivityTimelineItemProps) => {
@@ -120,24 +118,7 @@ export const ActivityTimelineItem = ({ date, kind, createdBy, title, description
             gap: (theme) => theme.spacing(0.5),
           }}
         >
-          <Tooltip title={createdBy.name}>
-            <Avatar
-              component={RouterLink}
-              to={`/profiles/${createdBy.username}`}
-              alt={createdBy.name}
-              src={createdBy.imageUrl}
-              sx={{ width: 24, height: 24 }}
-            />
-          </Tooltip>
-          <Link
-            component={RouterLink}
-            to={`/profiles/${createdBy.username}`}
-            color="inherit"
-            underline="hover"
-            sx={{ fontWeight: 'bold' }}
-          >
-            {createdBy.username}
-          </Link>
+          <Person profile={createdBy} variant="body1" />
           <Typography>{description}</Typography>
         </Box>
       </TimelineContent>

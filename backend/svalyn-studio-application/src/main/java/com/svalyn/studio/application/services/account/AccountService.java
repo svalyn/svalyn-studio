@@ -57,6 +57,6 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional(readOnly = true)
     public Optional<ProfileDTO> findProfileByUsername(String username) {
-        return this.accountRepository.findByUsername(username).map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+        return this.accountRepository.findByUsername(username).map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
     }
 }

@@ -75,9 +75,9 @@ public class BranchService implements IBranchService {
 
     private Optional<BranchDTO> toDTO(Branch branch) {
         var optionalCreatedByProfile = this.accountRepository.findById(branch.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(branch.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
         var changeId = Optional.ofNullable(branch.getChange()).map(AggregateReference::getId).orElse(null);
 
         return optionalCreatedByProfile.flatMap(createdBy ->

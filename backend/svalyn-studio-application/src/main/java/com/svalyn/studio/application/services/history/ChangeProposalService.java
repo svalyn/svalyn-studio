@@ -87,9 +87,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private Optional<ChangeProposalDTO> toDTO(ChangeProposal changeProposal) {
         var optionalCreatedByProfile = this.accountRepository.findById(changeProposal.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(changeProposal.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->
@@ -144,9 +144,9 @@ public class ChangeProposalService implements IChangeProposalService {
 
     private Optional<ReviewDTO> toDTO(Review review) {
         var optionalCreatedByProfile = this.accountRepository.findById(review.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(review.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
 
         return optionalCreatedByProfile.flatMap(createdBy ->
                 optionalLastModifiedByProfile.map(lastModifiedBy ->

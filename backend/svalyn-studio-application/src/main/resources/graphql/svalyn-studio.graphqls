@@ -67,6 +67,7 @@ type Profile {
   name: String!
   username: String!
   imageUrl: String!
+  createdOn: Instant!
   activityEntries(page: Int!, rowsPerPage: Int!): ProfileActivityEntriesConnection!
 }
 

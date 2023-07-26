@@ -21,10 +21,16 @@ package com.svalyn.studio.application.controllers.dto;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.time.Instant;
+
 /**
  * The profile DTO for the GraphQL layer.
  *
  * @author sbegaudeau
  */
-public record ProfileDTO(@NotNull String name, @NotNull String username, @NotNull String imageUrl) {
+public record ProfileDTO(
+        @NotNull String name,
+        @NotNull String username,
+        @NotNull String imageUrl,
+        @NotNull Instant createdOn) {
 }

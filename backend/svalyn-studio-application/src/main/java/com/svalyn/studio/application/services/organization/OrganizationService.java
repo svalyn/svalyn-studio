@@ -86,9 +86,9 @@ public class OrganizationService implements IOrganizationService {
 
     private Optional<OrganizationDTO> toDTO(Organization organization) {
         var optionalCreatedByProfile = this.accountRepository.findById(organization.getCreatedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
         var optionalLastModifiedByProfile = this.accountRepository.findById(organization.getLastModifiedBy().getId())
-                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername())));
+                .map(account -> new ProfileDTO(account.getName(), account.getUsername(), this.avatarUrlService.imageUrl(account.getUsername()), account.getCreatedOn()));
 
         var userId = UserIdProvider.get().getId();
         return optionalCreatedByProfile.flatMap(createdBy ->
