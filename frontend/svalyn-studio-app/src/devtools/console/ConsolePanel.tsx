@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,12 +17,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface DeleteOrganizationDialogProps {
-  organizationIdentifier: string;
-  open: boolean;
-  onClose: () => void;
-}
+import Box from '@mui/material/Box';
+import { ConsoleLine } from './ConsoleLine';
+import { ConsolePanelProps } from './ConsolePanel.types';
+import { useConsole } from './useConsole';
 
-export interface DeleteOrganizationDialogState {
-  message: string | null;
-}
+export const ConsolePanel = ({}: ConsolePanelProps) => {
+  const { messages } = useConsole();
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        paddingY: (theme) => theme.spacing(1),
+        backgroundColor: (theme) => theme.palette.code.main,
+      }}
+    >
+      {messages.map((message, index) => (
+        <ConsoleLine index={index} line={message.body} severity={message.severity} key={index} />
+      ))}
+    </Box>
+  );
+};

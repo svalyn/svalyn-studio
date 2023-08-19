@@ -21,38 +21,5 @@ export interface NewOrganizationViewState {
   name: string;
   organizationId: string;
   isFormValid: boolean;
-  createdOrganization: Organization | null;
   message: string | null;
-}
-
-export interface Organization {
-  identifier: string;
-}
-
-export interface CreateOrganizationData {
-  createOrganization: CreateOrganizationPayload;
-}
-
-export interface CreateOrganizationPayload {
-  __typename: string;
-}
-
-export interface ErrorPayload extends CreateOrganizationPayload {
-  __typename: 'ErrorPayload';
-  message: string;
-}
-
-export interface CreateOrganizationSuccessPayload extends CreateOrganizationPayload {
-  __typename: 'CreateOrganizationSuccessPayload';
-  organization: Organization;
-}
-
-export interface CreateOrganizationVariables {
-  input: CreateOrganizationInput;
-}
-
-export interface CreateOrganizationInput {
-  id: string;
-  identifier: string;
-  name: string;
 }

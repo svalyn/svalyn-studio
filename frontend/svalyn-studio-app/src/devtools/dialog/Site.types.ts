@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,12 +17,30 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface DeleteOrganizationDialogProps {
-  organizationIdentifier: string;
-  open: boolean;
-  onClose: () => void;
+import { UseCase } from '../usecases/UseCasesPanel.types';
+
+export type LeftPanel = 'UseCases';
+export type RightPanel = 'Console';
+
+export interface LeftSiteProps {
+  onExecute: (useCase: UseCase) => void;
+  onRollback: (useCase: UseCase) => void;
 }
 
-export interface DeleteOrganizationDialogState {
-  message: string | null;
+export interface LeftSiteState {
+  panelSelected: LeftPanel;
 }
+
+export type LeftPanelCandidates = {
+  [panel in LeftPanel]: React.ReactNode;
+};
+
+export interface RightSiteProps {}
+
+export interface RightSiteState {
+  panelSelected: RightPanel;
+}
+
+export type RightPanelCandidates = {
+  [panel in RightPanel]: React.ReactNode;
+};

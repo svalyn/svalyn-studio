@@ -22,3 +22,10 @@ export interface ErrorSnackbarProps {
   message: string | null;
   onClose: () => void;
 }
+
+export interface Message {
+  body: string;
+  severity: VariantType;
+}
+
+export type VariantType = 'error' | 'warning' | 'success' | 'info';

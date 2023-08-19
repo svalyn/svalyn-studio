@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -28,40 +28,5 @@ export interface NewProjectDialogState {
   name: string;
   description: string;
   isFormValid: boolean;
-  createdProject: Project | null;
   message: string | null;
-}
-
-export interface CreateProjectData {
-  createProject: CreateProjectPayload;
-}
-
-export interface CreateProjectPayload {
-  __typename: string;
-}
-
-export interface ErrorPayload extends CreateProjectPayload {
-  __typename: 'ErrorPayload';
-  message: string;
-}
-
-export interface CreateProjectSuccessPayload extends CreateProjectPayload {
-  __typename: 'CreateProjectSuccessPayload';
-  project: Project;
-}
-
-export interface Project {
-  identifier: string;
-}
-
-export interface CreateProjectVariables {
-  input: CreateProjectInput;
-}
-
-export interface CreateProjectInput {
-  id: string;
-  organizationIdentifier: string;
-  identifier: string;
-  name: string;
-  description: string;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,12 +17,47 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface DeleteOrganizationDialogProps {
-  organizationIdentifier: string;
-  open: boolean;
-  onClose: () => void;
+import { Message } from '../snackbar/ErrorSnackbar.types';
+
+export type UseCreateOrganizationValue = [
+  createOrganization: (input: CreateOrganizationInput) => void,
+  result: CreateOrganizationResult
+];
+
+export interface CreateOrganizationInput {
+  id: string;
+  identifier: string;
+  name: string;
 }
 
-export interface DeleteOrganizationDialogState {
-  message: string | null;
+export interface CreateOrganizationPayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends CreateOrganizationPayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface CreateOrganizationSuccessPayload extends CreateOrganizationPayload {
+  __typename: 'CreateOrganizationSuccessPayload';
+  organization: Organization;
+}
+
+export interface CreateOrganizationVariables {
+  input: CreateOrganizationInput;
+}
+
+export interface CreateOrganizationData {
+  createOrganization: CreateOrganizationPayload;
+}
+
+export interface CreateOrganizationResult {
+  loading: boolean;
+  organization: Organization | null;
+  message: Message | null;
+}
+
+export interface Organization {
+  identifier: string;
 }

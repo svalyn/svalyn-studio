@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation } from '@apollo/client';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -27,23 +26,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
-import {
-  DeleteOrganizationData,
-  DeleteOrganizationDialogProps,
-  DeleteOrganizationDialogState,
-  DeleteOrganizationVariables,
-  ErrorPayload,
-} from './DeleteOrganizationDialog.types';
-
-const deleteOrganizationMutation = gql`
-  mutation deleteOrganization($input: DeleteOrganizationInput!) {
-    deleteOrganization(input: $input) {
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
+import { DeleteOrganizationDialogProps, DeleteOrganizationDialogState } from './DeleteOrganizationDialog.types';
+import { useDeleteOrganization } from './useDeleteOrganization';
+import { DeleteOrganizationInput } from './useDeleteOrganization.types';
 
 export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose }: DeleteOrganizationDialogProps) => {
   const [state, setState] = useState<DeleteOrganizationDialogState>({
@@ -52,35 +37,24 @@ export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose
 
   const navigate = useNavigate();
 
-  const [
-    deleteOrganization,
-    { loading: deleteOrganizationLoading, data: deleteOrganizationData, error: deleteOrganizationError },
-  ] = useMutation<DeleteOrganizationData, DeleteOrganizationVariables>(deleteOrganizationMutation);
+  const [deleteOrganization, { deleted, message }] = useDeleteOrganization();
+
   useEffect(() => {
-    if (!deleteOrganizationLoading) {
-      if (deleteOrganizationData) {
-        if (deleteOrganizationData.deleteOrganization.__typename === 'SuccessPayload') {
-          navigate('/');
-        } else if (deleteOrganizationData.deleteOrganization.__typename === 'ErrorPayload') {
-          const { message } = deleteOrganizationData.deleteOrganization as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message }));
-        }
-      }
-      if (deleteOrganizationError) {
-        setState((prevState) => ({ ...prevState, message: deleteOrganizationError.message }));
-      }
+    if (deleted) {
+      navigate('/');
     }
-  }, [deleteOrganizationLoading, deleteOrganizationData, deleteOrganizationError]);
+    if (message) {
+      setState((prevState) => ({ ...prevState, message: message.body }));
+    }
+  }, [deleted, message]);
 
   const handleDeleteOrganization: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: DeleteOrganizationVariables = {
-      input: {
-        id: crypto.randomUUID(),
-        organizationIdentifier,
-      },
+    const input: DeleteOrganizationInput = {
+      id: crypto.randomUUID(),
+      organizationIdentifier,
     };
 
-    deleteOrganization({ variables });
+    deleteOrganization(input);
   };
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
