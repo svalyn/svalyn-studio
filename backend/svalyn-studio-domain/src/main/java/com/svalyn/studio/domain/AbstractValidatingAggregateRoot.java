@@ -19,12 +19,14 @@
 
 package com.svalyn.studio.domain;
 
-import org.springframework.data.domain.AbstractAggregateRoot;
-
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import java.util.stream.Collectors;
 
 /**
@@ -36,16 +38,24 @@ import java.util.stream.Collectors;
  */
 public class AbstractValidatingAggregateRoot<A extends AbstractValidatingAggregateRoot<A>> extends AbstractAggregateRoot<A> {
 
+    @Transient
+    private final Logger logger = LoggerFactory.getLogger(AbstractValidatingAggregateRoot.class);
+
     @Override
     protected <T> T registerEvent(T event) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        var validator = factory.getValidator();
-        var violations = validator.validate(event);
-        if (!violations.isEmpty()) {
-            var message = violations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(", "));
-            throw new ConstraintViolationException(message, violations);
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            var validator = factory.getValidator();
+            var violations = validator.validate(event);
+            if (!violations.isEmpty()) {
+                var message = violations.stream()
+                        .map(constraintViolation -> constraintViolation.getPropertyPath().toString() + " " + constraintViolation.getMessage())
+                        .collect(Collectors.joining(", "));
+
+                var exception = new ConstraintViolationException(message, violations);
+                logger.warn(exception.getMessage(), exception);
+
+                throw exception;
+            }
         }
 
         return super.registerEvent(event);
