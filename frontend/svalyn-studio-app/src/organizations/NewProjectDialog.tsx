@@ -17,7 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation } from '@apollo/client';
 import ClassIcon from '@mui/icons-material/Class';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -30,30 +29,9 @@ import { Theme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import {
-  CreateProjectData,
-  CreateProjectSuccessPayload,
-  CreateProjectVariables,
-  ErrorPayload,
-  NewProjectDialogProps,
-  NewProjectDialogState,
-} from './NewProjectDialog.types';
-
-const createProjectMutation = gql`
-  mutation createProject($input: CreateProjectInput!) {
-    createProject(input: $input) {
-      __typename
-      ... on CreateProjectSuccessPayload {
-        project {
-          identifier
-        }
-      }
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
+import { NewProjectDialogProps, NewProjectDialogState } from './NewProjectDialog.types';
+import { useCreateProject } from './useCreateProject';
+import { CreateProjectInput } from './useCreateProject.types';
 
 export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewProjectDialogProps) => {
   const [state, setState] = useState<NewProjectDialogState>({
@@ -61,7 +39,6 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
     name: '',
     description: '',
     isFormValid: false,
-    createdProject: null,
     message: null,
   });
 
@@ -92,47 +69,29 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
     setState((prevState) => ({ ...prevState, description: value }));
   };
 
-  const [createProject, { loading: createProjectLoading, data: createProjectData, error: createProjectError }] =
-    useMutation<CreateProjectData, CreateProjectVariables>(createProjectMutation);
+  const [createProject, { project, message }] = useCreateProject();
   useEffect(() => {
-    if (!createProjectLoading) {
-      if (createProjectData) {
-        const { createProject } = createProjectData;
-        if (createProject.__typename === 'CreateProjectSuccessPayload') {
-          const createProjectSuccessPayload = createProject as CreateProjectSuccessPayload;
-          setState((prevState) => ({
-            ...prevState,
-            createdProject: createProjectSuccessPayload.project,
-          }));
-        } else if (createProject.__typename === 'ErrorPayload') {
-          const errorPayload = createProject as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
-        }
-      }
-      if (createProjectError) {
-        setState((prevState) => ({ ...prevState, message: createProjectError.message }));
-      }
+    if (message) {
+      setState((prevState) => ({ ...prevState, message: message.body }));
     }
-  }, [createProjectLoading, createProjectData, createProjectError]);
+  }, [message]);
 
   const handleCreateProject: React.MouseEventHandler<HTMLButtonElement> = () => {
     const { identifier, name, description } = state;
-    const variables: CreateProjectVariables = {
-      input: {
-        id: crypto.randomUUID(),
-        organizationIdentifier,
-        identifier: identifier,
-        name,
-        description,
-      },
+    const input: CreateProjectInput = {
+      id: crypto.randomUUID(),
+      organizationIdentifier,
+      identifier: identifier,
+      name,
+      description,
     };
-    createProject({ variables });
+    createProject(input);
   };
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
-  if (state.createdProject) {
-    return <Navigate to={`/projects/${state.createdProject.identifier}`} />;
+  if (project) {
+    return <Navigate to={`/projects/${project.identifier}`} />;
   }
 
   return (

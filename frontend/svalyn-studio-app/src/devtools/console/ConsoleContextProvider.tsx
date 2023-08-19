@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,12 +17,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface DeleteOrganizationDialogProps {
-  organizationIdentifier: string;
-  open: boolean;
-  onClose: () => void;
-}
+import React, { useState } from 'react';
+import { Message } from '../../snackbar/ErrorSnackbar.types';
+import {
+  ConsoleContextProviderProps,
+  ConsoleContextProviderState,
+  ConsoleContextValue,
+} from './ConsoleContextProvider.types';
 
-export interface DeleteOrganizationDialogState {
-  message: string | null;
-}
+export const ConsoleContext = React.createContext<ConsoleContextValue>({
+  messages: [],
+  pushMessage: () => {},
+  clearMessages: () => {},
+});
+
+export const ConsoleContextProvider = ({ children }: ConsoleContextProviderProps) => {
+  const [state, setState] = useState<ConsoleContextProviderState>({
+    messages: [],
+  });
+
+  const pushMessage = (message: Message) =>
+    setState((prevState) => ({ ...prevState, messages: [...prevState.messages, message] }));
+
+  const clearMessages = () => setState((prevState) => ({ ...prevState, messages: [] }));
+
+  const value: ConsoleContextValue = {
+    messages: [...state.messages],
+    pushMessage,
+    clearMessages,
+  };
+
+  return <ConsoleContext.Provider value={value}>{children}</ConsoleContext.Provider>;
+};

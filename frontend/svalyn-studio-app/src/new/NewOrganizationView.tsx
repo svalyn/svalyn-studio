@@ -17,56 +17,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation } from '@apollo/client';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
-import Paper, { PaperProps } from '@mui/material/Paper';
+import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { Navigate, Link as RouterLink } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import {
-  CreateOrganizationData,
-  CreateOrganizationInput,
-  CreateOrganizationSuccessPayload,
-  CreateOrganizationVariables,
-  ErrorPayload,
-  NewOrganizationViewState,
-} from './NewOrganizationView.types';
-
-const createOrganizationMutation = gql`
-  mutation createOrganization($input: CreateOrganizationInput!) {
-    createOrganization(input: $input) {
-      __typename
-      ... on CreateOrganizationSuccessPayload {
-        organization {
-          identifier
-        }
-      }
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
-
-const Area = styled(Paper)<PaperProps>(({ theme }) => ({
-  padding: theme.spacing(2),
-}));
+import { NewOrganizationViewState } from './NewOrganizationView.types';
+import { useCreateOrganization } from './useCreateOrganization';
+import { CreateOrganizationInput } from './useCreateOrganization.types';
 
 export const NewOrganizationView = () => {
   const [state, setState] = useState<NewOrganizationViewState>({
     name: '',
     organizationId: '',
     isFormValid: false,
-    createdOrganization: null,
     message: null,
   });
 
@@ -93,30 +65,12 @@ export const NewOrganizationView = () => {
     }));
   };
 
-  const [createOrganization, { loading, data, error }] = useMutation<
-    CreateOrganizationData,
-    CreateOrganizationVariables
-  >(createOrganizationMutation);
+  const [createOrganization, { organization, message }] = useCreateOrganization();
   useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const { createOrganization } = data;
-        if (createOrganization.__typename === 'CreateOrganizationSuccessPayload') {
-          const createOrganizationSuccessPayload = createOrganization as CreateOrganizationSuccessPayload;
-          setState((prevState) => ({
-            ...prevState,
-            createdOrganization: createOrganizationSuccessPayload.organization,
-          }));
-        } else if (createOrganization.__typename === 'ErrorPayload') {
-          const errorPayload = createOrganization as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
-        }
-      }
-      if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
-      }
+    if (message) {
+      setState((prevState) => ({ ...prevState, message: message.body }));
     }
-  }, [loading, data, error]);
+  }, [message]);
 
   const handleCreateOrganization: React.MouseEventHandler<HTMLButtonElement> = () => {
     const input: CreateOrganizationInput = {
@@ -124,13 +78,13 @@ export const NewOrganizationView = () => {
       identifier: state.organizationId,
       name: state.name,
     };
-    createOrganization({ variables: { input } });
+    createOrganization(input);
   };
 
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
-  if (state.createdOrganization) {
-    return <Navigate to={`/orgs/${state.createdOrganization.identifier}`} />;
+  if (organization) {
+    return <Navigate to={`/orgs/${organization.identifier}`} />;
   }
 
   return (
@@ -140,7 +94,7 @@ export const NewOrganizationView = () => {
         <div>
           <Container maxWidth="sm">
             <Toolbar />
-            <Area variant="outlined">
+            <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
               <Stack spacing={4}>
                 <Typography variant="h4" align="center">
                   Let's create your organization
@@ -180,7 +134,7 @@ export const NewOrganizationView = () => {
                   Back to the homepage
                 </Link>
               </Stack>
-            </Area>
+            </Paper>
           </Container>
         </div>
       </div>

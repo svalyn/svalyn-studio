@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,12 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface DeleteOrganizationDialogProps {
-  organizationIdentifier: string;
-  open: boolean;
-  onClose: () => void;
-}
+import { useContext } from 'react';
+import { ConsoleContext } from './ConsoleContextProvider';
+import { ConsoleContextValue } from './ConsoleContextProvider.types';
+import { UseConsoleValue } from './useConsole.types';
 
-export interface DeleteOrganizationDialogState {
-  message: string | null;
-}
+export const useConsole = (): UseConsoleValue => {
+  const { messages, pushMessage, clearMessages } = useContext<ConsoleContextValue>(ConsoleContext);
+
+  return { messages, pushMessage, clearMessages };
+};

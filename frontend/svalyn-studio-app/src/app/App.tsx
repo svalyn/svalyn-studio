@@ -17,9 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ChangeProposalsRouter } from '../changeproposals/ChangeProposalsRouter';
 import { DomainsRouter } from '../domains/DomainsRouter';
 import { ErrorsRouter } from '../errors/ErrorsRouter';
@@ -38,38 +36,29 @@ import { ProjectRouter } from '../projects/ProjectRouter';
 import { SearchRouter } from '../search/SearchRouter';
 import { SettingsRouter } from '../settings/SettingsRouter';
 import { WorkspaceView } from '../workspace/WorkspaceView';
-import { AuthenticationRedirectionBoundary } from './AuthenticationRedirectionBoundary';
-import { theme } from './theme';
 
 export const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <AuthenticationRedirectionBoundary>
-          <PaletteProvider>
-            <Routes>
-              <Route path="/" element={<HomeView />} />
-              <Route path="/new/*" element={<NewRouter />} />
-              <Route path="/orgs/:organizationIdentifier/*" element={<OrganizationRouter />} />
-              <Route path="/projects/:projectIdentifier/*" element={<ProjectRouter />} />
-              <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
-              <Route path="/changeproposals/*" element={<ChangeProposalsRouter />} />
-              <Route path="/domains/*" element={<DomainsRouter />} />
-              <Route path="/search/*" element={<SearchRouter />} />
-              <Route path="/profiles/*" element={<ProfilesRouter />} />
-              <Route path="/notifications/*" element={<NotificationsRouter />} />
-              <Route path="/invitations/*" element={<InvitationsRouter />} />
-              <Route path="/settings/*" element={<SettingsRouter />} />
-              <Route path="/help/*" element={<HelpRouter />} />
-              <Route path="/errors/*" element={<ErrorsRouter />} />
-              <Route path="/login/*" element={<LoginRouter />} />
-              <Route path="/oauth2/*" element={<OAuth2Router />} />
-              <Route path="*" element={<NotFoundView />} />
-            </Routes>
-          </PaletteProvider>
-        </AuthenticationRedirectionBoundary>
-      </BrowserRouter>
-    </ThemeProvider>
+    <PaletteProvider>
+      <Routes>
+        <Route path="/" element={<HomeView />} />
+        <Route path="/new/*" element={<NewRouter />} />
+        <Route path="/orgs/:organizationIdentifier/*" element={<OrganizationRouter />} />
+        <Route path="/projects/:projectIdentifier/*" element={<ProjectRouter />} />
+        <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
+        <Route path="/changeproposals/*" element={<ChangeProposalsRouter />} />
+        <Route path="/domains/*" element={<DomainsRouter />} />
+        <Route path="/search/*" element={<SearchRouter />} />
+        <Route path="/profiles/*" element={<ProfilesRouter />} />
+        <Route path="/notifications/*" element={<NotificationsRouter />} />
+        <Route path="/invitations/*" element={<InvitationsRouter />} />
+        <Route path="/settings/*" element={<SettingsRouter />} />
+        <Route path="/help/*" element={<HelpRouter />} />
+        <Route path="/errors/*" element={<ErrorsRouter />} />
+        <Route path="/login/*" element={<LoginRouter />} />
+        <Route path="/oauth2/*" element={<OAuth2Router />} />
+        <Route path="*" element={<NotFoundView />} />
+      </Routes>
+    </PaletteProvider>
   );
 };

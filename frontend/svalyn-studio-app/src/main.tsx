@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { App } from './app/App';
+import { AuthenticationRedirectionBoundary } from './app/AuthenticationRedirectionBoundary';
+import { theme } from './app/theme';
+import { loadDevTools } from './devtools/loadDevTools';
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+loadDevTools({
+  onLoad: (DevTools) => {
+    ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <AuthenticationRedirectionBoundary>
+            <DevTools>
+              <App />
+            </DevTools>
+          </AuthenticationRedirectionBoundary>
+        </BrowserRouter>
+      </ThemeProvider>
+    );
+  },
+});
