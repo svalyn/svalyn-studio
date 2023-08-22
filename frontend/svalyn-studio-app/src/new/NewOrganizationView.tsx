@@ -28,42 +28,28 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { Navigate, Link as RouterLink } from 'react-router-dom';
+import { hasMinLength, isIdentifier, useForm } from '../forms/useForm';
 import { Navbar } from '../navbars/Navbar';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import { NewOrganizationViewState } from './NewOrganizationView.types';
+import { NewOrganizationViewFormData, NewOrganizationViewState } from './NewOrganizationView.types';
 import { useCreateOrganization } from './useCreateOrganization';
 import { CreateOrganizationInput } from './useCreateOrganization.types';
 
 export const NewOrganizationView = () => {
   const [state, setState] = useState<NewOrganizationViewState>({
-    name: '',
-    organizationId: '',
-    isFormValid: false,
     message: null,
   });
 
-  const handleNameChanged: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-
-    setState((prevState) => ({
-      ...prevState,
-      name: value,
-      isFormValid: value.length > 0 && prevState.organizationId.length > 0,
-    }));
-  };
-
-  const handleOrganizationIdChanged: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({
-      ...prevState,
-      organizationId: value,
-      isFormValid: value.length > 0 && prevState.name.length > 0,
-    }));
-  };
+  const { data, isFormValid, getTextFieldProps } = useForm<NewOrganizationViewFormData>({
+    initialValue: {
+      name: '',
+      organizationId: '',
+    },
+    validationRules: {
+      name: (data) => hasMinLength(data.name, 0),
+      organizationId: (data) => isIdentifier(data.organizationId),
+    },
+  });
 
   const [createOrganization, { organization, message }] = useCreateOrganization();
   useEffect(() => {
@@ -72,11 +58,13 @@ export const NewOrganizationView = () => {
     }
   }, [message]);
 
-  const handleCreateOrganization: React.MouseEventHandler<HTMLButtonElement> = () => {
+  const handleCreateOrganization: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
     const input: CreateOrganizationInput = {
       id: crypto.randomUUID(),
-      identifier: state.organizationId,
-      name: state.name,
+      identifier: data.organizationId,
+      name: data.name,
     };
     createOrganization(input);
   };
@@ -95,45 +83,41 @@ export const NewOrganizationView = () => {
           <Container maxWidth="sm">
             <Toolbar />
             <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
-              <Stack spacing={4}>
-                <Typography variant="h4" align="center">
-                  Let's create your organization
-                </Typography>
-                <TextField
-                  label="Organization Name"
-                  helperText="This is where you'll manage your domains"
-                  value={state.name}
-                  onChange={handleNameChanged}
-                  variant="outlined"
-                  autoFocus
-                  required
-                  inputProps={{
-                    'aria-label': 'Organization Name',
-                  }}
-                />
-                <TextField
-                  label="Organization Identifier"
-                  helperText="A unique identifier composed of letters, numbers and dashes"
-                  value={state.organizationId}
-                  onChange={handleOrganizationIdChanged}
-                  variant="outlined"
-                  required
-                  inputProps={{
-                    'aria-label': 'Organization Identifier',
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  startIcon={<CorporateFareIcon />}
-                  onClick={handleCreateOrganization}
-                  disabled={!state.isFormValid}
-                >
-                  Create organization
-                </Button>
-                <Link component={RouterLink} to="/" variant="body2" underline="hover" align="center">
-                  Back to the homepage
-                </Link>
-              </Stack>
+              <form onSubmit={handleCreateOrganization}>
+                <Stack spacing={4}>
+                  <Typography variant="h4" align="center">
+                    Let's create your organization
+                  </Typography>
+                  <TextField
+                    {...getTextFieldProps('name', "This is where you'll manage your domains")}
+                    label="Organization Name"
+                    variant="outlined"
+                    autoFocus
+                    required
+                    inputProps={{
+                      'aria-label': 'Organization Name',
+                    }}
+                  />
+                  <TextField
+                    {...getTextFieldProps(
+                      'organizationId',
+                      'A unique identifier composed of letters, numbers, dashes and underscores'
+                    )}
+                    label="Organization Identifier"
+                    variant="outlined"
+                    required
+                    inputProps={{
+                      'aria-label': 'Organization Identifier',
+                    }}
+                  />
+                  <Button type="submit" variant="contained" startIcon={<CorporateFareIcon />} disabled={!isFormValid}>
+                    Create organization
+                  </Button>
+                  <Link component={RouterLink} to="/" variant="body2" underline="hover" align="center">
+                    Back to the homepage
+                  </Link>
+                </Stack>
+              </form>
             </Paper>
           </Container>
         </div>

@@ -28,46 +28,29 @@ import Typography from '@mui/material/Typography';
 import { Theme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { hasMaxLength, hasMinLength, isIdentifier, useForm } from '../forms/useForm';
 import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import { NewProjectDialogProps, NewProjectDialogState } from './NewProjectDialog.types';
+import { NewProjectDialogFormData, NewProjectDialogProps, NewProjectDialogState } from './NewProjectDialog.types';
 import { useCreateProject } from './useCreateProject';
 import { CreateProjectInput } from './useCreateProject.types';
 
 export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewProjectDialogProps) => {
   const [state, setState] = useState<NewProjectDialogState>({
-    identifier: '',
-    name: '',
-    description: '',
-    isFormValid: false,
     message: null,
   });
 
-  const handleIdentifierChanged: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({
-      ...prevState,
-      identifier: value,
-      isFormValid: value.length > 0 && prevState.name.length > 0,
-    }));
-  };
-  const handleNameChanged: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({
-      ...prevState,
-      name: value,
-      isFormValid: value.length > 0 && prevState.identifier.length > 0,
-    }));
-  };
-  const handleDescriptionChanged: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({ ...prevState, description: value }));
-  };
+  const { data, isFormValid, getTextFieldProps } = useForm<NewProjectDialogFormData>({
+    initialValue: {
+      identifier: '',
+      name: '',
+      description: '',
+    },
+    validationRules: {
+      identifier: (data) => isIdentifier(data.identifier),
+      name: (data) => hasMinLength(data.name, 0),
+      description: (data) => hasMaxLength(data.description, 261),
+    },
+  });
 
   const [createProject, { project, message }] = useCreateProject();
   useEffect(() => {
@@ -76,8 +59,10 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
     }
   }, [message]);
 
-  const handleCreateProject: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const { identifier, name, description } = state;
+  const handleCreateProject: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+
+    const { identifier, name, description } = data;
     const input: CreateProjectInput = {
       id: crypto.randomUUID(),
       organizationIdentifier,
@@ -101,73 +86,70 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
           <Typography variant="h4" gutterBottom>
             Let's set up your project
           </Typography>
-          <Grid container spacing={4} alignItems="stretch">
-            <Grid item xs={7}>
-              <Stack direction="column">
-                <Typography variant="h6" sx={{ paddingBottom: (theme) => theme.spacing(2) }}>
-                  Create a project to start managing your models
-                </Typography>
-                <Stack direction="column" spacing={4}>
-                  <TextField
-                    label="Project Name"
-                    helperText="This is where your various models will live"
-                    value={state.name}
-                    onChange={handleNameChanged}
-                    autoFocus
-                    required
-                    inputProps={{
-                      'aria-label': 'Project Name',
-                    }}
-                  />
-                  <TextField
-                    label="Project Identifier"
-                    helperText="A unique identifier composed of letters, numbers and dashes"
-                    value={state.identifier}
-                    onChange={handleIdentifierChanged}
-                    required
-                    inputProps={{
-                      'aria-label': 'Project Identifier',
-                    }}
-                  />
-                  <TextField
-                    label="Description"
-                    helperText={`Help others understand your project (${state.description.length}/260 characters)`}
-                    value={state.description}
-                    onChange={handleDescriptionChanged}
-                    minRows={5}
-                    maxRows={5}
-                    multiline
-                    inputProps={{ 'aria-label': 'Project Description', maxLength: 260 }}
-                  />
+          <form onSubmit={handleCreateProject}>
+            <Grid container spacing={4} alignItems="stretch">
+              <Grid item xs={7}>
+                <Stack direction="column">
+                  <Typography variant="h6" sx={{ paddingBottom: (theme) => theme.spacing(2) }}>
+                    Create a project to start managing your models
+                  </Typography>
+                  <Stack direction="column" spacing={4}>
+                    <TextField
+                      {...getTextFieldProps('name', 'This is where your various models will live')}
+                      label="Project Name"
+                      autoFocus
+                      required
+                      inputProps={{
+                        'aria-label': 'Project Name',
+                      }}
+                    />
+                    <TextField
+                      {...getTextFieldProps(
+                        'identifier',
+                        'A unique identifier composed of letters, numbers and dashes'
+                      )}
+                      label="Project Identifier"
+                      required
+                      inputProps={{
+                        'aria-label': 'Project Identifier',
+                      }}
+                    />
+                    <TextField
+                      {...getTextFieldProps(
+                        'description',
+                        `Help others understand your project (${data.description.length}/260 characters)`
+                      )}
+                      label="Description"
+                      minRows={5}
+                      maxRows={5}
+                      multiline
+                      inputProps={{ 'aria-label': 'Project Description', maxLength: 260 }}
+                    />
+                  </Stack>
                 </Stack>
-              </Stack>
+              </Grid>
+              <Grid container item xs={5} direction="column" justifyContent="space-between" alignItems="stretch">
+                <div>
+                  <Typography variant="h6" gutterBottom>
+                    What is a project?
+                  </Typography>
+                  <Typography>
+                    A project is the container of all your models. It represents the business that you want to manage
+                    using a model driven approach. You can use a project to contain various interconnected models which
+                    will be used to capture some information about your work.
+                  </Typography>
+                </div>
+                <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                  <Button variant="outlined" onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" startIcon={<ClassIcon />} variant="contained" disabled={!isFormValid}>
+                    Create project
+                  </Button>
+                </Stack>
+              </Grid>
             </Grid>
-            <Grid container item xs={5} direction="column" justifyContent="space-between" alignItems="stretch">
-              <div>
-                <Typography variant="h6" gutterBottom>
-                  What is a project?
-                </Typography>
-                <Typography>
-                  A project is the container of all your models. It represents the business that you want to manage
-                  using a model driven approach. You can use a project to contain various interconnected models which
-                  will be used to capture some information about your work.
-                </Typography>
-              </div>
-              <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                <Button variant="outlined" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  startIcon={<ClassIcon />}
-                  variant="contained"
-                  onClick={handleCreateProject}
-                  disabled={!state.isFormValid}
-                >
-                  Create project
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
+          </form>
         </Box>
       </Dialog>
       <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />

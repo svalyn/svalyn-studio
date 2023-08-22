@@ -24,9 +24,11 @@ export interface NewProjectDialogProps {
 }
 
 export interface NewProjectDialogState {
+  message: string | null;
+}
+
+export interface NewProjectDialogFormData {
   identifier: string;
   name: string;
   description: string;
-  isFormValid: boolean;
-  message: string | null;
 }

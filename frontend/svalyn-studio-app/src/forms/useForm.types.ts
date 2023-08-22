@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,11 +17,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NewOrganizationViewState {
-  message: string | null;
+import { TextFieldProps } from '@mui/material/TextField';
+
+export interface UseFormProps<FormDataType extends Object> {
+  initialValue: FormDataType;
+  validationRules?: { [FormDataProperty in keyof FormDataType]?: ValidationRule<FormDataType> };
 }
 
-export interface NewOrganizationViewFormData {
-  name: string;
-  organizationId: string;
+export interface UseFormValue<FormDataType extends Object> {
+  data: FormDataType;
+  isFormValid: boolean;
+  getTextFieldProps: (name: keyof FormDataType, helperText?: string) => TextFieldProps;
+}
+
+export type ValidationRule<FormDataType extends Object> = (data: FormDataType) => ValidationResult;
+
+export interface ValidationResult {
+  isPropertyValid: boolean;
+  errorMessage: string | null;
+}
+
+export interface UseFormState<FormDataType extends Object> {
+  data: FormDataType;
+  validationState: { [FormDataProperty in keyof FormDataType]?: ValidationResult };
+  isFormValid: boolean;
 }
