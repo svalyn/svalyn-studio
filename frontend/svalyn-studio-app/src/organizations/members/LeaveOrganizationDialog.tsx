@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -24,14 +24,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
   LeaveOrganizationData,
   LeaveOrganizationDialogProps,
-  LeaveOrganizationDialogState,
   LeaveOrganizationVariables,
 } from './LeaveOrganizationDialog.types';
 
@@ -46,9 +45,7 @@ const leaveOrganizationMutation = gql`
 `;
 
 export const LeaveOrganizationDialog = ({ organizationIdentifier, open, onClose }: LeaveOrganizationDialogProps) => {
-  const [state, setState] = useState<LeaveOrganizationDialogState>({
-    message: null,
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
 
@@ -63,11 +60,11 @@ export const LeaveOrganizationDialog = ({ organizationIdentifier, open, onClose 
           navigate('/');
         } else if (leaveOrganizationData.leaveOrganization.__typename === 'ErrorPayload') {
           const { message } = leaveOrganizationData.leaveOrganization as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message }));
+          enqueueSnackbar(message, { variant: 'error' });
         }
       }
       if (leaveOrganizationError) {
-        setState((prevState) => ({ ...prevState, message: leaveOrganizationError.message }));
+        enqueueSnackbar(leaveOrganizationError.message, { variant: 'error' });
       }
     }
   }, [leaveOrganizationLoading, leaveOrganizationData, leaveOrganizationError]);
@@ -83,29 +80,24 @@ export const LeaveOrganizationDialog = ({ organizationIdentifier, open, onClose 
     leaveOrganization({ variables });
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="leave-organization-dialog-title"
-        aria-describedby="leave-organization-dialog-description"
-      >
-        <DialogTitle id="leave-organization-dialog-title">Leave the organization</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="leave-organization-dialog-description">
-            By leaving, you won't be able to contribute to this organization anymore. In order to retrieve this ability
-            again, you will need to be invited by an administrator.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={handleLeaveOrganization}>Leave</Button>
-        </DialogActions>
-      </Dialog>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="leave-organization-dialog-title"
+      aria-describedby="leave-organization-dialog-description"
+    >
+      <DialogTitle id="leave-organization-dialog-title">Leave the organization</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="leave-organization-dialog-description">
+          By leaving, you won't be able to contribute to this organization anymore. In order to retrieve this ability
+          again, you will need to be invited by an administrator.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleLeaveOrganization}>Leave</Button>
+      </DialogActions>
+    </Dialog>
   );
 };

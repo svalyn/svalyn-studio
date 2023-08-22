@@ -28,15 +28,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import {
-  GetOrganizationsData,
-  GetOrganizationsVariables,
-  HomeViewLeftPanelProps,
-  HomeViewLeftPanelState,
-} from './HomeViewLeftPanel.types';
+import { GetOrganizationsData, GetOrganizationsVariables, HomeViewLeftPanelProps } from './HomeViewLeftPanel.types';
 
 const getOrganizationsQuery = gql`
   query getOrganizations {
@@ -54,73 +49,66 @@ const getOrganizationsQuery = gql`
 `;
 
 export const HomeViewLeftPanel = ({}: HomeViewLeftPanelProps) => {
-  const [state, setState] = useState<HomeViewLeftPanelState>({
-    message: null,
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const { data, error } = useQuery<GetOrganizationsData, GetOrganizationsVariables>(getOrganizationsQuery);
   useEffect(() => {
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   const organizations = data?.viewer.organizations.edges.map((edge) => edge.node) ?? [];
   return (
-    <>
-      <Paper
-        elevation={0}
-        square
+    <Paper
+      elevation={0}
+      square
+      sx={{
+        paddingY: (theme) => theme.spacing(1),
+        borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      <Box
         sx={{
-          paddingY: (theme) => theme.spacing(1),
-          borderRight: (theme) => `1px solid ${theme.palette.divider}`,
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingX: (theme) => theme.spacing(2),
+          paddingBottom: (theme) => theme.spacing(1),
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingX: (theme) => theme.spacing(2),
-            paddingBottom: (theme) => theme.spacing(1),
-          }}
+        <Typography variant="h6">Organizations</Typography>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<CorporateFareIcon />}
+          component={RouterLink}
+          to="/new/organization"
         >
-          <Typography variant="h6">Organizations</Typography>
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<CorporateFareIcon />}
-            component={RouterLink}
-            to="/new/organization"
-          >
-            New
-          </Button>
-        </Box>
-        {data && organizations.length > 0 ? (
-          <List disablePadding dense>
-            {organizations.map((organization) => {
-              return (
-                <ListItem disablePadding key={organization.identifier}>
-                  <ListItemButton component={RouterLink} to={`/orgs/${organization.identifier}`}>
-                    <ListItemIcon>
-                      <CorporateFareIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={organization.name} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-        ) : (
-          <Typography variant="body2" sx={{ paddingX: (theme) => theme.spacing(2) }}>
-            No organization found
-          </Typography>
-        )}
-      </Paper>
-      <ErrorSnackbar open={!!state.message} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+          New
+        </Button>
+      </Box>
+      {data && organizations.length > 0 ? (
+        <List disablePadding dense>
+          {organizations.map((organization) => {
+            return (
+              <ListItem disablePadding key={organization.identifier}>
+                <ListItemButton component={RouterLink} to={`/orgs/${organization.identifier}`}>
+                  <ListItemIcon>
+                    <CorporateFareIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={organization.name} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      ) : (
+        <Typography variant="body2" sx={{ paddingX: (theme) => theme.spacing(2) }}>
+          No organization found
+        </Typography>
+      )}
+    </Paper>
   );
 };

@@ -18,7 +18,7 @@
  */
 
 import { gql, useMutation } from '@apollo/client';
-import { Message } from '../snackbar/ErrorSnackbar.types';
+import { Message } from '../snackbar/Message.types';
 import {
   CreateProjectData,
   CreateProjectInput,

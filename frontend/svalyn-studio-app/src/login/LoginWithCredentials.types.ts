@@ -17,10 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface LoginWithCredentialsState {
-  message: string | null;
-}
-
 export interface LoginWithCredentialsFormData {
   username: string;
   password: string;

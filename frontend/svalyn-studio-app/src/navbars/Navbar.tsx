@@ -27,12 +27,12 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import Toolbar from '@mui/material/Toolbar';
+import { useSnackbar } from 'notistack';
 import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Svalyn } from '../icons/Svalyn';
 import { PaletteContext } from '../palette/PaletteContext';
 import { PaletteContextValue } from '../palette/PaletteContext.types';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { GetViewerData, GetViewerVariables, NavbarProps, NavbarState } from './Navbar.types';
 import { SearchButton } from './SearchButton';
 import { UserMenu } from './UserMenu';
@@ -52,8 +52,9 @@ export const Navbar = ({ children }: NavbarProps) => {
   const [state, setState] = useState<NavbarState>({
     viewer: null,
     anchorElement: null,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const { loading, data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery);
   useEffect(() => {
@@ -63,12 +64,10 @@ export const Navbar = ({ children }: NavbarProps) => {
         setState((prevState) => ({ ...prevState, viewer }));
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const { openPalette }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
 
@@ -81,65 +80,62 @@ export const Navbar = ({ children }: NavbarProps) => {
   const handleCloseUserMenu = () => setState((prevState) => ({ ...prevState, anchorElement: null }));
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar variant="dense">
-          <IconButton component={RouterLink} to="/" sx={{ marginRight: '1.5rem' }}>
-            <Svalyn />
-          </IconButton>
-          {children}
-          {state.viewer !== null ? (
-            <>
-              <Box
+    <AppBar position="static">
+      <Toolbar variant="dense">
+        <IconButton component={RouterLink} to="/" sx={{ marginRight: '1.5rem' }}>
+          <Svalyn />
+        </IconButton>
+        {children}
+        {state.viewer !== null ? (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: (theme) => theme.spacing(2),
+                marginLeft: 'auto',
+              }}
+            >
+              <Link
+                component={RouterLink}
+                to="/domains"
+                color="inherit"
+                underline="hover"
+                fontWeight={800}
                 sx={{
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  gap: (theme) => theme.spacing(2),
-                  marginLeft: 'auto',
+                  gap: (theme) => theme.spacing(0.5),
                 }}
               >
-                <Link
-                  component={RouterLink}
-                  to="/domains"
-                  color="inherit"
-                  underline="hover"
-                  fontWeight={800}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: (theme) => theme.spacing(0.5),
-                  }}
-                >
-                  <HubOutlinedIcon fontSize="inherit" />
-                  Domains
-                </Link>
-                <SearchButton onClick={handleOnSearchClick} />
-                <IconButton component={RouterLink} to="/notifications" size="small" color="inherit">
-                  <Badge badgeContent={state.viewer.unreadNotificationsCount} color="secondary">
-                    <NotificationsNoneIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton onClick={handleOpenUserMenu}>
-                  <Avatar alt={state.viewer.name} src={state.viewer.imageUrl} sx={{ width: 24, height: 24 }} />
-                </IconButton>
-                <UserMenu
-                  name={state.viewer.name}
-                  username={state.viewer.username}
-                  open={Boolean(state.anchorElement)}
-                  anchorEl={state.anchorElement}
-                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  onClose={handleCloseUserMenu}
-                  keepMounted
-                />
-              </Box>
-            </>
-          ) : null}
-        </Toolbar>
-      </AppBar>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+                <HubOutlinedIcon fontSize="inherit" />
+                Domains
+              </Link>
+              <SearchButton onClick={handleOnSearchClick} />
+              <IconButton component={RouterLink} to="/notifications" size="small" color="inherit">
+                <Badge badgeContent={state.viewer.unreadNotificationsCount} color="secondary">
+                  <NotificationsNoneIcon />
+                </Badge>
+              </IconButton>
+              <IconButton onClick={handleOpenUserMenu}>
+                <Avatar alt={state.viewer.name} src={state.viewer.imageUrl} sx={{ width: 24, height: 24 }} />
+              </IconButton>
+              <UserMenu
+                name={state.viewer.name}
+                username={state.viewer.username}
+                open={Boolean(state.anchorElement)}
+                anchorEl={state.anchorElement}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                onClose={handleCloseUserMenu}
+                keepMounted
+              />
+            </Box>
+          </>
+        ) : null}
+      </Toolbar>
+    </AppBar>
   );
 };

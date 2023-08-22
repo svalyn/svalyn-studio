@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,24 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import { ErrorSnackbarProps } from './ErrorSnackbar.types';
+export interface Message {
+  body: string;
+  severity: Severity;
+}
 
-export const ErrorSnackbar = ({ open, message, onClose }: ErrorSnackbarProps) => {
-  return (
-    <Snackbar
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      open={open}
-      autoHideDuration={5000}
-      onClose={onClose}
-      message={message}
-      action={
-        <IconButton size="small" color="inherit" onClick={onClose}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      }
-    />
-  );
-};
+export type Severity = 'error' | 'warning' | 'success' | 'info';

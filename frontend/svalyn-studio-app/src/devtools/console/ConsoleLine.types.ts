@@ -17,10 +17,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { VariantType } from '../../snackbar/ErrorSnackbar.types';
+import { Severity } from '../../snackbar/Message.types';
 
 export interface ConsoleLineProps {
   index: number;
   line: string;
-  severity: VariantType;
+  severity: Severity;
 }

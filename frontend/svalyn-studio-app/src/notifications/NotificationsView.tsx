@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -37,10 +37,10 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { formatTime } from '../utils/formatTime';
 import { NavigationsTableHead } from './NotificationsTableHead';
 import { NotificationsTableToolbar } from './NotificationsTableToolbar';
@@ -95,8 +95,9 @@ export const NotificationsView = () => {
     selectedNotifications: [],
     page: 0,
     rowsPerPage: 20,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const status: NotificationStatus[] = state.tab === 'Inbox' ? ['READ', 'UNREAD'] : ['DONE'];
   const variables: GetNotificationsVariables = { status, page: state.page, rowsPerPage: state.rowsPerPage };
@@ -117,7 +118,7 @@ export const NotificationsView = () => {
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -142,7 +143,7 @@ export const NotificationsView = () => {
         }
       }
       if (updateNotificationsStatusError) {
-        setState((prevState) => ({ ...prevState, message: updateNotificationsStatusError.message }));
+        enqueueSnackbar(updateNotificationsStatusError.message, { variant: 'error' });
       }
     }
   }, [updateNotificationsStatusLoading, updateNotificationsStatusData, updateNotificationsStatusError]);
@@ -189,155 +190,150 @@ export const NotificationsView = () => {
   const onPageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) =>
     setState((prevState) => ({ ...prevState, page }));
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   return (
-    <>
-      <div>
-        <Navbar />
-        <Box sx={{ paddingX: (theme) => theme.spacing(2) }}>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateRows: '1fr',
-              gridTemplateColumns: '1fr 5fr',
-              gap: (theme) => theme.spacing(2),
-            }}
-          >
-            <Box sx={{ paddingY: (theme) => theme.spacing(1) }}>
-              <List>
-                <ListItem disablePadding selected={state.tab === 'Inbox'} onClick={() => selectTab('Inbox')}>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Inbox" />
-                  </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding selected={state.tab === 'Done'} onClick={() => selectTab('Done')}>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <DoneIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Done" />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </Box>
-            <Box sx={{ paddingY: (theme) => theme.spacing(2) }}>
-              {state.notifications ? (
-                <>
-                  <NotificationsTableToolbar
-                    onMarkAsDone={() =>
-                      updateNotificationsStatus({
-                        variables: {
-                          input: {
-                            id: crypto.randomUUID(),
-                            notificationIds: state.selectedNotifications,
-                            status: 'DONE',
-                          },
+    <div>
+      <Navbar />
+      <Box sx={{ paddingX: (theme) => theme.spacing(2) }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateRows: '1fr',
+            gridTemplateColumns: '1fr 5fr',
+            gap: (theme) => theme.spacing(2),
+          }}
+        >
+          <Box sx={{ paddingY: (theme) => theme.spacing(1) }}>
+            <List>
+              <ListItem disablePadding selected={state.tab === 'Inbox'} onClick={() => selectTab('Inbox')}>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Inbox" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding selected={state.tab === 'Done'} onClick={() => selectTab('Done')}>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Done" />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Box>
+          <Box sx={{ paddingY: (theme) => theme.spacing(2) }}>
+            {state.notifications ? (
+              <>
+                <NotificationsTableToolbar
+                  onMarkAsDone={() =>
+                    updateNotificationsStatus({
+                      variables: {
+                        input: {
+                          id: crypto.randomUUID(),
+                          notificationIds: state.selectedNotifications,
+                          status: 'DONE',
                         },
-                      })
-                    }
-                    onMarkAsRead={() =>
-                      updateNotificationsStatus({
-                        variables: {
-                          input: {
-                            id: crypto.randomUUID(),
-                            notificationIds: state.selectedNotifications,
-                            status: 'READ',
-                          },
+                      },
+                    })
+                  }
+                  onMarkAsRead={() =>
+                    updateNotificationsStatus({
+                      variables: {
+                        input: {
+                          id: crypto.randomUUID(),
+                          notificationIds: state.selectedNotifications,
+                          status: 'READ',
                         },
-                      })
-                    }
-                    onMarkAsUnread={() =>
-                      updateNotificationsStatus({
-                        variables: {
-                          input: {
-                            id: crypto.randomUUID(),
-                            notificationIds: state.selectedNotifications,
-                            status: 'UNREAD',
-                          },
+                      },
+                    })
+                  }
+                  onMarkAsUnread={() =>
+                    updateNotificationsStatus({
+                      variables: {
+                        input: {
+                          id: crypto.randomUUID(),
+                          notificationIds: state.selectedNotifications,
+                          status: 'UNREAD',
                         },
-                      })
-                    }
-                    selectedNotificationsCount={state.selectedNotifications.length}
-                  />
-                  <TableContainer component={Paper} variant="outlined">
-                    <Table>
-                      <NavigationsTableHead
-                        notificationsCount={state.notifications.edges.length}
-                        selectedNotificationsCount={state.selectedNotifications.length}
-                        onSelectAll={selectAllNotifications}
-                      />
-                      <TableBody>
-                        {state.notifications.edges
-                          .map((edge) => edge.node)
-                          .map((notification) => {
-                            const isNotificationSelected = state.selectedNotifications.includes(notification.id);
-                            return (
-                              <TableRow
-                                sx={{
-                                  borderLeft: (theme) =>
-                                    `3px solid ${
-                                      notification.status === 'UNREAD' ? theme.palette.primary.main : 'transparent'
-                                    }`,
-                                }}
-                                key={notification.id}
-                              >
-                                <TableCell padding="checkbox">
-                                  <Checkbox
-                                    checked={isNotificationSelected}
-                                    onClick={() => selectNotification(notification)}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  <Link
+                      },
+                    })
+                  }
+                  selectedNotificationsCount={state.selectedNotifications.length}
+                />
+                <TableContainer component={Paper} variant="outlined">
+                  <Table>
+                    <NavigationsTableHead
+                      notificationsCount={state.notifications.edges.length}
+                      selectedNotificationsCount={state.selectedNotifications.length}
+                      onSelectAll={selectAllNotifications}
+                    />
+                    <TableBody>
+                      {state.notifications.edges
+                        .map((edge) => edge.node)
+                        .map((notification) => {
+                          const isNotificationSelected = state.selectedNotifications.includes(notification.id);
+                          return (
+                            <TableRow
+                              sx={{
+                                borderLeft: (theme) =>
+                                  `3px solid ${
+                                    notification.status === 'UNREAD' ? theme.palette.primary.main : 'transparent'
+                                  }`,
+                              }}
+                              key={notification.id}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox
+                                  checked={isNotificationSelected}
+                                  onClick={() => selectNotification(notification)}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Link
+                                  variant="subtitle1"
+                                  component={RouterLink}
+                                  to={notification.relatedUrl}
+                                  underline="hover"
+                                >
+                                  {notification.title}
+                                </Link>
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip title={notification.createdOn}>
+                                  <Typography
                                     variant="subtitle1"
-                                    component={RouterLink}
-                                    to={notification.relatedUrl}
-                                    underline="hover"
+                                    sx={{
+                                      color: (theme) =>
+                                        notification.status === 'UNREAD'
+                                          ? theme.palette.text.primary
+                                          : theme.palette.text.disabled,
+                                    }}
                                   >
-                                    {notification.title}
-                                  </Link>
-                                </TableCell>
-                                <TableCell>
-                                  <Tooltip title={notification.createdOn}>
-                                    <Typography
-                                      variant="subtitle1"
-                                      sx={{
-                                        color: (theme) =>
-                                          notification.status === 'UNREAD'
-                                            ? theme.palette.text.primary
-                                            : theme.palette.text.disabled,
-                                      }}
-                                    >
-                                      {formatTime(new Date(notification.createdOn))}
-                                    </Typography>
-                                  </Tooltip>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    sx={{ borderBottom: 'none' }}
-                    component="div"
-                    onPageChange={onPageChange}
-                    rowsPerPageOptions={[20]}
-                    rowsPerPage={20}
-                    page={state.page}
-                    count={state.notifications.pageInfo.count}
-                  />
-                </>
-              ) : null}
-            </Box>
+                                    {formatTime(new Date(notification.createdOn))}
+                                  </Typography>
+                                </Tooltip>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  sx={{ borderBottom: 'none' }}
+                  component="div"
+                  onPageChange={onPageChange}
+                  rowsPerPageOptions={[20]}
+                  rowsPerPage={20}
+                  page={state.page}
+                  count={state.notifications.pageInfo.count}
+                />
+              </>
+            ) : null}
           </Box>
         </Box>
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+      </Box>
+    </div>
   );
 };

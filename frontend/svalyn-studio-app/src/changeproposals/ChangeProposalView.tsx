@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 import { gql, useQuery } from '@apollo/client';
 import ClassIcon from '@mui/icons-material/Class';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
@@ -27,7 +28,6 @@ import { NotFoundView } from '../notfound/NotFoundView';
 import { goToDomains, goToHelp, goToHome, goToNotifications, goToSettings } from '../palette/DefaultPaletteActions';
 import { PaletteNavigationAction } from '../palette/Palette.types';
 import { usePalette } from '../palette/usePalette';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { ChangeProposalViewState, GetChangeProposalData, GetChangeProposalVariables } from './ChangeProposalView.types';
 import { ChangeProposalViewTabPanel } from './ChangeProposalViewTabPanel';
 
@@ -53,7 +53,9 @@ const getChangeProposalQuery = gql`
 
 export const ChangeProposalView = () => {
   const { changeProposalId } = useParams();
-  const [state, setState] = useState<ChangeProposalViewState>({ changeProposal: null, message: null });
+  const [state, setState] = useState<ChangeProposalViewState>({ changeProposal: null });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetChangeProposalVariables = { id: changeProposalId ?? '' };
   const { loading, data, error } = useQuery<GetChangeProposalData, GetChangeProposalVariables>(getChangeProposalQuery, {
@@ -98,24 +100,19 @@ export const ChangeProposalView = () => {
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   if (!loading && state.changeProposal === null) {
     return <NotFoundView />;
   }
 
   return (
-    <>
-      <div>
-        <Navbar />
-        {state.changeProposal ? <ChangeProposalViewTabPanel changeProposal={state.changeProposal} /> : null}
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <div>
+      <Navbar />
+      {state.changeProposal ? <ChangeProposalViewTabPanel changeProposal={state.changeProposal} /> : null}
+    </div>
   );
 };

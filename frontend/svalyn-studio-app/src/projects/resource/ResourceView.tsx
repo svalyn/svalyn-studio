@@ -23,12 +23,12 @@ import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { NotFoundView } from '../../notfound/NotFoundView';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { ViewerCard } from '../../viewers/ViewerCard';
-import { GetResourceData, GetResourceVariables, ResourceViewState } from './ResourceView.types';
+import { GetResourceData, GetResourceVariables } from './ResourceView.types';
 
 const getResourceQuery = gql`
   query getResource($projectIdentifier: ID!) {
@@ -45,7 +45,7 @@ const getResourceQuery = gql`
 `;
 
 export const ResourceView = () => {
-  const [state, setState] = useState<ResourceViewState>({ message: null });
+  const { enqueueSnackbar } = useSnackbar();
 
   const { projectIdentifier, changeId, '*': fullpath } = useParams();
 
@@ -66,48 +66,46 @@ export const ResourceView = () => {
   const { data, error } = useQuery<GetResourceData, GetResourceVariables>(getResourceQuery, { variables });
   useEffect(() => {
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   if (name.length === 0) {
     return <NotFoundView />;
   }
+
+  if (!data || !data.viewer.project) {
+    return null;
+  }
+
   return (
-    <>
-      {data && data.viewer.project ? (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: (theme) => theme.spacing(2),
-            padding: (theme) => theme.spacing(4),
-          }}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: (theme) => theme.spacing(2),
+        padding: (theme) => theme.spacing(4),
+      }}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
+        <Link
+          variant="h4"
+          underline="hover"
+          component={RouterLink}
+          to={`/orgs/${data.viewer.project.organization.identifier}`}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
-            <Link
-              variant="h4"
-              underline="hover"
-              component={RouterLink}
-              to={`/orgs/${data.viewer.project.organization.identifier}`}
-            >
-              {data.viewer.project.organization.name}
-            </Link>
-            <Typography variant="h4">/</Typography>
-            <Link variant="h4" underline="hover" component={RouterLink} to={`/projects/${projectIdentifier}`}>
-              {data.viewer.project.name}
-            </Link>
-          </Box>
-          <Container maxWidth="lg">
-            <Paper variant="outlined">
-              <ViewerCard changeId={changeId ?? ''} path={path} name={name} />
-            </Paper>
-          </Container>
-        </Box>
-      ) : null}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+          {data.viewer.project.organization.name}
+        </Link>
+        <Typography variant="h4">/</Typography>
+        <Link variant="h4" underline="hover" component={RouterLink} to={`/projects/${projectIdentifier}`}>
+          {data.viewer.project.name}
+        </Link>
+      </Box>
+      <Container maxWidth="lg">
+        <Paper variant="outlined">
+          <ViewerCard changeId={changeId ?? ''} path={path} name={name} />
+        </Paper>
+      </Container>
+    </Box>
   );
 };

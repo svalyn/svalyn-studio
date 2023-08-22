@@ -23,7 +23,6 @@ export interface HomeViewActivityState {
   activityEntries: ActivityEntry[];
   page: number;
   rowsPerPage: number;
-  message: string | null;
 }
 
 export interface GetActivityData {

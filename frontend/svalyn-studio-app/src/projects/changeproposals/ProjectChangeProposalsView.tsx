@@ -33,9 +33,9 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { useProject } from '../useProject';
 import { ChangeProposalsTableHead } from './ChangeProposalsTableHead';
 import { ChangeProposalsTableToolbar } from './ChangeProposalsTableToolbar';
@@ -91,8 +91,9 @@ export const ProjectChangeProposalsView = () => {
     filter: 'OPEN',
     page: 0,
     rowsPerPage: 10,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetChangeProposalsVariables = {
     identifier: projectIdentifier,
@@ -115,7 +116,8 @@ export const ProjectChangeProposalsView = () => {
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message, selectedChangeProposalIds: [] }));
+        setState((prevState) => ({ ...prevState, selectedChangeProposalIds: [] }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -136,7 +138,7 @@ export const ProjectChangeProposalsView = () => {
         }
       }
       if (deleteChangeProposalsError) {
-        setState((prevState) => ({ ...prevState, message: deleteChangeProposalsError.message }));
+        enqueueSnackbar(deleteChangeProposalsError.message, { variant: 'error' });
       }
     }
   }, [deleteChangeProposalsLoading, deleteChangeProposalsData, deleteChangeProposalsError]);
@@ -197,92 +199,87 @@ export const ProjectChangeProposalsView = () => {
   const handleFilterChange = (filter: ChangeProposalStatusFilter) =>
     setState((prevState) => ({ ...prevState, filter }));
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   const changeProposals = state.project?.changeProposals.edges.map((edge) => edge.node) ?? [];
   return (
-    <>
-      <div>
-        <Toolbar
-          sx={{
-            backgroundColor: 'white',
-            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-          }}
+    <div>
+      <Toolbar
+        sx={{
+          backgroundColor: 'white',
+          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+          <DifferenceIcon fontSize="large" />
+          <Typography variant="h4">Change proposals</Typography>
+        </Box>
+        <Button
+          variant="outlined"
+          sx={{ marginLeft: 'auto' }}
+          size="small"
+          component={RouterLink}
+          disabled={role === 'NONE'}
+          to={`/projects/${projectIdentifier}/new/changeproposal`}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
-            <DifferenceIcon fontSize="large" />
-            <Typography variant="h4">Change proposals</Typography>
-          </Box>
-          <Button
-            variant="outlined"
-            sx={{ marginLeft: 'auto' }}
-            size="small"
-            component={RouterLink}
-            disabled={role === 'NONE'}
-            to={`/projects/${projectIdentifier}/new/changeproposal`}
-          >
-            New Change Proposal
-          </Button>
-        </Toolbar>
+          New Change Proposal
+        </Button>
+      </Toolbar>
 
-        <Container maxWidth="lg" sx={{ py: (theme) => theme.spacing(4) }}>
-          <ChangeProposalsTableToolbar
-            onDelete={handleDelete}
-            selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
-            role={role}
-          />
-          <TableContainer component={Paper} variant="outlined">
-            <Table>
-              <ChangeProposalsTableHead
-                filter={state.filter}
-                onFilterChange={handleFilterChange}
-                changeProposalsCount={changeProposals.length}
-                selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
-                onSelectAll={selectAllChangeProposals}
-              />
-              <TableBody>
-                {changeProposals.map((changeProposal) => {
-                  const isChangeProposalSelected = state.selectedChangeProposalIds.includes(changeProposal.id);
-                  return (
-                    <TableRow key={changeProposal.id} onClick={(event) => selectChangeProposal(event, changeProposal)}>
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isChangeProposalSelected} />
-                      </TableCell>
-                      <TableCell>
-                        <Link
-                          variant="subtitle1"
-                          component={RouterLink}
-                          to={`/changeproposals/${changeProposal.id}`}
-                          underline="hover"
-                        >
-                          {changeProposal.name}
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {state.project && changeProposals.length > 0 ? (
-            <TablePagination
-              component="div"
-              count={state.project.changeProposals.pageInfo.count}
-              page={state.page}
-              onPageChange={handlePageChange}
-              rowsPerPage={state.rowsPerPage}
-              rowsPerPageOptions={[state.rowsPerPage]}
+      <Container maxWidth="lg" sx={{ py: (theme) => theme.spacing(4) }}>
+        <ChangeProposalsTableToolbar
+          onDelete={handleDelete}
+          selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
+          role={role}
+        />
+        <TableContainer component={Paper} variant="outlined">
+          <Table>
+            <ChangeProposalsTableHead
+              filter={state.filter}
+              onFilterChange={handleFilterChange}
+              changeProposalsCount={changeProposals.length}
+              selectedChangeProposalsCount={state.selectedChangeProposalIds.length}
+              onSelectAll={selectAllChangeProposals}
             />
-          ) : (
-            <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
-              <Typography variant="h6" align="center">
-                No change proposals found
-              </Typography>
-            </Box>
-          )}
-        </Container>
-        <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-      </div>
-    </>
+            <TableBody>
+              {changeProposals.map((changeProposal) => {
+                const isChangeProposalSelected = state.selectedChangeProposalIds.includes(changeProposal.id);
+                return (
+                  <TableRow key={changeProposal.id} onClick={(event) => selectChangeProposal(event, changeProposal)}>
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={isChangeProposalSelected} />
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        variant="subtitle1"
+                        component={RouterLink}
+                        to={`/changeproposals/${changeProposal.id}`}
+                        underline="hover"
+                      >
+                        {changeProposal.name}
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {state.project && changeProposals.length > 0 ? (
+          <TablePagination
+            component="div"
+            count={state.project.changeProposals.pageInfo.count}
+            page={state.page}
+            onPageChange={handlePageChange}
+            rowsPerPage={state.rowsPerPage}
+            rowsPerPageOptions={[state.rowsPerPage]}
+          />
+        ) : (
+          <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
+            <Typography variant="h6" align="center">
+              No change proposals found
+            </Typography>
+          </Box>
+        )}
+      </Container>
+    </div>
   );
 };

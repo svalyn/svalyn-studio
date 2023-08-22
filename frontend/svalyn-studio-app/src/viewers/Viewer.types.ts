@@ -23,10 +23,6 @@ export interface ViewerProps {
   name: string;
 }
 
-export interface ViewerState {
-  message: string | null;
-}
-
 export interface GetChangeResourceVariables {
   changeId: string;
   path: string;

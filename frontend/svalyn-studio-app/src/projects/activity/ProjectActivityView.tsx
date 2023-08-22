@@ -23,15 +23,11 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { ActivityTimeline } from '../../activity/ActivityTimeline';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { useProject } from '../useProject';
-import {
-  GetProjectActivityData,
-  GetProjectActivityVariables,
-  ProjectActivityViewState,
-} from './ProjectActivityView.types';
+import { GetProjectActivityData, GetProjectActivityVariables } from './ProjectActivityView.types';
 
 const getProjectActivityQuery = gql`
   query getProjectActivity($identifier: ID!) {
@@ -59,13 +55,8 @@ const getProjectActivityQuery = gql`
 `;
 
 export const ProjectActivityView = () => {
-  const {
-    identifier: projectIdentifier,
-    organization: { role },
-  } = useProject();
-  const [state, setState] = useState<ProjectActivityViewState>({
-    message: null,
-  });
+  const { identifier: projectIdentifier } = useProject();
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetProjectActivityVariables = {
     identifier: projectIdentifier,
@@ -75,40 +66,36 @@ export const ProjectActivityView = () => {
   });
   useEffect(() => {
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
   return (
-    <>
-      <div>
-        <Toolbar
-          sx={{
-            backgroundColor: 'white',
-            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-          }}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
-            <TimelineIcon fontSize="large" />
-            <Typography variant="h4">Activity</Typography>
-          </Box>
-        </Toolbar>
-        <Container
-          maxWidth="lg"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: (theme) => theme.spacing(2),
-            paddingTop: (theme) => theme.spacing(4),
-          }}
-        >
-          {data?.viewer.project ? (
-            <ActivityTimeline activityEntries={data.viewer.project.activityEntries.edges.map((edge) => edge.node)} />
-          ) : null}
-        </Container>
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <div>
+      <Toolbar
+        sx={{
+          backgroundColor: 'white',
+          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+          <TimelineIcon fontSize="large" />
+          <Typography variant="h4">Activity</Typography>
+        </Box>
+      </Toolbar>
+      <Container
+        maxWidth="lg"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: (theme) => theme.spacing(2),
+          paddingTop: (theme) => theme.spacing(4),
+        }}
+      >
+        {data?.viewer.project ? (
+          <ActivityTimeline activityEntries={data.viewer.project.activityEntries.edges.map((edge) => edge.node)} />
+        ) : null}
+      </Container>
+    </div>
   );
 };

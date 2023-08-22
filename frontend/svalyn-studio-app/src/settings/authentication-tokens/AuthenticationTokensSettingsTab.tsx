@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -29,8 +29,8 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { formatTime } from '../../utils/formatTime';
 import {
   AuthenticationToken,
@@ -84,9 +84,10 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
     rowsPerPage: 20,
     selectedAuthenticationTokenIds: [],
     newAuthenticationTokenDialogOpen: false,
-    message: null,
-    errorSnackbarOpen: false,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const variables: GetAuthenticationTokensVariables = { page: state.page, rowsPerPage: state.rowsPerPage };
   const { data, error, refetch } = useQuery<GetAuthenticationTokensData, GetAuthenticationTokensVariables>(
     getAuthenticationTokensQuery,
@@ -94,7 +95,7 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
   );
   useEffect(() => {
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message, errorSnackbarOpen: true }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
 
@@ -153,18 +154,14 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
     updateAuthenticationTokensStatusMutation
   );
   useEffect(() => {
-    if (updateAuthenticationTokenStatusError) {
-      setState((prevState) => ({
-        ...prevState,
-        message: updateAuthenticationTokenStatusError.message,
-        errorSnackbarOpen: true,
-      }));
-    }
     if (updateAuthenticationTokenStatusData?.updateAuthenticationTokensStatus.__typename === 'ErrorPayload') {
       const errorPayload = updateAuthenticationTokenStatusData.updateAuthenticationTokensStatus as ErrorPayload;
-      setState((prevState) => ({ ...prevState, message: errorPayload.message, errorSnackbarOpen: true }));
+      enqueueSnackbar(errorPayload.message, { variant: 'error' });
     } else if (updateAuthenticationTokenStatusData?.updateAuthenticationTokensStatus.__typename === 'SuccessPayload') {
       refetch(variables);
+    }
+    if (updateAuthenticationTokenStatusError) {
+      enqueueSnackbar(updateAuthenticationTokenStatusError.message, { variant: 'error' });
     }
   }, [updateAuthenticationTokenStatusData, updateAuthenticationTokenStatusError]);
 
@@ -178,9 +175,6 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
     };
     updateAuthenticationTokensStatus({ variables });
   };
-
-  const handleCloseSnackbar = () =>
-    setState((prevState) => ({ ...prevState, message: null, errorSnackbarOpen: false }));
 
   return (
     <>
@@ -251,7 +245,6 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
           onClose={closeNewAuthenticationTokenDialog}
         />
       ) : null}
-      <ErrorSnackbar open={state.errorSnackbarOpen} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

@@ -28,7 +28,6 @@ export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface ProjectReadMeCardState {
   editReadMeDialogOpen: boolean;
-  message: string | null;
 }
 
 export interface UpdateProjectReadMeData {

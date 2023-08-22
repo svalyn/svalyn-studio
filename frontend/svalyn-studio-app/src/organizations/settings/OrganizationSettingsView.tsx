@@ -24,9 +24,9 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { useOrganization } from '../useOrganization';
 import { DeleteOrganizationDialog } from './DeleteOrganizationDialog';
 import {
@@ -50,9 +50,10 @@ export const OrganizationSettingsView = () => {
   const { identifier: organizationIdentifier, role } = useOrganization();
   const [state, setState] = useState<OrganizationSettingsViewState>({
     name: '',
-    message: null,
     deleteOrganizationDialogOpen: false,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
 
@@ -74,11 +75,11 @@ export const OrganizationSettingsView = () => {
           navigate(`/orgs/${organizationIdentifier}`);
         } else if (updateOrganizationNameData.updateOrganizationName.__typename === 'ErrorPayload') {
           const { message } = updateOrganizationNameData.updateOrganizationName as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message }));
+          enqueueSnackbar(message, { variant: 'error' });
         }
       }
       if (updateOrganizationNameError) {
-        setState((prevState) => ({ ...prevState, message: updateOrganizationNameError.message }));
+        enqueueSnackbar(updateOrganizationNameError.message, { variant: 'error' });
       }
     }
   }, [updateOrganizationNameLoading, updateOrganizationNameData, updateOrganizationNameError]);
@@ -101,8 +102,6 @@ export const OrganizationSettingsView = () => {
   const closeDeleteOrganizationDialog = () => {
     setState((prevState) => ({ ...prevState, deleteOrganizationDialogOpen: false }));
   };
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   return (
     <>
@@ -148,7 +147,6 @@ export const OrganizationSettingsView = () => {
           </Button>
         </Paper>
       </Container>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
       {state.deleteOrganizationDialogOpen ? (
         <DeleteOrganizationDialog
           open={state.deleteOrganizationDialogOpen}

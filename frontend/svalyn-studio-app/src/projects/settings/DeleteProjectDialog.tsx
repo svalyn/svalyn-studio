@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -24,13 +24,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   DeleteProjectData,
   DeleteProjectDialogProps,
-  DeleteProjectDialogState,
   DeleteProjectVariables,
   ErrorPayload,
 } from './DeleteProjectDialog.types';
@@ -46,10 +45,7 @@ const deleteProjectMutation = gql`
 `;
 
 export const DeleteProjectDialog = ({ projectIdentifier, open, onClose }: DeleteProjectDialogProps) => {
-  const [state, setState] = useState<DeleteProjectDialogState>({
-    message: null,
-  });
-
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const [deleteProject, { loading: deleteProjectLoading, data: deleteProjectData, error: deleteProjectError }] =
@@ -61,11 +57,11 @@ export const DeleteProjectDialog = ({ projectIdentifier, open, onClose }: Delete
           navigate('/');
         } else if (deleteProjectData.deleteProject.__typename === 'ErrorPayload') {
           const { message } = deleteProjectData.deleteProject as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message }));
+          enqueueSnackbar(message, { variant: 'error' });
         }
       }
       if (deleteProjectError) {
-        setState((prevState) => ({ ...prevState, message: deleteProjectError.message }));
+        enqueueSnackbar(deleteProjectError.message, { variant: 'error' });
       }
     }
   }, [deleteProjectLoading, deleteProjectData, deleteProjectError]);
@@ -81,28 +77,24 @@ export const DeleteProjectDialog = ({ projectIdentifier, open, onClose }: Delete
     deleteProject({ variables });
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="delete-project-dialog-title"
-        aria-describedby="delete-project-dialog-description"
-      >
-        <DialogTitle id="delete-project-dialog-title">Delete the project</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-Project-dialog-description">
-            By deleting this project, you will lose all its data. This operation cannot be reversed. Think carefully
-            about the consequences first.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={handleDeleteProject}>Delete</Button>
-        </DialogActions>
-      </Dialog>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="delete-project-dialog-title"
+      aria-describedby="delete-project-dialog-description"
+    >
+      <DialogTitle id="delete-project-dialog-title">Delete the project</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="delete-Project-dialog-description">
+          By deleting this project, you will lose all its data. This operation cannot be reversed. Think carefully about
+          the consequences first.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleDeleteProject}>Delete</Button>
+      </DialogActions>
+    </Dialog>
   );
 };

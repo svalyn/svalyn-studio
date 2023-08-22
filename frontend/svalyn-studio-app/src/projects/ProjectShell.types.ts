@@ -21,10 +21,6 @@ export interface ProjectShellProps {
   children?: React.ReactNode;
 }
 
-export interface ProjectShellState {
-  errorSnackbarOpen: boolean;
-}
-
 export interface GetProjectData {
   viewer: Viewer;
 }

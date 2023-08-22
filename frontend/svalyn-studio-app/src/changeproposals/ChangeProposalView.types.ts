@@ -19,7 +19,6 @@
 
 export interface ChangeProposalViewState {
   changeProposal: ChangeProposal | null;
-  message: string | null;
 }
 
 export interface GetChangeProposalData {

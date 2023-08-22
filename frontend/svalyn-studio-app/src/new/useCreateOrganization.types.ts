@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Message } from '../snackbar/ErrorSnackbar.types';
+import { Message } from '../snackbar/Message.types';
 
 export type UseCreateOrganizationValue = [
   createOrganization: (input: CreateOrganizationInput) => void,

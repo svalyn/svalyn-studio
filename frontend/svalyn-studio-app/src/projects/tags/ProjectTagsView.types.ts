@@ -22,7 +22,6 @@ export interface ProjectTagsViewState {
   value: string;
   page: number;
   rowsPerPage: number;
-  message: string | null;
 }
 
 export interface GetProjectTagsVariables {

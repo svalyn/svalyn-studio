@@ -26,10 +26,10 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { EditReadMeDialog } from '../../dialogs/EditReadMeDialog';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { ChangeProposalHeader } from './ChangeProposalHeader';
 import {
   ChangeProposalOverviewProps,
@@ -107,8 +107,9 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
   const [state, setState] = useState<ChangeProposalOverviewState>({
     changeProposal: null,
     editReadMeDialogOpen: false,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetChangeProposalVariables = { id: changeProposalId };
   const { loading, data, error, refetch } = useQuery<GetChangeProposalData, GetChangeProposalVariables>(
@@ -128,7 +129,8 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message, editReadMeDialogOpen: false }));
+        setState((prevState) => ({ ...prevState, editReadMeDialogOpen: false }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -158,9 +160,9 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
         }
       }
       if (updateChangeProposalReadMeError) {
+        enqueueSnackbar(updateChangeProposalReadMeError.message, { variant: 'error' });
         setState((prevState) => ({
           ...prevState,
-          message: updateChangeProposalReadMeError.message,
           editReadMeDialogOpen: false,
         }));
       }
@@ -182,57 +184,54 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
     refetch(variables);
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   const readMe = trimLines(state.changeProposal?.readMe ?? '');
-  return (
-    <>
-      {state.changeProposal ? (
-        <Box sx={{ py: (theme) => theme.spacing(4) }}>
-          <Container maxWidth="lg">
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-              <ChangeProposalHeader changeProposal={state.changeProposal} />
 
-              <>
-                <Paper variant="outlined">
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      px: (theme) => theme.spacing(2),
-                      py: '2px',
-                    }}
-                  >
-                    <Typography variant="subtitle1">README.md</Typography>
-                    <div>
-                      <IconButton sx={{ marginRight: '4px' }} onClick={openReadMeDialog} disabled={role === 'NONE'}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton component="a" download="README.md" href={URL.createObjectURL(new Blob([readMe]))}>
-                        <DownloadIcon fontSize="small" />
-                      </IconButton>
-                    </div>
-                  </Box>
-                  <Divider />
-                  <Box sx={{ px: (theme) => theme.spacing(2), py: (theme) => theme.spacing(1) }}>
-                    <ReactMarkdown children={readMe} />
-                  </Box>
-                </Paper>
-                <EditReadMeDialog
-                  content={readMe}
-                  open={state.editReadMeDialogOpen}
-                  onCancel={closeReadMeDialog}
-                  onUpdate={handleReadMeUpdate}
-                />
-              </>
-              <ChangeProposalStatus changeProposal={state.changeProposal} onStatusUpdated={handleStatusUpdated} />
-            </Box>
-          </Container>
+  if (!state.changeProposal) {
+    return null;
+  }
+  return (
+    <Box sx={{ py: (theme) => theme.spacing(4) }}>
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+          <ChangeProposalHeader changeProposal={state.changeProposal} />
+
+          <>
+            <Paper variant="outlined">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  px: (theme) => theme.spacing(2),
+                  py: '2px',
+                }}
+              >
+                <Typography variant="subtitle1">README.md</Typography>
+                <div>
+                  <IconButton sx={{ marginRight: '4px' }} onClick={openReadMeDialog} disabled={role === 'NONE'}>
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton component="a" download="README.md" href={URL.createObjectURL(new Blob([readMe]))}>
+                    <DownloadIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              </Box>
+              <Divider />
+              <Box sx={{ px: (theme) => theme.spacing(2), py: (theme) => theme.spacing(1) }}>
+                <ReactMarkdown children={readMe} />
+              </Box>
+            </Paper>
+            <EditReadMeDialog
+              content={readMe}
+              open={state.editReadMeDialogOpen}
+              onCancel={closeReadMeDialog}
+              onUpdate={handleReadMeUpdate}
+            />
+          </>
+          <ChangeProposalStatus changeProposal={state.changeProposal} onStatusUpdated={handleStatusUpdated} />
         </Box>
-      ) : null}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+      </Container>
+    </Box>
   );
 };

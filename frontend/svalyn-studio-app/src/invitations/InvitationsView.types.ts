@@ -21,7 +21,6 @@ export interface InvitationsViewState {
   viewer: Viewer | null;
   page: number;
   rowsPerPage: number;
-  message: string | null;
 }
 
 export interface GetInvitationsData {

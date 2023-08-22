@@ -22,20 +22,15 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../cookies/getCookie';
 import { hasMinLength, useForm } from '../forms/useForm';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import { LoginWithCredentialsFormData, LoginWithCredentialsState } from './LoginWithCredentials.types';
+import { LoginWithCredentialsFormData } from './LoginWithCredentials.types';
 
 const { VITE_BACKEND_URL } = import.meta.env;
 
 export const LoginWithCredentials = () => {
-  const [state, setState] = useState<LoginWithCredentialsState>({
-    message: null,
-  });
-
   const { data, isFormValid, getTextFieldProps } = useForm<LoginWithCredentialsFormData>({
     initialValue: {
       username: '',
@@ -46,6 +41,8 @@ export const LoginWithCredentials = () => {
       password: (data) => hasMinLength(data.password, 8),
     },
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
   const handleLogin: React.FormEventHandler<HTMLFormElement> = (event) => {
@@ -70,48 +67,43 @@ export const LoginWithCredentials = () => {
       if (response.ok) {
         navigate('/');
       } else {
-        setState((prevState) => ({ ...prevState, message: 'Invalid login or password' }));
+        enqueueSnackbar('Invalid login or password', { variant: 'error' });
       }
     });
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   return (
-    <>
-      <Box>
-        <form onSubmit={handleLogin}>
-          <Stack spacing={2}>
-            <Typography variant="h6">Login</Typography>
-            <TextField
-              {...getTextFieldProps('username')}
-              label="Username"
-              variant="outlined"
-              fullWidth
-              autoFocus
-              required
-              inputProps={{
-                'aria-label': 'Username',
-              }}
-            />
-            <TextField
-              {...getTextFieldProps('password')}
-              type="password"
-              label="Password"
-              variant="outlined"
-              fullWidth
-              required
-              inputProps={{
-                'aria-label': 'Password',
-              }}
-            />
-            <Button type="submit" variant="contained" disabled={!isFormValid}>
-              Login
-            </Button>
-          </Stack>
-        </form>
-      </Box>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <Box>
+      <form onSubmit={handleLogin}>
+        <Stack spacing={2}>
+          <Typography variant="h6">Login</Typography>
+          <TextField
+            {...getTextFieldProps('username')}
+            label="Username"
+            variant="outlined"
+            fullWidth
+            autoFocus
+            required
+            inputProps={{
+              'aria-label': 'Username',
+            }}
+          />
+          <TextField
+            {...getTextFieldProps('password')}
+            type="password"
+            label="Password"
+            variant="outlined"
+            fullWidth
+            required
+            inputProps={{
+              'aria-label': 'Password',
+            }}
+          />
+          <Button type="submit" variant="contained" disabled={!isFormValid}>
+            Login
+          </Button>
+        </Stack>
+      </form>
+    </Box>
   );
 };

@@ -30,8 +30,8 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
   PerformReviewData,
@@ -55,8 +55,9 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
   const [state, setState] = useState<ReviewDialogState>({
     review: '',
     status: 'APPROVED',
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [performReview, { loading, data, error }] = useMutation<PerformReviewData, PerformReviewVariables>(
     performReviewMutation
@@ -69,11 +70,11 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
           onReviewed();
         } else if (performReview.__typename === 'ErrorPayload') {
           const errorPayload = performReview as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
+          enqueueSnackbar(errorPayload.message, { variant: 'error' });
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -103,44 +104,39 @@ export const ReviewDialog = ({ changeProposalId, open, onClose, onReviewed }: Re
     performReview({ variables });
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   return (
-    <>
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-        <DialogTitle>Review the change proposal</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ marginBottom: (theme) => theme.spacing(1) }}>
-            Leave a message on this change proposal
-          </DialogContentText>
-          <TextField
-            value={state.review}
-            onChange={handleReviewChange}
-            label="Message"
-            variant="outlined"
-            multiline
-            minRows={5}
-            fullWidth
-            sx={{ marginBottom: (theme) => theme.spacing(1) }}
-          />
-          <FormControl>
-            <FormLabel id="changeproposal-review-status-label">Status</FormLabel>
-            <RadioGroup
-              aria-labelledby="changeproposal-review-status-label"
-              value={state.status}
-              onChange={handleStatusChange}
-            >
-              <FormControlLabel value="APPROVED" control={<Radio />} label="Approved" />
-              <FormControlLabel value="REQUESTED_CHANGES" control={<Radio />} label="Requested changes" />
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onSubmitReview}>Submit Review</Button>
-        </DialogActions>
-      </Dialog>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>Review the change proposal</DialogTitle>
+      <DialogContent>
+        <DialogContentText sx={{ marginBottom: (theme) => theme.spacing(1) }}>
+          Leave a message on this change proposal
+        </DialogContentText>
+        <TextField
+          value={state.review}
+          onChange={handleReviewChange}
+          label="Message"
+          variant="outlined"
+          multiline
+          minRows={5}
+          fullWidth
+          sx={{ marginBottom: (theme) => theme.spacing(1) }}
+        />
+        <FormControl>
+          <FormLabel id="changeproposal-review-status-label">Status</FormLabel>
+          <RadioGroup
+            aria-labelledby="changeproposal-review-status-label"
+            value={state.status}
+            onChange={handleStatusChange}
+          >
+            <FormControlLabel value="APPROVED" control={<Radio />} label="Approved" />
+            <FormControlLabel value="REQUESTED_CHANGES" control={<Radio />} label="Requested changes" />
+          </RadioGroup>
+        </FormControl>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onSubmitReview}>Submit Review</Button>
+      </DialogActions>
+    </Dialog>
   );
 };

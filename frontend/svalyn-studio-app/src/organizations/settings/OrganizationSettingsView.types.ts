@@ -19,7 +19,6 @@
 
 export interface OrganizationSettingsViewState {
   name: string;
-  message: string | null;
   deleteOrganizationDialogOpen: boolean;
 }
 

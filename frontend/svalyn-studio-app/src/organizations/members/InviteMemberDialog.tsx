@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -25,8 +25,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
   InviteMemberData,
@@ -48,8 +48,9 @@ const inviteMemberMutation = gql`
 export const InviteMemberDialog = ({ organizationIdentifier, open, onClose }: InviteMemberDialogProps) => {
   const [state, setState] = useState<InviteMemberDialogState>({
     email: '',
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleEmailChanged: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
     const {
@@ -68,11 +69,11 @@ export const InviteMemberDialog = ({ organizationIdentifier, open, onClose }: In
           onClose();
         } else if (data.inviteMember.__typename === 'ErrorPayload') {
           const { message } = data.inviteMember as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message }));
+          enqueueSnackbar(message, { variant: 'error' });
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [data, loading, error]);
@@ -88,33 +89,28 @@ export const InviteMemberDialog = ({ organizationIdentifier, open, onClose }: In
     inviteMember({ variables });
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   return (
-    <>
-      <Dialog open={open} onClose={onClose} maxWidth="sm" keepMounted={false} fullWidth>
-        <DialogTitle>Invite a new member</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Send an invitation to let someone join your organization</DialogContentText>
-          <TextField
-            type="email"
-            label="Email"
-            helperText="The email of the account to invite"
-            value={state.email}
-            onChange={handleEmailChanged}
-            margin="dense"
-            variant="standard"
-            fullWidth
-            autoFocus
-            required
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => onClose()}>Cancel</Button>
-          <Button onClick={sendInvitation}>Invite</Button>
-        </DialogActions>
-      </Dialog>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" keepMounted={false} fullWidth>
+      <DialogTitle>Invite a new member</DialogTitle>
+      <DialogContent>
+        <DialogContentText>Send an invitation to let someone join your organization</DialogContentText>
+        <TextField
+          type="email"
+          label="Email"
+          helperText="The email of the account to invite"
+          value={state.email}
+          onChange={handleEmailChanged}
+          margin="dense"
+          variant="standard"
+          fullWidth
+          autoFocus
+          required
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => onClose()}>Cancel</Button>
+        <Button onClick={sendInvitation}>Invite</Button>
+      </DialogActions>
+    </Dialog>
   );
 };

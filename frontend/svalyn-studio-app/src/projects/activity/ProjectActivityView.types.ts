@@ -17,10 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectActivityViewState {
-  message: string | null;
-}
-
 export interface GetProjectActivityVariables {
   identifier: string;
 }

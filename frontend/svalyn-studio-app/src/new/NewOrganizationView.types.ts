@@ -17,10 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface NewOrganizationViewState {
-  message: string | null;
-}
-
 export interface NewOrganizationViewFormData {
   name: string;
   organizationId: string;

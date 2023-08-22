@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -24,12 +24,12 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ActivityTimeline } from '../activity/ActivityTimeline';
 import { Navbar } from '../navbars/Navbar';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import { GetViewerData, GetViewerVariables, ProfileViewState } from './ProfileView.types';
+import { GetViewerData, GetViewerVariables } from './ProfileView.types';
 
 const getViewerQuery = gql`
   query getViewer($username: String!) {
@@ -60,57 +60,43 @@ const getViewerQuery = gql`
 `;
 
 export const ProfileView = () => {
-  const [state, setState] = useState<ProfileViewState>({
-    viewer: null,
-    message: null,
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const { username } = useParams();
   const variables: GetViewerVariables = { username: username ?? '' };
-  const { loading, data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery, { variables });
+  const { data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery, { variables });
   useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const { viewer } = data;
-        setState((prevState) => ({ ...prevState, viewer }));
-      }
-      setState((prevState) => ({ ...prevState, message: error?.message ?? null }));
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
-  }, [loading, data, error]);
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
+  }, [error]);
 
   return (
-    <>
-      <div>
-        <Navbar />
-        <Container maxWidth="xl">
-          <Toolbar />
-          {state.viewer && state.viewer.profile ? (
-            <Grid container spacing={2}>
-              <Grid item xs={4} justifyContent="center">
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Avatar
-                    src={state.viewer.profile.imageUrl}
-                    alt={state.viewer.profile.name}
-                    sx={{ width: 200, height: 200 }}
-                  />
-                  <Typography variant="h6">{state.viewer.profile.name}</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={8}>
-                <Typography variant="h4" gutterBottom>
-                  Activity
-                </Typography>
-                <ActivityTimeline
-                  activityEntries={state.viewer.profile.activityEntries.edges.map((edge) => edge.node)}
+    <div>
+      <Navbar />
+      <Container maxWidth="xl">
+        <Toolbar />
+        {data?.viewer?.profile ? (
+          <Grid container spacing={2}>
+            <Grid item xs={4} justifyContent="center">
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar
+                  src={data.viewer.profile.imageUrl}
+                  alt={data.viewer.profile.name}
+                  sx={{ width: 200, height: 200 }}
                 />
-              </Grid>
+                <Typography variant="h6">{data.viewer.profile.name}</Typography>
+              </Box>
             </Grid>
-          ) : null}
-        </Container>
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+            <Grid item xs={8}>
+              <Typography variant="h4" gutterBottom>
+                Activity
+              </Typography>
+              <ActivityTimeline activityEntries={data.viewer.profile.activityEntries.edges.map((edge) => edge.node)} />
+            </Grid>
+          </Grid>
+        ) : null}
+      </Container>
+    </div>
   );
 };

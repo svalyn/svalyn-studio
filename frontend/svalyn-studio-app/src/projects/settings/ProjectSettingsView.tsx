@@ -26,9 +26,9 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { useProject } from '../useProject';
 import { DeleteProjectDialog } from './DeleteProjectDialog';
 import {
@@ -69,8 +69,9 @@ export const ProjectSettingsView = () => {
     name: '',
     description: '',
     deleteProjectDialogOpen: false,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleNameChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
     const {
@@ -100,11 +101,11 @@ export const ProjectSettingsView = () => {
           navigate(`/projects/${projectIdentifier}`);
         } else if (updateProjectName.__typename === 'ErrorPayload') {
           const errorPayload = updateProjectName as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
+          enqueueSnackbar(errorPayload.message, { variant: 'error' });
         }
       }
       if (updateProjectNameError) {
-        setState((prevState) => ({ ...prevState, message: updateProjectNameError.message }));
+        enqueueSnackbar(updateProjectNameError.message, { variant: 'error' });
       }
     }
   }, [updateProjectNameLoading, updateProjectNameData, updateProjectNameError]);
@@ -136,11 +137,11 @@ export const ProjectSettingsView = () => {
           navigate(`/projects/${projectIdentifier}`);
         } else if (updateProjectDescription.__typename === 'ErrorPayload') {
           const errorPayload = updateProjectDescription as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message }));
+          enqueueSnackbar(errorPayload.message, { variant: 'error' });
         }
       }
       if (updateProjectDescriptionError) {
-        setState((prevState) => ({ ...prevState, message: updateProjectDescriptionError.message }));
+        enqueueSnackbar(updateProjectDescriptionError.message, { variant: 'error' });
       }
     }
   }, [updateProjectDescriptionLoading, updateProjectDescriptionData, updateProjectDescriptionError]);
@@ -162,8 +163,6 @@ export const ProjectSettingsView = () => {
   const closeDeleteProjectDialog = () => {
     setState((prevState) => ({ ...prevState, deleteProjectDialogOpen: false }));
   };
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   return (
     <>
@@ -252,7 +251,6 @@ export const ProjectSettingsView = () => {
           </Paper>
         </Container>
       </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
       {state.deleteProjectDialogOpen ? (
         <DeleteProjectDialog
           open={state.deleteProjectDialogOpen}

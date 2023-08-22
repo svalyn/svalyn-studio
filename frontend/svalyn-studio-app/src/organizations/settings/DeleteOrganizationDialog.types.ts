@@ -22,7 +22,3 @@ export interface DeleteOrganizationDialogProps {
   open: boolean;
   onClose: () => void;
 }
-
-export interface DeleteOrganizationDialogState {
-  message: string | null;
-}
