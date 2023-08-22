@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +17,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../fixture';
 
 test.describe('Login view', () => {
   test('should let me log in with Github', async ({ page }) => {
@@ -30,33 +31,20 @@ test.describe('Login view', () => {
     );
   });
 
-  test('should let me log in with my credentials', async ({ page }) => {
-    await page.goto('http://localhost:5173/login');
-    await page
-      .getByRole('tab')
-      .filter({ has: page.getByTestId('EmailIcon') })
-      .click();
-    await page.getByRole('textbox', { name: 'Username' }).fill('admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('password');
-    await page.getByRole('button', { name: 'LOGIN' }).click();
+  test('should let me log in with my credentials', async ({ page, loginPage }) => {
+    await loginPage.goto();
+    await loginPage.login('admin', 'password');
 
-    await expect(page).not.toHaveURL('http://localhost:5173/login');
+    await expect(page).toHaveURL('http://localhost:5173');
   });
 
-  test('should let me log in and then log out', async ({ page }) => {
-    await page.goto('http://localhost:5173/login');
-    await page
-      .getByRole('tab')
-      .filter({ has: page.getByTestId('EmailIcon') })
-      .click();
-    await page.getByRole('textbox', { name: 'Username' }).fill('admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('password');
-    await page.getByRole('button', { name: 'LOGIN' }).click();
+  test('should let me log in and then log out', async ({ page, loginPage }) => {
+    await loginPage.goto();
+    await loginPage.login('admin', 'password');
 
-    await page
-      .getByRole('button')
-      .filter({ has: page.getByTestId('PersonIcon') })
-      .click();
+    await expect(page).toHaveURL('http://localhost:5173');
+
+    await page.getByTestId('user-menu-avatar').click();
     await page.getByRole('menuitem', { name: 'Sign out' }).click();
     await expect(page).toHaveURL('http://localhost:5173/login');
   });

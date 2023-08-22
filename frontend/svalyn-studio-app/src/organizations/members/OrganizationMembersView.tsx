@@ -35,7 +35,9 @@ import { Memberships } from './Memberships';
 import { OrganizationMembersViewState, OrganizationMemberTab } from './OrganizationMembersView.types';
 
 export const OrganizationMembersView = () => {
-  const { identifier: organizationIdentifier, role } = useOrganization();
+  const {
+    organization: { identifier: organizationIdentifier, role },
+  } = useOrganization();
   const [state, setState] = useState<OrganizationMembersViewState>({
     tab: 'Memberships',
     inviteMemberDialogOpen: false,

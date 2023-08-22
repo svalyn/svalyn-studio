@@ -77,7 +77,9 @@ const addTagToOrganizationMutation = gql`
 `;
 
 export const OrganizationTagsView = () => {
-  const { identifier: organizationIdentifier, role } = useOrganization();
+  const {
+    organization: { identifier: organizationIdentifier, role },
+  } = useOrganization();
   const [state, setState] = useState<OrganizationTagsViewState>({
     key: '',
     value: '',

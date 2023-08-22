@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,53 +17,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../fixture';
+import { Organization } from '../fixture.types';
 
 test.describe('New project view', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173/login');
-    await page
-      .getByRole('tab')
-      .filter({ has: page.getByTestId('EmailIcon') })
-      .click();
-    await page.getByRole('textbox', { name: 'Username' }).fill('admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('password');
-    await page.getByRole('button', { name: 'LOGIN' }).click();
-    await expect(page).not.toHaveURL('http://localhost:5173/login');
+  let organization: Organization;
+
+  test.beforeEach(async ({ loginPage, newOrganizationPage }) => {
+    await loginPage.goto();
+    await loginPage.loginAsAdmin();
+
+    await newOrganizationPage.goto();
+    organization = await newOrganizationPage.createOrganization();
   });
 
-  test.beforeEach(async ({ page, browserName }) => {
-    await page.goto('http://localhost:5173/new/organization');
-
-    await page.getByRole('textbox', { name: 'Organization Name' }).fill(`New project view ${browserName}`);
-    await page.getByRole('textbox', { name: 'Organization Identifier' }).fill(`new-project-view-${browserName}`);
-    await page.getByRole('button', { name: 'CREATE' }).click();
-
-    await expect(page).toHaveURL(`http://localhost:5173/orgs/new-project-view-${browserName}`);
-  });
-
-  test.afterEach(async ({ page, browserName }) => {
-    await page.goto(`http://localhost:5173/orgs/new-project-view-${browserName}/settings`);
-    await page.getByRole('button', { name: 'DELETE ORGANIZATION' }).click();
-    await page.getByRole('button', { name: 'DELETE' }).click();
-
-    await page.goto(`http://localhost:5173/orgs/new-project-view-${browserName}`);
-    expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
+  test.afterEach(async ({ organizationSettingsPage }) => {
+    await organizationSettingsPage.goto(organization.identifier);
+    await organizationSettingsPage.delete();
   });
 
   test('should let me create a project', async ({ page, browserName }) => {
-    await page.goto(`http://localhost:5173/orgs/new-project-view-${browserName}`);
+    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
 
-    await expect(page.getByRole('heading', { name: `New project view ${browserName}` })).toBeVisible();
+    await expect(page.getByRole('heading', { name: organization.name })).toBeVisible();
 
     await page.getByRole('button', { name: 'NEW PROJECT' }).click();
     await page.getByRole('textbox', { name: 'Project Name' }).fill(`New project view ${browserName}`);
-    await page.getByRole('textbox', { name: 'Project Identifier' }).fill(`new-project-view-${browserName}`);
+    await page.getByRole('textbox', { name: 'Project Identifier' }).fill(`creating-project-view-${browserName}`);
     await page
       .getByRole('textbox', { name: 'Project Description' })
       .fill(`New project view description ${browserName}`);
     await page.getByRole('button', { name: 'CREATE' }).click();
 
-    await expect(page).toHaveURL(`http://localhost:5173/projects/new-project-view-${browserName}`);
+    await expect(page).toHaveURL(`http://localhost:5173/projects/creating-project-view-${browserName}`);
   });
 });

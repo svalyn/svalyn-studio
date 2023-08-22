@@ -93,7 +93,7 @@ function validateForm<FormDataType extends Object>(
 }
 
 export const hasMinLength = (value: string, minLength: number): ValidationResult => {
-  const isPropertyValid = value.length > minLength;
+  const isPropertyValid = value.length >= minLength;
   const errorMessage: string | null = isPropertyValid ? null : `${minLength} character(s) minimum required`;
   return {
     isPropertyValid,
@@ -102,7 +102,7 @@ export const hasMinLength = (value: string, minLength: number): ValidationResult
 };
 
 export const hasMaxLength = (value: string, maxLength: number): ValidationResult => {
-  const isPropertyValid = value.length < maxLength;
+  const isPropertyValid = value.length <= maxLength;
   const errorMessage: string | null = isPropertyValid ? null : `${maxLength} character(s) maximum required`;
   return {
     isPropertyValid,

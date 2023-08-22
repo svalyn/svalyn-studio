@@ -61,7 +61,7 @@ export const OrganizationShell = ({ children }: OrganizationShellProps) => {
 
   const { organizationIdentifier } = useParams();
   const variables: GetOrganizationVariables = { identifier: organizationIdentifier ?? '' };
-  const { data, error } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
+  const { data, error, refetch } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
     variables,
   });
   useEffect(() => {
@@ -69,6 +69,8 @@ export const OrganizationShell = ({ children }: OrganizationShellProps) => {
       enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
+
+  const refresh = () => refetch(variables);
 
   const openNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true }));
   const closeNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: false }));
@@ -121,7 +123,7 @@ export const OrganizationShell = ({ children }: OrganizationShellProps) => {
           </Button>
         </Toolbar>
 
-        <OrganizationContext.Provider value={{ organization: data.viewer.organization }}>
+        <OrganizationContext.Provider value={{ organization: data.viewer.organization, refresh }}>
           {children}
         </OrganizationContext.Provider>
       </div>

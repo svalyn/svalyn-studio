@@ -18,7 +18,7 @@
  */
 
 import React, { useContext } from 'react';
-import { Organization, OrganizationContextValue } from './useOrganization.types';
+import { OrganizationContextValue, UseOrganizationValue } from './useOrganization.types';
 
 export const OrganizationContext = React.createContext<OrganizationContextValue>({
   organization: {
@@ -26,9 +26,10 @@ export const OrganizationContext = React.createContext<OrganizationContextValue>
     name: '',
     role: 'NONE',
   },
+  refresh: () => {},
 });
 
-export const useOrganization = (): Organization => {
-  const { organization } = useContext<OrganizationContextValue>(OrganizationContext);
-  return organization;
+export const useOrganization = (): UseOrganizationValue => {
+  const { organization, refresh } = useContext<OrganizationContextValue>(OrganizationContext);
+  return { organization, refresh };
 };

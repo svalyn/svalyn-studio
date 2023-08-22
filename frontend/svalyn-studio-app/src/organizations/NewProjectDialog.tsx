@@ -43,8 +43,8 @@ export const NewProjectDialog = ({ organizationIdentifier, open, onClose }: NewP
     },
     validationRules: {
       identifier: (data) => isIdentifier(data.identifier),
-      name: (data) => hasMinLength(data.name, 0),
-      description: (data) => hasMaxLength(data.description, 261),
+      name: (data) => hasMinLength(data.name, 1),
+      description: (data) => hasMaxLength(data.description, 260),
     },
   });
 

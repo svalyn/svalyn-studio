@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,30 +17,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { expect } from '@playwright/test';
-import { test } from '../fixture';
+import { Page, expect } from '@playwright/test';
+import { Organization } from '../fixture.types';
 
-test.describe('New organization view', () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.goto();
-    await loginPage.loginAsAdmin();
-  });
+export class NewOrganizationPage {
+  constructor(public readonly page: Page) {}
 
-  test('should let me create and delete an organization', async ({
-    page,
-    newOrganizationPage,
-    organizationSettingsPage,
-  }) => {
-    await newOrganizationPage.goto();
-    const organization = await newOrganizationPage.createOrganization();
+  async goto() {
+    await this.page.goto('http://localhost:5173/new/organization');
+  }
 
-    await expect(page).toHaveURL(`http://localhost:5173/orgs/${organization.identifier}`);
-    await expect(page.getByRole('heading', { name: organization.name })).toBeVisible();
+  async createOrganization(): Promise<Organization> {
+    const identifier = await this.page.evaluate(() => crypto.randomUUID());
+    const name = `Organization ${identifier}`;
 
-    await organizationSettingsPage.goto(organization.identifier);
-    await organizationSettingsPage.delete();
+    await this.page.getByRole('textbox', { name: 'Organization Name' }).fill(name);
+    await this.page.getByRole('textbox', { name: 'Organization Identifier' }).fill(identifier);
+    await this.page.getByRole('button', { name: 'CREATE' }).click();
 
-    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
-    await expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
-  });
-});
+    await expect(this.page).toHaveURL(`http://localhost:5173/orgs/${identifier}`);
+
+    return new Promise((resolve) => {
+      resolve({ identifier, name });
+    });
+  }
+}

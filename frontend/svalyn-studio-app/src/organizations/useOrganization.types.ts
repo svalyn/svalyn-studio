@@ -19,6 +19,12 @@
 
 export interface OrganizationContextValue {
   organization: Organization;
+  refresh: () => void;
+}
+
+export interface UseOrganizationValue {
+  organization: Organization;
+  refresh: () => void;
 }
 
 export interface Organization {
