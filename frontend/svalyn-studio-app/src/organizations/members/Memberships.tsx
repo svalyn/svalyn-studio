@@ -29,8 +29,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
   GetOrganizationMembershipsData,
@@ -83,8 +83,9 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
     selectedMembershipIds: [],
     page: 0,
     rowsPerPage: 10,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetOrganizationMembershipsVariables = {
     identifier: organizationIdentifier,
@@ -106,7 +107,7 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -127,7 +128,7 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
         }
       }
       if (revokeMembershipsError) {
-        setState((prevState) => ({ ...prevState, message: revokeMembershipsError.message }));
+        enqueueSnackbar(revokeMembershipsError.message, { variant: 'error' });
       }
     }
   }, [revokeMembershipsLoading, revokeMembershipsData, revokeMembershipsError]);
@@ -183,8 +184,6 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
   const handlePageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) => {
     setState((prevState) => ({ ...prevState, page }));
   };
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   const hasMemberships = !!data?.viewer && (data?.viewer?.organization?.memberships.edges ?? []).length > 0;
   const memberships = state.organization?.memberships.edges.map((edge) => edge.node) ?? [];
@@ -245,7 +244,6 @@ export const Memberships = ({ organizationIdentifier, role }: MembershipsProps) 
           </Typography>
         </Box>
       )}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

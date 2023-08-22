@@ -24,11 +24,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
 import { NotFoundView } from '../notfound/NotFoundView';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { NewProjectDialog } from './NewProjectDialog';
 import { OrganizationPicker } from './OrganizationPicker';
 import {
@@ -55,19 +55,23 @@ const getOrganizationQuery = gql`
 export const OrganizationShell = ({ children }: OrganizationShellProps) => {
   const [state, setState] = useState<OrganizationShellState>({
     newProjectDialogOpen: false,
-    errorSnackbarOpen: false,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const { organizationIdentifier } = useParams();
   const variables: GetOrganizationVariables = { identifier: organizationIdentifier ?? '' };
   const { data, error } = useQuery<GetOrganizationData, GetOrganizationVariables>(getOrganizationQuery, {
     variables,
   });
-  useEffect(() => setState((prevState) => ({ ...prevState, errorSnackbarOpen: !!error })), [error]);
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  }, [error]);
 
   const openNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: true }));
   const closeNewProjectDialog = () => setState((prevState) => ({ ...prevState, newProjectDialogOpen: false }));
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, errorSnackbarOpen: false }));
 
   if (!data) {
     return null;
@@ -128,7 +132,6 @@ export const OrganizationShell = ({ children }: OrganizationShellProps) => {
           onClose={closeNewProjectDialog}
         />
       ) : null}
-      <ErrorSnackbar open={state.errorSnackbarOpen} message={error?.message ?? null} onClose={handleCloseSnackbar} />
     </>
   );
 };

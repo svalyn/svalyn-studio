@@ -20,17 +20,17 @@
 import { gql, useQuery } from '@apollo/client';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import Box from '@mui/material/Box';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
 import { NotFoundView } from '../notfound/NotFoundView';
 import { goToDomains, goToHelp, goToHome, goToNotifications, goToSettings } from '../palette/DefaultPaletteActions';
 import { PaletteNavigationAction } from '../palette/Palette.types';
 import { usePalette } from '../palette/usePalette';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { ProjectBreadcrumbs } from './ProjectBreadcrumbs';
 import { ProjectDrawer } from './ProjectDrawer';
-import { GetProjectData, GetProjectVariables, ProjectShellProps, ProjectShellState } from './ProjectShell.types';
+import { GetProjectData, GetProjectVariables, ProjectShellProps } from './ProjectShell.types';
 import { ProjectContext } from './useProject';
 
 const getProjectQuery = gql`
@@ -51,9 +51,7 @@ const getProjectQuery = gql`
 `;
 
 export const ProjectShell = ({ children }: ProjectShellProps) => {
-  const [state, setState] = useState<ProjectShellState>({
-    errorSnackbarOpen: false,
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const { projectIdentifier } = useParams();
   const variables: GetProjectVariables = { identifier: projectIdentifier ?? '' };
@@ -67,8 +65,6 @@ export const ProjectShell = ({ children }: ProjectShellProps) => {
         viewer: { project },
       } = data;
       if (project) {
-        setState((prevState) => ({ ...prevState, project }));
-
         const backToOrganization: PaletteNavigationAction = {
           type: 'navigation-action',
           id: 'go-to-organization',
@@ -79,10 +75,10 @@ export const ProjectShell = ({ children }: ProjectShellProps) => {
         setActions([goToHome, backToOrganization, goToDomains, goToNotifications, goToSettings, goToHelp]);
       }
     }
-    setState((prevState) => ({ ...prevState, errorSnackbarOpen: !!error }));
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   }, [data, error]);
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   if (!data) {
     return null;
@@ -110,7 +106,6 @@ export const ProjectShell = ({ children }: ProjectShellProps) => {
           {children}
         </Box>
       </Box>
-      <ErrorSnackbar open={state.errorSnackbarOpen} message={error?.message ?? null} onClose={handleCloseSnackbar} />
     </ProjectContext.Provider>
   );
 };

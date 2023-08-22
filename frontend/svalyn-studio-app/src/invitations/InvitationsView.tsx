@@ -31,9 +31,9 @@ import TablePagination from '@mui/material/TablePagination';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Navbar } from '../navbars/Navbar';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import {
   AcceptInvitationData,
   AcceptInvitationVariables,
@@ -92,8 +92,9 @@ export const InvitationsView = () => {
     viewer: null,
     page: 0,
     rowsPerPage: 20,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetInvitationsVariables = { page: state.page, rowsPerPage: state.rowsPerPage };
   const { loading, data, error, refetch } = useQuery<GetInvitationsData, GetInvitationsVariables>(getInvitationsQuery, {
@@ -105,7 +106,9 @@ export const InvitationsView = () => {
         const { viewer } = data;
         setState((prevState) => ({ ...prevState, viewer }));
       }
-      setState((prevState) => ({ ...prevState, message: error?.message ?? null }));
+      if (error) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+      }
     }
   }, [loading, data, error]);
 
@@ -124,7 +127,7 @@ export const InvitationsView = () => {
         }
       }
       if (acceptInvitationError) {
-        setState((prevState) => ({ ...prevState, message: acceptInvitationError.message }));
+        enqueueSnackbar(acceptInvitationError.message, { variant: 'error' });
       }
     }
   }, [acceptInvitationLoading, acceptInvitationData, acceptInvitationError]);
@@ -156,7 +159,7 @@ export const InvitationsView = () => {
         }
       }
       if (declineInvitationError) {
-        setState((prevState) => ({ ...prevState, message: declineInvitationError.message }));
+        enqueueSnackbar(declineInvitationError.message, { variant: 'error' });
       }
     }
   }, [declineInvitationLoading, declineInvitationData, declineInvitationError]);
@@ -177,67 +180,62 @@ export const InvitationsView = () => {
     setState((prevState) => ({ ...prevState, page }));
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   const hasInvitations = !!data?.viewer && (data?.viewer?.invitations.edges ?? []).length > 0;
   const invitations = state.viewer?.invitations.edges.map((edge) => edge.node) ?? [];
   return (
-    <>
-      <div>
-        <Navbar />
-        <Container maxWidth="lg">
-          <Toolbar />
-          <Typography variant="h4" gutterBottom>
-            Invitations
-          </Typography>
-          {state.viewer && hasInvitations ? (
-            <Paper>
-              <List>
-                {invitations.map((invitation) => {
-                  return (
-                    <ListItem key={invitation.id}>
-                      <ListItemText primary={invitation.organization.name} />
-                      <Tooltip title="Accept invitation">
-                        <Button
-                          variant="outlined"
-                          sx={{ padding: '5px', minWidth: '15px' }}
-                          onClick={() => handleAcceptInvitation(invitation)}
-                        >
-                          <CheckIcon />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip title="Decline invitation">
-                        <Button
-                          variant="outlined"
-                          sx={{ padding: '5px', minWidth: '15px', marginLeft: (theme) => theme.spacing(2) }}
-                          onClick={() => handleDeclineInvitation(invitation)}
-                        >
-                          <ClearIcon />
-                        </Button>
-                      </Tooltip>
-                    </ListItem>
-                  );
-                })}
-              </List>
-              <TablePagination
-                component="div"
-                count={state.viewer.invitations.pageInfo.count}
-                page={state.page}
-                onPageChange={handlePageChange}
-                rowsPerPage={state.rowsPerPage}
-                rowsPerPageOptions={[state.rowsPerPage]}
-              />
-            </Paper>
-          ) : (
-            <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
-              <Typography variant="h6" align="center">
-                No invitations found
-              </Typography>
-            </Box>
-          )}
-        </Container>
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <div>
+      <Navbar />
+      <Container maxWidth="lg">
+        <Toolbar />
+        <Typography variant="h4" gutterBottom>
+          Invitations
+        </Typography>
+        {state.viewer && hasInvitations ? (
+          <Paper>
+            <List>
+              {invitations.map((invitation) => {
+                return (
+                  <ListItem key={invitation.id}>
+                    <ListItemText primary={invitation.organization.name} />
+                    <Tooltip title="Accept invitation">
+                      <Button
+                        variant="outlined"
+                        sx={{ padding: '5px', minWidth: '15px' }}
+                        onClick={() => handleAcceptInvitation(invitation)}
+                      >
+                        <CheckIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Decline invitation">
+                      <Button
+                        variant="outlined"
+                        sx={{ padding: '5px', minWidth: '15px', marginLeft: (theme) => theme.spacing(2) }}
+                        onClick={() => handleDeclineInvitation(invitation)}
+                      >
+                        <ClearIcon />
+                      </Button>
+                    </Tooltip>
+                  </ListItem>
+                );
+              })}
+            </List>
+            <TablePagination
+              component="div"
+              count={state.viewer.invitations.pageInfo.count}
+              page={state.page}
+              onPageChange={handlePageChange}
+              rowsPerPage={state.rowsPerPage}
+              rowsPerPageOptions={[state.rowsPerPage]}
+            />
+          </Paper>
+        ) : (
+          <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
+            <Typography variant="h6" align="center">
+              No invitations found
+            </Typography>
+          </Box>
+        )}
+      </Container>
+    </div>
   );
 };

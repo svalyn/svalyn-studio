@@ -23,7 +23,6 @@ export interface ProjectChangeProposalsViewState {
   selectedChangeProposalIds: string[];
   page: number;
   rowsPerPage: number;
-  message: string | null;
 }
 
 export type ChangeProposalStatusFilter = 'OPEN' | 'CLOSED';

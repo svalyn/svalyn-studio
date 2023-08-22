@@ -26,9 +26,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import { Domain, DomainsViewState, GetDomainsData, GetDomainsVariables } from './DomainsView.types';
 
 const getDomainsQuery = gql`
@@ -57,13 +57,17 @@ export const DomainsView = () => {
     message: null,
   });
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const variables: GetDomainsVariables = {
     page: state.page,
     rowsPerPage: state.rowsPerPage,
   };
   const { data, error } = useQuery<GetDomainsData, GetDomainsVariables>(getDomainsQuery, { variables });
   useEffect(() => {
-    setState((prevState) => ({ ...prevState, message: error?.message ?? null }));
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
   }, [error]);
 
   const domains: Domain[] = (data?.viewer.domains.edges ?? []).map((edge) => edge.node);
@@ -73,10 +77,8 @@ export const DomainsView = () => {
     setState((prevState) => ({ ...prevState, page }));
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   return (
-    <>
+    <div>
       <Typography variant="h4" gutterBottom>
         Domains
       </Typography>
@@ -109,7 +111,6 @@ export const DomainsView = () => {
           </Typography>
         </Box>
       )}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    </div>
   );
 };

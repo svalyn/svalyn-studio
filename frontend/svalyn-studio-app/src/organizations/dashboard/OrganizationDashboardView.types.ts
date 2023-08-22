@@ -33,7 +33,6 @@ export interface OrganizationDashboardViewState {
   organization: Organization | null;
   page: number;
   rowsPerPage: number;
-  message: string | null;
 }
 
 export interface GetOrganizationDashboardData {

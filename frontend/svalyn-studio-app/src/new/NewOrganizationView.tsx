@@ -26,20 +26,16 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { Navigate, Link as RouterLink } from 'react-router-dom';
 import { hasMinLength, isIdentifier, useForm } from '../forms/useForm';
 import { Navbar } from '../navbars/Navbar';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
-import { NewOrganizationViewFormData, NewOrganizationViewState } from './NewOrganizationView.types';
+import { NewOrganizationViewFormData } from './NewOrganizationView.types';
 import { useCreateOrganization } from './useCreateOrganization';
 import { CreateOrganizationInput } from './useCreateOrganization.types';
 
 export const NewOrganizationView = () => {
-  const [state, setState] = useState<NewOrganizationViewState>({
-    message: null,
-  });
-
   const { data, isFormValid, getTextFieldProps } = useForm<NewOrganizationViewFormData>({
     initialValue: {
       name: '',
@@ -51,10 +47,12 @@ export const NewOrganizationView = () => {
     },
   });
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const [createOrganization, { organization, message }] = useCreateOrganization();
   useEffect(() => {
     if (message) {
-      setState((prevState) => ({ ...prevState, message: message.body }));
+      enqueueSnackbar(message.body, { variant: message.severity });
     }
   }, [message]);
 
@@ -69,60 +67,55 @@ export const NewOrganizationView = () => {
     createOrganization(input);
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   if (organization) {
     return <Navigate to={`/orgs/${organization.identifier}`} />;
   }
 
   return (
-    <>
+    <div>
+      <Navbar />
       <div>
-        <Navbar />
-        <div>
-          <Container maxWidth="sm">
-            <Toolbar />
-            <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
-              <form onSubmit={handleCreateOrganization}>
-                <Stack spacing={4}>
-                  <Typography variant="h4" align="center">
-                    Let's create your organization
-                  </Typography>
-                  <TextField
-                    {...getTextFieldProps('name', "This is where you'll manage your domains")}
-                    label="Organization Name"
-                    variant="outlined"
-                    autoFocus
-                    required
-                    inputProps={{
-                      'aria-label': 'Organization Name',
-                    }}
-                  />
-                  <TextField
-                    {...getTextFieldProps(
-                      'organizationId',
-                      'A unique identifier composed of letters, numbers, dashes and underscores'
-                    )}
-                    label="Organization Identifier"
-                    variant="outlined"
-                    required
-                    inputProps={{
-                      'aria-label': 'Organization Identifier',
-                    }}
-                  />
-                  <Button type="submit" variant="contained" startIcon={<CorporateFareIcon />} disabled={!isFormValid}>
-                    Create organization
-                  </Button>
-                  <Link component={RouterLink} to="/" variant="body2" underline="hover" align="center">
-                    Back to the homepage
-                  </Link>
-                </Stack>
-              </form>
-            </Paper>
-          </Container>
-        </div>
+        <Container maxWidth="sm">
+          <Toolbar />
+          <Paper variant="outlined" sx={{ padding: (theme) => theme.spacing(2) }}>
+            <form onSubmit={handleCreateOrganization}>
+              <Stack spacing={4}>
+                <Typography variant="h4" align="center">
+                  Let's create your organization
+                </Typography>
+                <TextField
+                  {...getTextFieldProps('name', "This is where you'll manage your domains")}
+                  label="Organization Name"
+                  variant="outlined"
+                  autoFocus
+                  required
+                  inputProps={{
+                    'aria-label': 'Organization Name',
+                  }}
+                />
+                <TextField
+                  {...getTextFieldProps(
+                    'organizationId',
+                    'A unique identifier composed of letters, numbers, dashes and underscores'
+                  )}
+                  label="Organization Identifier"
+                  variant="outlined"
+                  required
+                  inputProps={{
+                    'aria-label': 'Organization Identifier',
+                  }}
+                />
+                <Button type="submit" variant="contained" startIcon={<CorporateFareIcon />} disabled={!isFormValid}>
+                  Create organization
+                </Button>
+                <Link component={RouterLink} to="/" variant="body2" underline="hover" align="center">
+                  Back to the homepage
+                </Link>
+              </Stack>
+            </form>
+          </Paper>
+        </Container>
       </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    </div>
   );
 };

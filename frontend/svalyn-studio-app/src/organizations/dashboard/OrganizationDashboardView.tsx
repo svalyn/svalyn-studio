@@ -25,9 +25,9 @@ import Grid from '@mui/material/Grid';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { ActivityTimeline } from '../../activity/ActivityTimeline';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../widgets/LastModifiedOn';
 import { useOrganization } from '../useOrganization';
@@ -99,8 +99,9 @@ export const OrganizationDashboardView = () => {
     organization: null,
     page: 0,
     rowsPerPage: 10,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetOrganizationDashboardVariables = {
     identifier: organizationIdentifier,
@@ -122,7 +123,7 @@ export const OrganizationDashboardView = () => {
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -131,44 +132,40 @@ export const OrganizationDashboardView = () => {
     setState((prevState) => ({ ...prevState, page }));
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
   return (
-    <>
-      <Main>
-        <Grid container spacing={2}>
-          <Grid item xs={10}>
-            {state.organization ? (
-              <>
-                {state.organization.projects.edges.length > 0 ? (
-                  <ProjectsArea
-                    projects={state.organization.projects.edges.map((edge) => edge.node)}
-                    pageInfo={state.organization.projects.pageInfo}
-                    page={state.page}
-                    rowsPerPage={state.rowsPerPage}
-                    onPageChange={handlePageChange}
-                  />
-                ) : (
-                  <EmptyProjectsArea />
-                )}
-                <ActivityArea activityEntries={state.organization.activityEntries.edges.map((edge) => edge.node)} />
-              </>
-            ) : null}
-          </Grid>
-          <Grid item xs={2}>
-            {state.organization ? (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-                <CreatedOn profile={state.organization.createdBy} date={new Date(state.organization.createdOn)} />
-                <LastModifiedOn
-                  profile={state.organization.lastModifiedBy}
-                  date={new Date(state.organization.lastModifiedOn)}
+    <Main>
+      <Grid container spacing={2}>
+        <Grid item xs={10}>
+          {state.organization ? (
+            <>
+              {state.organization.projects.edges.length > 0 ? (
+                <ProjectsArea
+                  projects={state.organization.projects.edges.map((edge) => edge.node)}
+                  pageInfo={state.organization.projects.pageInfo}
+                  page={state.page}
+                  rowsPerPage={state.rowsPerPage}
+                  onPageChange={handlePageChange}
                 />
-              </Box>
-            ) : null}
-          </Grid>
+              ) : (
+                <EmptyProjectsArea />
+              )}
+              <ActivityArea activityEntries={state.organization.activityEntries.edges.map((edge) => edge.node)} />
+            </>
+          ) : null}
         </Grid>
-      </Main>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+        <Grid item xs={2}>
+          {state.organization ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+              <CreatedOn profile={state.organization.createdBy} date={new Date(state.organization.createdOn)} />
+              <LastModifiedOn
+                profile={state.organization.lastModifiedBy}
+                date={new Date(state.organization.lastModifiedOn)}
+              />
+            </Box>
+          ) : null}
+        </Grid>
+      </Grid>
+    </Main>
   );
 };
 

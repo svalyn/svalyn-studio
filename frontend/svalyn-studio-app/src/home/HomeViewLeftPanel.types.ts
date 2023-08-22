@@ -19,10 +19,6 @@
 
 export interface HomeViewLeftPanelProps {}
 
-export interface HomeViewLeftPanelState {
-  message: string | null;
-}
-
 export interface GetOrganizationsData {
   viewer: Viewer;
 }

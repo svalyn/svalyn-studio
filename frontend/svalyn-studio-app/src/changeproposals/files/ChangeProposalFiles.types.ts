@@ -26,7 +26,6 @@ export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
 
 export interface ChangeProposalFilesState {
   changeProposal: ChangeProposal | null;
-  message: string | null;
 }
 
 export interface GetChangeProposalData {

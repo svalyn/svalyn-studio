@@ -22,7 +22,6 @@ export interface OrganizationTagsViewState {
   value: string;
   page: number;
   rowsPerPage: number;
-  message: string | null;
 }
 
 export interface GetOrganizationTagsVariables {

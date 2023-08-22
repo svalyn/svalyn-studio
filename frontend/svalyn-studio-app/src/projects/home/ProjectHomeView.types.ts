@@ -17,11 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectHomeViewState {
-  project: Project | null;
-  message: string | null;
-}
-
 export interface GetProjectHomeData {
   viewer: Viewer;
 }

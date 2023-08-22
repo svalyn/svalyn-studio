@@ -27,8 +27,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { ViewerCard } from '../../viewers/ViewerCard';
 import {
   ChangeProposalFilesProps,
@@ -62,7 +62,9 @@ const getChangeProposalFilesQuery = gql`
 `;
 
 export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesProps) => {
-  const [state, setState] = useState<ChangeProposalFilesState>({ changeProposal: null, message: null });
+  const [state, setState] = useState<ChangeProposalFilesState>({ changeProposal: null });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetChangeProposalVariables = { id: changeProposalId };
   const { loading, data, error } = useQuery<GetChangeProposalData, GetChangeProposalVariables>(
@@ -80,7 +82,7 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -97,61 +99,58 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
     }
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
+  if (!state.changeProposal) {
+    return null;
+  }
 
   return (
-    <>
-      {state.changeProposal ? (
-        <Box sx={{ padding: (theme) => theme.spacing(4) }}>
-          <Grid container spacing={4}>
-            <Grid item xs={2}>
-              <Paper variant="outlined">
-                <List>
-                  {state.changeProposal.change.resources.edges
-                    .map((edge) => edge.node)
-                    .map((resource) => {
-                      const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
-                      return (
-                        <ListItem
-                          key={fullpath}
-                          component={Link}
-                          href={`${fullpath}`}
-                          onClick={(
-                            event:
-                              | React.MouseEvent<HTMLAnchorElement, MouseEvent>
-                              | React.MouseEvent<HTMLSpanElement, MouseEvent>
-                          ) => handleResourceClick(event, resource)}
-                        >
-                          <ListItemIcon>
-                            <InsertDriveFileIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={resource.name} />
-                        </ListItem>
-                      );
-                    })}
-                </List>
-              </Paper>
-            </Grid>
-            <Grid item xs={10}>
+    <Box sx={{ padding: (theme) => theme.spacing(4) }}>
+      <Grid container spacing={4}>
+        <Grid item xs={2}>
+          <Paper variant="outlined">
+            <List>
               {state.changeProposal.change.resources.edges
                 .map((edge) => edge.node)
                 .map((resource) => {
                   const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
                   return (
-                    <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={fullpath}>
-                      <ViewerCard
-                        changeId={state.changeProposal?.change.id ?? ''}
-                        path={resource.path}
-                        name={resource.name}
-                      />
-                    </Box>
+                    <ListItem
+                      key={fullpath}
+                      component={Link}
+                      href={`${fullpath}`}
+                      onClick={(
+                        event:
+                          | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+                          | React.MouseEvent<HTMLSpanElement, MouseEvent>
+                      ) => handleResourceClick(event, resource)}
+                    >
+                      <ListItemIcon>
+                        <InsertDriveFileIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={resource.name} />
+                    </ListItem>
                   );
                 })}
-            </Grid>
-          </Grid>
-        </Box>
-      ) : null}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+            </List>
+          </Paper>
+        </Grid>
+        <Grid item xs={10}>
+          {state.changeProposal.change.resources.edges
+            .map((edge) => edge.node)
+            .map((resource) => {
+              const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+              return (
+                <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={fullpath}>
+                  <ViewerCard
+                    changeId={state.changeProposal?.change.id ?? ''}
+                    path={resource.path}
+                    name={resource.name}
+                  />
+                </Box>
+              );
+            })}
+        </Grid>
+      </Grid>
+    </Box>
   );
 };

@@ -23,10 +23,6 @@ export interface NewProjectDialogProps {
   onClose: () => void;
 }
 
-export interface NewProjectDialogState {
-  message: string | null;
-}
-
 export interface NewProjectDialogFormData {
   identifier: string;
   name: string;

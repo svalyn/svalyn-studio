@@ -23,17 +23,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
-import { DeleteOrganizationDialogProps, DeleteOrganizationDialogState } from './DeleteOrganizationDialog.types';
+import { DeleteOrganizationDialogProps } from './DeleteOrganizationDialog.types';
 import { useDeleteOrganization } from './useDeleteOrganization';
 import { DeleteOrganizationInput } from './useDeleteOrganization.types';
 
 export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose }: DeleteOrganizationDialogProps) => {
-  const [state, setState] = useState<DeleteOrganizationDialogState>({
-    message: null,
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
 
@@ -44,7 +42,7 @@ export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose
       navigate('/');
     }
     if (message) {
-      setState((prevState) => ({ ...prevState, message: message.body }));
+      enqueueSnackbar(message.body, { variant: message.severity });
     }
   }, [deleted, message]);
 
@@ -57,28 +55,24 @@ export const DeleteOrganizationDialog = ({ organizationIdentifier, open, onClose
     deleteOrganization(input);
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="delete-organization-dialog-title"
-        aria-describedby="delete-organization-dialog-description"
-      >
-        <DialogTitle id="delete-organization-dialog-title">Delete the organization</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-organization-dialog-description">
-            By deleting this organization, you will lose all its data. This operation cannot be reversed. Think
-            carefully about the consequences first.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={handleDeleteOrganization}>Delete</Button>
-        </DialogActions>
-      </Dialog>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="delete-organization-dialog-title"
+      aria-describedby="delete-organization-dialog-description"
+    >
+      <DialogTitle id="delete-organization-dialog-title">Delete the organization</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="delete-organization-dialog-description">
+          By deleting this organization, you will lose all its data. This operation cannot be reversed. Think carefully
+          about the consequences first.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleDeleteOrganization}>Delete</Button>
+      </DialogActions>
+    </Dialog>
   );
 };

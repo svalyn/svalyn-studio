@@ -20,10 +20,10 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Theme, alpha } from '@mui/material/styles';
-import { VariantType } from '../../snackbar/ErrorSnackbar.types';
+import { Severity } from '../../snackbar/Message.types';
 import { ConsoleLineProps } from './ConsoleLine.types';
 
-const getTextColor = (theme: Theme, severity: VariantType): string => {
+const getTextColor = (theme: Theme, severity: Severity): string => {
   let textColor = theme.palette.getContrastText(theme.palette.code.main);
   if (severity === 'error') {
     textColor = theme.palette.error[theme.palette.mode];

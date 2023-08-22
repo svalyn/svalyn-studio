@@ -17,10 +17,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ResourceViewState {
-  message: string | null;
-}
-
 export interface GetResourceVariables {
   projectIdentifier: string;
 }

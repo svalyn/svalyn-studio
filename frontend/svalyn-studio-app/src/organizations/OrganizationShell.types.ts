@@ -23,7 +23,6 @@ export interface OrganizationShellProps {
 
 export interface OrganizationShellState {
   newProjectDialogOpen: boolean;
-  errorSnackbarOpen: boolean;
 }
 
 export interface Organization {

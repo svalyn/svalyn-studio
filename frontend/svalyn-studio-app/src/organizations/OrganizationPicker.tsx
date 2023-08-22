@@ -29,9 +29,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import {
   GetOrganizationsData,
   GetOrganizationsVariables,
@@ -67,8 +67,9 @@ export const OrganizationPicker = ({ organization }: OrganizationPickerProps) =>
     organizations: [],
     selectedOrganization: organization,
     anchorElement: null,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setState((prevState) => ({ ...prevState, selectedOrganization: organization }));
@@ -84,7 +85,7 @@ export const OrganizationPicker = ({ organization }: OrganizationPickerProps) =>
         setState((prevState) => ({ ...prevState, organizations: organizations.edges.map((edge) => edge.node) }));
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -95,8 +96,6 @@ export const OrganizationPicker = ({ organization }: OrganizationPickerProps) =>
   };
 
   const closeMenu = () => setState((prevState) => ({ ...prevState, anchorElement: null }));
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   return (
     <>
@@ -134,7 +133,6 @@ export const OrganizationPicker = ({ organization }: OrganizationPickerProps) =>
           <ListItemText>Create a new organization</ListItemText>
         </MenuItem>
       </Menu>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

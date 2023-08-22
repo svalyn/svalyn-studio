@@ -20,7 +20,6 @@
 export interface SearchViewState {
   query: string | null;
   currentQuery: string;
-  message: string | null;
 }
 
 export interface GetSearchResultsVariables {

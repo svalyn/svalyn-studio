@@ -31,8 +31,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
   GetOrganizationInvitationsData,
@@ -82,8 +82,9 @@ export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) 
     organization: null,
     page: 0,
     rowsPerPage: 10,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetOrganizationInvitationsVariables = {
     identifier: organizationIdentifier,
@@ -105,7 +106,7 @@ export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) 
         }
       }
       if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message }));
+        enqueueSnackbar(error.message, { variant: 'error' });
       }
     }
   }, [loading, data, error]);
@@ -125,7 +126,7 @@ export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) 
         }
       }
       if (revokeInvitationError) {
-        setState((prevState) => ({ ...prevState, message: revokeInvitationError.message }));
+        enqueueSnackbar(revokeInvitationError.message, { variant: 'error' });
       }
     }
   }, [revokeInvitationLoading, revokeInvitationData, revokeInvitationError]);
@@ -198,7 +199,6 @@ export const Invitations = ({ organizationIdentifier, role }: InvitationsProps) 
           </Typography>
         </Box>
       )}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

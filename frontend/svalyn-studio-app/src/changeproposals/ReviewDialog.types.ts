@@ -27,7 +27,6 @@ export interface ReviewDialogProps {
 export interface ReviewDialogState {
   review: string;
   status: ReviewStatus;
-  message: string | null;
 }
 
 export type ReviewStatus = 'APPROVED' | 'REQUESTED_CHANGES';

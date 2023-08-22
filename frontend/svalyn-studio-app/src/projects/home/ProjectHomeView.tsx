@@ -22,14 +22,14 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { CreatedOn } from '../../widgets/CreatedOn';
 import { LastModifiedOn } from '../../widgets/LastModifiedOn';
 import { useProject } from '../useProject';
 import { ProjectBranchCard } from './ProjectBranchCard';
-import { GetProjectHomeData, GetProjectHomeVariables, ProjectHomeViewState } from './ProjectHomeView.types';
+import { GetProjectHomeData, GetProjectHomeVariables } from './ProjectHomeView.types';
 import { ProjectReadMeCard } from './ProjectReadMeCard';
 
 const getProjectHomeQuery = gql`
@@ -86,86 +86,73 @@ export const ProjectHomeView = () => {
     identifier: projectIdentifier,
     organization: { role },
   } = useProject();
-  const [state, setState] = useState<ProjectHomeViewState>({
-    project: null,
-    message: null,
-  });
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetProjectHomeVariables = { identifier: projectIdentifier };
-  const { loading, data, error, refetch } = useQuery<GetProjectHomeData, GetProjectHomeVariables>(getProjectHomeQuery, {
+  const { data, error, refetch } = useQuery<GetProjectHomeData, GetProjectHomeVariables>(getProjectHomeQuery, {
     variables,
   });
   useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const {
-          viewer: { project },
-        } = data;
-        if (project) {
-          setState((prevState) => ({ ...prevState, project, editReadMeDialogOpen: false }));
-        }
-      }
-      if (error) {
-        setState((prevState) => ({ ...prevState, message: error.message, editReadMeDialogOpen: false }));
-      }
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
-  }, [loading, data, error]);
+  }, [error]);
 
   const handleReadMeUpdate = () => refetch(variables);
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
+  if (!data || !data.viewer.project) {
+    return null;
+  }
 
   return (
-    <>
-      {state.project ? (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: (theme) => theme.spacing(2),
-            padding: (theme) => theme.spacing(4),
-          }}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: (theme) => theme.spacing(2),
+        padding: (theme) => theme.spacing(4),
+      }}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
+        <Link
+          variant="h4"
+          underline="hover"
+          component={RouterLink}
+          to={`/orgs/${data.viewer.project.organization.identifier}`}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
-            <Link
-              variant="h4"
-              underline="hover"
-              component={RouterLink}
-              to={`/orgs/${state.project.organization.identifier}`}
-            >
-              {state.project.organization.name}
-            </Link>
-            <Typography variant="h4">/</Typography>
-            <Typography variant="h4">{state.project.name}</Typography>
+          {data.viewer.project.organization.name}
+        </Link>
+        <Typography variant="h4">/</Typography>
+        <Typography variant="h4">{data.viewer.project.name}</Typography>
+      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={9}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+            <ProjectBranchCard projectIdentifier={projectIdentifier} branch={data.viewer.project.branch} />
+            <ProjectReadMeCard
+              projectIdentifier={projectIdentifier}
+              readMe={data.viewer.project.readMe}
+              role={role}
+              onReadMeUpdate={handleReadMeUpdate}
+            />
           </Box>
-          <Grid container spacing={2}>
-            <Grid item xs={9}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-                <ProjectBranchCard projectIdentifier={projectIdentifier} branch={state.project.branch} />
-                <ProjectReadMeCard
-                  projectIdentifier={projectIdentifier}
-                  readMe={state.project.readMe}
-                  role={role}
-                  onReadMeUpdate={handleReadMeUpdate}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-                <Box>
-                  <Typography variant="h6" gutterBottom>
-                    Description
-                  </Typography>
-                  <Typography variant="body2">{state.project.description}</Typography>
-                </Box>
-                <CreatedOn profile={state.project.createdBy} date={new Date(state.project.createdOn)} />
-                <LastModifiedOn profile={state.project.lastModifiedBy} date={new Date(state.project.lastModifiedOn)} />
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-      ) : null}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+        </Grid>
+        <Grid item xs={3}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                Description
+              </Typography>
+              <Typography variant="body2">{data.viewer.project.description}</Typography>
+            </Box>
+            <CreatedOn profile={data.viewer.project.createdBy} date={new Date(data.viewer.project.createdOn)} />
+            <LastModifiedOn
+              profile={data.viewer.project.lastModifiedBy}
+              date={new Date(data.viewer.project.lastModifiedOn)}
+            />
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };

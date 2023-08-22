@@ -21,7 +21,6 @@ export interface ProjectSettingsViewState {
   name: string;
   description: string;
   deleteProjectDialogOpen: boolean;
-  message: string | null;
 }
 
 export interface UpdateProjectNameData {

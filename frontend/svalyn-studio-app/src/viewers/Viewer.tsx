@@ -20,10 +20,10 @@
 import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { GraphViewer } from './GraphViewer';
-import { GetChangeResourceData, GetChangeResourceVariables, ViewerProps, ViewerState } from './Viewer.types';
+import { GetChangeResourceData, GetChangeResourceVariables, ViewerProps } from './Viewer.types';
 
 const getChangeResourceQuery = gql`
   query getChangeResourceQuery($changeId: ID!, $path: String!, $name: String!) {
@@ -39,7 +39,7 @@ const getChangeResourceQuery = gql`
 `;
 
 export const Viewer = ({ changeId, path, name }: ViewerProps) => {
-  const [state, setState] = useState<ViewerState>({ message: null });
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetChangeResourceVariables = {
     changeId,
@@ -51,11 +51,9 @@ export const Viewer = ({ changeId, path, name }: ViewerProps) => {
   });
   useEffect(() => {
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
-
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   let rawViewer: JSX.Element | null = null;
   if (data && data.viewer.change && data.viewer.change.resource) {
@@ -73,10 +71,5 @@ export const Viewer = ({ changeId, path, name }: ViewerProps) => {
       rawViewer = <GraphViewer content={resource.content} />;
     }
   }
-  return (
-    <>
-      {rawViewer}
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
-  );
+  return rawViewer;
 };

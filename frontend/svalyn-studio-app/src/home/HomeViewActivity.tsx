@@ -20,9 +20,9 @@
 import { gql, useQuery } from '@apollo/client';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { ActivityTimeline } from '../activity/ActivityTimeline';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import {
   GetActivityData,
   GetActivityVariables,
@@ -61,8 +61,9 @@ export const HomeViewActivity = ({}: HomeViewActivityProps) => {
     activityEntries: [],
     page: 0,
     rowsPerPage: 20,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetActivityVariables = { page: state.page, rowsPerPage: state.rowsPerPage };
   const { data, error } = useQuery<GetActivityData, GetActivityVariables>(getActivityQuery, { variables });
@@ -75,7 +76,7 @@ export const HomeViewActivity = ({}: HomeViewActivityProps) => {
       }));
     }
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [data, error]);
 
@@ -85,13 +86,10 @@ export const HomeViewActivity = ({}: HomeViewActivityProps) => {
 
   const hasNext = data?.viewer.activityEntries.pageInfo.hasNextPage ?? false;
   return (
-    <>
-      <div>
-        <Typography variant="h6">Activity</Typography>
-        <ActivityTimeline activityEntries={state.activityEntries} />
-        {hasNext ? <Link onClick={handleLoadMore}>Load more</Link> : null}
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <div>
+      <Typography variant="h6">Activity</Typography>
+      <ActivityTimeline activityEntries={state.activityEntries} />
+      {hasNext ? <Link onClick={handleLoadMore}>Load more</Link> : null}
+    </div>
   );
 };

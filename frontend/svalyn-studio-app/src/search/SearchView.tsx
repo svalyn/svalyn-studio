@@ -31,10 +31,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import { Navbar } from '../navbars/Navbar';
-import { ErrorSnackbar } from '../snackbar/ErrorSnackbar';
 import {
   GetSearchResultsData,
   GetSearchResultsVariables,
@@ -65,8 +65,9 @@ export const SearchView = () => {
   const [state, setState] = useState<SearchViewState>({
     query: null,
     currentQuery: '',
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
@@ -84,6 +85,12 @@ export const SearchView = () => {
     skip: state.query === null,
   });
 
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  }, [error]);
+
   const handleCurrentQueryChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (event) => {
     const {
       target: { value },
@@ -100,47 +107,44 @@ export const SearchView = () => {
   const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
 
   return (
-    <>
-      <div>
-        <Navbar />
-        <Container maxWidth="lg">
-          <Toolbar />
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(10) }}>
-            <Paper variant="outlined" sx={{ paddingX: (theme) => theme.spacing(2) }}>
-              <FormControl variant="standard" fullWidth>
-                <Input
-                  value={state.currentQuery}
-                  onChange={handleCurrentQueryChange}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Search..."
-                  disableUnderline
-                  autoFocus
-                  fullWidth
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <SearchIcon fontSize="large" />
-                    </InputAdornment>
-                  }
-                  inputProps={{
-                    style: {
-                      fontSize: '2rem',
-                    },
-                  }}
-                />
-              </FormControl>
-            </Paper>
-            {state.query && data ? (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(4) }}>
-                <Typography variant="h4">Search results for "{state.query}"</Typography>
-                <OrganizationSearchResults organizations={data.viewer.search.organizations} />
-                <ProjectSearchResults projects={data.viewer.search.projects} />
-              </Box>
-            ) : null}
-          </Box>
-        </Container>
-      </div>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+    <div>
+      <Navbar />
+      <Container maxWidth="lg">
+        <Toolbar />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(10) }}>
+          <Paper variant="outlined" sx={{ paddingX: (theme) => theme.spacing(2) }}>
+            <FormControl variant="standard" fullWidth>
+              <Input
+                value={state.currentQuery}
+                onChange={handleCurrentQueryChange}
+                onKeyDown={handleKeyDown}
+                placeholder="Search..."
+                disableUnderline
+                autoFocus
+                fullWidth
+                startAdornment={
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="large" />
+                  </InputAdornment>
+                }
+                inputProps={{
+                  style: {
+                    fontSize: '2rem',
+                  },
+                }}
+              />
+            </FormControl>
+          </Paper>
+          {state.query && data ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(4) }}>
+              <Typography variant="h4">Search results for "{state.query}"</Typography>
+              <OrganizationSearchResults organizations={data.viewer.search.organizations} />
+              <ProjectSearchResults projects={data.viewer.search.projects} />
+            </Box>
+          ) : null}
+        </Box>
+      </Container>
+    </div>
   );
 };
 

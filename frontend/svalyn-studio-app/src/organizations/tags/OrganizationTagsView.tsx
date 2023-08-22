@@ -32,8 +32,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import { useOrganization } from '../useOrganization';
 import {
   AddTagToOrganizationData,
@@ -83,8 +83,9 @@ export const OrganizationTagsView = () => {
     value: '',
     page: 0,
     rowsPerPage: 10,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const variables: GetOrganizationTagsVariables = {
     identifier: organizationIdentifier,
@@ -99,7 +100,7 @@ export const OrganizationTagsView = () => {
   );
   useEffect(() => {
     if (error) {
-      setState((prevState) => ({ ...prevState, message: error.message }));
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
   }, [error]);
 
@@ -128,7 +129,7 @@ export const OrganizationTagsView = () => {
     if (addTagToOrganizationData) {
       if (addTagToOrganizationData.addTagToOrganization.__typename === 'ErrorPayload') {
         const errorPayload = addTagToOrganizationData.addTagToOrganization as ErrorPayload;
-        setState((prevState) => ({ ...prevState, message: errorPayload.message }));
+        enqueueSnackbar(errorPayload.message, { variant: 'error' });
       } else if (addTagToOrganizationData.addTagToOrganization.__typename === 'SuccessPayload') {
         setState((prevState) => ({ ...prevState, key: '', value: '' }));
         refetch(variables);
@@ -151,112 +152,101 @@ export const OrganizationTagsView = () => {
   const onPageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) =>
     setState((prevState) => ({ ...prevState, page }));
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
-
   const isValidNewTag = state.key.trim().length > 0 && state.value.trim().length > 0;
 
   return (
-    <>
-      <Container
-        maxWidth="lg"
+    <Container
+      maxWidth="lg"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: (theme) => theme.spacing(2),
+        paddingTop: (theme) => theme.spacing(4),
+      }}
+    >
+      <Paper
         sx={{
           display: 'flex',
           flexDirection: 'column',
           gap: (theme) => theme.spacing(2),
-          paddingTop: (theme) => theme.spacing(4),
+          padding: (theme) => theme.spacing(3),
         }}
       >
-        <Paper
+        <Typography variant="h5">Tags</Typography>
+        <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
+            display: 'grid',
+            gridTemplateRows: '1fr',
+            gridTemplateColumns: '1fr 1fr min-content',
             gap: (theme) => theme.spacing(2),
-            padding: (theme) => theme.spacing(3),
           }}
         >
-          <Typography variant="h5">Tags</Typography>
-          <Box
+          <TextField label="Key" value={state.key} onChange={handleKeyChange} size="small" disabled={role === 'NONE'} />
+          <TextField
+            label="Value"
+            value={state.value}
+            onChange={handleValueChange}
+            size="small"
+            disabled={role === 'NONE'}
+          />
+          <Button
+            variant="outlined"
+            disabled={!isValidNewTag || role === 'NONE'}
+            onClick={handleAddTag}
+            sx={{ whiteSpace: 'nowrap' }}
+            size="small"
+            endIcon={<AddIcon />}
+          >
+            Add new tag
+          </Button>
+        </Box>
+      </Paper>
+      <Box>
+        {data && data.viewer && data.viewer.organization && data.viewer.organization.tags.edges.length > 0 ? (
+          <>
+            <TableContainer component={Paper} variant="outlined">
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell width="50%">Key</TableCell>
+                    <TableCell width="50%">Value</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.viewer.organization.tags.edges
+                    .map((edge) => edge.node)
+                    .map((tag) => (
+                      <TableRow key={tag.id}>
+                        <TableCell>{tag.key}</TableCell>
+                        <TableCell>{tag.value}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              sx={{ borderBottom: 'none' }}
+              component="div"
+              onPageChange={onPageChange}
+              rowsPerPageOptions={[10]}
+              rowsPerPage={10}
+              page={state.page}
+              count={data.viewer.organization.tags.pageInfo.count}
+            />
+          </>
+        ) : (
+          <Typography
             sx={{
-              display: 'grid',
-              gridTemplateRows: '1fr',
-              gridTemplateColumns: '1fr 1fr min-content',
-              gap: (theme) => theme.spacing(2),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: (theme) => theme.spacing(15),
             }}
           >
-            <TextField
-              label="Key"
-              value={state.key}
-              onChange={handleKeyChange}
-              size="small"
-              disabled={role === 'NONE'}
-            />
-            <TextField
-              label="Value"
-              value={state.value}
-              onChange={handleValueChange}
-              size="small"
-              disabled={role === 'NONE'}
-            />
-            <Button
-              variant="outlined"
-              disabled={!isValidNewTag || role === 'NONE'}
-              onClick={handleAddTag}
-              sx={{ whiteSpace: 'nowrap' }}
-              size="small"
-              endIcon={<AddIcon />}
-            >
-              Add new tag
-            </Button>
-          </Box>
-        </Paper>
-        <Box>
-          {data && data.viewer && data.viewer.organization && data.viewer.organization.tags.edges.length > 0 ? (
-            <>
-              <TableContainer component={Paper} variant="outlined">
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width="50%">Key</TableCell>
-                      <TableCell width="50%">Value</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.viewer.organization.tags.edges
-                      .map((edge) => edge.node)
-                      .map((tag) => (
-                        <TableRow key={tag.id}>
-                          <TableCell>{tag.key}</TableCell>
-                          <TableCell>{tag.value}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                sx={{ borderBottom: 'none' }}
-                component="div"
-                onPageChange={onPageChange}
-                rowsPerPageOptions={[10]}
-                rowsPerPage={10}
-                page={state.page}
-                count={data.viewer.organization.tags.pageInfo.count}
-              />
-            </>
-          ) : (
-            <Typography
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: (theme) => theme.spacing(15),
-              }}
-            >
-              No tags added yet
-            </Typography>
-          )}
-        </Box>
-      </Container>
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
-    </>
+            No tags added yet
+          </Typography>
+        )}
+      </Box>
+    </Container>
   );
 };

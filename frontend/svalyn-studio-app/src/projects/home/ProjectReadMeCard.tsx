@@ -25,10 +25,10 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { EditReadMeDialog } from '../../dialogs/EditReadMeDialog';
-import { ErrorSnackbar } from '../../snackbar/ErrorSnackbar';
 import {
   ErrorPayload,
   ProjectReadMeCardProps,
@@ -56,8 +56,9 @@ const trimLines = (content: string): string =>
 export const ProjectReadMeCard = ({ projectIdentifier, readMe, role, onReadMeUpdate }: ProjectReadMeCardProps) => {
   const [state, setState] = useState<ProjectReadMeCardState>({
     editReadMeDialogOpen: false,
-    message: null,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const openReadMeDialog = () => setState((prevState) => ({ ...prevState, editReadMeDialogOpen: true }));
   const closeReadMeDialog = () => setState((prevState) => ({ ...prevState, editReadMeDialogOpen: false }));
@@ -74,13 +75,14 @@ export const ProjectReadMeCard = ({ projectIdentifier, readMe, role, onReadMeUpd
           onReadMeUpdate();
         } else if (updateProjectReadMe.__typename === 'ErrorPayload') {
           const errorPayload = updateProjectReadMe as ErrorPayload;
-          setState((prevState) => ({ ...prevState, message: errorPayload.message, editReadMeDialogOpen: false }));
+          setState((prevState) => ({ ...prevState, editReadMeDialogOpen: false }));
+          enqueueSnackbar(errorPayload.message, { variant: 'error' });
         }
       }
       if (updateProjectReadMeError) {
+        enqueueSnackbar(updateProjectReadMeError.message, { variant: 'error' });
         setState((prevState) => ({
           ...prevState,
-          message: updateProjectReadMeError.message,
           editReadMeDialogOpen: false,
         }));
       }
@@ -98,7 +100,6 @@ export const ProjectReadMeCard = ({ projectIdentifier, readMe, role, onReadMeUpd
     updateProjectReadMe({ variables });
   };
 
-  const handleCloseSnackbar = () => setState((prevState) => ({ ...prevState, message: null }));
   const trimmedReadMe = trimLines(readMe);
 
   return (
@@ -135,7 +136,6 @@ export const ProjectReadMeCard = ({ projectIdentifier, readMe, role, onReadMeUpd
         onCancel={closeReadMeDialog}
         onUpdate={handleReadMeUpdate}
       />
-      <ErrorSnackbar open={state.message !== null} message={state.message} onClose={handleCloseSnackbar} />
     </>
   );
 };

@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from 'react';
-import { Message } from '../../snackbar/ErrorSnackbar.types';
+import { Message } from '../../snackbar/Message.types';
 import {
   ConsoleContextProviderProps,
   ConsoleContextProviderState,
@@ -35,7 +35,6 @@ export const ConsoleContextProvider = ({ children }: ConsoleContextProviderProps
   const [state, setState] = useState<ConsoleContextProviderState>({
     messages: [],
   });
-
   const pushMessage = (message: Message) =>
     setState((prevState) => ({ ...prevState, messages: [...prevState.messages, message] }));
 
