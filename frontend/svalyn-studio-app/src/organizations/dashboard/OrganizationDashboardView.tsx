@@ -94,7 +94,9 @@ const Main = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 export const OrganizationDashboardView = () => {
-  const { identifier: organizationIdentifier } = useOrganization();
+  const {
+    organization: { identifier: organizationIdentifier },
+  } = useOrganization();
   const [state, setState] = useState<OrganizationDashboardViewState>({
     organization: null,
     page: 0,

@@ -26,7 +26,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useOrganization } from '../useOrganization';
 import { DeleteOrganizationDialog } from './DeleteOrganizationDialog';
 import {
@@ -47,15 +46,16 @@ const updateOrganizationNameMutation = gql`
 `;
 
 export const OrganizationSettingsView = () => {
-  const { identifier: organizationIdentifier, role } = useOrganization();
+  const {
+    organization: { identifier: organizationIdentifier, role },
+    refresh,
+  } = useOrganization();
   const [state, setState] = useState<OrganizationSettingsViewState>({
     name: '',
     deleteOrganizationDialogOpen: false,
   });
 
   const { enqueueSnackbar } = useSnackbar();
-
-  const navigate = useNavigate();
 
   const handleNameChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
     const {
@@ -72,7 +72,7 @@ export const OrganizationSettingsView = () => {
     if (!updateOrganizationNameLoading) {
       if (updateOrganizationNameData) {
         if (updateOrganizationNameData.updateOrganizationName.__typename === 'SuccessPayload') {
-          navigate(`/orgs/${organizationIdentifier}`);
+          refresh();
         } else if (updateOrganizationNameData.updateOrganizationName.__typename === 'ErrorPayload') {
           const { message } = updateOrganizationNameData.updateOrganizationName as ErrorPayload;
           enqueueSnackbar(message, { variant: 'error' });

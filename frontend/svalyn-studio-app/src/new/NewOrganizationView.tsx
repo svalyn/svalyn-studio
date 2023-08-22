@@ -42,7 +42,7 @@ export const NewOrganizationView = () => {
       organizationId: '',
     },
     validationRules: {
-      name: (data) => hasMinLength(data.name, 0),
+      name: (data) => hasMinLength(data.name, 1),
       organizationId: (data) => isIdentifier(data.organizationId),
     },
   });

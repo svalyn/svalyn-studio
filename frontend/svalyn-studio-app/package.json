@@ -30,7 +30,7 @@
     "reactflow": "11.7.0"
   },
   "devDependencies": {
-    "@playwright/test": "1.32.1",
+    "@playwright/test": "1.37.1",
     "@types/dagre": "^0.7.48",
     "@types/react": "18.0.30",
     "@types/react-dom": "18.0.11",

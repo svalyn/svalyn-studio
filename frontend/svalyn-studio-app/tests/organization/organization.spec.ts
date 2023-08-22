@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,52 +17,34 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from '../fixture';
+import { Organization } from '../fixture.types';
 
 test.describe('Organization settings view', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173/login');
-    await page
-      .getByRole('tab')
-      .filter({ has: page.getByTestId('EmailIcon') })
-      .click();
-    await page.getByRole('textbox', { name: 'Username' }).fill('admin');
-    await page.getByRole('textbox', { name: 'Password' }).fill('password');
-    await page.getByRole('button', { name: 'LOGIN' }).click();
-    await expect(page).not.toHaveURL('http://localhost:5173/login');
+  let organization: Organization;
+
+  test.beforeEach(async ({ loginPage, newOrganizationPage }) => {
+    await loginPage.goto();
+    await loginPage.loginAsAdmin();
+
+    await newOrganizationPage.goto();
+    organization = await newOrganizationPage.createOrganization();
   });
 
-  test.beforeEach(async ({ page, browserName }) => {
-    await page.goto('http://localhost:5173/new/organization');
-
-    await page.getByRole('textbox', { name: 'Organization Name' }).fill(`Organization settings view ${browserName}`);
-    await page
-      .getByRole('textbox', { name: 'Organization Identifier' })
-      .fill(`organization-settings-view-${browserName}`);
-    await page.getByRole('button', { name: 'CREATE' }).click();
-
-    await expect(page).toHaveURL(`http://localhost:5173/orgs/organization-settings-view-${browserName}`);
+  test.afterEach(async ({ organizationSettingsPage }) => {
+    await organizationSettingsPage.goto(organization.identifier);
+    await organizationSettingsPage.delete();
   });
 
-  test.afterEach(async ({ page, browserName }) => {
-    await page.goto(`http://localhost:5173/orgs/organization-settings-view-${browserName}/settings`);
-    await page.getByRole('button', { name: 'DELETE ORGANIZATION' }).click();
-    await page.getByRole('button', { name: 'DELETE' }).click();
-
-    await page.goto(`http://localhost:5173/orgs/organization-settings-view-${browserName}`);
-    expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
-  });
-
-  test('should let me update the organization name', async ({ page, browserName }) => {
-    await page.goto(`http://localhost:5173/orgs/organization-settings-view-${browserName}`);
-    expect(page.getByRole('heading', { name: `Organization settings view ${browserName}` })).toBeVisible();
+  test('should let me update the organization name', async ({ page }) => {
+    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
+    await expect(page.getByRole('heading', { name: organization.name })).toBeVisible();
 
     await page.getByRole('tab').filter({ hasText: 'SETTINGS' }).click();
-    await page
-      .getByRole('textbox', { name: 'Organization Name' })
-      .fill(`Renamed organization settings view ${browserName}`);
+    await page.getByRole('textbox', { name: 'Organization Name' }).fill(`Renamed ${organization.name}`);
     await page.getByRole('button', { name: 'RENAME' }).click();
-    await expect(page).toHaveURL(`http://localhost:5173/orgs/organization-settings-view-${browserName}`);
-    expect(page.getByRole('heading', { name: `Renamed organization settings view ${browserName}` })).toBeVisible();
+
+    await expect(page.getByRole('heading', { name: `Renamed ${organization.name}` })).toBeVisible();
   });
 });

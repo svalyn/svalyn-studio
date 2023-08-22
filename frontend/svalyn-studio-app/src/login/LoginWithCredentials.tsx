@@ -37,7 +37,7 @@ export const LoginWithCredentials = () => {
       password: '',
     },
     validationRules: {
-      username: (data) => hasMinLength(data.username, 0),
+      username: (data) => hasMinLength(data.username, 1),
       password: (data) => hasMinLength(data.password, 8),
     },
   });

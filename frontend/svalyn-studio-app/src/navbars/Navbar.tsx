@@ -119,7 +119,7 @@ export const Navbar = ({ children }: NavbarProps) => {
                   <NotificationsNoneIcon />
                 </Badge>
               </IconButton>
-              <IconButton onClick={handleOpenUserMenu}>
+              <IconButton onClick={handleOpenUserMenu} data-testid="user-menu-avatar">
                 <Avatar alt={state.viewer.name} src={state.viewer.imageUrl} sx={{ width: 24, height: 24 }} />
               </IconButton>
               <UserMenu

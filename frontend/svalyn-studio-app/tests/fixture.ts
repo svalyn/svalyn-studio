@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,31 +16,27 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+import { test as base } from '@playwright/test';
+import { Fixture } from './fixture.types';
+import { LoginPage } from './pages/LoginPage';
+import { NewOrganizationPage } from './pages/NewOrganizationPage';
+import { OrganizationPage } from './pages/OrganizationPage';
+import { OrganizationSettingsPage } from './pages/OrganizationSettingsPage';
 
-import { expect } from '@playwright/test';
-import { test } from '../fixture';
+export const test = base.extend<Fixture>({
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
+  },
 
-test.describe('New organization view', () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.goto();
-    await loginPage.loginAsAdmin();
-  });
+  newOrganizationPage: async ({ page }, use) => {
+    await use(new NewOrganizationPage(page));
+  },
 
-  test('should let me create and delete an organization', async ({
-    page,
-    newOrganizationPage,
-    organizationSettingsPage,
-  }) => {
-    await newOrganizationPage.goto();
-    const organization = await newOrganizationPage.createOrganization();
+  organizationPage: async ({ page }, use) => {
+    await use(new OrganizationPage(page, ''));
+  },
 
-    await expect(page).toHaveURL(`http://localhost:5173/orgs/${organization.identifier}`);
-    await expect(page.getByRole('heading', { name: organization.name })).toBeVisible();
-
-    await organizationSettingsPage.goto(organization.identifier);
-    await organizationSettingsPage.delete();
-
-    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
-    await expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
-  });
+  organizationSettingsPage: async ({ page }, use) => {
+    await use(new OrganizationSettingsPage(page, ''));
+  },
 });
