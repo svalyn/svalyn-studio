@@ -26,13 +26,13 @@
     <parent>
         <groupId>svalyn</groupId>
         <artifactId>svalyn-studio-parent</artifactId>
-        <version>2023.8.0-SNAPSHOT</version>
+        <version>2023.8.0</version>
         <relativePath>../svalyn-studio-parent/pom.xml</relativePath>
     </parent>
 
     <groupId>svalyn</groupId>
     <artifactId>svalyn-studio-infrastructure</artifactId>
-    <version>2023.8.0-SNAPSHOT</version>
+    <version>2023.8.0</version>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
@@ -77,17 +77,17 @@
         <dependency>
             <groupId>svalyn</groupId>
             <artifactId>svalyn-studio-domain</artifactId>
-            <version>2023.8.0-SNAPSHOT</version>
+            <version>2023.8.0</version>
         </dependency>
         <dependency>
             <groupId>svalyn</groupId>
             <artifactId>svalyn-studio-message</artifactId>
-            <version>2023.8.0-SNAPSHOT</version>
+            <version>2023.8.0</version>
         </dependency>
         <dependency>
             <groupId>svalyn</groupId>
             <artifactId>svalyn-studio-application</artifactId>
-            <version>2023.8.0-SNAPSHOT</version>
+            <version>2023.8.0</version>
         </dependency>
     </dependencies>
 </project>
