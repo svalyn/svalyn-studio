@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,54 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.domain.account.AccountRole;
-import jakarta.validation.constraints.NotNull;
+export interface AccountTableState {
+  page: number;
+  rowsPerPage: number;
+}
 
-/**
- * A viewer of the application.
- *
- * @author sbegaudeau
- */
-public record Viewer(
-        @NotNull String name,
-        @NotNull String username,
-        @NotNull String imageUrl,
-        @NotNull AccountRole role) {
+export interface GetAccountsData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  asAdmin: Admin;
+}
+
+export interface Admin {
+  accounts: AdminAccountsConnection;
+}
+
+export interface AdminAccountsConnection {
+  edges: AdminAccountsEdge[];
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  count: number;
+}
+
+export interface AdminAccountsEdge {
+  node: Account;
+}
+
+export interface Account {
+  username: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  role: AccountRole;
+  createdOn: string;
+  lastModifiedOn: string;
+}
+
+export type AccountRole = 'USER' | 'ADMIN';
+
+export interface GetAccountsVariables {
+  page: number;
+  rowsPerPage: number;
+}
+
+export interface AccountRowProps {
+  account: Account;
 }

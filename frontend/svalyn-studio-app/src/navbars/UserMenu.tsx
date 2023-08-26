@@ -17,6 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import HelpIcon from '@mui/icons-material/Help';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -35,7 +36,7 @@ import { getCookie } from '../cookies/getCookie';
 import { UserMenuProps, UserMenuState } from './UserMenu.types';
 const { VITE_BACKEND_URL } = import.meta.env;
 
-export const UserMenu = ({ name, username, onClose, ...props }: UserMenuProps) => {
+export const UserMenu = ({ viewer, onClose, ...props }: UserMenuProps) => {
   const [state, setState] = useState<UserMenuState>({
     redirectToLogin: false,
   });
@@ -68,7 +69,7 @@ export const UserMenu = ({ name, username, onClose, ...props }: UserMenuProps) =
   return (
     <Menu onClose={onClose} {...props}>
       <ListItem sx={{ paddingTop: '0', paddingBottom: '0' }}>
-        <ListItemText primary="Signed in as" secondary={name} />
+        <ListItemText primary="Signed in as" secondary={viewer.name} />
       </ListItem>
       <MenuItem component={RouterLink} to="/" onClick={handleCloseUserMenu}>
         <ListItemIcon>
@@ -76,7 +77,7 @@ export const UserMenu = ({ name, username, onClose, ...props }: UserMenuProps) =
         </ListItemIcon>
         <ListItemText>Dashboard</ListItemText>
       </MenuItem>
-      <MenuItem component={RouterLink} to={`/profiles/${username}`} onClick={handleCloseUserMenu}>
+      <MenuItem component={RouterLink} to={`/profiles/${viewer.username}`} onClick={handleCloseUserMenu}>
         <ListItemIcon>
           <PersonIcon fontSize="small" />
         </ListItemIcon>
@@ -94,6 +95,14 @@ export const UserMenu = ({ name, username, onClose, ...props }: UserMenuProps) =
         </ListItemIcon>
         <ListItemText>Settings</ListItemText>
       </MenuItem>
+      {viewer.role === 'ADMIN' ? (
+        <MenuItem component={RouterLink} to="/admin" onClick={handleCloseUserMenu}>
+          <ListItemIcon>
+            <AdminPanelSettingsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Admin Panel</ListItemText>
+        </MenuItem>
+      ) : null}
       <MenuItem component={RouterLink} to="/help" onClick={handleCloseUserMenu}>
         <ListItemIcon>
           <HelpIcon fontSize="small" />

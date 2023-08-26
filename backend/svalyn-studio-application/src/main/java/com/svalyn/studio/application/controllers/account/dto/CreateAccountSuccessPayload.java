@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,18 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.domain.account.AccountRole;
+package com.svalyn.studio.application.controllers.account.dto;
+
+import com.svalyn.studio.application.controllers.dto.IPayload;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.UUID;
+
 /**
- * A viewer of the application.
+ * Payload used to indicate that the account has been created.
  *
  * @author sbegaudeau
  */
-public record Viewer(
-        @NotNull String name,
-        @NotNull String username,
-        @NotNull String imageUrl,
-        @NotNull AccountRole role) {
+public record CreateAccountSuccessPayload(@NotNull UUID id, @NotNull AccountDTO account) implements IPayload {
 }

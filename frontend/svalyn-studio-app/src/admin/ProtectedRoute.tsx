@@ -17,20 +17,42 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { MenuProps } from '@mui/material/Menu';
+import { gql, useQuery } from '@apollo/client';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
+import { NotFoundView } from '../notfound/NotFoundView';
+import { GetViewerData, GetViewerVariables, ProtectedRouteProps } from './ProtectedRoute.types';
 
-export interface UserMenuProps extends MenuProps {
-  viewer: Viewer;
-}
+const getViewerQuery = gql`
+  query getViewer {
+    viewer {
+      name
+      username
+      imageUrl
+      role
+    }
+  }
+`;
 
-export interface Viewer {
-  name: string;
-  username: string;
-  role: AccountRole;
-}
+export const ProtectedRoute = ({ children, expectedRole }: ProtectedRouteProps) => {
+  const { enqueueSnackbar } = useSnackbar();
 
-export type AccountRole = 'USER' | 'ADMIN';
+  const { data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery);
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  }, [error]);
 
-export interface UserMenuState {
-  redirectToLogin: boolean;
-}
+  if (data) {
+    if (data.viewer) {
+      const isAllowed = data.viewer.role === 'ADMIN' || (data.viewer.role === 'USER' && expectedRole === 'USER');
+      if (isAllowed) {
+        return <div>{children}</div>;
+      } else {
+        return <NotFoundView />;
+      }
+    }
+  }
+  return null;
+};

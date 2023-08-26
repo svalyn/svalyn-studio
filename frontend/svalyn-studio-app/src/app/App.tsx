@@ -18,6 +18,7 @@
  */
 
 import { Route, Routes } from 'react-router-dom';
+import { AdminRouter } from '../admin/AdminRouter';
 import { ChangeProposalsRouter } from '../changeproposals/ChangeProposalsRouter';
 import { DomainsRouter } from '../domains/DomainsRouter';
 import { ErrorsRouter } from '../errors/ErrorsRouter';
@@ -53,6 +54,7 @@ export const App = () => {
         <Route path="/notifications/*" element={<NotificationsRouter />} />
         <Route path="/invitations/*" element={<InvitationsRouter />} />
         <Route path="/settings/*" element={<SettingsRouter />} />
+        <Route path="/admin/*" element={<AdminRouter />} />
         <Route path="/help/*" element={<HelpRouter />} />
         <Route path="/errors/*" element={<ErrorsRouter />} />
         <Route path="/login/*" element={<LoginRouter />} />

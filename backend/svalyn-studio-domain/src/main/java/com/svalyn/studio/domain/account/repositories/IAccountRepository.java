@@ -24,6 +24,7 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +35,8 @@ import java.util.UUID;
  */
 @Repository
 public interface IAccountRepository extends PagingAndSortingRepository<Account, UUID>, ListCrudRepository<Account, UUID> {
+    boolean existsByUsername(String username);
+
     Optional<Account> findByUsername(String username);
 
     Optional<Account> findByEmail(String email);
@@ -51,4 +54,12 @@ public interface IAccountRepository extends PagingAndSortingRepository<Account, 
     WHERE authenticationToken.access_key = :accessKey AND authenticationToken.status = 'ACTIVE'
     """)
     Optional<Account> findByAccessKey(String accessKey);
+
+    @Query("""
+    SELECT * FROM account account
+    ORDER BY account.username ASC
+    LIMIT :limit
+    OFFSET :offset
+    """)
+    List<Account> findAll(long offset, int limit);
 }

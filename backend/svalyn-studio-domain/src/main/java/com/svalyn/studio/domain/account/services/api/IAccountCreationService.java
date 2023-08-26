@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,17 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.domain.account.AccountRole;
-import jakarta.validation.constraints.NotNull;
+package com.svalyn.studio.domain.account.services.api;
+
+import com.svalyn.studio.domain.IResult;
+import com.svalyn.studio.domain.account.Account;
 
 /**
- * A viewer of the application.
+ * Used to create accounts.
  *
  * @author sbegaudeau
  */
-public record Viewer(
-        @NotNull String name,
-        @NotNull String username,
-        @NotNull String imageUrl,
-        @NotNull AccountRole role) {
+public interface IAccountCreationService {
+    IResult<Account> createAccount(String name, String email, String username, String password);
 }

@@ -17,20 +17,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { MenuProps } from '@mui/material/Menu';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
 
-export interface UserMenuProps extends MenuProps {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  name: string;
-  username: string;
-  role: AccountRole;
-}
-
-export type AccountRole = 'USER' | 'ADMIN';
-
-export interface UserMenuState {
-  redirectToLogin: boolean;
-}
+export const AdminHomeView = () => {
+  return (
+    <Box sx={{ paddingY: (theme) => theme.spacing(4) }}>
+      <Container maxWidth="lg">
+        <Card sx={{ maxWidth: (theme) => theme.spacing(40) }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Accounts
+            </Typography>
+            <Typography variant="body2">
+              Have a look at all the user accounts, create new ones and edit their properties
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button component={RouterLink} to={`/admin/accounts`}>
+              Manage accounts
+            </Button>
+          </CardActions>
+        </Card>
+      </Container>
+    </Box>
+  );
+};

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,24 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.domain.account.AccountRole;
-import jakarta.validation.constraints.NotNull;
+import { Route, Routes } from 'react-router-dom';
+import { AdminAccountsView } from './AdminAccountsView';
+import { AdminHomeView } from './AdminHomeView';
+import { AdminNewAccountView } from './AdminNewAccountView';
+import { AdminShell } from './AdminShell';
+import { ProtectedRoute } from './ProtectedRoute';
 
-/**
- * A viewer of the application.
- *
- * @author sbegaudeau
- */
-public record Viewer(
-        @NotNull String name,
-        @NotNull String username,
-        @NotNull String imageUrl,
-        @NotNull AccountRole role) {
-}
+export const AdminRouter = () => {
+  return (
+    <AdminShell>
+      <ProtectedRoute expectedRole="ADMIN">
+        <Routes>
+          <Route index element={<AdminHomeView />} />
+          <Route path="accounts" element={<AdminAccountsView />} />
+          <Route path="/new/account" element={<AdminNewAccountView />} />
+        </Routes>
+      </ProtectedRoute>
+    </AdminShell>
+  );
+};

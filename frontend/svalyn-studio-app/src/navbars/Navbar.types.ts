@@ -22,7 +22,6 @@ export interface NavbarProps {
 }
 
 export interface NavbarState {
-  viewer: Viewer | null;
   anchorElement: HTMLElement | null;
 }
 
@@ -34,7 +33,10 @@ export interface Viewer {
   name: string;
   username: string;
   imageUrl: string;
+  role: AccountRole;
   unreadNotificationsCount: number;
 }
+
+export type AccountRole = 'USER' | 'ADMIN';
 
 export interface GetViewerVariables {}
