@@ -43,6 +43,7 @@ const getViewerQuery = gql`
       name
       username
       imageUrl
+      role
       unreadNotificationsCount
     }
   }
@@ -50,24 +51,16 @@ const getViewerQuery = gql`
 
 export const Navbar = ({ children }: NavbarProps) => {
   const [state, setState] = useState<NavbarState>({
-    viewer: null,
     anchorElement: null,
   });
 
   const { enqueueSnackbar } = useSnackbar();
-
-  const { loading, data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery);
+  const { data, error } = useQuery<GetViewerData, GetViewerVariables>(getViewerQuery);
   useEffect(() => {
-    if (!loading) {
-      if (data) {
-        const { viewer } = data;
-        setState((prevState) => ({ ...prevState, viewer }));
-      }
-      if (error) {
-        enqueueSnackbar(error.message, { variant: 'error' });
-      }
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
     }
-  }, [loading, data, error]);
+  }, [error]);
 
   const { openPalette }: PaletteContextValue = useContext<PaletteContextValue>(PaletteContext);
 
@@ -86,7 +79,7 @@ export const Navbar = ({ children }: NavbarProps) => {
           <Svalyn />
         </IconButton>
         {children}
-        {state.viewer !== null ? (
+        {data?.viewer ? (
           <>
             <Box
               sx={{
@@ -115,16 +108,15 @@ export const Navbar = ({ children }: NavbarProps) => {
               </Link>
               <SearchButton onClick={handleOnSearchClick} />
               <IconButton component={RouterLink} to="/notifications" size="small" color="inherit">
-                <Badge badgeContent={state.viewer.unreadNotificationsCount} color="secondary">
+                <Badge badgeContent={data.viewer.unreadNotificationsCount} color="secondary">
                   <NotificationsNoneIcon />
                 </Badge>
               </IconButton>
               <IconButton onClick={handleOpenUserMenu} data-testid="user-menu-avatar">
-                <Avatar alt={state.viewer.name} src={state.viewer.imageUrl} sx={{ width: 24, height: 24 }} />
+                <Avatar alt={data.viewer.name} src={data.viewer.imageUrl} sx={{ width: 24, height: 24 }} />
               </IconButton>
               <UserMenu
-                name={state.viewer.name}
-                username={state.viewer.username}
+                viewer={data.viewer}
                 open={Boolean(state.anchorElement)}
                 anchorEl={state.anchorElement}
                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

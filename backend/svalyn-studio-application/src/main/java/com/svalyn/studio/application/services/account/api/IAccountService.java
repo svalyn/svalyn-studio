@@ -19,8 +19,12 @@
 
 package com.svalyn.studio.application.services.account.api;
 
+import com.svalyn.studio.application.controllers.account.dto.AccountDTO;
+import com.svalyn.studio.application.controllers.account.dto.CreateAccountInput;
+import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.viewer.Viewer;
+import org.springframework.data.domain.Page;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,4 +39,8 @@ public interface IAccountService {
     Optional<Viewer> findViewerById(UUID id);
 
     Optional<ProfileDTO> findProfileByUsername(String username);
+
+    Page<AccountDTO> findAll(int page, int rowsPerPage);
+
+    IPayload createAccount(CreateAccountInput input);
 }

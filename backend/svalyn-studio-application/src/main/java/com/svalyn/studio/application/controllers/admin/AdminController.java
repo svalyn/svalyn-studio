@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,27 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
+package com.svalyn.studio.application.controllers.admin;
+
+import com.svalyn.studio.application.controllers.admin.dto.AdminDTO;
+import com.svalyn.studio.application.controllers.viewer.Viewer;
 import com.svalyn.studio.domain.account.AccountRole;
-import jakarta.validation.constraints.NotNull;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.stereotype.Controller;
 
 /**
- * A viewer of the application.
+ * Controller used to retrieve the admin.
  *
  * @author sbegaudeau
  */
-public record Viewer(
-        @NotNull String name,
-        @NotNull String username,
-        @NotNull String imageUrl,
-        @NotNull AccountRole role) {
+@Controller
+public class AdminController {
+    @SchemaMapping(typeName = "Viewer")
+    public AdminDTO asAdmin(Viewer viewer) {
+        if (viewer.role().equals(AccountRole.ADMIN)) {
+            return new AdminDTO();
+        }
+        return null;
+    }
 }

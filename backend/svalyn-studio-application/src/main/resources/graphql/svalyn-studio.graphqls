@@ -16,6 +16,8 @@ type Viewer {
   name: String!
   username: String!
   imageUrl: String!
+  role: Role!
+  asAdmin: Admin
   invitations(page: Int!, rowsPerPage: Int!): ViewerInvitationsConnection!
   profile(username: String!): Profile
   organizations: ViewerOrganizationsConnection!
@@ -30,6 +32,34 @@ type Viewer {
   domain(identifier: ID!): Domain
   activityEntries(page: Int!, rowsPerPage: Int!): ViewerActivityEntriesConnection!
   search(query: String!): SearchResults!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+type Admin {
+  accounts(page: Int!, rowsPerPage: Int!): AdminAccountsConnection!
+}
+
+type AdminAccountsConnection {
+  edges: [AdminAccountsEdge]!
+  pageInfo: PageInfo!
+}
+
+type AdminAccountsEdge {
+  node: Account!
+}
+
+type Account {
+  name: String!
+  username: String!
+  imageUrl: String!
+  email: String!
+  role: Role!
+  createdOn: Instant!
+  lastModifiedOn: Instant!
 }
 
 type ViewerInvitationsConnection {
@@ -451,6 +481,7 @@ type EnumerationLiteral {
 }
 
 type Mutation {
+  createAccount(input: CreateAccountInput!): CreateAccountPayload! @validated
   createAuthenticationToken(input: CreateAuthenticationTokenInput!): CreateAuthenticationTokenPayload! @validated
   updateAuthenticationTokensStatus(input: UpdateAuthenticationTokensStatusInput!): UpdateAuthenticationTokensStatusPayload! @validated
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @validated
@@ -486,6 +517,21 @@ type ErrorPayload {
 
 type SuccessPayload {
   id: ID!
+}
+
+input CreateAccountInput {
+  id: ID!
+  name: String!
+  email: String!
+  username: String!
+  password: String!
+}
+
+union CreateAccountPayload = ErrorPayload | CreateAccountSuccessPayload
+
+type CreateAccountSuccessPayload {
+  id: ID!
+  account: Account!
 }
 
 input CreateAuthenticationTokenInput {

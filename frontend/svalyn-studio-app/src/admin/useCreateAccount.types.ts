@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -16,19 +16,47 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.svalyn.studio.application.controllers.viewer;
 
-import com.svalyn.studio.domain.account.AccountRole;
-import jakarta.validation.constraints.NotNull;
+import { Message } from '../snackbar/Message.types';
 
-/**
- * A viewer of the application.
- *
- * @author sbegaudeau
- */
-public record Viewer(
-        @NotNull String name,
-        @NotNull String username,
-        @NotNull String imageUrl,
-        @NotNull AccountRole role) {
+export type UseCreateAccountValue = [createAccount: (input: CreateAccountInput) => void, result: CreateAccountResult];
+
+export interface CreateAccountInput {
+  id: string;
+  name: string;
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface CreateAccountPayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends CreateAccountPayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface CreateAccountSuccessPayload extends CreateAccountPayload {
+  __typename: 'CreateAccountSuccessPayload';
+  account: Account;
+}
+
+export interface CreateAccountVariables {
+  input: CreateAccountInput;
+}
+
+export interface CreateAccountData {
+  createAccount: CreateAccountPayload;
+}
+
+export interface CreateAccountResult {
+  loading: boolean;
+  account: Account | null;
+  message: Message | null;
+}
+
+export interface Account {
+  username: string;
 }
