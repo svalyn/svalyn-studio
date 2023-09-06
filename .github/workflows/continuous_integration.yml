@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node SDK
         uses: actions/setup-node@v3
         with:
-          node-version: latest
+          node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: frontend/svalyn-studio-app/package-lock.json
 
