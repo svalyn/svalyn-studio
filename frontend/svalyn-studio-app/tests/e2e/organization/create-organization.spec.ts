@@ -18,38 +18,29 @@
  */
 
 import { expect } from '@playwright/test';
-import { test } from '../fixture';
-import { Organization } from '../fixture.types';
+import { test } from '../../fixture';
 
-test.describe('New project view', () => {
-  let organization: Organization;
-
-  test.beforeEach(async ({ loginPage, newOrganizationPage }) => {
+test.describe('Create organization', () => {
+  test.beforeEach(async ({ loginPage }) => {
     await loginPage.goto();
     await loginPage.loginAsAdmin();
+  });
 
+  test('should let me create and delete an organization', async ({
+    page,
+    newOrganizationPage,
+    organizationSettingsPage,
+  }) => {
     await newOrganizationPage.goto();
-    organization = await newOrganizationPage.createOrganization();
-  });
+    const organization = await newOrganizationPage.createOrganization();
 
-  test.afterEach(async ({ organizationSettingsPage }) => {
-    await organizationSettingsPage.goto(organization.identifier);
-    await organizationSettingsPage.delete();
-  });
-
-  test('should let me create a project', async ({ page, browserName }) => {
-    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
-
+    await expect(page).toHaveURL(`http://localhost:5173/orgs/${organization.identifier}`);
     await expect(page.getByRole('heading', { name: organization.name })).toBeVisible();
 
-    await page.getByRole('button', { name: 'NEW PROJECT' }).click();
-    await page.getByRole('textbox', { name: 'Project Name' }).fill(`New project view ${browserName}`);
-    await page.getByRole('textbox', { name: 'Project Identifier' }).fill(`creating-project-view-${browserName}`);
-    await page
-      .getByRole('textbox', { name: 'Project Description' })
-      .fill(`New project view description ${browserName}`);
-    await page.getByRole('button', { name: 'CREATE' }).click();
+    await organizationSettingsPage.goto(organization.identifier);
+    await organizationSettingsPage.delete();
 
-    await expect(page).toHaveURL(`http://localhost:5173/projects/creating-project-view-${browserName}`);
+    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
+    await expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
   });
 });

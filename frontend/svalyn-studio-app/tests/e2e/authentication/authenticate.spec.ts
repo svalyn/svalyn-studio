@@ -18,9 +18,9 @@
  */
 
 import { expect } from '@playwright/test';
-import { test } from '../fixture';
+import { test } from '../../fixture';
 
-test.describe('Login view', () => {
+test.describe('Authenticate', () => {
   test('should let me log in with Github', async ({ page }) => {
     await page.goto('http://localhost:5173/login');
 
@@ -38,14 +38,15 @@ test.describe('Login view', () => {
     await expect(page).toHaveURL('http://localhost:5173');
   });
 
-  test('should let me log in and then log out', async ({ page, loginPage }) => {
+  test('should let me log in and then log out', async ({ page, loginPage, userMenu }) => {
     await loginPage.goto();
     await loginPage.login('admin', 'password');
 
     await expect(page).toHaveURL('http://localhost:5173');
 
-    await page.getByTestId('user-menu-avatar').click();
-    await page.getByRole('menuitem', { name: 'Sign out' }).click();
+    await userMenu.open();
+    await userMenu.logout();
+
     await expect(page).toHaveURL('http://localhost:5173/login');
   });
 

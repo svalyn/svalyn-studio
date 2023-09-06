@@ -19,11 +19,10 @@
 
 import { Page } from '@playwright/test';
 
-export class OrganizationPage {
-  constructor(public readonly page: Page, public identifier: string) {}
+export class HomePage {
+  constructor(public readonly page: Page) {}
 
-  async goto(identifier: string) {
-    this.identifier = identifier;
-    await this.page.goto(`http://localhost:5173/orgs/${this.identifier}`);
+  async goto() {
+    await this.page.goto('http://localhost:5173/');
   }
 }

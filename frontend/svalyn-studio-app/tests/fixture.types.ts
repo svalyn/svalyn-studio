@@ -17,16 +17,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { NewOrganizationPage } from './pages/NewOrganizationPage';
-import { OrganizationPage } from './pages/OrganizationPage';
-import { OrganizationSettingsPage } from './pages/OrganizationSettingsPage';
+import { AdminAccountsPage } from './pages/admin/AdminAccountsPage';
+import { AdminNewAccountPage } from './pages/admin/AdminNewAccountPage';
+import { OrganizationMembersPage } from './pages/organization/OrganizationMembersPage';
+import { OrganizationPage } from './pages/organization/OrganizationPage';
+import { OrganizationSettingsPage } from './pages/organization/OrganizationSettingsPage';
+import { InvitationsPage } from './pages/profile/InvitationsPage';
+import { ProfilePage } from './pages/profile/ProfilePage';
+import { SettingsPage } from './pages/profile/SettingsPage';
+import { UserMenu } from './widgets/UserMenu';
 
 export type Fixture = {
   loginPage: LoginPage;
+  homePage: HomePage;
+  profilePage: ProfilePage;
+  invitationsPage: InvitationsPage;
+  settingsPage: SettingsPage;
   newOrganizationPage: NewOrganizationPage;
   organizationPage: OrganizationPage;
+  organizationMembersPage: OrganizationMembersPage;
   organizationSettingsPage: OrganizationSettingsPage;
+  adminAccountsPage: AdminAccountsPage;
+  adminNewAccountPage: AdminNewAccountPage;
+
+  userMenu: UserMenu;
 };
 
 export type Organization = {
