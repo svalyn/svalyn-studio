@@ -20,6 +20,7 @@
 package com.svalyn.studio.domain.activity.repositories;
 
 import com.svalyn.studio.domain.activity.ActivityEntry;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -99,4 +100,12 @@ public interface IActivityEntryRepository extends PagingAndSortingRepository<Act
     WHERE projectActivityEntry.project_id = :projectId
     """)
     long countAllByProjectId(UUID projectId);
+
+
+    @Query("""
+    DELETE FROM activity activityEntry
+    WHERE activityEntry.created_by = :userId
+    """)
+    @Modifying
+    void deleteAllByUserId(UUID userId);
 }

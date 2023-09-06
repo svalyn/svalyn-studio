@@ -22,67 +22,58 @@ package com.svalyn.studio.domain.account.services;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.account.AccountRole;
-import com.svalyn.studio.domain.account.PasswordCredentials;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
-import com.svalyn.studio.domain.account.services.api.IAccountCreationService;
+import com.svalyn.studio.domain.account.services.api.IAccountDeletionService;
+import com.svalyn.studio.domain.account.services.api.IAccountSessionCleaner;
 import com.svalyn.studio.domain.account.services.api.IAuthorizationService;
 import com.svalyn.studio.domain.message.api.IMessageService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.Set;
 
 /**
- * Used to create accounts.
+ * Used to delete accounts.
  *
  * @author sbegaudeau
  */
 @Service
-public class AccountCreationService implements IAccountCreationService {
+public class AccountDeletionService implements IAccountDeletionService {
 
     private final IAccountRepository accountRepository;
 
     private final IAuthorizationService authorizationService;
 
-    private final PasswordEncoder passwordEncoder;
+    private final IAccountSessionCleaner accountSessionCleaner;
 
     private final IMessageService messageService;
 
-    public AccountCreationService(IAccountRepository accountRepository, IAuthorizationService authorizationService, PasswordEncoder passwordEncoder, IMessageService messageService) {
+    public AccountDeletionService(IAccountRepository accountRepository, IAuthorizationService authorizationService, IAccountSessionCleaner accountSessionCleaner, IMessageService messageService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
         this.authorizationService = Objects.requireNonNull(authorizationService);
-        this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
+        this.accountSessionCleaner = Objects.requireNonNull(accountSessionCleaner);
         this.messageService = Objects.requireNonNull(messageService);
     }
 
     @Override
-    public IResult<Account> createAccount(String name, String email, String username, String password) {
-        IResult<Account> result = null;
+    public IResult<Void> deleteAccount(String username) {
+        IResult<Void> result = null;
 
-        var alreadyExist = this.accountRepository.existsByUsername(username);
-        if (!this.authorizationService.isAdmin()) {
+        var isAdmin = this.authorizationService.isAdmin();
+        var isCurrentUser = username.equals(this.authorizationService.getUsername());
+        var optionalAccount = this.accountRepository.findByUsername(username);
+
+        if (!isAdmin && !isCurrentUser) {
             result = new Failure<>(this.messageService.unauthorized());
-        } else if (alreadyExist) {
-            result = new Failure<>(this.messageService.alreadyExists("account"));
+        } else if (optionalAccount.isEmpty()) {
+            result = new Failure<>(this.messageService.doesNotExist("account"));
         } else {
-            var passwordCredentials = PasswordCredentials.newPasswordCredentials()
-                    .password(this.passwordEncoder.encode(password))
-                    .build();
-
-            var account = Account.newAccount()
-                    .name(name)
-                    .username(username)
-                    .email(email)
-                    .passwordCredentials(Set.of(passwordCredentials))
-                    .oAuth2Metadata(Set.of())
-                    .role(AccountRole.USER)
-                    .build();
+            var account = optionalAccount.get();
+            account.dispose();
 
             this.accountRepository.save(account);
-            result = new Success<>(account);
+            this.accountSessionCleaner.cleanSessions(username);
+
+            result = new Success<>(null);
         }
 
         return result;

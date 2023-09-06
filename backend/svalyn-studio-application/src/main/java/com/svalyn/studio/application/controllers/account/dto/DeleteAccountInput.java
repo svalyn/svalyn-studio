@@ -17,29 +17,17 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.activity.repositories;
+package com.svalyn.studio.application.controllers.account.dto;
 
-import com.svalyn.studio.domain.activity.OrganizationActivityEntry;
-import org.springframework.data.jdbc.repository.query.Modifying;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
+import com.svalyn.studio.application.controllers.dto.IInput;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
 /**
- * Repository used to persist and retrieve organization activity entries.
+ * Input used to delete an account.
  *
  * @author sbegaudeau
  */
-@Repository
-public interface IOrganizationActivityEntryRepository extends PagingAndSortingRepository<OrganizationActivityEntry, UUID>, ListCrudRepository<OrganizationActivityEntry, UUID> {
-    @Query("""
-    DELETE FROM organization_activity organizationActivityEntry
-    USING activity activityEntry
-    WHERE organizationActivityEntry.activity_id = activityEntry.id AND activityEntry.created_by = :userId
-    """)
-    @Modifying
-    void deleteAllByUserId(UUID userId);
+public record DeleteAccountInput(@NotNull UUID id, @NotNull  String username) implements IInput {
 }

@@ -60,7 +60,7 @@ public class WithMockPrincipalSecurityContextFactory implements WithSecurityCont
             }
 
             @Override
-            public String getName() {
+            public String getFullName() {
                 return account.getName();
             }
         };

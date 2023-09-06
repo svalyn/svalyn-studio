@@ -202,7 +202,7 @@ public class ProjectService implements IProjectService {
         var result = this.projectDeletionService.deleteProject(input.projectIdentifier());
         if (result instanceof Failure<Void> failure) {
             payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
+        } else if (result instanceof Success<Void>) {
             payload = new SuccessPayload(input.id());
         }
 

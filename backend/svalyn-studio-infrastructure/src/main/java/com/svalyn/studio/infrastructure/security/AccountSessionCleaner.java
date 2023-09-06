@@ -19,37 +19,36 @@
 
 package com.svalyn.studio.infrastructure.security;
 
-import com.svalyn.studio.domain.authentication.IUser;
+import com.svalyn.studio.domain.account.services.api.IAccountSessionCleaner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
+import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
- * The system used registered programmatically.
+ * Used to clean the sessions associated with a given username.
  *
  * @author sbegaudeau
  */
-public class SvalynSystemUser implements IUser, Serializable {
+@Service
+public class AccountSessionCleaner implements IAccountSessionCleaner {
 
-    private final UUID id;
+    private final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
 
-    public SvalynSystemUser(UUID id) {
-        this.id = Objects.requireNonNull(id);
+    private final Logger logger = LoggerFactory.getLogger(AccountSessionCleaner.class);
+
+    public AccountSessionCleaner(FindByIndexNameSessionRepository<? extends Session> sessionRepository) {
+        this.sessionRepository = Objects.requireNonNull(sessionRepository);
     }
 
     @Override
-    public UUID getId() {
-        return this.id;
-    }
-
-    @Override
-    public String getUsername() {
-        return "system";
-    }
-
-    @Override
-    public String getFullName() {
-        return "System";
+    public void cleanSessions(String username) {
+        this.sessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, username).forEach((identifier, session) -> {
+            this.logger.info(session.toString());
+            this.sessionRepository.deleteById(identifier);
+        });
     }
 }

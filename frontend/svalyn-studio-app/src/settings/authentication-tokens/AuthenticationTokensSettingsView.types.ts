@@ -17,13 +17,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface AuthenticationTokensSettingsTabProps {}
+export interface AuthenticationTokensSettingsViewProps {}
 
-export interface AuthenticationTokensSettingsTabState {
+export interface AuthenticationTokensSettingsViewState {
+  newAuthenticationTokenDialogOpen: boolean;
+}
+
+export interface AuthenticationTokenTableState {
   page: number;
   rowsPerPage: number;
   selectedAuthenticationTokenIds: string[];
-  newAuthenticationTokenDialogOpen: boolean;
 }
 
 export interface GetAuthenticationTokensVariables {
@@ -82,4 +85,10 @@ export interface UpdateAuthenticationTokensStatusPayload {
 export interface ErrorPayload extends UpdateAuthenticationTokensStatusPayload {
   __typename: 'ErrorPayload';
   message: string;
+}
+
+export interface AuthenticationTokenRowProps {
+  authenticationToken: AuthenticationToken;
+  onClick: (authenticationToken: AuthenticationToken) => void;
+  selected?: boolean;
 }

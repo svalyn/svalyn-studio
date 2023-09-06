@@ -22,9 +22,11 @@ package com.svalyn.studio.application.services.account;
 import com.svalyn.studio.application.controllers.account.dto.AccountDTO;
 import com.svalyn.studio.application.controllers.account.dto.CreateAccountInput;
 import com.svalyn.studio.application.controllers.account.dto.CreateAccountSuccessPayload;
+import com.svalyn.studio.application.controllers.account.dto.DeleteAccountInput;
 import com.svalyn.studio.application.controllers.dto.ErrorPayload;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
+import com.svalyn.studio.application.controllers.dto.SuccessPayload;
 import com.svalyn.studio.application.controllers.viewer.Viewer;
 import com.svalyn.studio.application.services.account.api.IAccountService;
 import com.svalyn.studio.application.services.account.api.IAvatarUrlService;
@@ -33,6 +35,7 @@ import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.account.services.api.IAccountCreationService;
+import com.svalyn.studio.domain.account.services.api.IAccountDeletionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -55,11 +58,14 @@ public class AccountService implements IAccountService {
 
     private final IAccountCreationService accountCreationService;
 
+    private final IAccountDeletionService accountDeletionService;
+
     private final IAvatarUrlService avatarUrlService;
 
-    public AccountService(IAccountRepository accountRepository, IAccountCreationService accountCreationService, IAvatarUrlService avatarUrlService) {
+    public AccountService(IAccountRepository accountRepository, IAccountCreationService accountCreationService, IAccountDeletionService accountDeletionService, IAvatarUrlService avatarUrlService) {
         this.accountRepository = Objects.requireNonNull(accountRepository);
-        this.accountCreationService = accountCreationService;
+        this.accountCreationService = Objects.requireNonNull(accountCreationService);
+        this.accountDeletionService = Objects.requireNonNull(accountDeletionService);
         this.avatarUrlService = Objects.requireNonNull(avatarUrlService);
     }
 
@@ -108,6 +114,20 @@ public class AccountService implements IAccountService {
             payload = new ErrorPayload(input.id(), failure.message());
         } else if (result instanceof Success<Account> success) {
             payload = new CreateAccountSuccessPayload(input.id(), this.toDTO(success.data()));
+        }
+
+        return payload;
+    }
+
+    @Override
+    public IPayload deleteAccount(DeleteAccountInput input) {
+        IPayload payload = null;
+
+        var result = this.accountDeletionService.deleteAccount(input.username());
+        if (result instanceof Failure<Void> failure) {
+            payload = new ErrorPayload(input.id(), failure.message());
+        } else if (result instanceof Success<Void>) {
+            payload = new SuccessPayload(input.id());
         }
 
         return payload;

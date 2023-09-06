@@ -482,6 +482,7 @@ type EnumerationLiteral {
 
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountPayload! @validated
+  deleteAccount(input: DeleteAccountInput!): DeleteAccountPayload! @validated
   createAuthenticationToken(input: CreateAuthenticationTokenInput!): CreateAuthenticationTokenPayload! @validated
   updateAuthenticationTokensStatus(input: UpdateAuthenticationTokensStatusInput!): UpdateAuthenticationTokensStatusPayload! @validated
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationPayload! @validated
@@ -533,6 +534,13 @@ type CreateAccountSuccessPayload {
   id: ID!
   account: Account!
 }
+
+input DeleteAccountInput {
+  id: ID!
+  username: String!
+}
+
+union DeleteAccountPayload = ErrorPayload | SuccessPayload
 
 input CreateAuthenticationTokenInput {
   id: ID!

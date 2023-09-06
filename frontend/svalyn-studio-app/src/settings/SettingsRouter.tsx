@@ -17,18 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Outlet, Route, Routes } from 'react-router-dom';
-import { SettingsView } from './SettingsView';
+import { Route, Routes } from 'react-router-dom';
+import { SettingsShell } from './SettingsShell';
+import { AuthenticationTokensSettingsView } from './authentication-tokens/AuthenticationTokensSettingsView';
+import { ProfileSettingsView } from './profile/ProfileSettingsView';
 
 export const SettingsRouter = () => {
   return (
-    <>
+    <SettingsShell>
       <Routes>
-        <Route index element={<SettingsView />} />
-        <Route path="authentication-tokens" element={<SettingsView />} />
+        <Route index element={<ProfileSettingsView />} />
+        <Route path="authentication-tokens" element={<AuthenticationTokensSettingsView />} />
       </Routes>
-
-      <Outlet />
-    </>
+    </SettingsShell>
   );
 };

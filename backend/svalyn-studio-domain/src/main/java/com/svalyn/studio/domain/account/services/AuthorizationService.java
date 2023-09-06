@@ -17,31 +17,43 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.authentication;
+package com.svalyn.studio.domain.account.services;
 
-import com.svalyn.studio.domain.Profile;
+import com.svalyn.studio.domain.account.AccountRole;
+import com.svalyn.studio.domain.account.services.api.IAuthorizationService;
+import com.svalyn.studio.domain.authentication.IUser;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 /**
- * Used to retrieve the profile which has created an event.
+ * Used to retrieve authorization information.
  *
  * @author sbegaudeau
  */
-public final class ProfileProvider {
+@Service
+public class AuthorizationService implements IAuthorizationService {
 
-    private ProfileProvider() {
-        // Prevent instantiation
-    }
-
-    public static Profile get() {
+    @Override
+    public String getUsername() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(IUser.class::isInstance)
                 .map(IUser.class::cast)
-                .map(user -> new Profile(user.getId(), user.getFullName(), user.getUsername()))
+                .map(IUser::getUsername)
                 .orElse(null);
+    }
+
+    @Override
+    public boolean isAdmin() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(authentication -> authentication.getAuthorities().stream()
+                        .filter(SimpleGrantedAuthority.class::isInstance)
+                        .map(SimpleGrantedAuthority.class::cast)
+                        .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + AccountRole.ADMIN)))
+                .orElse(Boolean.FALSE);
     }
 }

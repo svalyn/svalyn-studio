@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -36,7 +37,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
-public class SvalynOAuth2User implements OAuth2User, IUser {
+public class SvalynOAuth2User implements OAuth2User, IUser, Serializable {
     private final UUID id;
 
     private final String username;
@@ -78,6 +79,11 @@ public class SvalynOAuth2User implements OAuth2User, IUser {
 
     @Override
     public String getName() {
+        return this.username;
+    }
+
+    @Override
+    public String getFullName() {
         return this.name;
     }
 

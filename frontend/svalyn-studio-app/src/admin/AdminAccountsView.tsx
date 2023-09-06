@@ -67,7 +67,7 @@ export const AdminAccountsView = () => {
     <Box sx={{ paddingY: (theme) => theme.spacing(4) }}>
       <Container maxWidth="lg">
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-          <Typography variant="h6">Accounts</Typography>
+          <Typography variant="h5">Accounts</Typography>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
             <Box

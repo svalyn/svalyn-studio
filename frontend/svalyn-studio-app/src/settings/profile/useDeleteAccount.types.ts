@@ -17,29 +17,34 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.activity.repositories;
+import { Message } from '../../snackbar/Message.types';
 
-import com.svalyn.studio.domain.activity.OrganizationActivityEntry;
-import org.springframework.data.jdbc.repository.query.Modifying;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
+export type UseDeleteAccountValue = [deleteAccount: (input: DeleteAccountInput) => void, result: DeleteAccountResult];
 
-import java.util.UUID;
+export interface DeleteAccountInput {
+  id: string;
+  username: string;
+}
 
-/**
- * Repository used to persist and retrieve organization activity entries.
- *
- * @author sbegaudeau
- */
-@Repository
-public interface IOrganizationActivityEntryRepository extends PagingAndSortingRepository<OrganizationActivityEntry, UUID>, ListCrudRepository<OrganizationActivityEntry, UUID> {
-    @Query("""
-    DELETE FROM organization_activity organizationActivityEntry
-    USING activity activityEntry
-    WHERE organizationActivityEntry.activity_id = activityEntry.id AND activityEntry.created_by = :userId
-    """)
-    @Modifying
-    void deleteAllByUserId(UUID userId);
+export interface DeleteAccountVariables {
+  input: DeleteAccountInput;
+}
+
+export interface DeleteAccountData {
+  deleteAccount: DeleteAccountPayload;
+}
+
+export interface DeleteAccountPayload {
+  __typename: string;
+}
+
+export interface ErrorPayload extends DeleteAccountPayload {
+  __typename: 'ErrorPayload';
+  message: string;
+}
+
+export interface DeleteAccountResult {
+  loading: boolean;
+  deleted: boolean;
+  message: Message | null;
 }

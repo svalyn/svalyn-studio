@@ -22,6 +22,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -34,15 +35,17 @@ import { useEffect, useState } from 'react';
 import { formatTime } from '../../utils/formatTime';
 import {
   AuthenticationToken,
+  AuthenticationTokenRowProps,
   AuthenticationTokenStatus,
-  AuthenticationTokensSettingsTabProps,
-  AuthenticationTokensSettingsTabState,
+  AuthenticationTokenTableState,
+  AuthenticationTokensSettingsViewProps,
+  AuthenticationTokensSettingsViewState,
   ErrorPayload,
   GetAuthenticationTokensData,
   GetAuthenticationTokensVariables,
   UpdateAuthenticationTokensStatusData,
   UpdateAuthenticationTokensStatusVariables,
-} from './AuthenticationTokensSettingsTab.types';
+} from './AuthenticationTokensSettingsView.types';
 import { AuthenticationTokensTableHead } from './AuthenticationTokensTableHead';
 import { AuthenticationTokensToolbar } from './AuthenticationTokensToolbar';
 import { NewAuthenticationTokenDialog } from './NewAuthenticationTokenDialog';
@@ -78,12 +81,57 @@ const updateAuthenticationTokensStatusMutation = gql`
   }
 `;
 
-export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettingsTabProps) => {
-  const [state, setState] = useState<AuthenticationTokensSettingsTabState>({
+export const AuthenticationTokensSettingsView = ({}: AuthenticationTokensSettingsViewProps) => {
+  const [state, setState] = useState<AuthenticationTokensSettingsViewState>({
+    newAuthenticationTokenDialogOpen: false,
+  });
+
+  const openNewAuthenticationTokenDialog: React.MouseEventHandler<HTMLButtonElement> = () =>
+    setState((prevState) => ({ ...prevState, newAuthenticationTokenDialogOpen: true }));
+  const closeNewAuthenticationTokenDialog = () => {
+    setState((prevState) => ({ ...prevState, newAuthenticationTokenDialogOpen: false }));
+  };
+
+  return (
+    <>
+      <Box sx={{ paddingY: (theme) => theme.spacing(4) }}>
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+            <Typography variant="h5">Authentication Tokens</Typography>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                  gap: (theme) => theme.spacing(2),
+                }}
+              >
+                <Button variant="outlined" endIcon={<AddIcon />} onClick={openNewAuthenticationTokenDialog}>
+                  New Authentication Token
+                </Button>
+              </Box>
+            </Box>
+            <AuthenticationTokenTable key={new Date().toString()} />
+          </Box>
+        </Container>
+      </Box>
+      {state.newAuthenticationTokenDialogOpen ? (
+        <NewAuthenticationTokenDialog
+          open={state.newAuthenticationTokenDialogOpen}
+          onClose={closeNewAuthenticationTokenDialog}
+        />
+      ) : null}
+    </>
+  );
+};
+
+const AuthenticationTokenTable = () => {
+  const [state, setState] = useState<AuthenticationTokenTableState>({
     page: 0,
     rowsPerPage: 20,
     selectedAuthenticationTokenIds: [],
-    newAuthenticationTokenDialogOpen: false,
   });
 
   const { enqueueSnackbar } = useSnackbar();
@@ -99,13 +147,6 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
     }
   }, [error]);
 
-  const openNewAuthenticationTokenDialog: React.MouseEventHandler<HTMLButtonElement> = () =>
-    setState((prevState) => ({ ...prevState, newAuthenticationTokenDialogOpen: true }));
-  const closeNewAuthenticationTokenDialog = () => {
-    refetch(variables);
-    setState((prevState) => ({ ...prevState, newAuthenticationTokenDialogOpen: false }));
-  };
-
   const selectAllAuthenticationTokens = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       setState((prevState) => {
@@ -120,10 +161,7 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
     }
   };
 
-  const selectAuthenticationToken = (
-    _: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
-    authenticationToken: AuthenticationToken
-  ) => {
+  const selectAuthenticationToken = (authenticationToken: AuthenticationToken) => {
     setState((prevState) => {
       const selectedAuthenticationTokenIndex: number = prevState.selectedAuthenticationTokenIds.indexOf(
         authenticationToken.id
@@ -177,74 +215,65 @@ export const AuthenticationTokensSettingsTab = ({}: AuthenticationTokensSettings
   };
 
   return (
-    <>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h4">Authentication tokens</Typography>
-          <Button variant="outlined" endIcon={<AddIcon />} onClick={openNewAuthenticationTokenDialog}>
-            New Authentication Token
-          </Button>
-        </Box>
-        <div>
-          {data && data.viewer && data.viewer.authenticationTokens.edges.length > 0 ? (
-            <>
-              <AuthenticationTokensToolbar
+    <div>
+      {data && data.viewer && data.viewer.authenticationTokens.edges.length > 0 ? (
+        <>
+          <AuthenticationTokensToolbar
+            selectedAuthenticationTokensCount={state.selectedAuthenticationTokenIds.length}
+            onUpdateStatus={handleUpdateStatus}
+          />
+          <TableContainer component={Paper} variant="outlined">
+            <Table>
+              <AuthenticationTokensTableHead
+                authenticationTokensCount={data.viewer.authenticationTokens.pageInfo.count}
                 selectedAuthenticationTokensCount={state.selectedAuthenticationTokenIds.length}
-                onUpdateStatus={handleUpdateStatus}
+                onSelectAll={selectAllAuthenticationTokens}
               />
-              <TableContainer component={Paper} variant="outlined">
-                <Table>
-                  <AuthenticationTokensTableHead
-                    authenticationTokensCount={data.viewer.authenticationTokens.pageInfo.count}
-                    selectedAuthenticationTokensCount={state.selectedAuthenticationTokenIds.length}
-                    onSelectAll={selectAllAuthenticationTokens}
-                  />
-                  <TableBody>
-                    {data.viewer.authenticationTokens.edges
-                      .map((edge) => edge.node)
-                      .map((authenticationToken) => {
-                        const isAuthenticationTokenSelected = state.selectedAuthenticationTokenIds.includes(
-                          authenticationToken.id
-                        );
-                        return (
-                          <TableRow
-                            key={authenticationToken.id}
-                            onClick={(event) => selectAuthenticationToken(event, authenticationToken)}
-                          >
-                            <TableCell padding="checkbox">
-                              <Checkbox checked={isAuthenticationTokenSelected} />
-                            </TableCell>
-                            <TableCell>
-                              <Typography>{authenticationToken.name}</Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography>{authenticationToken.status.toLowerCase()}</Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography>{formatTime(new Date(authenticationToken.createdOn))}</Typography>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </>
-          ) : (
-            <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
-              <Typography variant="h6" align="center">
-                No tokens found
-              </Typography>
-            </Box>
-          )}
-        </div>
-      </Box>
-      {state.newAuthenticationTokenDialogOpen ? (
-        <NewAuthenticationTokenDialog
-          open={state.newAuthenticationTokenDialogOpen}
-          onClose={closeNewAuthenticationTokenDialog}
-        />
-      ) : null}
-    </>
+              <TableBody>
+                {data.viewer.authenticationTokens.edges
+                  .map((edge) => edge.node)
+                  .map((authenticationToken) => {
+                    const isAuthenticationTokenSelected = state.selectedAuthenticationTokenIds.includes(
+                      authenticationToken.id
+                    );
+                    return (
+                      <AuthenticationTokenRow
+                        authenticationToken={authenticationToken}
+                        selected={isAuthenticationTokenSelected}
+                        onClick={selectAuthenticationToken}
+                      />
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <Box sx={{ paddingY: (theme) => theme.spacing(12) }}>
+          <Typography variant="h6" align="center">
+            No tokens found
+          </Typography>
+        </Box>
+      )}
+    </div>
+  );
+};
+
+const AuthenticationTokenRow = ({ authenticationToken, selected, onClick }: AuthenticationTokenRowProps) => {
+  return (
+    <TableRow key={authenticationToken.id} onClick={() => onClick(authenticationToken)}>
+      <TableCell padding="checkbox">
+        <Checkbox checked={selected} />
+      </TableCell>
+      <TableCell>
+        <Typography>{authenticationToken.name}</Typography>
+      </TableCell>
+      <TableCell>
+        <Typography>{authenticationToken.status.toLowerCase()}</Typography>
+      </TableCell>
+      <TableCell>
+        <Typography>{formatTime(new Date(authenticationToken.createdOn))}</Typography>
+      </TableCell>
+    </TableRow>
   );
 };

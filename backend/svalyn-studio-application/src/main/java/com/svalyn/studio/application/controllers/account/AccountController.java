@@ -21,6 +21,7 @@ package com.svalyn.studio.application.controllers.account;
 
 import com.svalyn.studio.application.controllers.account.dto.AccountDTO;
 import com.svalyn.studio.application.controllers.account.dto.CreateAccountInput;
+import com.svalyn.studio.application.controllers.account.dto.DeleteAccountInput;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.PageInfoWithCount;
 import com.svalyn.studio.application.services.account.api.IAccountService;
@@ -67,5 +68,10 @@ public class AccountController {
     @MutationMapping
     public IPayload createAccount(@Argument @Valid CreateAccountInput input) {
         return this.accountService.createAccount(input);
+    }
+
+    @MutationMapping
+    public IPayload deleteAccount(@Argument @Valid DeleteAccountInput input) {
+        return this.accountService.deleteAccount(input);
     }
 }

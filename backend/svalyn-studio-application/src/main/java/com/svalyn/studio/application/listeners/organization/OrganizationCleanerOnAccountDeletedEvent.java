@@ -17,15 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.application.listeners.history;
+package com.svalyn.studio.application.listeners.organization;
 
-import com.svalyn.studio.domain.history.ChangeResource;
-import com.svalyn.studio.domain.history.events.ChangeDeletedEvent;
-import com.svalyn.studio.domain.resource.Resource;
-import com.svalyn.studio.domain.resource.repositories.IResourceRepository;
+import com.svalyn.studio.domain.account.events.AccountDeletedEvent;
+import com.svalyn.studio.domain.organization.Organization;
+import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -33,30 +31,26 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import java.util.Objects;
 
 /**
- * Used to delete the resources used by a change.
+ * Used to delete the organizations owned by an account.
  *
  * @author sbegaudeau
  */
 @Service
-public class ChangeDeletedEventListener {
-    private final IResourceRepository resourceRepository;
+public class OrganizationCleanerOnAccountDeletedEvent {
+    private final IOrganizationRepository organizationRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(ChangeDeletedEventListener.class);
+    private final Logger logger = LoggerFactory.getLogger(OrganizationCleanerOnAccountDeletedEvent.class);
 
-    public ChangeDeletedEventListener(IResourceRepository resourceRepository) {
-        this.resourceRepository = Objects.requireNonNull(resourceRepository);
+    public OrganizationCleanerOnAccountDeletedEvent(IOrganizationRepository organizationRepository) {
+        this.organizationRepository = Objects.requireNonNull(organizationRepository);
     }
 
     @Transactional
     @TransactionalEventListener
-    public void onChangeDeletedEvent(ChangeDeletedEvent event) {
+    public void onAccountDeletedEvent(AccountDeletedEvent event) {
         logger.info(event.toString());
-        var resourceIds = event.change().getChangeResources().stream()
-                .map(ChangeResource::getResource)
-                .map(AggregateReference::getId)
-                .toList();
-        var resources = this.resourceRepository.findAllById(resourceIds);
-        resources.forEach(Resource::dispose);
-        this.resourceRepository.deleteAll(resources);
+        var organizations = this.organizationRepository.findAllOwnedBy(event.account().getId());
+        organizations.forEach(Organization::dispose);
+        this.organizationRepository.deleteAll(organizations);
     }
 }
