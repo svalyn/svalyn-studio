@@ -40,6 +40,12 @@ public interface IOrganizationRepository extends PagingAndSortingRepository<Orga
 
     Optional<Organization> findByIdentifier(String identifier);
 
+    @Query("""
+    SELECT * FROM organization organization
+    WHERE organization.created_by = :userId
+    """)
+    List<Organization> findAllOwnedBy(UUID userId);
+
     @Query(value = """
     SELECT * FROM organization organization JOIN invitation invitation ON organization.id = invitation.organization_id
     WHERE invitation.member_id = :userId

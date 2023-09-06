@@ -17,29 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.activity.repositories;
-
-import com.svalyn.studio.domain.activity.OrganizationActivityEntry;
-import org.springframework.data.jdbc.repository.query.Modifying;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.UUID;
+package com.svalyn.studio.domain.account.services.api;
 
 /**
- * Repository used to persist and retrieve organization activity entries.
+ * Cleans all the sessions associated with the given username.
  *
  * @author sbegaudeau
  */
-@Repository
-public interface IOrganizationActivityEntryRepository extends PagingAndSortingRepository<OrganizationActivityEntry, UUID>, ListCrudRepository<OrganizationActivityEntry, UUID> {
-    @Query("""
-    DELETE FROM organization_activity organizationActivityEntry
-    USING activity activityEntry
-    WHERE organizationActivityEntry.activity_id = activityEntry.id AND activityEntry.created_by = :userId
-    """)
-    @Modifying
-    void deleteAllByUserId(UUID userId);
+public interface IAccountSessionCleaner {
+    void cleanSessions(String username);
 }

@@ -21,6 +21,7 @@ package com.svalyn.studio.application.services.account.api;
 
 import com.svalyn.studio.application.controllers.account.dto.AccountDTO;
 import com.svalyn.studio.application.controllers.account.dto.CreateAccountInput;
+import com.svalyn.studio.application.controllers.account.dto.DeleteAccountInput;
 import com.svalyn.studio.application.controllers.dto.IPayload;
 import com.svalyn.studio.application.controllers.dto.ProfileDTO;
 import com.svalyn.studio.application.controllers.viewer.Viewer;
@@ -43,4 +44,6 @@ public interface IAccountService {
     Page<AccountDTO> findAll(int page, int rowsPerPage);
 
     IPayload createAccount(CreateAccountInput input);
+
+    IPayload deleteAccount(DeleteAccountInput input);
 }

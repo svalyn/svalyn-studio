@@ -50,6 +50,7 @@ import java.util.Objects;
 public class ActivityListener {
 
     private final IActivityEntryRepository activityEntryRepository;
+
     private final IOrganizationActivityEntryRepository organizationActivityEntryRepository;
 
     private final IProjectActivityEntryRepository projectActivityEntryRepository;

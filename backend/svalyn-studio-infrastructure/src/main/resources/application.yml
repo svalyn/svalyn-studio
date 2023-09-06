@@ -24,3 +24,7 @@ spring:
   kafka:
     producer:
       bootstrap-servers: localhost:9092
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: never

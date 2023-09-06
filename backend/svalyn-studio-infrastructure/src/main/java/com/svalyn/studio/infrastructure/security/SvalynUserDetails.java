@@ -57,7 +57,7 @@ public class SvalynUserDetails extends User implements IUser {
     }
 
     @Override
-    public String getName() {
+    public String getFullName() {
         return this.name;
     }
 }

@@ -30,5 +30,6 @@ public interface IUser {
 
     String getUsername();
 
-    String getName();
+    String getFullName();
+
 }

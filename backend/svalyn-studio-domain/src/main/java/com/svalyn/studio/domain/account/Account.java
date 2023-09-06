@@ -22,6 +22,7 @@ package com.svalyn.studio.domain.account;
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.events.AccountCreatedEvent;
+import com.svalyn.studio.domain.account.events.AccountDeletedEvent;
 import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
 import com.svalyn.studio.domain.account.events.AuthenticationTokenCreatedEvent;
 import com.svalyn.studio.domain.account.events.AuthenticationTokenModifiedEvent;
@@ -169,6 +170,22 @@ public class Account extends AbstractValidatingAggregateRoot<Account> implements
                     var createdBy = ProfileProvider.get();
                     this.registerEvent(new AuthenticationTokenModifiedEvent(UUID.randomUUID(), this.lastModifiedOn, createdBy, this));
                 });
+    }
+
+    public void dispose() {
+        var randomId = UUID.randomUUID().toString();
+        this.name = "Deleted Account";
+        this.username = "deleted_account-" + randomId;
+        this.email = randomId;
+        this.role = AccountRole.USER;
+        this.image = null;
+        this.imageContentType = null;
+        this.authenticationTokens = Set.of();
+        this.passwordCredentials = Set.of();
+        this.oAuth2Metadata = Set.of();
+
+        var createdBy = ProfileProvider.get();
+        this.registerEvent(new AccountDeletedEvent(UUID.randomUUID(), Instant.now(), createdBy, this));
     }
 
     public static Builder newAccount() {
