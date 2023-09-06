@@ -17,21 +17,44 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 
-export class OrganizationSettingsPage {
-  constructor(public readonly page: Page, public identifier: string) {}
+export class UserMenu {
+  constructor(public readonly page: Page) {}
 
-  async goto(identifier: string) {
-    this.identifier = identifier;
-    await this.page.goto(`http://localhost:5173/orgs/${this.identifier}/settings`);
+  async open() {
+    await this.page.getByTestId('user-menu-avatar').click();
   }
 
-  async delete() {
-    await this.page.goto(`http://localhost:5173/orgs/${this.identifier}/settings`);
-    await this.page.getByRole('button', { name: 'DELETE ORGANIZATION' }).click();
-    await this.page.getByRole('button', { name: 'DELETE' }).click();
+  async gotoDashboard() {
+    await this.page.getByRole('menuitem', { name: 'Dashboard' }).click();
+  }
 
-    await expect(this.page).toHaveURL('http://localhost:5173');
+  async gotoProfile() {
+    await this.page.getByRole('menuitem', { name: 'Profile' }).click();
+  }
+
+  async gotoInvitations() {
+    await this.page.getByRole('menuitem', { name: 'Invitations' }).click();
+  }
+
+  async gotoSettings() {
+    await this.page.getByRole('menuitem', { name: 'Settings' }).click();
+  }
+
+  async gotoAdmin() {
+    await this.page.getByRole('menuitem', { name: 'Admin Panel' }).click();
+  }
+
+  async gotoHelp() {
+    await this.page.getByRole('menuitem', { name: 'Help' }).click();
+  }
+
+  async logout() {
+    await this.page.getByRole('menuitem', { name: 'Sign out' }).click();
+  }
+
+  async close() {
+    await this.page.press('[data-testid="user-menu-avatar"]', 'Esc');
   }
 }

@@ -18,10 +18,10 @@
  */
 
 import { expect } from '@playwright/test';
-import { test } from '../fixture';
-import { Organization } from '../fixture.types';
+import { test } from '../../fixture';
+import { Organization } from '../../fixture.types';
 
-test.describe('Organization settings view', () => {
+test.describe('Update organization members', () => {
   let organization: Organization;
 
   test.beforeEach(async ({ loginPage, newOrganizationPage }) => {
@@ -37,14 +37,8 @@ test.describe('Organization settings view', () => {
     await organizationSettingsPage.delete();
   });
 
-  test('should let me update the organization name', async ({ page }) => {
-    await page.goto(`http://localhost:5173/orgs/${organization.identifier}`);
-    await expect(page.getByRole('heading', { name: organization.name })).toBeVisible();
-
-    await page.getByRole('tab').filter({ hasText: 'SETTINGS' }).click();
-    await page.getByRole('textbox', { name: 'Organization Name' }).fill(`Renamed ${organization.name}`);
-    await page.getByRole('button', { name: 'RENAME' }).click();
-
-    await expect(page.getByRole('heading', { name: `Renamed ${organization.name}` })).toBeVisible();
+  test('should have the creator of the project has a member', async ({ organizationMembersPage, page }) => {
+    await organizationMembersPage.goto(organization.identifier);
+    await expect(page.getByRole('cell', { name: 'Admin Admin' })).toBeVisible();
   });
 });
