@@ -32,9 +32,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { Navigate, Link as RouterLink } from 'react-router-dom';
-import { getCookie } from '../cookies/getCookie';
+import { useAuthentication } from '../login/useAuthentication';
 import { UserMenuProps, UserMenuState } from './UserMenu.types';
-const { VITE_BACKEND_URL } = import.meta.env;
 
 export const UserMenu = ({ viewer, onClose, ...props }: UserMenuProps) => {
   const [state, setState] = useState<UserMenuState>({
@@ -47,17 +46,9 @@ export const UserMenu = ({ viewer, onClose, ...props }: UserMenuProps) => {
     }
   };
 
+  const { logout } = useAuthentication();
   const handleLogout: React.MouseEventHandler<HTMLLIElement> = () => {
-    const csrfToken = getCookie('XSRF-TOKEN');
-
-    fetch(`${VITE_BACKEND_URL}/api/logout`, {
-      method: 'POST',
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'X-XSRF-TOKEN': csrfToken,
-      },
-    }).then(() => {
+    logout().then(() => {
       setState((prevState) => ({ ...prevState, redirectToLogin: true }));
     });
   };
