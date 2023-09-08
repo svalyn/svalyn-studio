@@ -120,6 +120,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    @Transactional
     public IPayload deleteAccount(DeleteAccountInput input) {
         IPayload payload = null;
 
