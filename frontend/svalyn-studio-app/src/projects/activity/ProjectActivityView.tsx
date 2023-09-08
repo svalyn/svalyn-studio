@@ -19,13 +19,12 @@
 
 import { gql, useQuery } from '@apollo/client';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { ActivityTimeline } from '../../activity/ActivityTimeline';
+import { ProjectViewHeader } from '../ProjectViewHeader';
 import { useProject } from '../useProject';
 import { GetProjectActivityData, GetProjectActivityVariables } from './ProjectActivityView.types';
 
@@ -72,17 +71,10 @@ export const ProjectActivityView = () => {
 
   return (
     <div>
-      <Toolbar
-        sx={{
-          backgroundColor: 'white',
-          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
-          <TimelineIcon fontSize="large" />
-          <Typography variant="h4">Activity</Typography>
-        </Box>
-      </Toolbar>
+      <ProjectViewHeader>
+        <TimelineIcon fontSize="medium" />
+        <Typography variant="h5">Activity</Typography>
+      </ProjectViewHeader>
       <Container
         maxWidth="lg"
         sx={{

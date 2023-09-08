@@ -17,14 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ChangeProposalOverviewProps {
-  changeProposalId: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface ChangeProposalOverviewState {
+export interface ChangeProposalOverviewViewState {
   changeProposal: ChangeProposal | null;
   editReadMeDialogOpen: boolean;
 }

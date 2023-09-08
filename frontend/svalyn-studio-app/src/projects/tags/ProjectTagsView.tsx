@@ -17,11 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation, useQuery } from '@apollo/client';
-import AddIcon from '@mui/icons-material/Add';
+import { gql, useQuery } from '@apollo/client';
 import TagIcon from '@mui/icons-material/Tag';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -31,20 +29,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TextField from '@mui/material/TextField';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
+import { ProjectViewHeader } from '../ProjectViewHeader';
 import { useProject } from '../useProject';
-import {
-  AddTagToProjectData,
-  AddTagToProjectVariables,
-  ErrorPayload,
-  GetProjectTagsData,
-  GetProjectTagsVariables,
-  ProjectTagsViewState,
-} from './ProjectTagsView.types';
+import { NewTagCard } from './NewTagCard';
+import { GetProjectTagsData, GetProjectTagsVariables, ProjectTagsViewState } from './ProjectTagsView.types';
 
 const getProjectTagsQuery = gql`
   query getProjectTags($identifier: ID!, $page: Int!, $rowsPerPage: Int!) {
@@ -67,25 +58,9 @@ const getProjectTagsQuery = gql`
   }
 `;
 
-const addTagToProjectMutation = gql`
-  mutation addTagToProject($input: AddTagToProjectInput!) {
-    addTagToProject(input: $input) {
-      __typename
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
-
 export const ProjectTagsView = () => {
-  const {
-    identifier: projectIdentifier,
-    organization: { role },
-  } = useProject();
+  const { identifier: projectIdentifier } = useProject();
   const [state, setState] = useState<ProjectTagsViewState>({
-    key: '',
-    value: '',
     page: 0,
     rowsPerPage: 10,
   });
@@ -106,69 +81,15 @@ export const ProjectTagsView = () => {
     }
   }, [error]);
 
-  const handleKeyChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({ ...prevState, key: value }));
-  };
-
-  const handleValueChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({ ...prevState, value }));
-  };
-
-  const [addTagToProject, { data: addTagToProjectData, error: addTagToProjectError }] = useMutation<
-    AddTagToProjectData,
-    AddTagToProjectVariables
-  >(addTagToProjectMutation);
-  useEffect(() => {
-    if (addTagToProjectData) {
-      if (addTagToProjectData.addTagToProject.__typename === 'ErrorPayload') {
-        const errorPayload = addTagToProjectData.addTagToProject as ErrorPayload;
-        enqueueSnackbar(errorPayload.message, { variant: 'error' });
-      } else if (addTagToProjectData.addTagToProject.__typename === 'SuccessPayload') {
-        setState((prevState) => ({ ...prevState, key: '', value: '' }));
-        refetch(variables);
-      }
-    }
-    if (addTagToProjectError) {
-      enqueueSnackbar(addTagToProjectError.message, { variant: 'error' });
-    }
-  }, [addTagToProjectData, addTagToProjectError]);
-
-  const handleAddTag: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: AddTagToProjectVariables = {
-      input: {
-        id: crypto.randomUUID(),
-        projectIdentifier,
-        key: state.key,
-        value: state.value,
-      },
-    };
-    addTagToProject({ variables });
-  };
-
   const onPageChange = (_: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, page: number) =>
     setState((prevState) => ({ ...prevState, page }));
 
-  const isValidNewTag = state.key.trim().length > 0 && state.value.trim().length > 0;
-
   return (
     <div>
-      <Toolbar
-        sx={{
-          backgroundColor: 'white',
-          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
-          <TagIcon fontSize="large" />
-          <Typography variant="h4">Tags</Typography>
-        </Box>
-      </Toolbar>
+      <ProjectViewHeader>
+        <TagIcon fontSize="medium" />
+        <Typography variant="h5">Tags</Typography>
+      </ProjectViewHeader>
       <Container
         maxWidth="lg"
         sx={{
@@ -178,49 +99,7 @@ export const ProjectTagsView = () => {
           paddingTop: (theme) => theme.spacing(4),
         }}
       >
-        <Paper
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: (theme) => theme.spacing(2),
-            padding: (theme) => theme.spacing(3),
-          }}
-        >
-          <Typography variant="h5">Tags</Typography>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateRows: '1fr',
-              gridTemplateColumns: '1fr 1fr min-content',
-              gap: (theme) => theme.spacing(2),
-            }}
-          >
-            <TextField
-              label="Key"
-              value={state.key}
-              onChange={handleKeyChange}
-              size="small"
-              disabled={role === 'NONE'}
-            />
-            <TextField
-              label="Value"
-              value={state.value}
-              onChange={handleValueChange}
-              size="small"
-              disabled={role === 'NONE'}
-            />
-            <Button
-              variant="outlined"
-              disabled={!isValidNewTag || role === 'NONE'}
-              onClick={handleAddTag}
-              sx={{ whiteSpace: 'nowrap' }}
-              size="small"
-              endIcon={<AddIcon />}
-            >
-              Add new tag
-            </Button>
-          </Box>
-        </Paper>
+        <NewTagCard onTagCreated={() => refetch(variables)} />
         <Box>
           {data && data.viewer && data.viewer.project && data.viewer.project.tags.edges.length > 0 ? (
             <>

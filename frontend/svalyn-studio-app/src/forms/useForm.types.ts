@@ -27,6 +27,7 @@ export interface UseFormProps<FormDataType extends Object> {
 export interface UseFormValue<FormDataType extends Object> {
   data: FormDataType;
   isFormValid: boolean;
+  reset: () => void;
   getTextFieldProps: (name: keyof FormDataType, helperText?: string) => TextFieldProps;
 }
 

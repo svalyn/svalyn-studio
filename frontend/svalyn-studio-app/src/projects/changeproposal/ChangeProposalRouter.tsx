@@ -17,18 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Outlet, Route, Routes } from 'react-router-dom';
-import { ChangeProposalView } from './ChangeProposalView';
+import { Route, Routes } from 'react-router-dom';
+import { ChangeProposalShell } from './ChangeProposalShell';
+import { ChangeProposalFilesView } from './files/ChangeProposalFilesView';
+import { ChangeProposalOverviewView } from './overview/ChangeProposalOverviewView';
 
-export const ChangeProposalsRouter = () => {
+export const ChangeProposalRouter = () => {
   return (
-    <>
+    <ChangeProposalShell>
       <Routes>
-        <Route path=":changeProposalId" element={<ChangeProposalView />} />
-        <Route path=":changeProposalId/files" element={<ChangeProposalView />} />
+        <Route index element={<ChangeProposalOverviewView />} />
+        <Route path="files" element={<ChangeProposalFilesView />} />
       </Routes>
-
-      <Outlet />
-    </>
+    </ChangeProposalShell>
   );
 };

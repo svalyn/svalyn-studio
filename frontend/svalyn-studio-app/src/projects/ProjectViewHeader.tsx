@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,38 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ChangeProposalViewState {
-  changeProposal: ChangeProposal | null;
-}
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import { ProjectViewHeaderProps } from './ProjectViewHeader.types';
 
-export interface GetChangeProposalData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  changeProposal: ChangeProposal | null;
-}
-
-export interface ChangeProposal {
-  id: string;
-  name: string;
-  project: Project;
-}
-
-export interface Project {
-  identifier: string;
-  name: string;
-  organization: Organization;
-}
-
-export interface Organization {
-  identifier: string;
-  name: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface GetChangeProposalVariables {
-  id: string;
-}
+export const ProjectViewHeader = ({ children }: ProjectViewHeaderProps) => {
+  return (
+    <Toolbar
+      variant="dense"
+      sx={{
+        backgroundColor: 'white',
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
+        {children}
+      </Box>
+    </Toolbar>
+  );
+};

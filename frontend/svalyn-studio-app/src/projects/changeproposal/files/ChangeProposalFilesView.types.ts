@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,44 +17,44 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectTagsViewState {
-  page: number;
-  rowsPerPage: number;
+export interface ChangeProposalFilesViewState {
+  changeProposal: ChangeProposal | null;
 }
 
-export interface GetProjectTagsVariables {
-  identifier: string;
-  page: number;
-  rowsPerPage: number;
-}
-
-export interface GetProjectTagsData {
-  viewer: Viewer | null;
+export interface GetChangeProposalData {
+  viewer: Viewer;
 }
 
 export interface Viewer {
-  project: Project | null;
+  changeProposal: ChangeProposal | null;
 }
 
-export interface Project {
-  tags: ProjectTagsConnection;
-}
-
-export interface ProjectTagsConnection {
-  edges: ProjectTagsEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface ProjectTagsEdge {
-  node: Tag;
-}
-
-export interface Tag {
+export interface ChangeProposal {
   id: string;
-  key: string;
-  value: string;
+  name: string;
+  status: ChangeProposalStatus;
+  change: Change;
 }
 
-export interface PageInfo {
-  count: number;
+export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
+
+export interface Change {
+  id: string;
+  resources: ChangeResourcesConnection;
+}
+export interface ChangeResourcesConnection {
+  edges: ChangeResourcesEdge[];
+}
+
+export interface ChangeResourcesEdge {
+  node: ChangeResourceMetadata;
+}
+
+export interface ChangeResourceMetadata {
+  name: string;
+  path: string;
+}
+
+export interface GetChangeProposalVariables {
+  id: string;
 }

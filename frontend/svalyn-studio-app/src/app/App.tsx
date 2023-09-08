@@ -19,7 +19,6 @@
 
 import { Route, Routes } from 'react-router-dom';
 import { AdminRouter } from '../admin/AdminRouter';
-import { ChangeProposalsRouter } from '../changeproposals/ChangeProposalsRouter';
 import { DomainsRouter } from '../domains/DomainsRouter';
 import { ErrorsRouter } from '../errors/ErrorsRouter';
 import { HelpRouter } from '../help/HelpRouter';
@@ -47,7 +46,6 @@ export const App = () => {
         <Route path="/orgs/:organizationIdentifier/*" element={<OrganizationRouter />} />
         <Route path="/projects/:projectIdentifier/*" element={<ProjectRouter />} />
         <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
-        <Route path="/changeproposals/*" element={<ChangeProposalsRouter />} />
         <Route path="/domains/*" element={<DomainsRouter />} />
         <Route path="/search/*" element={<SearchRouter />} />
         <Route path="/profiles/*" element={<ProfilesRouter />} />

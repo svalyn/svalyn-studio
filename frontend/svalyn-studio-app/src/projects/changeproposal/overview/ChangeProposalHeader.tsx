@@ -22,8 +22,8 @@ import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
-import { CreatedOn } from '../../widgets/CreatedOn';
-import { LastModifiedOn } from '../../widgets/LastModifiedOn';
+import { CreatedOn } from '../../../widgets/CreatedOn';
+import { LastModifiedOn } from '../../../widgets/LastModifiedOn';
 import { ChangeProposalHeaderProps } from './ChangeProposalHeader.types';
 
 export const ChangeProposalHeader = ({ changeProposal }: ChangeProposalHeaderProps) => {

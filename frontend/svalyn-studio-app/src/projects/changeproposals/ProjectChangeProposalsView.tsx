@@ -20,7 +20,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
@@ -31,11 +30,11 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { ProjectViewHeader } from '../ProjectViewHeader';
 import { useProject } from '../useProject';
 import { ChangeProposalsTableHead } from './ChangeProposalsTableHead';
 import { ChangeProposalsTableToolbar } from './ChangeProposalsTableToolbar';
@@ -202,27 +201,10 @@ export const ProjectChangeProposalsView = () => {
   const changeProposals = state.project?.changeProposals.edges.map((edge) => edge.node) ?? [];
   return (
     <div>
-      <Toolbar
-        sx={{
-          backgroundColor: 'white',
-          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
-          <DifferenceIcon fontSize="large" />
-          <Typography variant="h4">Change proposals</Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          sx={{ marginLeft: 'auto' }}
-          size="small"
-          component={RouterLink}
-          disabled={role === 'NONE'}
-          to={`/projects/${projectIdentifier}/new/changeproposal`}
-        >
-          New Change Proposal
-        </Button>
-      </Toolbar>
+      <ProjectViewHeader>
+        <DifferenceIcon fontSize="medium" />
+        <Typography variant="h5">Change proposals</Typography>
+      </ProjectViewHeader>
 
       <Container maxWidth="lg" sx={{ py: (theme) => theme.spacing(4) }}>
         <ChangeProposalsTableToolbar
@@ -251,7 +233,7 @@ export const ProjectChangeProposalsView = () => {
                       <Link
                         variant="subtitle1"
                         component={RouterLink}
-                        to={`/changeproposals/${changeProposal.id}`}
+                        to={`/projects/${projectIdentifier}/changeproposals/${changeProposal.id}`}
                         underline="hover"
                       >
                         {changeProposal.name}

@@ -29,14 +29,14 @@ import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
-import { ViewerCard } from '../../viewers/ViewerCard';
+import { useParams } from 'react-router-dom';
+import { ViewerCard } from '../../../viewers/ViewerCard';
 import {
-  ChangeProposalFilesProps,
-  ChangeProposalFilesState,
+  ChangeProposalFilesViewState,
   ChangeResourceMetadata,
   GetChangeProposalData,
   GetChangeProposalVariables,
-} from './ChangeProposalFiles.types';
+} from './ChangeProposalFilesView.types';
 
 const getChangeProposalFilesQuery = gql`
   query getChangeProposalFiles($id: ID!) {
@@ -61,12 +61,13 @@ const getChangeProposalFilesQuery = gql`
   }
 `;
 
-export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesProps) => {
-  const [state, setState] = useState<ChangeProposalFilesState>({ changeProposal: null });
+export const ChangeProposalFilesView = () => {
+  const { changeProposalIdentifier } = useParams();
+  const [state, setState] = useState<ChangeProposalFilesViewState>({ changeProposal: null });
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const variables: GetChangeProposalVariables = { id: changeProposalId };
+  const variables: GetChangeProposalVariables = { id: changeProposalIdentifier ?? '' };
   const { loading, data, error } = useQuery<GetChangeProposalData, GetChangeProposalVariables>(
     getChangeProposalFilesQuery,
     { variables }
@@ -104,7 +105,11 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
   }
 
   return (
-    <Box sx={{ padding: (theme) => theme.spacing(4) }}>
+    <Box
+      sx={{
+        padding: (theme) => theme.spacing(4),
+      }}
+    >
       <Grid container spacing={4}>
         <Grid item xs={2}>
           <Paper variant="outlined">
@@ -134,21 +139,23 @@ export const ChangeProposalFiles = ({ changeProposalId }: ChangeProposalFilesPro
             </List>
           </Paper>
         </Grid>
+
         <Grid item xs={10}>
-          {state.changeProposal.change.resources.edges
-            .map((edge) => edge.node)
-            .map((resource) => {
-              const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
-              return (
-                <Box sx={{ paddingBottom: (theme) => theme.spacing(4) }} key={fullpath}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
+            {state.changeProposal.change.resources.edges
+              .map((edge) => edge.node)
+              .map((resource) => {
+                const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
+                return (
                   <ViewerCard
                     changeId={state.changeProposal?.change.id ?? ''}
                     path={resource.path}
                     name={resource.name}
+                    key={fullpath}
                   />
-                </Box>
-              );
-            })}
+                );
+              })}
+          </Box>
         </Grid>
       </Grid>
     </Box>

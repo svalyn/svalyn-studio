@@ -34,6 +34,8 @@ const patterns = [
   '/projects/:projectIdentifier',
   '/projects/:projectIdentifier/activity',
   '/projects/:projectIdentifier/changeproposals',
+  '/projects/:projectIdentifier/changeproposals/:changeProposalIdentifier',
+  '/projects/:projectIdentifier/changeproposals/:changeProposalIdentifier/files',
   '/projects/:projectIdentifier/new/changeproposal',
   '/projects/:projectIdentifier/tags',
   '/projects/:projectIdentifier/settings',
@@ -116,7 +118,7 @@ const AdditionalBreadcrumbEntry = () => {
       label: 'Activity',
       icon: <TimelineIcon fontSize="inherit" />,
     };
-  } else if (currentTab === '/projects/:projectIdentifier/changeproposals') {
+  } else if (currentTab?.startsWith('/projects/:projectIdentifier/changeproposals')) {
     tabBreadcrumbEntry = {
       label: 'Change Proposals',
       icon: <DifferenceIcon fontSize="inherit" />,
