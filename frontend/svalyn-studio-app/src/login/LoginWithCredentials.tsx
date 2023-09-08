@@ -24,11 +24,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../cookies/getCookie';
 import { hasMinLength, useForm } from '../forms/useForm';
 import { LoginWithCredentialsFormData } from './LoginWithCredentials.types';
-
-const { VITE_BACKEND_URL } = import.meta.env;
+import { useAuthentication } from './useAuthentication';
 
 export const LoginWithCredentials = () => {
   const { data, isFormValid, getTextFieldProps } = useForm<LoginWithCredentialsFormData>({
@@ -43,27 +41,13 @@ export const LoginWithCredentials = () => {
   });
 
   const { enqueueSnackbar } = useSnackbar();
-
   const navigate = useNavigate();
+  const { login } = useAuthentication();
+
   const handleLogin: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    const body = new FormData();
-    body.append('username', data.username);
-    body.append('password', data.password);
-    body.append('remember-me', 'true');
-
-    const csrfToken = getCookie('XSRF-TOKEN');
-
-    fetch(`${VITE_BACKEND_URL}/api/login`, {
-      body,
-      mode: 'cors',
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'X-XSRF-TOKEN': csrfToken,
-      },
-    }).then((response) => {
+    login(data.username, data.password).then((response) => {
       if (response.ok) {
         navigate('/');
       } else {
