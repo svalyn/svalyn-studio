@@ -31,6 +31,10 @@ export function useForm<FormDataType extends Object>({
     isFormValid: false,
   });
 
+  const reset = () => {
+    setState((prevState) => ({ ...prevState, data: initialValue, validationState: {}, isFormValid: false }));
+  };
+
   const getTextFieldProps = (name: keyof FormDataType, helperText?: string): TextFieldProps => {
     let error = false;
     let computedHelperText: string | undefined = helperText;
@@ -73,6 +77,7 @@ export function useForm<FormDataType extends Object>({
   return {
     data: state.data,
     isFormValid: state.isFormValid,
+    reset,
     getTextFieldProps,
   };
 }

@@ -17,48 +17,18 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useMutation } from '@apollo/client';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useProject } from '../useProject';
 import { DeleteProjectDialog } from './DeleteProjectDialog';
-import {
-  ErrorPayload,
-  ProjectSettingsViewState,
-  UpdateProjectDescriptionData,
-  UpdateProjectDescriptionVariables,
-  UpdateProjectNameData,
-  UpdateProjectNameVariables,
-} from './ProjectSettingsView.types';
-
-const updateProjectNameMutation = gql`
-  mutation updateProjectName($input: UpdateProjectNameInput!) {
-    updateProjectName(input: $input) {
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
-
-const updateProjectDescriptionMutation = gql`
-  mutation updateProjectDescription($input: UpdateProjectDescriptionInput!) {
-    updateProjectDescription(input: $input) {
-      ... on ErrorPayload {
-        message
-      }
-    }
-  }
-`;
+import { DetailsCard } from './DetailsCard';
+import { ProjectSettingsViewState } from './ProjectSettingsView.types';
 
 export const ProjectSettingsView = () => {
   const {
@@ -66,96 +36,8 @@ export const ProjectSettingsView = () => {
     organization: { role },
   } = useProject();
   const [state, setState] = useState<ProjectSettingsViewState>({
-    name: '',
-    description: '',
     deleteProjectDialogOpen: false,
   });
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const handleNameChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({ ...prevState, name: value }));
-  };
-
-  const handleDescriptionChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setState((prevState) => ({ ...prevState, description: value }));
-  };
-
-  const navigate = useNavigate();
-
-  const [
-    updateProjectName,
-    { loading: updateProjectNameLoading, data: updateProjectNameData, error: updateProjectNameError },
-  ] = useMutation<UpdateProjectNameData, UpdateProjectNameVariables>(updateProjectNameMutation);
-  useEffect(() => {
-    if (!updateProjectNameLoading) {
-      if (updateProjectNameData) {
-        const { updateProjectName } = updateProjectNameData;
-        if (updateProjectName.__typename === 'SuccessPayload') {
-          navigate(`/projects/${projectIdentifier}`);
-        } else if (updateProjectName.__typename === 'ErrorPayload') {
-          const errorPayload = updateProjectName as ErrorPayload;
-          enqueueSnackbar(errorPayload.message, { variant: 'error' });
-        }
-      }
-      if (updateProjectNameError) {
-        enqueueSnackbar(updateProjectNameError.message, { variant: 'error' });
-      }
-    }
-  }, [updateProjectNameLoading, updateProjectNameData, updateProjectNameError]);
-
-  const handleUpdateProjectName: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: UpdateProjectNameVariables = {
-      input: {
-        id: crypto.randomUUID(),
-        projectIdentifier,
-        name: state.name,
-      },
-    };
-    updateProjectName({ variables });
-  };
-
-  const [
-    updateProjectDescription,
-    {
-      loading: updateProjectDescriptionLoading,
-      data: updateProjectDescriptionData,
-      error: updateProjectDescriptionError,
-    },
-  ] = useMutation<UpdateProjectDescriptionData, UpdateProjectDescriptionVariables>(updateProjectDescriptionMutation);
-  useEffect(() => {
-    if (!updateProjectDescriptionLoading) {
-      if (updateProjectDescriptionData) {
-        const { updateProjectDescription } = updateProjectDescriptionData;
-        if (updateProjectDescription.__typename === 'SuccessPayload') {
-          navigate(`/projects/${projectIdentifier}`);
-        } else if (updateProjectDescription.__typename === 'ErrorPayload') {
-          const errorPayload = updateProjectDescription as ErrorPayload;
-          enqueueSnackbar(errorPayload.message, { variant: 'error' });
-        }
-      }
-      if (updateProjectDescriptionError) {
-        enqueueSnackbar(updateProjectDescriptionError.message, { variant: 'error' });
-      }
-    }
-  }, [updateProjectDescriptionLoading, updateProjectDescriptionData, updateProjectDescriptionError]);
-
-  const handleUpdateProjectDescription: React.MouseEventHandler<HTMLButtonElement> = () => {
-    const variables: UpdateProjectDescriptionVariables = {
-      input: {
-        id: crypto.randomUUID(),
-        projectIdentifier,
-        description: state.description,
-      },
-    };
-    updateProjectDescription({ variables });
-  };
 
   const openDeleteProjectDialog: React.MouseEventHandler<HTMLButtonElement> = () => {
     setState((prevState) => ({ ...prevState, deleteProjectDialogOpen: true }));
@@ -168,84 +50,26 @@ export const ProjectSettingsView = () => {
     <>
       <div>
         <Toolbar
+          variant="dense"
           sx={{
             backgroundColor: 'white',
             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
           }}
         >
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: (theme) => theme.spacing(2) }}>
-            <SettingsIcon fontSize="large" />
-            <Typography variant="h4">Settings</Typography>
+            <SettingsIcon fontSize="medium" />
+            <Typography variant="h5">Settings</Typography>
           </Box>
         </Toolbar>
         <Container maxWidth="lg">
-          <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>
-            <Typography variant="h5" gutterBottom>
-              General
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                gap: (theme) => theme.spacing(2),
-                marginTop: (theme) => theme.spacing(2),
-              }}
-            >
-              <TextField
-                label="Project name"
-                variant="outlined"
-                size="small"
-                value={state.name}
-                onChange={handleNameChange}
-                sx={{ flexGrow: '1' }}
-                disabled={role === 'NONE'}
-              />
-              <Button
-                variant="outlined"
-                sx={{ whiteSpace: 'nowrap' }}
-                onClick={handleUpdateProjectName}
-                disabled={role === 'NONE'}
-              >
-                Update Name
-              </Button>
-            </Box>
+          <DetailsCard />
 
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                gap: (theme) => theme.spacing(2),
-                marginTop: (theme) => theme.spacing(2),
-              }}
-            >
-              <TextField
-                label="Project description"
-                variant="outlined"
-                size="small"
-                helperText={`Help others understand your project (${state.description.length}/260 characters)`}
-                multiline
-                minRows={5}
-                maxRows={5}
-                inputProps={{ maxLength: 260 }}
-                value={state.description}
-                onChange={handleDescriptionChange}
-                sx={{ flexGrow: '1' }}
-                disabled={role === 'NONE'}
-              />
-              <Button variant="outlined" onClick={handleUpdateProjectDescription} disabled={role === 'NONE'}>
-                Update Description
-              </Button>
-            </Box>
-          </Paper>
-
-          <Paper sx={{ padding: (theme) => theme.spacing(3), marginTop: (theme) => theme.spacing(4) }}>
-            <Typography variant="h5" gutterBottom>
+          <Paper sx={{ padding: (theme) => theme.spacing(2), marginTop: (theme) => theme.spacing(4) }}>
+            <Typography variant="h6" color="error" gutterBottom>
               Delete this project
             </Typography>
             <Typography gutterBottom>Once you delete a project, there is no going back. Please be certain.</Typography>
-            <Button variant="outlined" onClick={openDeleteProjectDialog} disabled={role === 'NONE'}>
+            <Button variant="outlined" color="error" onClick={openDeleteProjectDialog} disabled={role === 'NONE'}>
               Delete Project
             </Button>
           </Paper>

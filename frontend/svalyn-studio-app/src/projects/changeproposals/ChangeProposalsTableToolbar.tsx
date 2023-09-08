@@ -18,11 +18,14 @@
  */
 
 import ClearIcon from '@mui/icons-material/Clear';
+import DifferenceIcon from '@mui/icons-material/Difference';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
+import { useProject } from '../useProject';
 import { ChangeProposalsTableToolbarProps } from './ChangeProposalsTableToolbar.types';
 
 export const ChangeProposalsTableToolbar = ({
@@ -30,11 +33,12 @@ export const ChangeProposalsTableToolbar = ({
   onDelete,
   role,
 }: ChangeProposalsTableToolbarProps) => {
+  const { identifier: projectIdentifier } = useProject();
   return (
     <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Typography variant="h5">Change Proposals</Typography>
-      {selectedChangeProposalsCount > 0 ? (
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(1) }}>
+        {selectedChangeProposalsCount > 0 ? (
           <Tooltip title="Delete change proposal(s)">
             <Button
               variant="outlined"
@@ -45,8 +49,19 @@ export const ChangeProposalsTableToolbar = ({
               <ClearIcon />
             </Button>
           </Tooltip>
-        </Box>
-      ) : null}
+        ) : null}
+        <Button
+          variant="outlined"
+          sx={{ marginLeft: 'auto' }}
+          size="small"
+          component={RouterLink}
+          disabled={role === 'NONE'}
+          startIcon={<DifferenceIcon />}
+          to={`/projects/${projectIdentifier}/new/changeproposal`}
+        >
+          New Change Proposal
+        </Button>
+      </Box>
     </Toolbar>
   );
 };

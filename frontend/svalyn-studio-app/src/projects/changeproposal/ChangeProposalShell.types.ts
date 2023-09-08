@@ -17,44 +17,23 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectTagsViewState {
-  page: number;
-  rowsPerPage: number;
+export interface ChangeProposalShellProps {
+  children: React.ReactNode;
 }
 
-export interface GetProjectTagsVariables {
-  identifier: string;
-  page: number;
-  rowsPerPage: number;
-}
-
-export interface GetProjectTagsData {
-  viewer: Viewer | null;
+export interface GetChangeProposalData {
+  viewer: Viewer;
 }
 
 export interface Viewer {
-  project: Project | null;
+  changeProposal: ChangeProposal | null;
 }
 
-export interface Project {
-  tags: ProjectTagsConnection;
-}
-
-export interface ProjectTagsConnection {
-  edges: ProjectTagsEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface ProjectTagsEdge {
-  node: Tag;
-}
-
-export interface Tag {
+export interface ChangeProposal {
   id: string;
-  key: string;
-  value: string;
+  name: string;
 }
 
-export interface PageInfo {
-  count: number;
+export interface GetChangeProposalVariables {
+  id: string;
 }

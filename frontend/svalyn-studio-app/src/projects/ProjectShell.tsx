@@ -98,7 +98,7 @@ export const ProjectShell = ({ children }: ProjectShellProps) => {
           sx={{
             display: 'grid',
             gridTemplateRows: '1fr',
-            gridTemplateColumns: 'min-content 1fr',
+            gridTemplateColumns: '64px calc(100vw - 64px)',
             flexGrow: '1',
           }}
         >

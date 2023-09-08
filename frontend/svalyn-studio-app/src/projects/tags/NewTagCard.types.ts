@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Stéphane Bégaudeau.
+ * Copyright (c) 2023 Stéphane Bégaudeau.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,51 +17,35 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ChangeProposalFilesProps {
-  changeProposalId: string;
-  role: MembershipRole;
+export interface NewTagCardProps {
+  onTagCreated: () => void;
 }
 
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface ChangeProposalFilesState {
-  changeProposal: ChangeProposal | null;
+export interface NewTagFormData {
+  key: string;
+  value: string;
 }
 
-export interface GetChangeProposalData {
-  viewer: Viewer;
+export interface AddTagToProjectVariables {
+  input: AddTagToProjectInput;
 }
 
-export interface Viewer {
-  changeProposal: ChangeProposal | null;
-}
-
-export interface ChangeProposal {
+export interface AddTagToProjectInput {
   id: string;
-  name: string;
-  status: ChangeProposalStatus;
-  change: Change;
+  projectIdentifier: string;
+  key: string;
+  value: string;
 }
 
-export type ChangeProposalStatus = 'OPEN' | 'CLOSED' | 'INTEGRATED';
-
-export interface Change {
-  id: string;
-  resources: ChangeResourcesConnection;
-}
-export interface ChangeResourcesConnection {
-  edges: ChangeResourcesEdge[];
+export interface AddTagToProjectData {
+  addTagToProject: AddTagToProjectPayload;
 }
 
-export interface ChangeResourcesEdge {
-  node: ChangeResourceMetadata;
+export interface AddTagToProjectPayload {
+  __typename: string;
 }
 
-export interface ChangeResourceMetadata {
-  name: string;
-  path: string;
-}
-
-export interface GetChangeProposalVariables {
-  id: string;
+export interface ErrorPayload extends AddTagToProjectPayload {
+  __typename: 'ErrorPayload';
+  message: string;
 }

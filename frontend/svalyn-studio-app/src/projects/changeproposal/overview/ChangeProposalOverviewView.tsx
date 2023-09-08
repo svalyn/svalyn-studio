@@ -29,17 +29,18 @@ import Typography from '@mui/material/Typography';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { EditReadMeDialog } from '../../dialogs/EditReadMeDialog';
+import { useParams } from 'react-router-dom';
+import { EditReadMeDialog } from '../../../dialogs/EditReadMeDialog';
+import { useProject } from '../../useProject';
 import { ChangeProposalHeader } from './ChangeProposalHeader';
 import {
-  ChangeProposalOverviewProps,
-  ChangeProposalOverviewState,
+  ChangeProposalOverviewViewState,
   ErrorPayload,
   GetChangeProposalData,
   GetChangeProposalVariables,
   UpdateChangeProposalReadMeData,
   UpdateChangeProposalReadMeVariables,
-} from './ChangeProposalOverview.types';
+} from './ChangeProposalOverviewView.types';
 import { ChangeProposalStatus } from './ChangeProposalStatus';
 
 const getChangeProposalQuery = gql`
@@ -103,15 +104,19 @@ const trimLines = (content: string): string =>
     .map((line) => line.trim())
     .join('\n');
 
-export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposalOverviewProps) => {
-  const [state, setState] = useState<ChangeProposalOverviewState>({
+export const ChangeProposalOverviewView = () => {
+  const { changeProposalIdentifier } = useParams();
+  const {
+    organization: { role },
+  } = useProject();
+  const [state, setState] = useState<ChangeProposalOverviewViewState>({
     changeProposal: null,
     editReadMeDialogOpen: false,
   });
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const variables: GetChangeProposalVariables = { id: changeProposalId };
+  const variables: GetChangeProposalVariables = { id: changeProposalIdentifier ?? '' };
   const { loading, data, error, refetch } = useQuery<GetChangeProposalData, GetChangeProposalVariables>(
     getChangeProposalQuery,
     {
@@ -173,7 +178,7 @@ export const ChangeProposalOverview = ({ changeProposalId, role }: ChangeProposa
     const variables: UpdateChangeProposalReadMeVariables = {
       input: {
         id: crypto.randomUUID(),
-        changeProposalId,
+        changeProposalId: changeProposalIdentifier ?? '',
         content: value,
       },
     };

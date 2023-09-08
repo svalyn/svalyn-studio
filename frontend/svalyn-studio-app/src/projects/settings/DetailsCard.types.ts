@@ -17,44 +17,57 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectTagsViewState {
-  page: number;
-  rowsPerPage: number;
+export interface DetailsCardProps {}
+
+export interface NameFormProps {}
+
+export interface NameFormData {
+  name: string;
 }
 
-export interface GetProjectTagsVariables {
-  identifier: string;
-  page: number;
-  rowsPerPage: number;
+export interface UpdateProjectNameData {
+  updateProjectName: UpdateProjectNamePayload;
 }
 
-export interface GetProjectTagsData {
-  viewer: Viewer | null;
+export interface UpdateProjectNamePayload {
+  __typename: string;
 }
 
-export interface Viewer {
-  project: Project | null;
+export interface UpdateProjectNameVariables {
+  input: UpdateProjectNameInput;
 }
 
-export interface Project {
-  tags: ProjectTagsConnection;
-}
-
-export interface ProjectTagsConnection {
-  edges: ProjectTagsEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface ProjectTagsEdge {
-  node: Tag;
-}
-
-export interface Tag {
+export interface UpdateProjectNameInput {
   id: string;
-  key: string;
-  value: string;
+  projectIdentifier: string;
+  name: string;
 }
 
-export interface PageInfo {
-  count: number;
+export interface DescriptionFormProps {}
+
+export interface DescriptionFormData {
+  description: string;
+}
+
+export interface UpdateProjectDescriptionData {
+  updateProjectDescription: UpdateProjectDescriptionPayload;
+}
+
+export interface UpdateProjectDescriptionPayload {
+  __typename: string;
+}
+
+export interface UpdateProjectDescriptionVariables {
+  input: UpdateProjectDescriptionInput;
+}
+
+export interface UpdateProjectDescriptionInput {
+  id: string;
+  projectIdentifier: string;
+  description: string;
+}
+
+export interface ErrorPayload extends UpdateProjectDescriptionPayload, UpdateProjectNamePayload {
+  __typename: 'ErrorPayload';
+  message: string;
 }

@@ -20,6 +20,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { ProjectShell } from './ProjectShell';
 import { ProjectActivityView } from './activity/ProjectActivityView';
+import { ChangeProposalRouter } from './changeproposal/ChangeProposalRouter';
 import { ProjectChangeProposalsView } from './changeproposals/ProjectChangeProposalsView';
 import { ProjectHomeView } from './home/ProjectHomeView';
 import { NewChangeProposalView } from './new-changeproposal/NewChangeProposalView';
@@ -34,6 +35,7 @@ export const ProjectRouter = () => {
         <Route index element={<ProjectHomeView />} />
         <Route path="activity" element={<ProjectActivityView />} />
         <Route path="changeproposals" element={<ProjectChangeProposalsView />} />
+        <Route path="changeproposals/:changeProposalIdentifier/*" element={<ChangeProposalRouter />} />
         <Route path="tags" element={<ProjectTagsView />} />
         <Route path="settings" element={<ProjectSettingsView />} />
         <Route path="new/changeproposal" element={<NewChangeProposalView />} />

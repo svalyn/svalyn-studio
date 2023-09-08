@@ -32,7 +32,6 @@ import { useRouteMatch } from '../hooks/useRouteMatch';
 import { useProject } from './useProject';
 
 const CompactDrawer = styled('div')(({ theme }) => ({
-  width: '64px',
   backgroundColor: theme.palette.background.paper,
   borderRight: `1px solid ${theme.palette.divider}`,
 }));
