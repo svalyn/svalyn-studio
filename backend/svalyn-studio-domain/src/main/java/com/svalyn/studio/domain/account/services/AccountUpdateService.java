@@ -28,7 +28,7 @@ import com.svalyn.studio.domain.account.AuthenticationTokenStatus;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.account.services.api.IAccountUpdateService;
 import com.svalyn.studio.domain.account.services.api.IPasswordGenerator;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.message.api.IMessageService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

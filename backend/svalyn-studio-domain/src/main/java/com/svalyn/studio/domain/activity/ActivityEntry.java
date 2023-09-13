@@ -22,8 +22,9 @@ package com.svalyn.studio.domain.activity;
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
 import com.svalyn.studio.domain.activity.events.ActivityEntryCreatedEvent;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -39,6 +40,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("activity")
 public class ActivityEntry extends AbstractValidatingAggregateRoot<ActivityEntry> implements Persistable<UUID> {
     @Transient

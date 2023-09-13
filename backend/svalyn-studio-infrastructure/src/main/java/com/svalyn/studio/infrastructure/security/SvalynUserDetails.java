@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.infrastructure.security;
 
-import com.svalyn.studio.domain.authentication.IUser;
+import com.svalyn.studio.domain.account.IUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

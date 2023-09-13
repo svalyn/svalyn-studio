@@ -17,31 +17,22 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.svalyn.studio.domain.authentication;
-
-import com.svalyn.studio.domain.Profile;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Optional;
-
 /**
- * Used to retrieve the profile which has created an event.
+ * The tag bounded context.
  *
  * @author sbegaudeau
  */
-public final class ProfileProvider {
+@ApplicationModule(
+        allowedDependencies = {
+                "account",
+                "organization",
+                "organization::api",
+                "organization::repositories",
+                "project",
+                "project::repositories",
+                "message::api"
+        }
+)
+package com.svalyn.studio.domain.tag;
 
-    private ProfileProvider() {
-        // Prevent instantiation
-    }
-
-    public static Profile get() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .map(Authentication::getPrincipal)
-                .filter(IUser.class::isInstance)
-                .map(IUser.class::cast)
-                .map(user -> new Profile(user.getId(), user.getFullName(), user.getUsername()))
-                .orElse(null);
-    }
-}
+import org.springframework.modulith.ApplicationModule;

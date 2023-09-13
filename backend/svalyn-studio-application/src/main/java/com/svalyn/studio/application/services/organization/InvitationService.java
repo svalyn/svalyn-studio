@@ -34,7 +34,7 @@ import com.svalyn.studio.application.services.organization.api.IInvitationServic
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.message.api.IMessageService;
 import com.svalyn.studio.domain.organization.Invitation;
 import com.svalyn.studio.domain.organization.Organization;

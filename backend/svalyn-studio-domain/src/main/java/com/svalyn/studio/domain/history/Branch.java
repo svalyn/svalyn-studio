@@ -21,11 +21,12 @@ package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.history.events.BranchCreatedEvent;
 import com.svalyn.studio.domain.history.events.BranchModifiedEvent;
 import com.svalyn.studio.domain.project.Project;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -42,6 +43,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("branch")
 public class Branch extends AbstractValidatingAggregateRoot<Branch> implements Persistable<UUID> {
     @Transient

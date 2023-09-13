@@ -19,7 +19,8 @@
 package com.svalyn.studio.domain.organization;
 
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
+import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
@@ -33,6 +34,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@Entity
 @Table(name = "membership")
 public class Membership {
     @Id

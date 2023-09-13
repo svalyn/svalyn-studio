@@ -34,7 +34,7 @@ import com.svalyn.studio.application.services.organization.api.IOrganizationServ
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;
 import com.svalyn.studio.domain.organization.services.api.IOrganizationCreationService;

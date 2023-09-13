@@ -22,6 +22,7 @@ package com.svalyn.studio.domain.account.events;
 import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.account.Account;
 import jakarta.validation.constraints.NotNull;
+import org.jmolecules.event.annotation.DomainEvent;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@DomainEvent
 public record AccountDeletedEvent(
         @NotNull UUID id,
         @NotNull Instant createdOn,

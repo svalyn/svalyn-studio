@@ -27,7 +27,7 @@ import com.svalyn.studio.domain.account.events.AccountModifiedEvent;
 import com.svalyn.studio.domain.account.events.AuthenticationTokenCreatedEvent;
 import com.svalyn.studio.domain.account.events.AuthenticationTokenModifiedEvent;
 import com.svalyn.studio.domain.account.events.OAuth2MetadataCreatedEvent;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -48,6 +48,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table(name = "account")
 public class Account extends AbstractValidatingAggregateRoot<Account> implements Persistable<UUID> {
 

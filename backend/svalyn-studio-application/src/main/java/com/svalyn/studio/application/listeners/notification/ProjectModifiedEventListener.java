@@ -19,7 +19,7 @@
 
 package com.svalyn.studio.application.listeners.notification;
 
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.notification.Notification;
 import com.svalyn.studio.domain.notification.repositories.INotificationRepository;
 import com.svalyn.studio.domain.organization.Membership;

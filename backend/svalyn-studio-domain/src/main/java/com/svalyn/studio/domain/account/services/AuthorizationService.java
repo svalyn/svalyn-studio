@@ -21,7 +21,7 @@ package com.svalyn.studio.domain.account.services;
 
 import com.svalyn.studio.domain.account.AccountRole;
 import com.svalyn.studio.domain.account.services.api.IAuthorizationService;
-import com.svalyn.studio.domain.authentication.IUser;
+import com.svalyn.studio.domain.account.IUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

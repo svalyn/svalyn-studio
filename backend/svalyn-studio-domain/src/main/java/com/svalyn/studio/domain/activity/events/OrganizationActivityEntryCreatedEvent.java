@@ -22,6 +22,7 @@ package com.svalyn.studio.domain.activity.events;
 import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.activity.OrganizationActivityEntry;
 import jakarta.validation.constraints.NotNull;
+import org.jmolecules.event.annotation.DomainEvent;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@DomainEvent
 public record OrganizationActivityEntryCreatedEvent(
         @NotNull UUID id,
         @NotNull Instant createdOn,

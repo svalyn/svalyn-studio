@@ -21,8 +21,8 @@ package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.history.events.ChangeProposalCreatedEvent;
 import com.svalyn.studio.domain.history.events.ChangeProposalDeletedEvent;
 import com.svalyn.studio.domain.history.events.ChangeProposalIntegratedEvent;
@@ -30,6 +30,7 @@ import com.svalyn.studio.domain.history.events.ChangeProposalModifiedEvent;
 import com.svalyn.studio.domain.history.events.ReviewModifiedEvent;
 import com.svalyn.studio.domain.history.events.ReviewPerformedEvent;
 import com.svalyn.studio.domain.project.Project;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -49,6 +50,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("change_proposal")
 public class ChangeProposal extends AbstractValidatingAggregateRoot<ChangeProposal> implements Persistable<UUID> {
     @Transient
