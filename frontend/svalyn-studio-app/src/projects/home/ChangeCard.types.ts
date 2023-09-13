@@ -17,41 +17,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectBranchCardProps {}
-
-export interface ProjectEmptyBranchCardProps {
-  branchName: string;
-}
-
-export interface GetProjectBranchesVariables {
-  projectIdentifier: string;
-  branchName: string;
-}
-
-export interface GetProjectBranchesData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  project: Project;
-}
-
-export interface Project {
-  branches: ProjectBranchConnection;
-  branch: Branch;
-}
-
-export interface ProjectBranchConnection {
-  pageInfo: PageInfo;
-}
-
-export interface PageInfo {
-  count: number;
-}
-
-export interface Branch {
-  name: string;
-  change: Change | null;
+export interface ChangeCardProps {
+  change: Change;
 }
 
 export interface Change {

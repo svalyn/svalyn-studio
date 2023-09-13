@@ -17,98 +17,105 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { gql, useQuery } from '@apollo/client';
+import AltRouteIcon from '@mui/icons-material/AltRoute';
 import DifferenceIcon from '@mui/icons-material/Difference';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
-import { ProjectBranchCardProps, ProjectEmptyBranchCardProps } from './ProjectBranchCard.types';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
+import { Link as RouterLink, useParams } from 'react-router-dom';
+import { useProject } from '../useProject';
+import { BranchButton } from './BranchButton';
+import { ChangeCard } from './ChangeCard';
+import {
+  GetProjectBranchesData,
+  GetProjectBranchesVariables,
+  ProjectBranchCardProps,
+  ProjectEmptyBranchCardProps,
+} from './ProjectBranchCard.types';
 
-export const ProjectBranchCard = ({ projectIdentifier, branch }: ProjectBranchCardProps) => {
-  if (!branch.change) {
-    return <ProjectEmptyBranchCard projectIdentifier={projectIdentifier} branch={branch} />;
+const getProjectBranchesQuery = gql`
+  query getProjectBranches($projectIdentifier: ID!, $branchName: String!) {
+    viewer {
+      project(identifier: $projectIdentifier) {
+        branches(page: 0, rowsPerPage: 1) {
+          pageInfo {
+            count
+          }
+        }
+        branch(name: $branchName) {
+          change {
+            id
+            name
+            resources {
+              edges {
+                node {
+                  path
+                  name
+                }
+              }
+            }
+            lastModifiedOn
+            lastModifiedBy {
+              name
+              username
+              imageUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const ProjectBranchCard = ({}: ProjectBranchCardProps) => {
+  const { identifier: projectIdentifier } = useProject();
+  const { branchName } = useParams();
+  const resolvedBranchName = branchName ?? 'main';
+
+  const variables: GetProjectBranchesVariables = {
+    projectIdentifier,
+    branchName: resolvedBranchName,
+  };
+  const { data, error } = useQuery<GetProjectBranchesData, GetProjectBranchesVariables>(getProjectBranchesQuery, {
+    variables,
+  });
+
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  }, [error]);
+
+  if (!data) {
+    return null;
+  }
+
+  if (!data.viewer.project.branch.change) {
+    return <ProjectEmptyBranchCard branchName={resolvedBranchName} />;
   }
 
   return (
-    <Paper variant="outlined">
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          gap: (theme) => theme.spacing(1),
-          px: (theme) => theme.spacing(2),
-          py: (theme) => theme.spacing(1),
-        }}
-      >
-        <Tooltip title={branch.change.lastModifiedBy.name}>
-          <Avatar
-            component={RouterLink}
-            to={`/profiles/${branch.change.lastModifiedBy.username}`}
-            alt={branch.change.lastModifiedBy.name}
-            src={branch.change.lastModifiedBy.imageUrl}
-            sx={{ width: 24, height: 24 }}
-          />
-        </Tooltip>
-        <Link component={RouterLink} to={`/profiles/${branch.change.lastModifiedBy.username}`}>
-          {branch.change.lastModifiedBy.username}
-        </Link>
-        <Link
-          component={RouterLink}
-          to={`/projects/${projectIdentifier}/changes/${branch.change.id}`}
-          variant="subtitle1"
-        >
-          {branch.change.name}
-        </Link>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(1) }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(2) }}>
+        <BranchButton branchName={resolvedBranchName} />
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: (theme) => theme.spacing(0.5), alignItems: 'center' }}>
+          <AltRouteIcon sx={{ fontSize: 16 }} />
+          <span>{data.viewer.project.branches.pageInfo.count} branches</span>
+        </Box>
       </Box>
-      <Divider />
-      <Table size="small">
-        <TableBody>
-          {branch.change.resources.edges
-            .map((edge) => edge.node)
-            .map((resource) => {
-              const fullpath = resource.path.length > 0 ? `${resource.path}/${resource.name}` : resource.name;
-              return (
-                <TableRow key={fullpath}>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: (theme) => theme.spacing(1),
-                        alignItems: 'center',
-                      }}
-                    >
-                      <InsertDriveFileIcon fontSize="small" />
-                      <Link
-                        component={RouterLink}
-                        to={`/projects/${projectIdentifier}/changes/${branch.change?.id}/resources/${fullpath}`}
-                      >
-                        {fullpath}
-                      </Link>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </TableBody>
-      </Table>
-    </Paper>
+      <ChangeCard change={data.viewer.project.branch.change} />
+    </Box>
   );
 };
 
-const ProjectEmptyBranchCard = ({ projectIdentifier, branch }: ProjectEmptyBranchCardProps) => {
+const ProjectEmptyBranchCard = ({ branchName }: ProjectEmptyBranchCardProps) => {
+  const { identifier: projectIdentifier } = useProject();
   return (
     <Paper variant="outlined">
       <Box
@@ -121,7 +128,7 @@ const ProjectEmptyBranchCard = ({ projectIdentifier, branch }: ProjectEmptyBranc
           py: (theme) => theme.spacing(1),
         }}
       >
-        <Typography variant="subtitle1">{branch.name}</Typography>
+        <Typography variant="subtitle1">{branchName}</Typography>
       </Box>
       <Divider />
       <Box
@@ -136,7 +143,7 @@ const ProjectEmptyBranchCard = ({ projectIdentifier, branch }: ProjectEmptyBranc
         }}
       >
         <Typography align="center">
-          There are no resource in the branch {branch.name}, please create and integrate a change proposal to add
+          There are no resource in the branch {branchName}, please create and integrate a change proposal to add
           resources to the project
         </Typography>
         <Button

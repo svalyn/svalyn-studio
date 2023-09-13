@@ -33,6 +33,7 @@ export const ProjectRouter = () => {
     <ProjectShell>
       <Routes>
         <Route index element={<ProjectHomeView />} />
+        <Route path="branches/:branchName" element={<ProjectHomeView />} />
         <Route path="activity" element={<ProjectActivityView />} />
         <Route path="changeproposals" element={<ProjectChangeProposalsView />} />
         <Route path="changeproposals/:changeProposalIdentifier/*" element={<ChangeProposalRouter />} />
