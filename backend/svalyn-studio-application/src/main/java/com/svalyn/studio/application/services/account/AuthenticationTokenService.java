@@ -35,7 +35,7 @@ import com.svalyn.studio.domain.account.AuthenticationToken;
 import com.svalyn.studio.domain.account.AuthenticationTokenCreated;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
 import com.svalyn.studio.domain.account.services.api.IAccountUpdateService;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

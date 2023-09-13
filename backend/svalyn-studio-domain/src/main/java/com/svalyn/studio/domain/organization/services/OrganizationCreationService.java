@@ -22,7 +22,7 @@ package com.svalyn.studio.domain.organization.services;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.message.api.IMessageService;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.organization.repositories.IOrganizationRepository;

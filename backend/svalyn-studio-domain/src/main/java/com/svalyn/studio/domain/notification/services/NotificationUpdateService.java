@@ -21,7 +21,7 @@ package com.svalyn.studio.domain.notification.services;
 
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.notification.NotificationStatus;
 import com.svalyn.studio.domain.notification.repositories.INotificationRepository;
 import com.svalyn.studio.domain.notification.services.api.INotificationUpdateService;

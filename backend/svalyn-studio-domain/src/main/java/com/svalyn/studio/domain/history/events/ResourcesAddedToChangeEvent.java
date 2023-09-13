@@ -23,6 +23,7 @@ import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.Change;
 import com.svalyn.studio.domain.history.ChangeResource;
 import jakarta.validation.constraints.NotNull;
+import org.jmolecules.event.annotation.DomainEvent;
 
 import java.time.Instant;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@DomainEvent
 public record ResourcesAddedToChangeEvent(
         @NotNull UUID id,
         @NotNull Instant createdOn,

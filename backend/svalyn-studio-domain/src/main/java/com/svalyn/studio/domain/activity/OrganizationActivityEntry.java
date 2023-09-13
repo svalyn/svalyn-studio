@@ -21,8 +21,9 @@ package com.svalyn.studio.domain.activity;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.activity.events.OrganizationActivityEntryCreatedEvent;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
 import com.svalyn.studio.domain.organization.Organization;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -39,6 +40,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("organization_activity")
 public class OrganizationActivityEntry extends AbstractValidatingAggregateRoot<OrganizationActivityEntry> implements Persistable<UUID> {
     @Transient

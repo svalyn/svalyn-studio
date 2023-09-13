@@ -30,7 +30,7 @@ import com.svalyn.studio.application.services.notification.api.INotificationServ
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.Success;
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.notification.Notification;
 import com.svalyn.studio.domain.notification.NotificationStatus;
 import com.svalyn.studio.domain.notification.repositories.INotificationRepository;

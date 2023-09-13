@@ -20,8 +20,8 @@ package com.svalyn.studio.domain.organization;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.organization.events.InvitationAcceptedEvent;
 import com.svalyn.studio.domain.organization.events.InvitationDeclinedEvent;
 import com.svalyn.studio.domain.organization.events.InvitationRevokedEvent;
@@ -31,6 +31,7 @@ import com.svalyn.studio.domain.organization.events.MembershipRevokedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationCreatedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationDeletedEvent;
 import com.svalyn.studio.domain.organization.events.OrganizationModifiedEvent;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("organization")
 public class Organization extends AbstractValidatingAggregateRoot<Organization> implements Persistable<UUID> {
 

@@ -19,7 +19,7 @@
 package com.svalyn.studio.application.controllers.viewer;
 
 import com.svalyn.studio.application.services.account.api.IAccountService;
-import com.svalyn.studio.domain.authentication.IUser;
+import com.svalyn.studio.domain.account.IUser;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

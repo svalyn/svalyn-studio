@@ -20,6 +20,7 @@
 package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.resource.Resource;
+import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -35,6 +36,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@Entity
 @Table("change_resource")
 public class ChangeResource implements Persistable<UUID> {
 

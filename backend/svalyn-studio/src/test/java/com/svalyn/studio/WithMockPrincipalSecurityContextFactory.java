@@ -19,7 +19,7 @@
 package com.svalyn.studio;
 
 import com.svalyn.studio.domain.account.repositories.IAccountRepository;
-import com.svalyn.studio.domain.authentication.IUser;
+import com.svalyn.studio.domain.account.IUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

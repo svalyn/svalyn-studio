@@ -23,6 +23,7 @@ import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.history.ChangeProposal;
 import com.svalyn.studio.domain.history.Review;
 import jakarta.validation.constraints.NotNull;
+import org.jmolecules.event.annotation.DomainEvent;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -32,6 +33,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@DomainEvent
 public record ReviewPerformedEvent(
         @NotNull UUID id,
         @NotNull Instant createdOn,

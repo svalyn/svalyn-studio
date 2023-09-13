@@ -21,12 +21,13 @@ package com.svalyn.studio.domain.project;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.organization.Organization;
 import com.svalyn.studio.domain.project.events.ProjectCreatedEvent;
 import com.svalyn.studio.domain.project.events.ProjectDeletedEvent;
 import com.svalyn.studio.domain.project.events.ProjectModifiedEvent;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -43,6 +44,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("project")
 public class Project extends AbstractValidatingAggregateRoot<Project> implements Persistable<UUID> {
 

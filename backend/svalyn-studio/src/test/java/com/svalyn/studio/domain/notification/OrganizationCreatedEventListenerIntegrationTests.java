@@ -23,7 +23,7 @@ import com.svalyn.studio.AbstractIntegrationTests;
 import com.svalyn.studio.DomainEvents;
 import com.svalyn.studio.WithMockPrincipal;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.notification.events.NotificationCreatedEvent;
 import com.svalyn.studio.domain.notification.repositories.INotificationRepository;
 import com.svalyn.studio.domain.organization.events.OrganizationCreatedEvent;

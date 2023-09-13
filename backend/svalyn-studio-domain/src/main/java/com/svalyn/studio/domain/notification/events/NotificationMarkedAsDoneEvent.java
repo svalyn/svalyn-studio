@@ -23,6 +23,8 @@ import com.svalyn.studio.domain.Profile;
 import com.svalyn.studio.domain.notification.Notification;
 
 import jakarta.validation.constraints.NotNull;
+import org.jmolecules.event.annotation.DomainEvent;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -31,6 +33,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@DomainEvent
 public record NotificationMarkedAsDoneEvent(
         @NotNull UUID id,
         @NotNull Instant createdOn,

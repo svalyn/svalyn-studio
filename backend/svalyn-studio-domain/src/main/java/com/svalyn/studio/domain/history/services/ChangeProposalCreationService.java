@@ -22,7 +22,7 @@ package com.svalyn.studio.domain.history.services;
 import com.svalyn.studio.domain.Failure;
 import com.svalyn.studio.domain.IResult;
 import com.svalyn.studio.domain.Success;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.history.Change;
 import com.svalyn.studio.domain.history.ChangeProposal;
 import com.svalyn.studio.domain.history.ChangeResource;

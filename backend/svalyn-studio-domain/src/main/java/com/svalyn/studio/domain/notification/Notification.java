@@ -21,12 +21,13 @@ package com.svalyn.studio.domain.notification;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.notification.events.NotificationCreatedEvent;
 import com.svalyn.studio.domain.notification.events.NotificationMarkedAsDoneEvent;
 import com.svalyn.studio.domain.notification.events.NotificationMarkedAsReadEvent;
 import com.svalyn.studio.domain.notification.events.NotificationMarkedAsUnreadEvent;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -42,6 +43,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("notification")
 public class Notification extends AbstractValidatingAggregateRoot<Notification> implements Persistable<UUID> {
 

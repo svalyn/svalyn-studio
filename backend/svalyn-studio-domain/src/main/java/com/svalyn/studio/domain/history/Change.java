@@ -21,12 +21,13 @@ package com.svalyn.studio.domain.history;
 
 import com.svalyn.studio.domain.AbstractValidatingAggregateRoot;
 import com.svalyn.studio.domain.account.Account;
-import com.svalyn.studio.domain.authentication.ProfileProvider;
-import com.svalyn.studio.domain.authentication.UserIdProvider;
+import com.svalyn.studio.domain.account.ProfileProvider;
+import com.svalyn.studio.domain.account.UserIdProvider;
 import com.svalyn.studio.domain.history.events.ChangeCreatedEvent;
 import com.svalyn.studio.domain.history.events.ChangeDeletedEvent;
 import com.svalyn.studio.domain.history.events.ResourcesAddedToChangeEvent;
 import com.svalyn.studio.domain.history.events.ResourcesRemovedFromChangeEvent;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
@@ -47,6 +48,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@AggregateRoot
 @Table("change")
 public class Change extends AbstractValidatingAggregateRoot<Change> implements Persistable<UUID> {
 

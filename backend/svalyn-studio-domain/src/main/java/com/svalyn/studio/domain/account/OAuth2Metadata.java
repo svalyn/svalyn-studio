@@ -19,6 +19,7 @@
 
 package com.svalyn.studio.domain.account;
 
+import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -31,6 +32,7 @@ import java.util.UUID;
  *
  * @author sbegaudeau
  */
+@Entity
 @Table(name = "oauth2_metadata")
 public class OAuth2Metadata {
 
