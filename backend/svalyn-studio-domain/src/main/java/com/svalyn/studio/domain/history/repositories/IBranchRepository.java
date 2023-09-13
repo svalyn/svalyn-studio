@@ -40,7 +40,7 @@ public interface IBranchRepository extends PagingAndSortingRepository<Branch, UU
     @Query("""
     SELECT * FROM branch branch
     WHERE branch.project_id = :projectId
-    ORDER BT branch.name ASC
+    ORDER BY branch.name ASC
     LIMIT :limit
     OFFSET :offset
     """)

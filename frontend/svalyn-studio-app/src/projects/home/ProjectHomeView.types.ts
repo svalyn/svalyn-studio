@@ -30,7 +30,6 @@ export interface Project {
   description: string;
   readMe: string;
   organization: Organization;
-  branch: Branch;
   createdOn: string;
   createdBy: Profile;
   lastModifiedOn: string;
@@ -45,32 +44,6 @@ export interface Profile {
 
 export interface Organization {
   identifier: string;
-  name: string;
-}
-
-export interface Branch {
-  name: string;
-  change: Change | null;
-}
-
-export interface Change {
-  id: string;
-  name: string;
-  resources: ChangeResourcesConnection;
-  lastModifiedOn: string;
-  lastModifiedBy: Profile;
-}
-
-export interface ChangeResourcesConnection {
-  edges: [ChangeResourcesEdge];
-}
-
-export interface ChangeResourcesEdge {
-  node: ChangeResource;
-}
-
-export interface ChangeResource {
-  path: string;
   name: string;
 }
 

@@ -43,27 +43,6 @@ const getProjectHomeQuery = gql`
           identifier
           name
         }
-        branch(name: "main") {
-          name
-          change {
-            id
-            name
-            resources {
-              edges {
-                node {
-                  path
-                  name
-                }
-              }
-            }
-            lastModifiedOn
-            lastModifiedBy {
-              name
-              username
-              imageUrl
-            }
-          }
-        }
         createdOn
         createdBy {
           name
@@ -128,7 +107,7 @@ export const ProjectHomeView = () => {
       <Grid container spacing={2}>
         <Grid item xs={9}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: (theme) => theme.spacing(2) }}>
-            <ProjectBranchCard projectIdentifier={projectIdentifier} branch={data.viewer.project.branch} />
+            <ProjectBranchCard />
             <ProjectReadMeCard
               projectIdentifier={projectIdentifier}
               readMe={data.viewer.project.readMe}

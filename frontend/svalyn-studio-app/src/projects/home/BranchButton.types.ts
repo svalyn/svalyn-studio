@@ -17,18 +17,32 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ProjectBranchCardProps {}
-
-export interface ProjectEmptyBranchCardProps {
+export interface BranchButtonProps {
   branchName: string;
 }
 
-export interface GetProjectBranchesVariables {
+export interface BranchButtonState {
+  menuAnchorElement: HTMLElement | null;
+}
+
+export interface BranchButtonMenuProps {
+  anchorElement: HTMLElement;
+  currentBranchName: string;
+  onClose: () => void;
+}
+
+export interface BranchButtonMenuState {
+  page: number;
+  rowsPerPage: number;
+}
+
+export interface GetProjectBranchesDetailsVariables {
   projectIdentifier: string;
-  branchName: string;
+  page: number;
+  rowsPerPage: number;
 }
 
-export interface GetProjectBranchesData {
+export interface GetProjectBranchesDetailsData {
   viewer: Viewer;
 }
 
@@ -37,46 +51,23 @@ export interface Viewer {
 }
 
 export interface Project {
-  branches: ProjectBranchConnection;
-  branch: Branch;
+  branches: ProjectBranchesConnection;
 }
 
-export interface ProjectBranchConnection {
+export interface ProjectBranchesConnection {
+  edges: ProjectBranchesEdge[];
   pageInfo: PageInfo;
 }
 
-export interface PageInfo {
-  count: number;
+export interface ProjectBranchesEdge {
+  node: Branch;
 }
 
 export interface Branch {
   name: string;
-  change: Change | null;
 }
 
-export interface Change {
-  id: string;
-  name: string;
-  resources: ChangeResourcesConnection;
-  lastModifiedOn: string;
-  lastModifiedBy: Profile;
-}
-
-export interface Profile {
-  name: string;
-  username: string;
-  imageUrl: string;
-}
-
-export interface ChangeResourcesConnection {
-  edges: [ChangeResourcesEdge];
-}
-
-export interface ChangeResourcesEdge {
-  node: ChangeResource;
-}
-
-export interface ChangeResource {
-  path: string;
-  name: string;
+export interface PageInfo {
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
