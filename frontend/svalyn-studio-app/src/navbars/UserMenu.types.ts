@@ -27,6 +27,7 @@ export interface Viewer {
   name: string;
   username: string;
   role: AccountRole;
+  imageUrl: string;
 }
 
 export type AccountRole = 'USER' | 'ADMIN';

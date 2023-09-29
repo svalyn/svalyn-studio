@@ -24,12 +24,17 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
 import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { Navigate, Link as RouterLink } from 'react-router-dom';
 import { useAuthentication } from '../login/useAuthentication';
@@ -60,7 +65,24 @@ export const UserMenu = ({ viewer, onClose, ...props }: UserMenuProps) => {
   return (
     <Menu onClose={onClose} {...props}>
       <ListItem sx={{ paddingTop: '0', paddingBottom: '0' }}>
-        <ListItemText primary="Signed in as" secondary={viewer.name} />
+        <ListItemAvatar sx={{ minWidth: (theme) => theme.spacing(4.5) }}>
+          <Avatar alt={viewer.name} src={viewer.imageUrl} sx={{ width: 24, height: 24 }} />
+        </ListItemAvatar>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="body1" noWrap>
+            {viewer.name} ({viewer.username})
+          </Typography>
+          <Link
+            variant="caption"
+            color="inherit"
+            underline="hover"
+            rel="noreferrer"
+            target="_blank"
+            href={`https://github.com/svalyn/svalyn-studio/commit/${__GIT_COMMIT_HASH__}`}
+          >
+            App version: {__GIT_COMMIT_HASH__.substring(0, 7)}
+          </Link>
+        </Box>
       </ListItem>
       <MenuItem component={RouterLink} to="/" onClick={handleCloseUserMenu}>
         <ListItemIcon>
