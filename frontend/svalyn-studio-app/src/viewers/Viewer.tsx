@@ -17,58 +17,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { gql, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useSnackbar } from 'notistack';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { IItemViewProvider } from '../workbench/api/providers/ItemProviders.types';
+import { useAdapterFactory } from '../workbench/api/providers/useAdapterFactory';
 import { GraphViewer } from './GraphViewer';
-import { GetChangeResourceData, GetChangeResourceVariables, ViewerProps } from './Viewer.types';
+import { ViewerProps, ViewerState } from './Viewer.types';
 
-const getChangeResourceQuery = gql`
-  query getChangeResourceQuery($changeId: ID!, $path: String!, $name: String!) {
-    viewer {
-      change(id: $changeId) {
-        resource(path: $path, name: $name) {
-          contentType
-          content
-        }
-      }
-    }
-  }
-`;
+export const Viewer = ({ object }: ViewerProps) => {
+  const [state, setState] = useState<ViewerState>({ viewContent: null });
 
-export const Viewer = ({ changeId, path, name }: ViewerProps) => {
-  const { enqueueSnackbar } = useSnackbar();
-
-  const variables: GetChangeResourceVariables = {
-    changeId,
-    path,
-    name,
-  };
-  const { data, error } = useQuery<GetChangeResourceData, GetChangeResourceVariables>(getChangeResourceQuery, {
-    variables,
-  });
+  const { adapterFactory } = useAdapterFactory();
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+    const itemViewProvider = adapterFactory.adapt<IItemViewProvider>(object, 'IItemViewProvider');
+    if (itemViewProvider) {
+      itemViewProvider
+        .getContent(object)
+        .then((viewContent) => setState((prevState) => ({ ...prevState, viewContent })));
     }
-  }, [error]);
+  }, [object]);
 
   let rawViewer: JSX.Element | null = null;
-  if (data && data.viewer.change && data.viewer.change.resource) {
-    const { resource } = data.viewer.change;
-
-    if (resource.contentType === 'TEXT_PLAIN') {
+  if (state.viewContent) {
+    if (state.viewContent.contentType === 'TEXT_PLAIN') {
       rawViewer = (
         <Box sx={{ px: (theme) => theme.spacing(2), overflow: 'scroll' }}>
           <pre>
-            <Typography variant="tcontent">{resource.content}</Typography>
+            <Typography variant="tcontent">{state.viewContent.content}</Typography>
           </pre>
         </Box>
       );
     } else {
-      rawViewer = <GraphViewer content={resource.content} />;
+      rawViewer = <GraphViewer content={state.viewContent.content} />;
     }
   }
   return rawViewer;

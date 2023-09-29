@@ -17,4 +17,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface WorkspaceViewState {}
+export interface GetChangeResourcesVariables {
+  changeId: string;
+}
+
+export interface GetChangeResourcesData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  change: Change | null;
+}
+
+export interface Change {
+  id: string;
+  resources: ChangeResourcesConnection;
+}
+
+export interface ChangeResourcesConnection {
+  edges: ChangeResourcesEdge[];
+}
+
+export interface ChangeResourcesEdge {
+  node: Resource;
+}
+
+export interface Resource {
+  id: string;
+  path: string;
+  name: string;
+}

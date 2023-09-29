@@ -17,21 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface WorkbenchProps {
-  changeId: string;
-}
+import { IAdaptable } from './api/providers/AdapterFactory.types';
+
+export interface WorkbenchProps {}
 
 export interface WorkbenchState {
   selectedViewId: string | null;
   viewPanelState: PanelState;
-  openResources: Resource[];
-  currentResource: Resource | null;
+  openObjects: IAdaptable[];
+  currentObject: IAdaptable | null;
 }
 
 export type PanelState = 'EXPANDED' | 'COLLAPSED';
-
-export interface Resource {
-  id: string;
-  path: string;
-  name: string;
-}

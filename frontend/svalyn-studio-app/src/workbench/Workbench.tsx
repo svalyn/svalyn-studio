@@ -26,19 +26,22 @@ import { useTheme } from '@mui/material/styles';
 import { useRef, useState } from 'react';
 import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { Viewer } from '../viewers/Viewer';
+import { WorkbenchProps, WorkbenchState } from './Workbench.types';
+import { IAdaptable } from './api/providers/AdapterFactory.types';
+import { IItemViewProvider } from './api/providers/ItemProviders.types';
+import { useAdapterFactory } from './api/providers/useAdapterFactory';
 import { Domains } from './domains/Domains';
 import { Explorer } from './explorer/Explorer';
 import { TabBar } from './tabs/TabBar';
 import { ActivityBar } from './viewcontainer/ActivityBar';
 import { ViewDescription } from './viewcontainer/ActivityBar.types';
-import { Resource, WorkbenchProps, WorkbenchState } from './Workbench.types';
 
-export const Workbench = ({ changeId }: WorkbenchProps) => {
+export const Workbench = ({}: WorkbenchProps) => {
   const [state, setState] = useState<WorkbenchState>({
     selectedViewId: 'explorer',
     viewPanelState: 'EXPANDED',
-    openResources: [],
-    currentResource: null,
+    openObjects: [],
+    currentObject: null,
   });
 
   const panelRef = useRef<ImperativePanelHandle>(null);
@@ -62,48 +65,55 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
     setState((prevState) => ({ ...prevState, viewPanelState: collapsed ? 'COLLAPSED' : 'EXPANDED' }));
   };
 
-  const onResourceClick = (resource: Resource) => {
-    setState((prevState) => {
-      const resourceAlreadyOpen =
-        prevState.openResources.filter((openResource) => resource.id === openResource.id).length > 0;
-      if (resourceAlreadyOpen) {
-        return { ...prevState, currentResource: resource };
-      }
-      return { ...prevState, currentResource: resource, openResources: [...prevState.openResources, resource] };
-    });
+  const { adapterFactory } = useAdapterFactory();
+  const onClick = (object: IAdaptable) => {
+    const itemViewProvider: IItemViewProvider | null = adapterFactory.adapt<IItemViewProvider>(
+      object,
+      'IItemViewProvider'
+    );
+    const isViewable = itemViewProvider?.isViewable(object) ?? false;
+    if (isViewable) {
+      setState((prevState) => {
+        const resourceAlreadyOpen = prevState.openObjects.filter((openObject) => object === openObject).length > 0;
+        if (resourceAlreadyOpen) {
+          return { ...prevState, currentObject: object };
+        }
+        return { ...prevState, currentObject: object, openObjects: [...prevState.openObjects, object] };
+      });
+    }
   };
 
-  const onOpen = (resource: Resource) => {
-    setState((prevState) => ({ ...prevState, currentResource: resource }));
+  const onOpen = (object: IAdaptable) => {
+    setState((prevState) => ({ ...prevState, currentObject: object }));
   };
 
-  const onClose = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, resource: Resource) => {
+  const onClose = (event: React.MouseEvent<SVGSVGElement, MouseEvent>, object: IAdaptable) => {
     event.stopPropagation();
 
     setState((prevState) => {
-      let currentResource: Resource | null = prevState.currentResource;
-      if (currentResource) {
-        if (prevState.openResources.length === 1 && prevState.openResources[0] === resource) {
+      let currentObject: IAdaptable | null = prevState.currentObject;
+      if (currentObject) {
+        if (prevState.openObjects.length === 1 && prevState.openObjects[0] === object) {
           // We will close the only tab, nothing will be selected
-          currentResource = null;
-        } else if (currentResource.id === resource.id) {
-          // We will close the current resource among multiple open resources
-          const index: number = prevState.openResources.indexOf(resource);
-          if (index === 0 && prevState.openResources.length > 1) {
+          currentObject = null;
+        } else if (currentObject === object) {
+          // We will close the current object among multiple open objects
+          const index: number = prevState.openObjects.indexOf(object);
+          if (index === 0 && prevState.openObjects.length > 1) {
             // We will close the first tab, let's select the second one
-            currentResource = prevState.openResources[1];
-          } else if (index > 0 && index === prevState.openResources.length - 1) {
+            currentObject = prevState.openObjects[1];
+          } else if (index > 0 && index === prevState.openObjects.length - 1) {
             // We will close the last tab, let's select the one before
-            currentResource = prevState.openResources[index - 1];
-          } else if (index > 0 && index < prevState.openResources.length - 1) {
+            currentObject = prevState.openObjects[index - 1];
+          } else if (index > 0 && index < prevState.openObjects.length - 1) {
             // We will close a tab in the middle, let's select the previous one
-            currentResource = prevState.openResources[index - 1];
+            currentObject = prevState.openObjects[index - 1];
           }
         }
       }
 
-      const openResources = prevState.openResources.filter((openResource) => openResource.id !== resource.id);
-      return { ...prevState, openResources, currentResource };
+      const openObjects = prevState.openObjects.filter((openObject) => openObject !== object);
+      return { ...prevState, openObjects, currentObject };
     });
   };
 
@@ -138,7 +148,7 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
           onCollapse={onCollapse}
           ref={panelRef}
         >
-          {state.selectedViewId === 'explorer' && <Explorer changeId={changeId} onResourceClick={onResourceClick} />}
+          {state.selectedViewId === 'explorer' && <Explorer onClick={onClick} />}
           {state.selectedViewId !== 'explorer' && <Domains />}
         </Panel>
         <PanelResizeHandle
@@ -150,24 +160,26 @@ export const Workbench = ({ changeId }: WorkbenchProps) => {
           }}
         />
         <Panel style={{ display: 'grid', gridTemplateColumns: '1fr', gridTemplateRows: 'min-content 1fr' }}>
-          <TabBar
-            resources={state.openResources}
-            currentResourceId={state.currentResource?.id || ''}
-            onOpen={onOpen}
-            onClose={onClose}
-          />
-          <Box
-            data-testid="editor-area"
-            sx={{
-              overflow: 'scroll',
-              padding: (theme) => theme.spacing(1),
-              backgroundColor: (theme) => theme.palette.background.paper,
-            }}
-          >
-            {state.currentResource && (
-              <Viewer changeId={changeId} path={state.currentResource.path} name={state.currentResource.name} />
-            )}
-          </Box>
+          {state.currentObject ? (
+            <>
+              <TabBar
+                objects={state.openObjects}
+                currentObject={state.currentObject}
+                onOpen={onOpen}
+                onClose={onClose}
+              />
+              <Box
+                data-testid="editor-area"
+                sx={{
+                  overflow: 'scroll',
+                  padding: (theme) => theme.spacing(1),
+                  backgroundColor: (theme) => theme.palette.background.paper,
+                }}
+              >
+                <Viewer object={state.currentObject} />
+              </Box>
+            </>
+          ) : null}
         </Panel>
       </PanelGroup>
     </Box>

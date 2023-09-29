@@ -17,12 +17,77 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { gql, useApolloClient, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
+import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Workbench } from '../workbench/Workbench';
+import { IEditingContext } from '../workbench/api/editingcontext/EditingContext.types';
+import { EditingContextProvider } from '../workbench/api/editingcontext/EditingContextProvider';
+import { IAdaptable, IAdapterFactory } from '../workbench/api/providers/AdapterFactory.types';
+import { AdapterFactoryProvider } from '../workbench/api/providers/AdapterFactoryProvider';
+import { Change, GetChangeResourcesData, GetChangeResourcesVariables } from './WorkspaceView.types';
+import { ChangeData, ChangeDataItemProvider } from './data/ChangeData';
+import { FileData, FileDataItemProvider } from './data/FileData';
+import { FolderDataItemProvider } from './data/FolderData';
+import { IResourceData } from './data/ResourceData';
+import {
+  SingleChangeEditingContextData,
+  SingleChangeEditingContextDataItemProvider,
+} from './data/SingleChangeEditingContextData';
+
+const getChangeResourcesQuery = gql`
+  query getChangeResourcesQuery($changeId: ID!) {
+    viewer {
+      change(id: $changeId) {
+        id
+        resources {
+          edges {
+            node {
+              id
+              path
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export const WorkspaceView = () => {
   const { changeId } = useParams();
+
+  const variables: GetChangeResourcesVariables = { changeId: changeId ?? '' };
+  const { data, error } = useQuery<GetChangeResourcesData, GetChangeResourcesVariables>(getChangeResourcesQuery, {
+    variables,
+  });
+
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    }
+  }, [error]);
+
+  const apolloClient = useApolloClient();
+
+  const adapterFactory: IAdapterFactory = {
+    adapt: function <T>(object: IAdaptable, type: unknown): T | null {
+      if (object.__typename === 'SingleChangeEditingContextData') {
+        return new SingleChangeEditingContextDataItemProvider() as T;
+      } else if (object.__typename === 'ChangeData') {
+        return new ChangeDataItemProvider() as T;
+      } else if (object.__typename === 'FolderData') {
+        return new FolderDataItemProvider() as T;
+      } else if (object.__typename === 'FileData') {
+        return new FileDataItemProvider(changeId ?? '', apolloClient) as T;
+      }
+      return null;
+    },
+  };
+
   return (
     <Box
       sx={{
@@ -33,7 +98,29 @@ export const WorkspaceView = () => {
         height: '100vh',
       }}
     >
-      {changeId ? <Workbench changeId={changeId} /> : null}
+      {changeId && data && data.viewer.change ? (
+        <EditingContextProvider value={{ editingContext: convertData(data.viewer.change) }}>
+          <AdapterFactoryProvider value={{ adapterFactory }}>
+            <Workbench />
+          </AdapterFactoryProvider>
+        </EditingContextProvider>
+      ) : null}
     </Box>
   );
+};
+
+const convertData = (change: Change): IEditingContext => {
+  const resources: IResourceData[] = [];
+
+  change.resources.edges
+    .map((edge) => edge.node)
+    .forEach((resource) => {
+      const resourceData = new FileData(resource.path, resource.name, null);
+      resources.push(resourceData);
+    });
+
+  const changeData: ChangeData = new ChangeData(change.id, resources, null);
+
+  const editingContext: IEditingContext = new SingleChangeEditingContextData(changeData);
+  return editingContext;
 };

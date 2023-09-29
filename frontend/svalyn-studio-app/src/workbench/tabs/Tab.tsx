@@ -21,9 +21,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { IItemIdentityProvider, IItemLabelProvider } from '../api/providers/ItemProviders.types';
+import { useAdapterFactory } from '../api/providers/useAdapterFactory';
 import { TabProps } from './Tab.types';
 
-export const Tab = ({ resource, currentResourceId, onOpen, onClose }: TabProps) => {
+export const Tab = ({ object, currentObjectId, onOpen, onClose }: TabProps) => {
+  const { adapterFactory } = useAdapterFactory();
+  const identityProvider = adapterFactory.adapt<IItemIdentityProvider>(object, 'IItemIdentityProvider');
+  const id = identityProvider?.getId(object) ?? '';
+
+  const labelProvider = adapterFactory.adapt<IItemLabelProvider>(object, 'IItemLabelProvider');
+  const label = labelProvider?.getText(object) ?? 'Unknown';
+
   return (
     <Box
       sx={{
@@ -36,28 +45,26 @@ export const Tab = ({ resource, currentResourceId, onOpen, onClose }: TabProps) 
         px: (theme) => theme.spacing(2),
         cursor: 'pointer',
         backgroundColor: (theme) =>
-          resource.id === currentResourceId ? theme.palette.background.paper : theme.palette.background.default,
+          id === currentObjectId ? theme.palette.background.paper : theme.palette.background.default,
         borderRight: (theme) => `1px solid ${theme.palette.divider}`,
       }}
-      onClick={() => onOpen(resource)}
+      onClick={() => onOpen(object)}
     >
       <InsertDriveFileOutlinedIcon
         fontSize="small"
         sx={{
-          color: (theme) =>
-            resource.id === currentResourceId ? theme.palette.primary.main : theme.palette.text.primary,
+          color: (theme) => (id === currentObjectId ? theme.palette.primary.main : theme.palette.text.primary),
         }}
       />
       <Typography
         variant="tbody2"
         sx={{
-          color: (theme) =>
-            resource.id === currentResourceId ? theme.palette.primary.main : theme.palette.text.primary,
+          color: (theme) => (id === currentObjectId ? theme.palette.primary.main : theme.palette.text.primary),
         }}
       >
-        {resource.name}
+        {label}
       </Typography>
-      <CloseIcon sx={{ fontSize: (theme) => theme.spacing(2) }} onClick={(event) => onClose(event, resource)} />
+      <CloseIcon sx={{ fontSize: (theme) => theme.spacing(2) }} onClick={(event) => onClose(event, object)} />
     </Box>
   );
 };

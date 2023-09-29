@@ -17,20 +17,38 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { useEditingContext } from '../api/editingcontext/useEditingContext';
-import { ExplorerProps } from './Explorer.types';
-import { ExplorerTree } from './ExplorerTree';
+import { IAdaptable } from './AdapterFactory.types';
+import { StyledString } from './StyledString';
 
-export const Explorer = ({ onClick }: ExplorerProps) => {
-  const { editingContext } = useEditingContext();
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ px: (theme) => theme.spacing(2) }}>
-        <Typography variant="t5">Explorer</Typography>
-      </Box>
-      <ExplorerTree object={editingContext} onClick={onClick} />
-    </Box>
-  );
-};
+export interface IItemIdentityProvider {
+  getId(object: unknown): string;
+}
+
+export interface IStructuredItemContentProvider {
+  getElements(object: unknown): IAdaptable[];
+}
+
+export interface ITreeItemContentProvider extends IStructuredItemContentProvider {
+  hasChildren(object: unknown): boolean;
+  getChildren(object: unknown): IAdaptable[];
+  getParent(object: unknown): IAdaptable | null;
+}
+
+export interface IItemLabelProvider {
+  getText(object: unknown): string;
+  getImage(object: unknown): React.ReactNode;
+}
+
+export interface IItemStyledLabelProvider {
+  getStyledText(object: unknown): StyledString;
+}
+
+export interface IItemViewProvider {
+  isViewable(object: unknown): boolean;
+  getContent(object: unknown): Promise<ViewContent>;
+}
+
+export interface ViewContent {
+  content: string;
+  contentType: string;
+}

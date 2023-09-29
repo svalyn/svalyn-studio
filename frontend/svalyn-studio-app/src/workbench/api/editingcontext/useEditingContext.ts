@@ -17,20 +17,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { useEditingContext } from '../api/editingcontext/useEditingContext';
-import { ExplorerProps } from './Explorer.types';
-import { ExplorerTree } from './ExplorerTree';
+import { useContext } from 'react';
+import { EditingContextContext } from './EditingContextProvider';
+import { EditingContextContextValue } from './EditingContextProvider.types';
+import { UseEditingContextValue } from './useEditingContext.types';
 
-export const Explorer = ({ onClick }: ExplorerProps) => {
-  const { editingContext } = useEditingContext();
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ px: (theme) => theme.spacing(2) }}>
-        <Typography variant="t5">Explorer</Typography>
-      </Box>
-      <ExplorerTree object={editingContext} onClick={onClick} />
-    </Box>
-  );
+export const useEditingContext = (): UseEditingContextValue => {
+  const { editingContext } = useContext<EditingContextContextValue>(EditingContextContext);
+  return { editingContext };
 };
