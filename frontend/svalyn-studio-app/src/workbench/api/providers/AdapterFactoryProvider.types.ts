@@ -17,24 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ResourceTreeProps {
-  resources: Resource[];
-  onResourceClick: (resource: Resource) => void;
+import { IAdapterFactory } from './AdapterFactory.types';
+
+export interface AdapterFactoryProviderProps {
+  children?: React.ReactNode;
+  value: AdapterFactoryContextValue;
 }
 
-export interface ResourceTreeItemDataContainer {
-  children: ResourceTreeItemData[];
-}
-
-export interface ResourceTreeData extends ResourceTreeItemDataContainer {}
-
-export interface ResourceTreeItemData {
-  name: string;
-}
-
-export interface Folder extends ResourceTreeItemData, ResourceTreeItemDataContainer {}
-
-export interface Resource extends ResourceTreeItemData {
-  id: string;
-  path: string;
+export interface AdapterFactoryContextValue {
+  adapterFactory: IAdapterFactory;
 }

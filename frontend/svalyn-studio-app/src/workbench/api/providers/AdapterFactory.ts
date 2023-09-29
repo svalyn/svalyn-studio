@@ -17,20 +17,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { useEditingContext } from '../api/editingcontext/useEditingContext';
-import { ExplorerProps } from './Explorer.types';
-import { ExplorerTree } from './ExplorerTree';
+import { IAdaptable, IAdapterFactory } from './AdapterFactory.types';
 
-export const Explorer = ({ onClick }: ExplorerProps) => {
-  const { editingContext } = useEditingContext();
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ px: (theme) => theme.spacing(2) }}>
-        <Typography variant="t5">Explorer</Typography>
-      </Box>
-      <ExplorerTree object={editingContext} onClick={onClick} />
-    </Box>
-  );
-};
+export class AdapterFactory implements IAdapterFactory {
+  adapt<T>(object: IAdaptable, type: unknown): T | null {
+    throw new Error('Method not implemented.');
+  }
+}
+
+export class ComposedAdapterFactory implements IAdapterFactory {
+  adapt<T>(object: IAdaptable, type: unknown): T | null {
+    throw new Error('Method not implemented.');
+  }
+}

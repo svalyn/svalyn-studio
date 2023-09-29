@@ -17,18 +17,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { useApolloClient } from '@apollo/client';
 import DownloadIcon from '@mui/icons-material/Download';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { IAdaptable, IAdapterFactory } from '../workbench/api/providers/AdapterFactory.types';
+import { AdapterFactoryProvider } from '../workbench/api/providers/AdapterFactoryProvider';
+import { FileData, FileDataItemProvider } from '../workspace/data/FileData';
 import { Viewer } from './Viewer';
 import { ViewerCardProps } from './ViewerCard.types';
 
 const { VITE_BACKEND_URL } = import.meta.env;
 
 export const ViewerCard = ({ changeId, path, name }: ViewerCardProps) => {
+  const apolloClient = useApolloClient();
+
+  const adapterFactory: IAdapterFactory = {
+    adapt: function <T>(object: IAdaptable, type: unknown): T | null {
+      if (object.__typename === 'FileData') {
+        return new FileDataItemProvider(changeId ?? '', apolloClient) as T;
+      }
+      return null;
+    },
+  };
+
   const fullpath = path.length > 0 ? `${path}/${name}` : name;
   return (
     <Paper
@@ -61,7 +76,9 @@ export const ViewerCard = ({ changeId, path, name }: ViewerCardProps) => {
         </div>
       </Box>
       <Divider />
-      <Viewer changeId={changeId} path={path} name={name} />
+      <AdapterFactoryProvider value={{ adapterFactory }}>
+        <Viewer object={new FileData(path, name, null)} />
+      </AdapterFactoryProvider>
     </Paper>
   );
 };

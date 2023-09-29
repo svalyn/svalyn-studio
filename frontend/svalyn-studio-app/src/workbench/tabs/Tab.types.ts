@@ -17,15 +17,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface TabProps {
-  resource: Resource;
-  currentResourceId: string;
-  onOpen: (resource: Resource) => void;
-  onClose: (event: React.MouseEvent<SVGSVGElement, MouseEvent>, resource: Resource) => void;
-}
+import { IAdaptable } from '../api/providers/AdapterFactory.types';
 
-export interface Resource {
-  id: string;
-  path: string;
-  name: string;
+export interface TabProps {
+  object: IAdaptable;
+  currentObjectId: string;
+  onOpen: (object: IAdaptable) => void;
+  onClose: (event: React.MouseEvent<SVGSVGElement, MouseEvent>, object: IAdaptable) => void;
 }

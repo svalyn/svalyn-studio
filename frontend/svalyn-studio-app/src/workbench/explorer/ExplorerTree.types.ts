@@ -17,20 +17,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export interface ResourceTreeItemProps {
-  treeItemData: ResourceTreeItemData;
-  onResourceClick: (resource: Resource) => void;
-}
+import { IAdaptable } from '../api/providers/AdapterFactory.types';
 
-export interface ResourceTreeItemData {
-  name: string;
-}
-
-export interface Folder extends ResourceTreeItemData {
-  children: ResourceTreeItemData[];
-}
-
-export interface Resource extends ResourceTreeItemData {
-  id: string;
-  path: string;
+export interface ExplorerTreeProps {
+  object: IAdaptable;
+  onClick: (object: IAdaptable) => void;
 }

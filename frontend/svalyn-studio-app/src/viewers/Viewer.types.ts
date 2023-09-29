@@ -17,33 +17,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { IAdaptable } from '../workbench/api/providers/AdapterFactory.types';
+import { ViewContent } from '../workbench/api/providers/ItemProviders.types';
+
 export interface ViewerProps {
-  changeId: string;
-  path: string;
-  name: string;
+  object: IAdaptable;
 }
 
-export interface GetChangeResourceVariables {
-  changeId: string;
-  path: string;
-  name: string;
+export interface ViewerState {
+  viewContent: ViewContent | null;
 }
-
-export interface GetChangeResourceData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  change: Change | null;
-}
-
-export interface Change {
-  resource: ChangeResource | null;
-}
-
-export interface ChangeResource {
-  contentType: ContentType;
-  content: string;
-}
-
-type ContentType = 'TEXT_PLAIN' | 'UNKNOWN';

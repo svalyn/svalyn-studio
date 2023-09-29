@@ -17,15 +17,15 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { IAdaptable } from '../api/providers/AdapterFactory.types';
+
 export interface TabBarProps {
-  resources: Resource[];
-  currentResourceId: string;
-  onOpen: (resource: Resource) => void;
-  onClose: (event: React.MouseEvent<SVGSVGElement, MouseEvent>, resource: Resource) => void;
+  objects: IAdaptable[];
+  currentObject: IAdaptable;
+  onOpen: (object: IAdaptable) => void;
+  onClose: (event: React.MouseEvent<SVGSVGElement, MouseEvent>, object: IAdaptable) => void;
 }
 
-export interface Resource {
-  id: string;
-  path: string;
-  name: string;
+export interface TabBarBreadcrumbsProps {
+  object: IAdaptable;
 }

@@ -17,39 +17,44 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import TreeItem from '@mui/lab/TreeItem';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Folder, Resource, ResourceTreeItemData, ResourceTreeItemProps } from './ResourceTreeItem.types';
+import { IAdaptable } from '../api/providers/AdapterFactory.types';
+import { IItemLabelProvider, ITreeItemContentProvider } from '../api/providers/ItemProviders.types';
+import { useAdapterFactory } from '../api/providers/useAdapterFactory';
+import { ExplorerTreeItemProps } from './ExplorerTreeItem.types';
 
-const isFolder = (treeItemData: ResourceTreeItemData): treeItemData is Folder =>
-  treeItemData.hasOwnProperty('children');
-const isResource = (treeItemData: ResourceTreeItemData): treeItemData is Resource =>
-  treeItemData.hasOwnProperty('path');
+export const ExplorerTreeItem = ({ object, onClick }: ExplorerTreeItemProps) => {
+  const { adapterFactory } = useAdapterFactory();
 
-export const ResourceTreeItem = ({ treeItemData: treeItem, onResourceClick }: ResourceTreeItemProps) => {
+  const labelProvider = adapterFactory.adapt<IItemLabelProvider>(object, 'IItemLabelProvider');
+  const label = labelProvider?.getText(object) ?? 'Unknown';
+  const image = labelProvider?.getImage(object);
+
+  const treeItemContentProvider = adapterFactory.adapt<ITreeItemContentProvider>(object, 'ITreeItemContentProvider');
+  const children = treeItemContentProvider?.getChildren(object) ?? [];
+
   return (
     <TreeItem
-      nodeId={treeItem.name}
+      nodeId={label}
       label={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: (theme) => theme.spacing(0.5), whiteSpace: 'nowrap' }}>
-          {isResource(treeItem) ? <InsertDriveFileOutlinedIcon fontSize="small" /> : null}
-          <Typography variant="tbody">{treeItem.name}</Typography>
+          {image}
+          <Typography variant="tbody">{label}</Typography>
         </Box>
       }
-      key={treeItem.name}
+      key={label}
       onClick={() => {
-        if (isResource(treeItem)) {
-          onResourceClick(treeItem);
-        }
+        onClick(object);
       }}
     >
-      {isFolder(treeItem)
-        ? treeItem.children.map((child) => (
-            <ResourceTreeItem key={child.name} treeItemData={child} onResourceClick={onResourceClick} />
-          ))
-        : null}
+      {children.map((child, index) => {
+        const object: IAdaptable = child as IAdaptable;
+        const childLabelProvider = adapterFactory.adapt<IItemLabelProvider>(object, 'IItemLabelProvider');
+        const key = childLabelProvider?.getText(object) ?? index;
+        return <ExplorerTreeItem key={key} object={object} onClick={onClick} />;
+      })}
     </TreeItem>
   );
 };

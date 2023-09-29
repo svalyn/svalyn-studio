@@ -20,11 +20,22 @@
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
+import { IAdaptable } from '../api/providers/AdapterFactory.types';
+import {
+  IItemIdentityProvider,
+  IItemLabelProvider,
+  ITreeItemContentProvider,
+} from '../api/providers/ItemProviders.types';
+import { useAdapterFactory } from '../api/providers/useAdapterFactory';
 import { Tab } from './Tab';
-import { TabBarProps } from './TabBar.types';
+import { TabBarBreadcrumbsProps, TabBarProps } from './TabBar.types';
 
-export const TabBar = ({ resources, currentResourceId, onOpen, onClose }: TabBarProps) => {
-  const currentResource = resources.find((resource) => resource.id === currentResourceId);
+export const TabBar = ({ objects, currentObject, onOpen, onClose }: TabBarProps) => {
+  const { adapterFactory } = useAdapterFactory();
+
+  const identityProvider = adapterFactory.adapt<IItemIdentityProvider>(currentObject, 'IItemIdentityProvider');
+  const currentObjectId = identityProvider?.getId(currentObject) ?? '';
+
   return (
     <Box>
       <Box
@@ -39,44 +50,59 @@ export const TabBar = ({ resources, currentResourceId, onOpen, onClose }: TabBar
           minHeight: '35px',
         }}
       >
-        {resources.map((resource) => (
-          <Tab
-            key={resource.id}
-            resource={resource}
-            currentResourceId={currentResourceId}
-            onOpen={onOpen}
-            onClose={onClose}
-          />
-        ))}
+        {objects.map((object) => {
+          const identityProvider = adapterFactory.adapt<IItemIdentityProvider>(object, 'IItemIdentityProvider');
+          const id = identityProvider?.getId(object) ?? '';
+
+          return <Tab key={id} object={object} currentObjectId={currentObjectId} onOpen={onOpen} onClose={onClose} />;
+        })}
       </Box>
-      {currentResource ? (
-        <>
-          <Breadcrumbs
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              px: (theme) => theme.spacing(2),
-              minHeight: '22px',
-              backgroundColor: (theme) => theme.palette.background.paper,
-            }}
-            separator="/"
-            aria-label="breadcrumb"
-            data-testid="tab-breadcrumb"
-          >
-            {[...currentResource.path.split('/'), currentResource.name].map((segment, index) => (
-              <Typography
-                key={index}
-                variant="tbody"
-                sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
-              >
-                {segment}
-              </Typography>
-            ))}
-          </Breadcrumbs>
-          <Box sx={{ height: '3px', boxShadow: 'rgba(106, 115, 125, 0.1) 0px 6px 6px -6px inset' }} />
-        </>
-      ) : null}
+      <TabBarBreadcrumbs object={currentObject} />
+      <Box sx={{ height: '3px', boxShadow: 'rgba(106, 115, 125, 0.1) 0px 6px 6px -6px inset' }} />
     </Box>
+  );
+};
+
+const TabBarBreadcrumbs = ({ object }: TabBarBreadcrumbsProps) => {
+  const { adapterFactory } = useAdapterFactory();
+
+  let segments: string[] = [];
+
+  let currentObject: IAdaptable | null = object;
+  while (currentObject) {
+    const labelProvider = adapterFactory.adapt<IItemLabelProvider>(currentObject, 'IItemLabelProvider');
+    if (labelProvider) {
+      segments = [labelProvider.getText(currentObject)].concat(segments);
+    }
+
+    const treeItemContentProvider: ITreeItemContentProvider | null = adapterFactory.adapt<ITreeItemContentProvider>(
+      currentObject,
+      'ITreeItemContentProvider'
+    );
+    if (treeItemContentProvider) {
+      currentObject = treeItemContentProvider.getParent(currentObject);
+    }
+  }
+
+  return (
+    <Breadcrumbs
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        px: (theme) => theme.spacing(2),
+        minHeight: '22px',
+        backgroundColor: (theme) => theme.palette.background.paper,
+      }}
+      separator="/"
+      aria-label="breadcrumb"
+      data-testid="tab-breadcrumb"
+    >
+      {segments.map((segment, index) => (
+        <Typography key={index} variant="tbody" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          {segment}
+        </Typography>
+      ))}
+    </Breadcrumbs>
   );
 };
