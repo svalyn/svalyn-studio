@@ -70,16 +70,11 @@ public class TagService implements ITagService {
     @Override
     @Transactional
     public IPayload addTagToOrganization(AddTagToOrganizationInput input) {
-        IPayload payload = null;
-
         var result = this.tagCreationService.addOrganizationTag(input.organizationIdentifier(), input.key(), input.value());
-        if (result instanceof Failure<Tag> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Tag> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Tag> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Tag> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
@@ -95,15 +90,10 @@ public class TagService implements ITagService {
     @Override
     @Transactional
     public IPayload addTagToProject(AddTagToProjectInput input) {
-        IPayload payload = null;
-
         var result = this.tagCreationService.addProjectTag(input.projectIdentifier(), input.key(), input.value());
-        if (result instanceof Failure<Tag> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Tag> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Tag> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Tag> success -> new SuccessPayload(input.id());
+        };
     }
 }

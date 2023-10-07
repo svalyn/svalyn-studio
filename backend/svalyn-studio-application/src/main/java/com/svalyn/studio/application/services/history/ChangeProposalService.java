@@ -130,16 +130,11 @@ public class ChangeProposalService implements IChangeProposalService {
     @Override
     @Transactional
     public IPayload createChangeProposal(CreateChangeProposalInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalCreationService.createChangeProposal(input.projectIdentifier(), input.name(), input.resourceIds());
-        if (result instanceof Failure<ChangeProposal> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<ChangeProposal> success) {
-            payload = new CreateChangeProposalSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<ChangeProposal> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<ChangeProposal> success -> new CreateChangeProposalSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
+        };
     }
 
     private Optional<ReviewDTO> toDTO(Review review) {
@@ -170,85 +165,60 @@ public class ChangeProposalService implements IChangeProposalService {
     @Override
     @Transactional
     public IPayload updateChangeProposalReadMe(UpdateChangeProposalReadMeInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalUpdateService.updateReadMe(input.changeProposalId(), input.content());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload updateChangeProposalStatus(UpdateChangeProposalStatusInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalUpdateService.updateStatus(input.changeProposalId(), input.status());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload addResourcesToChangeProposal(AddResourcesToChangeProposalInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalUpdateService.addResources(input.changeProposalId(), input.resourceIds());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload removeResourcesFromChangeProposal(RemoveResourcesFromChangeProposalInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalUpdateService.removeResources(input.changeProposalId(), input.changeProposalResourceIds());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload performReview(PerformReviewInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalUpdateService.performReview(input.changeProposalId(), input.message(), input.status());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload deleteChangeProposals(DeleteChangeProposalsInput input) {
-        IPayload payload = null;
-
         var result = this.changeProposalDeletionService.deleteChangeProposals(input.changeProposalIds());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

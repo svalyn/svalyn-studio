@@ -128,65 +128,42 @@ public class InvitationService implements IInvitationService {
     @Override
     @Transactional
     public IPayload inviteMember(InviteMemberInput input) {
-        IPayload payload = null;
-
-        var optionalAccount = this.accountRepository.findByEmail(input.email());
-        if (optionalAccount.isPresent()) {
-            var account = optionalAccount.get();
+        return this.accountRepository.findByEmail(input.email()).map(account -> {
             var result = this.organizationUpdateService.inviteMember(input.organizationIdentifier(), account.getId());
-            if (result instanceof Success<Void> success) {
-                payload = new SuccessPayload(input.id());
-            } else if (result instanceof Failure<Void> failure) {
-                payload = new ErrorPayload(input.id(), failure.message());
-            }
-        } else {
-            payload = new ErrorPayload(input.id(), this.messageService.doesNotExist("account"));
-        }
-        return payload;
+            return switch (result) {
+                case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+                case Success<Void> success -> new SuccessPayload(input.id());
+            };
+        }).orElse(new ErrorPayload(input.id(), this.messageService.doesNotExist("account")));
     }
 
     @Override
     @Transactional
     public IPayload revokeInvitation(RevokeInvitationInput input) {
-        IPayload payload = null;
-
         var result = this.organizationUpdateService.revokeInvitation(input.organizationIdentifier(), input.invitationId());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload acceptInvitation(AcceptInvitationInput input) {
-        IPayload payload = null;
-
         var result = this.organizationUpdateService.acceptInvitation(input.organizationIdentifier(), input.invitationId());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload declineInvitation(DeclineInvitationInput input) {
-        IPayload payload = null;
-
         var result = this.organizationUpdateService.declineInvitation(input.organizationIdentifier(), input.invitationId());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

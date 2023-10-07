@@ -53,15 +53,11 @@ public class AccountEventToMessageConverter implements IDomainEventToMessageConv
 
     @Override
     public Optional<Message> convert(IDomainEvent event) {
-        Optional<Message> optionalMessage = Optional.empty();
-
-        if (event instanceof AccountCreatedEvent accountCreatedEvent) {
-            optionalMessage = this.toMessage(accountCreatedEvent);
-        } else if (event instanceof AccountModifiedEvent accountModifiedEvent) {
-            optionalMessage = this.toMessage(accountModifiedEvent);
-        }
-
-        return optionalMessage;
+        return switch (event) {
+            case AccountCreatedEvent accountCreatedEvent -> this.toMessage(accountCreatedEvent);
+            case AccountModifiedEvent accountModifiedEvent -> this.toMessage(accountModifiedEvent);
+            default -> Optional.empty();
+        };
     }
 
     private Optional<Message> toMessage(AccountCreatedEvent accountCreatedEvent) {

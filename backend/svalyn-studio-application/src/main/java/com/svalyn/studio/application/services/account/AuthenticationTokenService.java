@@ -89,31 +89,23 @@ public class AuthenticationTokenService implements IAuthenticationTokenService {
     @Override
     @Transactional
     public IPayload createAuthenticationToken(CreateAuthenticationTokenInput input) {
-        IPayload payload = null;
-
         var result = this.accountUpdateService.createAuthenticationToken(input.name());
-        if (result instanceof Failure<AuthenticationTokenCreated> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<AuthenticationTokenCreated> success) {
-            var authenticationTokenCreatedDTO = new AuthenticationTokenCreatedDTO(success.data().name(), success.data().accessKey(), success.data().secretKey());
-            payload = new CreateAuthenticationTokenSuccessPayload(input.id(), authenticationTokenCreatedDTO);
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<AuthenticationTokenCreated> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<AuthenticationTokenCreated> success -> {
+                var authenticationTokenCreatedDTO = new AuthenticationTokenCreatedDTO(success.data().name(), success.data().accessKey(), success.data().secretKey());
+                yield new CreateAuthenticationTokenSuccessPayload(input.id(), authenticationTokenCreatedDTO);
+            }
+        };
     }
 
     @Override
     @Transactional
     public IPayload updateAuthenticationTokensStatus(UpdateAuthenticationTokensStatusInput input) {
-        IPayload payload = null;
-
         var result = this.accountUpdateService.updateAuthenticationTokensStatus(input.authenticationTokenIds(), input.status());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

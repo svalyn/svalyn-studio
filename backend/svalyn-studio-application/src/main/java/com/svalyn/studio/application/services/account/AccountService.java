@@ -107,30 +107,20 @@ public class AccountService implements IAccountService {
     @Override
     @Transactional
     public IPayload createAccount(CreateAccountInput input) {
-        IPayload payload = null;
-
         var result = this.accountCreationService.createAccount(input.name(), input.email(), input.username(), input.password());
-        if (result instanceof Failure<Account> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Account> success) {
-            payload = new CreateAccountSuccessPayload(input.id(), this.toDTO(success.data()));
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Account> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Account> success -> new CreateAccountSuccessPayload(input.id(), this.toDTO(success.data()));
+        };
     }
 
     @Override
     @Transactional
     public IPayload deleteAccount(DeleteAccountInput input) {
-        IPayload payload = null;
-
         var result = this.accountDeletionService.deleteAccount(input.username());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void>) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

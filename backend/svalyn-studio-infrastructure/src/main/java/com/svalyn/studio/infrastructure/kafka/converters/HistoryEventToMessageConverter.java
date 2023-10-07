@@ -103,25 +103,16 @@ public class HistoryEventToMessageConverter implements IDomainEventToMessageConv
     @Override
     @Transactional(readOnly = true)
     public Optional<Message> convert(IDomainEvent event) {
-        Optional<Message> optionalMessage = Optional.empty();
-
-        if (event instanceof ChangeProposalCreatedEvent changeProposalCreatedEvent) {
-            optionalMessage = this.toMessage(changeProposalCreatedEvent);
-        } else if (event instanceof ChangeProposalModifiedEvent changeProposalModifiedEvent) {
-            optionalMessage = this.toMessage(changeProposalModifiedEvent);
-        } else if (event instanceof ChangeProposalDeletedEvent changeProposalDeletedEvent) {
-            optionalMessage = this.toMessage(changeProposalDeletedEvent);
-        } else if (event instanceof ReviewPerformedEvent reviewPerformedEvent) {
-            optionalMessage = this.toMessage(reviewPerformedEvent);
-        } else if (event instanceof ReviewModifiedEvent reviewModifiedEvent) {
-            optionalMessage = this.toMessage(reviewModifiedEvent);
-        } else if (event instanceof ResourcesAddedToChangeEvent resourcesAddedToChangeEvent) {
-            optionalMessage = this.toMessage(resourcesAddedToChangeEvent);
-        } else if (event instanceof ResourcesRemovedFromChangeEvent resourcesRemovedFromChangeEvent) {
-            optionalMessage = this.toMessage(resourcesRemovedFromChangeEvent);
-        }
-
-        return optionalMessage;
+        return switch (event) {
+            case ChangeProposalCreatedEvent changeProposalCreatedEvent -> this.toMessage(changeProposalCreatedEvent);
+            case ChangeProposalModifiedEvent changeProposalModifiedEvent -> this.toMessage(changeProposalModifiedEvent);
+            case ChangeProposalDeletedEvent changeProposalDeletedEvent -> this.toMessage(changeProposalDeletedEvent);
+            case ReviewPerformedEvent reviewPerformedEvent -> this.toMessage(reviewPerformedEvent);
+            case ReviewModifiedEvent reviewModifiedEvent -> this.toMessage(reviewModifiedEvent);
+            case ResourcesAddedToChangeEvent resourcesAddedToChangeEvent -> this.toMessage(resourcesAddedToChangeEvent);
+            case ResourcesRemovedFromChangeEvent resourcesRemovedFromChangeEvent -> this.toMessage(resourcesRemovedFromChangeEvent);
+            default -> Optional.empty();
+        };
     }
 
     private Optional<Message> toMessage(ChangeProposalCreatedEvent event) {

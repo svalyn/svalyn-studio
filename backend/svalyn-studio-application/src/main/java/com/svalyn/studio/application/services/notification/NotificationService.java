@@ -115,15 +115,10 @@ public class NotificationService implements INotificationService {
     @Override
     @Transactional
     public IPayload updateStatus(UpdateNotificationsStatusInput input) {
-        IPayload payload = null;
-
         var result = this.notificationUpdateService.updateStatus(input.notificationIds(), input.status());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void>) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }
