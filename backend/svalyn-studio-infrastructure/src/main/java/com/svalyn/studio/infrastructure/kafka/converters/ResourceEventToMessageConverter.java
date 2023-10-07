@@ -56,15 +56,11 @@ public class ResourceEventToMessageConverter implements IDomainEventToMessageCon
     @Override
     @Transactional(readOnly = true)
     public Optional<Message> convert(IDomainEvent event) {
-        Optional<Message> optionalMessage = Optional.empty();
-
-        if (event instanceof ResourceCreatedEvent resourceCreatedEvent) {
-            optionalMessage = this.toMessage(resourceCreatedEvent);
-        } else if (event instanceof ResourceDeletedEvent resourceDeletedEvent) {
-            optionalMessage = this.toMessage(resourceDeletedEvent);
-        }
-
-        return optionalMessage;
+        return switch (event) {
+            case ResourceCreatedEvent resourceCreatedEvent -> this.toMessage(resourceCreatedEvent);
+            case ResourceDeletedEvent resourceDeletedEvent -> this.toMessage(resourceDeletedEvent);
+            default -> Optional.empty();
+        };
     }
 
     private Optional<Message> toMessage(ResourceCreatedEvent event) {

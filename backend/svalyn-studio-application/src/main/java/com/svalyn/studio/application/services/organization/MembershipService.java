@@ -105,15 +105,10 @@ public class MembershipService implements IMembershipService {
     @Override
     @Transactional
     public IPayload revokeMemberships(RevokeMembershipsInput input) {
-        IPayload payload = null;
-
         var result = this.organizationUpdateService.revokeMemberships(input.organizationIdentifier(), input.membershipIds());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

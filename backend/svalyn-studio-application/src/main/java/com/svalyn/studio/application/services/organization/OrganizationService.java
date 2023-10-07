@@ -138,59 +138,40 @@ public class OrganizationService implements IOrganizationService {
     @Override
     @Transactional
     public IPayload createOrganization(CreateOrganizationInput input) {
-        IPayload payload = null;
-
         var result = this.organizationCreationService.createOrganization(input.identifier(), input.name());
-        if (result instanceof Failure<Organization> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Organization> success) {
-            payload = new CreateOrganizationSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
-        }
-        return payload;
+        return switch (result) {
+            case Failure<Organization> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Organization> success -> new CreateOrganizationSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
+        };
     }
 
     @Override
     @Transactional
     public IPayload updateOrganizationName(UpdateOrganizationNameInput input) {
-        IPayload payload = null;
-
         var result = this.organizationUpdateService.renameOrganization(input.organizationIdentifier(), input.name());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void>) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload leaveOrganization(LeaveOrganizationInput input) {
-        IPayload payload = null;
-
         var result = this.organizationUpdateService.leaveOrganization(input.organizationIdentifier());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void>) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload deleteOrganization(DeleteOrganizationInput input) {
-        IPayload payload = null;
-
         var result = this.organizationDeletionService.deleteOrganization(input.organizationIdentifier());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void>) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

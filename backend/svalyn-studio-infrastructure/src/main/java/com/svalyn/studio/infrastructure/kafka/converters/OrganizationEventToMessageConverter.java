@@ -64,17 +64,12 @@ public class OrganizationEventToMessageConverter implements IDomainEventToMessag
     @Override
     @Transactional(readOnly = true)
     public Optional<Message> convert(IDomainEvent event) {
-        Optional<Message> optionalMessage = Optional.empty();
-
-        if (event instanceof OrganizationCreatedEvent organizationCreatedEvent) {
-            optionalMessage = this.toMessage(organizationCreatedEvent);
-        } else if (event instanceof OrganizationModifiedEvent organizationModifiedEvent) {
-            optionalMessage = this.toMessage(organizationModifiedEvent);
-        } else if (event instanceof OrganizationDeletedEvent organizationDeletedEvent) {
-            optionalMessage = this.toMessage(organizationDeletedEvent);
-        }
-
-        return optionalMessage;
+        return switch (event) {
+            case OrganizationCreatedEvent organizationCreatedEvent -> this.toMessage(organizationCreatedEvent);
+            case OrganizationModifiedEvent organizationModifiedEvent -> this.toMessage(organizationModifiedEvent);
+            case OrganizationDeletedEvent organizationDeletedEvent -> this.toMessage(organizationDeletedEvent);
+            default -> Optional.empty();
+        };
     }
 
     private Optional<Message> toMessage(OrganizationCreatedEvent event) {

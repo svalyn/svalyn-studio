@@ -137,75 +137,50 @@ public class ProjectService implements IProjectService {
     @Override
     @Transactional
     public IPayload createProject(CreateProjectInput input) {
-        IPayload payload = null;
-
         var result = this.projectCreationService.createProject(input.organizationIdentifier(), input.identifier(), input.name(), input.description());
-        if (result instanceof Failure<Project> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Project> success) {
-            payload = new CreateProjectSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Project> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Project> success -> new CreateProjectSuccessPayload(input.id(), this.toDTO(success.data()).orElse(null));
+        };
     }
 
     @Override
     @Transactional
     public IPayload updateProjectName(UpdateProjectNameInput input) {
-        IPayload payload = null;
-
         var result = this.projectUpdateService.updateName(input.projectIdentifier(), input.name());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload updateProjectDescription(UpdateProjectDescriptionInput input) {
-        IPayload payload = null;
-
         var result = this.projectUpdateService.updateDescription(input.projectIdentifier(), input.description());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload updateProjectReadMe(UpdateProjectReadMeInput input) {
-        IPayload payload = null;
-
         var result = this.projectUpdateService.updateReadMe(input.projectIdentifier(), input.content());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void> success) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 
     @Override
     @Transactional
     public IPayload deleteProject(DeleteProjectInput input) {
-        IPayload payload = null;
-
         var result = this.projectDeletionService.deleteProject(input.projectIdentifier());
-        if (result instanceof Failure<Void> failure) {
-            payload = new ErrorPayload(input.id(), failure.message());
-        } else if (result instanceof Success<Void>) {
-            payload = new SuccessPayload(input.id());
-        }
-
-        return payload;
+        return switch (result) {
+            case Failure<Void> failure -> new ErrorPayload(input.id(), failure.message());
+            case Success<Void> success -> new SuccessPayload(input.id());
+        };
     }
 }

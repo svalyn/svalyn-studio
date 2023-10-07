@@ -71,17 +71,12 @@ public class ProjectEventToMessageConverter implements IDomainEventToMessageConv
     @Override
     @Transactional(readOnly = true)
     public Optional<Message> convert(IDomainEvent event) {
-        Optional<Message> optionalMessage = Optional.empty();
-
-        if (event instanceof ProjectCreatedEvent projectCreatedEvent) {
-            optionalMessage = this.toMessage(projectCreatedEvent);
-        } else if (event instanceof ProjectModifiedEvent projectModifiedEvent) {
-            optionalMessage = this.toMessage(projectModifiedEvent);
-        } else if (event instanceof ProjectDeletedEvent projectDeletedEvent) {
-            optionalMessage = this.toMessage(projectDeletedEvent);
-        }
-
-        return optionalMessage;
+        return switch (event) {
+            case ProjectCreatedEvent projectCreatedEvent -> this.toMessage(projectCreatedEvent);
+            case ProjectModifiedEvent projectModifiedEvent -> this.toMessage(projectModifiedEvent);
+            case ProjectDeletedEvent projectDeletedEvent -> this.toMessage(projectDeletedEvent);
+            default -> Optional.empty();
+        };
     }
 
     private Optional<Message> toMessage(ProjectCreatedEvent event) {
