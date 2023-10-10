@@ -24,9 +24,9 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { FileData, FileDataItemProvider } from '../projects/workspace/data/FileData';
 import { IAdaptable, IAdapterFactory } from '../workbench/api/providers/AdapterFactory.types';
 import { AdapterFactoryProvider } from '../workbench/api/providers/AdapterFactoryProvider';
-import { FileData, FileDataItemProvider } from '../workspace/data/FileData';
 import { Viewer } from './Viewer';
 import { ViewerCardProps } from './ViewerCard.types';
 

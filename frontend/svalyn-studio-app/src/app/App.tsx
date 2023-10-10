@@ -35,7 +35,6 @@ import { ProfilesRouter } from '../profiles/ProfilesRouter';
 import { ProjectRouter } from '../projects/ProjectRouter';
 import { SearchRouter } from '../search/SearchRouter';
 import { SettingsRouter } from '../settings/SettingsRouter';
-import { WorkspaceView } from '../workspace/WorkspaceView';
 
 export const App = () => {
   return (
@@ -45,7 +44,6 @@ export const App = () => {
         <Route path="/new/*" element={<NewRouter />} />
         <Route path="/orgs/:organizationIdentifier/*" element={<OrganizationRouter />} />
         <Route path="/projects/:projectIdentifier/*" element={<ProjectRouter />} />
-        <Route path="/projects/:projectIdentifier/changes/:changeId" element={<WorkspaceView />} />
         <Route path="/domains/*" element={<DomainsRouter />} />
         <Route path="/search/*" element={<SearchRouter />} />
         <Route path="/profiles/*" element={<ProfilesRouter />} />

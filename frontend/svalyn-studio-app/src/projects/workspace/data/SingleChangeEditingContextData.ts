@@ -18,15 +18,15 @@
  */
 
 import { ReactNode } from 'react';
-import { IEditingContext } from '../../workbench/api/editingcontext/EditingContext.types';
-import { IAdaptable } from '../../workbench/api/providers/AdapterFactory.types';
+import { IEditingContext } from '../../../workbench/api/editingcontext/EditingContext.types';
+import { IAdaptable } from '../../../workbench/api/providers/AdapterFactory.types';
 import {
   IItemIdentityProvider,
   IItemLabelProvider,
   IItemViewProvider,
   ITreeItemContentProvider,
   ViewContent,
-} from '../../workbench/api/providers/ItemProviders.types';
+} from '../../../workbench/api/providers/ItemProviders.types';
 import { ChangeData } from './ChangeData';
 
 export class SingleChangeEditingContextData implements IEditingContext {

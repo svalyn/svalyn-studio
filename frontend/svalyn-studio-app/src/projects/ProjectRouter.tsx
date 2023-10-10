@@ -18,6 +18,7 @@
  */
 
 import { Route, Routes } from 'react-router-dom';
+import { ProjectProvider } from './ProjectProvider';
 import { ProjectShell } from './ProjectShell';
 import { ProjectActivityView } from './activity/ProjectActivityView';
 import { ChangeProposalRouter } from './changeproposal/ChangeProposalRouter';
@@ -27,21 +28,31 @@ import { NewChangeProposalView } from './new-changeproposal/NewChangeProposalVie
 import { ResourceView } from './resource/ResourceView';
 import { ProjectSettingsView } from './settings/ProjectSettingsView';
 import { ProjectTagsView } from './tags/ProjectTagsView';
+import { WorkspaceView } from './workspace/WorkspaceView';
 
 export const ProjectRouter = () => {
   return (
-    <ProjectShell>
+    <ProjectProvider>
       <Routes>
-        <Route index element={<ProjectHomeView />} />
-        <Route path="branches/:branchName" element={<ProjectHomeView />} />
-        <Route path="activity" element={<ProjectActivityView />} />
-        <Route path="changeproposals" element={<ProjectChangeProposalsView />} />
-        <Route path="changeproposals/:changeProposalIdentifier/*" element={<ChangeProposalRouter />} />
-        <Route path="tags" element={<ProjectTagsView />} />
-        <Route path="settings" element={<ProjectSettingsView />} />
-        <Route path="new/changeproposal" element={<NewChangeProposalView />} />
-        <Route path="changes/:changeId/resources/*" element={<ResourceView />} />
+        <Route index element={withProjectShell(ProjectHomeView)} />
+        <Route path="branches/:branchName" element={withProjectShell(ProjectHomeView)} />
+        <Route path="activity" element={withProjectShell(ProjectActivityView)} />
+        <Route path="changeproposals" element={withProjectShell(ProjectChangeProposalsView)} />
+        <Route path="changeproposals/:changeProposalIdentifier/*" element={withProjectShell(ChangeProposalRouter)} />
+        <Route path="tags" element={withProjectShell(ProjectTagsView)} />
+        <Route path="settings" element={withProjectShell(ProjectSettingsView)} />
+        <Route path="new/changeproposal" element={withProjectShell(NewChangeProposalView)} />
+        <Route path="changes/:changeId" element={<WorkspaceView />} />
+        <Route path="changes/:changeId/resources/*" element={withProjectShell(ResourceView)} />
       </Routes>
+    </ProjectProvider>
+  );
+};
+
+const withProjectShell = (Component: () => JSX.Element | null) => {
+  return (
+    <ProjectShell>
+      <Component />
     </ProjectShell>
   );
 };
