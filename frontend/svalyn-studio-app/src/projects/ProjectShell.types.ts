@@ -20,30 +20,3 @@
 export interface ProjectShellProps {
   children?: React.ReactNode;
 }
-
-export interface GetProjectData {
-  viewer: Viewer;
-}
-
-export interface Viewer {
-  project: Project | null;
-}
-
-export interface Project {
-  identifier: string;
-  name: string;
-  description: string;
-  organization: Organization;
-}
-
-export interface Organization {
-  identifier: string;
-  name: string;
-  role: MembershipRole;
-}
-
-export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
-
-export interface GetProjectVariables {
-  identifier: string;
-}

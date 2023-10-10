@@ -17,29 +17,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import Box from '@mui/material/Box';
-import { Navbar } from '../navbars/Navbar';
-import { ProjectBreadcrumbs } from './ProjectBreadcrumbs';
-import { ProjectDrawer } from './ProjectDrawer';
-import { ProjectShellProps } from './ProjectShell.types';
+export interface ProjectProviderProps {
+  children?: React.ReactNode;
+}
 
-export const ProjectShell = ({ children }: ProjectShellProps) => {
-  return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Navbar>
-        <ProjectBreadcrumbs />
-      </Navbar>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateRows: '1fr',
-          gridTemplateColumns: '64px calc(100vw - 64px)',
-          flexGrow: '1',
-        }}
-      >
-        <ProjectDrawer />
-        {children}
-      </Box>
-    </Box>
-  );
-};
+export interface GetProjectData {
+  viewer: Viewer;
+}
+
+export interface Viewer {
+  project: Project | null;
+}
+
+export interface Project {
+  identifier: string;
+  name: string;
+  description: string;
+  organization: Organization;
+}
+
+export interface Organization {
+  identifier: string;
+  name: string;
+  role: MembershipRole;
+}
+
+export type MembershipRole = 'ADMIN' | 'MEMBER' | 'NONE';
+
+export interface GetProjectVariables {
+  identifier: string;
+}

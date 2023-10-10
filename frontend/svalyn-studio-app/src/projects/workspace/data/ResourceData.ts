@@ -17,7 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { IAdaptable } from '../../workbench/api/providers/AdapterFactory.types';
+import { IAdaptable } from '../../../workbench/api/providers/AdapterFactory.types';
 
 export interface IResourceData extends IAdaptable {
   container: IContainerData | null;

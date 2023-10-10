@@ -18,14 +18,14 @@
  */
 
 import { ReactNode } from 'react';
-import { IAdaptable } from '../../workbench/api/providers/AdapterFactory.types';
+import { IAdaptable } from '../../../workbench/api/providers/AdapterFactory.types';
 import {
   IItemIdentityProvider,
   IItemLabelProvider,
   IItemViewProvider,
   ITreeItemContentProvider,
   ViewContent,
-} from '../../workbench/api/providers/ItemProviders.types';
+} from '../../../workbench/api/providers/ItemProviders.types';
 import { IContainerData, IResourceData } from './ResourceData';
 
 export class ChangeData implements IContainerData {
